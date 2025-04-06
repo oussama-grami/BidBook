@@ -1,0 +1,26 @@
+.app-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.content-container {
+    flex: 1;
+    padding: 0;
+}
+
+:host ::ng-deep .p-menubar {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 0;
+}
+
+:host ::ng-deep .p-menubar .p-menubar-root-list {
+    margin-left: 1rem;
+}
+
+@media screen and (max-width: 960px) {
+    :host ::ng-deep .p-menubar .p-menubar-root-list {
+        background: var(--surface-overlay);
+    }
+}

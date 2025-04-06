@@ -1,8 +1,25 @@
 /* You can add global styles to this file, and also import other style files */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+
+/* PrimeNG styles */
+@import "primeicons/primeicons.css";
+
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
   font-family: 'Poppins', sans-serif;
+}
+
+/* Override PrimeNG disabled button styles */
+.p-button.p-disabled,
+.p-button:disabled {
+  opacity: 0.8 !important;
+  cursor: not-allowed !important;
+}
+
+.p-button.p-disabled .p-button-label,
+.p-button:disabled .p-button-label {
+  color: white !important;
+  opacity: 0.9 !important;
 }

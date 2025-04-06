@@ -1,0 +1,52 @@
+<div class="grid">
+    <!-- Sidebar -->
+    <div class="col-12 md:col-3 lg:col-2" [ngClass]="{'active': isMobileMenuOpen}">
+        <p-sidebar [(visible)]="isMobileMenuOpen" [showCloseIcon]="false" [baseZIndex]="10000" [style]="{width:'250px'}" styleClass="p-sidebar-md" [closeOnEscape]="true">
+            <h2 class="text-xl font-bold text-900 mb-4">E-Books</h2>
+            
+            <div class="p-input-icon-left w-full mb-4">
+                <i class="pi pi-search"></i>
+                <input type="text" pInputText placeholder="Search books..." class="w-full" (input)="onSearch($event)">
+            </div>
+            
+            <h3 class="text-lg font-medium text-700 mb-3">Categories</h3>
+            <p-menu [model]="categories" styleClass="w-full border-none"></p-menu>
+        </p-sidebar>
+    </div>
+
+    <!-- Main Content -->
+    <div class="col-12 md:col-9 lg:col-10 p-4">
+        <div class="flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="text-3xl font-bold text-900 mb-2">Discover Books</h1>
+                <p class="text-lg text-600">Find your next favorite read</p>
+            </div>
+            <!-- Mobile menu toggle -->
+            <button pButton icon="pi pi-bars" class="p-button-rounded p-button-text md:hidden" (click)="toggleMobileMenu()"></button>
+        </div>
+        
+        <div class="grid">
+            <div *ngFor="let book of filteredBooks" class="col-12 sm:col-6 md:col-4 lg:col-3 xl:col-2">
+                <p-card styleClass="book-card" [style]="{'height':'100%'}">
+                    <ng-template pTemplate="header">
+                        <img [src]="book.coverImage" [alt]="book.title" class="book-cover">
+                    </ng-template>
+                    
+                    <h3 class="text-lg font-semibold text-900 mb-2 book-title">{{book.title}}</h3>
+                    <p class="text-sm text-600 mb-3">{{book.author}}</p>
+                    
+                    <ng-template pTemplate="footer">
+                        <div class="flex gap-2">
+                            <button pButton icon="pi pi-book" label="Read" class="p-button-sm p-button-primary" [routerLink]="['/read', book.id]"></button>
+                            <button pButton icon="pi pi-download" label="Download" class="p-button-sm p-button-success" (click)="onDownload(book)"></button>
+                        </div>
+                    </ng-template>
+                </p-card>
+            </div>
+        </div>
+        
+        <div *ngIf="filteredBooks.length === 0" class="text-center p-5">
+            <p class="text-xl text-600">No books found matching your criteria</p>
+        </div>
+    </div>
+</div>

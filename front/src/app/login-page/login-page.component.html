@@ -1,0 +1,94 @@
+<div class="login-page">
+  <!-- Left side - Login form -->
+  <div class="login-container">
+    <div class="login-card">
+      <h1 class="login-title">LOGIN</h1>
+      <p class="login-subtitle">Good to see you again !</p>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+        <div class="input-container">
+          <i class="pi pi-user"></i>
+          <input type="text" pInputText formControlName="email" placeholder="Username">
+        </div>
+
+        <div class="input-container">
+          <i class="pi pi-lock"></i>
+          <input type="password" pInputText formControlName="password" placeholder="Password">
+        </div>
+
+        <p-button type="submit" label="Login" [disabled]="loginForm.invalid"
+                  [style]="{
+                   width: '100%',
+                   marginBottom: '25px',
+                   backgroundColor: loginForm.invalid ? 'rgba(156, 115, 80, 0.7)' : '#9c7350',
+                   borderColor: loginForm.invalid ? 'rgba(156, 115, 80, 0.7)' : '#9c7350',
+                   color: '#ffffff',
+                   borderRadius: '20px',
+                   height: '57px',
+                   fontSize: '16px',
+                   fontWeight: '600',
+                   opacity: loginForm.invalid ? '0.8' : '1'
+                 }"
+                  styleClass="p-button-rounded"></p-button>
+
+        <div class="social-login">
+          <div class="divider">
+            <div class="line"></div>
+            <p><strong>Login</strong> with Others</p>
+            <div class="line"></div>
+          </div>
+
+          <div class="social-buttons">
+            <p-button type="button"
+                      [style]="{
+                        backgroundColor: '#1877F2',
+                        borderColor: '#1877F2',
+                        color: 'white',
+                        borderRadius: '10px',
+                        height: '54px',
+                        fontWeight: 'normal',
+                        width: '100%',
+                        transition: 'all 0.2s ease',
+                        boxShadow: facebookHovered ? '0 4px 8px rgba(0, 0, 0, 0.2)' : 'none',
+                        transform: facebookHovered ? 'translateY(-2px)' : 'none'
+                      }"
+                      styleClass="facebook-btn"
+                      label="Sign In with Facebook"
+                      icon="pi pi-facebook"
+                      (mouseenter)="facebookHovered = true"
+                      (mouseleave)="facebookHovered = false"></p-button>
+
+            <p-button type="button"
+                      [style]="{
+                        backgroundColor: 'white',
+                        color: 'rgba(0, 0, 0, 0.54)',
+                        border: googleHovered ? '1px solid #ddd' : '1px solid #e0e0e0',
+                        borderRadius: '10px',
+                        height: '54px',
+                        fontWeight: 'normal',
+                        width: '100%',
+                        transition: 'all 0.2s ease',
+                        boxShadow: googleHovered ? '0 6px 10px rgba(0, 0, 0, 0.15)' : 'none',
+                        transform: googleHovered ? 'translateY(-2px)' : 'none'
+                      }"
+                      styleClass="google-btn"
+                      label="Sign In with Google"
+                      icon="pi pi-google"
+                      [outlined]="true"
+                      (mouseenter)="googleHovered = true"
+                      (mouseleave)="googleHovered = false"></p-button>
+          </div>
+          <strong><a href="javascript:void(0)" class="forgot-password">Forgot Password ?</a></strong>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Right side - Image -->
+  <div class="image-container">
+    <div class="illustration">
+      <img src="/images/Login-pana.png" alt="Login illustration"
+           onerror="this.src='https://storyset.com/illustration/login/pana'; this.onerror=null;">
+    </div>
+  </div>
+</div>

@@ -1,3 +1,21 @@
-<app-login/>
-<app-theme-switcher/>
-<router-outlet/>
+<div class="app-container">
+    <p-menubar [model]="menuItems" styleClass="mb-4">
+        <ng-template pTemplate="start">
+            <div class="flex align-items-center">
+                <span class="text-xl font-bold text-primary">E-Books</span>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="end">
+            <div class="flex gap-2">
+                <p-button *ngIf="!isLoggedIn" label="Login" styleClass="p-button-text" (onClick)="navigateTo('/login')"></p-button>
+                <p-button *ngIf="!isLoggedIn" label="Sign Up" icon="pi pi-user-plus" (onClick)="navigateTo('/signup')"></p-button>
+                <p-button *ngIf="isLoggedIn" label="Logout" icon="pi pi-sign-out" styleClass="p-button-danger p-button-text" (onClick)="logout()"></p-button>
+                <app-theme-switcher></app-theme-switcher>
+            </div>
+        </ng-template>
+    </p-menubar>
+    
+    <div class="content-container">
+        <router-outlet></router-outlet>
+    </div>
+</div>

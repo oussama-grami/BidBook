@@ -1,3 +1,14 @@
 import { Routes } from '@angular/router';
+import { EbooksComponent } from './ebooks/ebooks.component';
+import { BookDetailComponent } from './book-detail/book-detail.component';
+import { ReadBookComponent } from './read-book/read-book.component';
+import { LoginPageComponent } from './login-page/login-page.component';
+import { SignupPageComponent } from './signup-page/signup-page.component';
 
-export const routes: Routes = [];
+export const routes: Routes = [
+  { path: '', component: EbooksComponent },
+  { path: 'books/:id', component: BookDetailComponent },
+  { path: 'read/:id', component: ReadBookComponent },
+  { path: 'login', component: LoginPageComponent },
+  { path: 'signup', component: SignupPageComponent }
+];
