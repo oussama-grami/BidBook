@@ -1,0 +1,119 @@
+<div class="add-book-container">
+  <div class="content-container">
+    <h1 class="title">ADD A BOOK</h1>
+
+    <div class="form-and-image">
+      <form [formGroup]="addBookForm" (ngSubmit)="onSubmit()">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="title">Title</label>
+            <input
+              type="text"
+              id="title"
+              formControlName="title"
+              class="form-control"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="author">Author</label>
+            <input
+              type="text"
+              id="author"
+              formControlName="author"
+              class="form-control"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="category">Category</label>
+            <div class="select-container">
+              <select
+                id="category"
+                formControlName="category"
+                class="form-control"
+              >
+                <option value="" disabled selected>Select</option>
+                <option value="fiction">Fiction</option>
+                <option value="non-fiction">Non-Fiction</option>
+                <option value="science">Science</option>
+                <option value="history">History</option>
+                <option value="biography">Biography</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="numberOfPages">Number of Pages</label>
+            <input
+              type="number"
+              id="numberOfPages"
+              formControlName="numberOfPages"
+              class="form-control"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="age">Age</label>
+            <div class="select-container">
+              <select id="age" formControlName="age" class="form-control">
+                <option value="" disabled selected>Select</option>
+                <option value="children">Children</option>
+                <option value="young-adult">Young Adult</option>
+                <option value="adult">Adult</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="edition">Edition</label>
+            <input
+              type="text"
+              id="edition"
+              formControlName="edition"
+              class="form-control"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="picture">Picture</label>
+            <input
+              type="file"
+              id="picture"
+              (change)="onFileSelected($event)"
+              class="form-control file-input"
+            />
+          </div>
+
+          <div class="form-group price-group" *ngIf="predictedPrice">
+            <label>Edit the predicted price</label>
+            <input type="number" formControlName="price" class="form-control" />
+          </div>
+        </div>
+
+        <div class="button-group">
+          <button type="button" class="predict-btn" (click)="predictPrice()">
+            Predict Price
+          </button>
+          <button
+            type="submit"
+            class="submit-btn"
+            [disabled]="addBookForm.invalid"
+          >
+            Submit
+          </button>
+        </div>
+      </form>
+
+      <div class="image-container">
+        <img
+          ngSrc="/images/AddBook.png"
+          alt="Add Book Illustration"
+          class="add-book-image"
+          height="376"
+          width="486"
+        />
+      </div>
+    </div>
+  </div>
+</div>

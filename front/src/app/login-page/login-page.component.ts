@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
-import { InputTextModule } from 'primeng/inputtext';
-import { ButtonModule } from 'primeng/button';
-import { RippleModule } from 'primeng/ripple';
+import {Component} from '@angular/core';
+import {CommonModule, NgOptimizedImage} from '@angular/common';
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {Router, RouterModule} from '@angular/router';
+import {InputTextModule} from 'primeng/inputtext';
+import {ButtonModule} from 'primeng/button';
+import {RippleModule} from 'primeng/ripple';
 
 @Component({
   selector: 'app-login-page',
@@ -15,12 +15,13 @@ import { RippleModule } from 'primeng/ripple';
     RouterModule,
     InputTextModule,
     ButtonModule,
-    RippleModule
+    RippleModule,
+    NgOptimizedImage
   ],
   templateUrl: './login-page.component.html',
   styleUrl: './login-page.component.css'
 })
-export class LoginPageComponent implements OnInit {
+export class LoginPageComponent {
   loginForm: FormGroup;
   facebookHovered: boolean = false;
   googleHovered: boolean = false;
@@ -35,9 +36,6 @@ export class LoginPageComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
-    // Initialize any additional settings here
-  }
 
   onLogin() {
     if (this.loginForm.valid) {

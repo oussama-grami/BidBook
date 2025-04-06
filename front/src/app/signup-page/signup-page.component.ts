@@ -1,12 +1,19 @@
-import { Component } from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {CommonModule, NgOptimizedImage} from '@angular/common';
-import { ReactiveFormsModule, FormGroup, FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
-import { InputTextModule } from 'primeng/inputtext';
-import { ButtonModule } from 'primeng/button';
-import { PasswordModule } from 'primeng/password';
-import { CheckboxModule } from 'primeng/checkbox';
-import { RippleModule } from 'primeng/ripple';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validators
+} from '@angular/forms';
+import {ActivatedRoute, Router, RouterModule} from '@angular/router';
+import {InputTextModule} from 'primeng/inputtext';
+import {ButtonModule} from 'primeng/button';
+import {PasswordModule} from 'primeng/password';
+import {CheckboxModule} from 'primeng/checkbox';
+import {RippleModule} from 'primeng/ripple';
 
 @Component({
   selector: 'app-signup-page',
@@ -32,7 +39,7 @@ export class SignupPageComponent {
 
   constructor(
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
   ) {
     this.signupForm = this.fb.group({
       username: ['', Validators.required],
@@ -47,7 +54,7 @@ export class SignupPageComponent {
     const confirmPassword = control.get('confirmPassword');
 
     if (password && confirmPassword && password.value !== confirmPassword.value) {
-      return { passwordMismatch: true };
+      return {passwordMismatch: true};
     }
     return null;
   }

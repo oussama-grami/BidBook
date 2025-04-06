@@ -1,12 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Router, RouterOutlet } from '@angular/router';
-import { ThemeSwitcherComponent } from './theme-switcher/theme-switcher.component';
-import { MenuItem } from 'primeng/api';
-import { MenubarModule } from 'primeng/menubar';
-import { ButtonModule } from 'primeng/button';
-import { SideMenuComponent } from './side-menu/side-menu.component';
-import {SidemenuComponent} from './components/sidemenu/sidemenu.component';
+import {Component, OnInit} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {Router, RouterOutlet} from '@angular/router';
+import {ThemeSwitcherComponent} from './theme-switcher/theme-switcher.component';
+import {MenuItem} from 'primeng/api';
+import {MenubarModule} from 'primeng/menubar';
+import {ButtonModule} from 'primeng/button';
+import {SideMenuComponent} from './components/side-menu/side-menu.component';
 
 @Component({
   selector: 'app-root',
@@ -18,40 +17,41 @@ import {SidemenuComponent} from './components/sidemenu/sidemenu.component';
     MenubarModule,
     ButtonModule,
     SideMenuComponent,
-    SidemenuComponent
   ],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrl: './app.component.css',
 })
 export class AppComponent implements OnInit {
   title = 'E-Books';
   menuItems: MenuItem[] = [];
-  isLoggedIn: boolean = true; // Changed to true so we can see the side menu
+  isLoggedIn: boolean = true;
+  isSmallScreen: boolean = false;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) {
+  }
 
   ngOnInit() {
     this.menuItems = [
       {
         label: 'Home',
         icon: 'pi pi-home',
-        routerLink: '/'
+        routerLink: '/',
       },
       {
         label: 'Categories',
         icon: 'pi pi-list',
         items: [
-          { label: 'Fiction', routerLink: ['/'] },
-          { label: 'Non-Fiction', routerLink: ['/'] },
-          { label: 'Science', routerLink: ['/'] },
-          { label: 'Technology', routerLink: ['/'] },
-          { label: 'History', routerLink: ['/'] }
-        ]
+          {label: 'Fiction', routerLink: ['/']},
+          {label: 'Non-Fiction', routerLink: ['/']},
+          {label: 'Science', routerLink: ['/']},
+          {label: 'Technology', routerLink: ['/']},
+          {label: 'History', routerLink: ['/']},
+        ],
       },
       {
         label: 'About',
-        icon: 'pi pi-info-circle'
-      }
+        icon: 'pi pi-info-circle',
+      },
     ];
   }
 

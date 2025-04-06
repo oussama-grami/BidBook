@@ -1,0 +1,194 @@
+.add-book-container {
+  display: flex;
+  flex-direction: row;
+  background-color: #FAF9F6;
+  padding: 20px;
+  gap: 20px;
+}
+
+.content-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.title {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-size: 30px;
+  color: #9C7350;
+  text-transform: uppercase;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  width: 100%;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+label {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  color: #686868;
+}
+
+input, select {
+  padding: 10px;
+  border: 1px solid rgba(196, 196, 196, 0.27);
+  border-radius: 4px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  color: #324054;
+  width: 100%;
+  max-width: 400px;
+  box-sizing: border-box;
+}
+
+.file-input {
+  border: 1px dashed rgba(196, 196, 196, 0.27);
+}
+
+.book-image {
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+  border-radius: 20px;
+}
+
+/* Input validation styles */
+input.ng-invalid.ng-touched {
+  border: 1px solid #ff5757 !important;
+}
+
+input.ng-valid.ng-touched {
+  border: 2px solid #4caf50 !important;
+}
+
+input.ng-invalid.ng-touched, select.ng-invalid.ng-touched {
+  border: 1px solid #FF5757;
+}
+
+input.ng-valid.ng-touched, select.ng-valid.ng-touched {
+  border: 1px solid #4CAF50;
+}
+
+.button-group {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+button {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 20px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 16px;
+  color: #FFFFFF;
+  cursor: pointer;
+  width: 100%;
+  max-width: 400px;
+  box-sizing: border-box;
+}
+
+.predict-btn {
+  background-color: #9C7350;
+}
+
+.submit-btn {
+  background-color: #50719C;
+}
+
+.select-container {
+  position: relative;
+}
+
+.select-arrow {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  pointer-events: none;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid #324054;
+}
+
+.price-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-and-image {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.image-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.add-book-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 20px;
+}
+
+@media (max-width: 768px) {
+  .add-book-container {
+    flex-direction: column;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .button-group {
+    flex-direction: column;
+  }
+
+  button {
+    width: 100%;
+  }
+
+  .form-and-image {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .image-container {
+    margin-top: 20px;
+  }
+}
+
+@media (min-width: 768px) {
+  input, select, button {
+    width: auto;
+  }
+}
+
+@media (min-width: 1024px) {
+  button {
+    padding: 16px 32px;
+    font-size: 18px;
+  }
+}

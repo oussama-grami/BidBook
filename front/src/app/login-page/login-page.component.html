@@ -13,7 +13,8 @@
 
         <div class="input-container">
           <i class="pi pi-lock"></i>
-          <input type="password" pInputText formControlName="password" placeholder="Password">
+          <input type="password" pInputText formControlName="password"
+                 placeholder="Password">
         </div>
 
         <p-button type="submit" label="Login" [disabled]="loginForm.invalid"
@@ -78,7 +79,8 @@
                       (mouseenter)="googleHovered = true"
                       (mouseleave)="googleHovered = false"></p-button>
           </div>
-          <strong><a href="javascript:void(0)" class="forgot-password">Forgot Password ?</a></strong>
+          <strong><a href="javascript:void(0)" class="forgot-password">Forgot Password
+            ?</a></strong>
         </div>
       </form>
     </div>
@@ -87,8 +89,11 @@
   <!-- Right side - Image -->
   <div class="image-container">
     <div class="illustration">
-      <img src="/images/Login-pana.png" alt="Login illustration"
-           onerror="this.src='https://storyset.com/illustration/login/pana'; this.onerror=null;">
+      <img
+        [priority]="1"
+        ngSrc="/images/Login-pana.png" alt="Login illustration"
+        onerror="this.src='https://storyset.com/illustration/login/pana'; this.onerror=null;"
+        height="2000" width="2000">
     </div>
   </div>
 </div>

@@ -1,40 +1,69 @@
 /* Login page styling */
-:host ::ng-deep .login-page {
+.login-page {
   font-family: 'Poppins', sans-serif;
   display: flex;
   min-height: 100vh;
   background-color: #ffffff;
   animation: fadeIn 0.8s ease-in-out;
+  width: 100%
 }
 
 /* Animations */
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideInFromLeft {
-  from { transform: translateX(-50px); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
+  from {
+    transform: translateX(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 
 @keyframes slideInFromRight {
-  from { transform: translateX(50px); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
+  from {
+    transform: translateX(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 
 @keyframes slideInFromTop {
-  from { transform: translateY(-30px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from {
+    transform: translateY(-30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 @keyframes scaleIn {
-  from { transform: scale(0.8); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 /* Form input styling */
-:host ::ng-deep .p-inputtext {
+.p-inputtext {
   box-shadow: none !important;
   width: 100%;
   border-radius: 16px !important;
@@ -45,31 +74,31 @@
   height: 52px;
 }
 
-:host ::ng-deep .p-inputtext:focus {
+.p-inputtext:focus {
   box-shadow: none !important;
   border-color: transparent !important;
 }
 
-:host ::ng-deep .p-inputtext:hover {
+.p-inputtext:hover {
   border-color: transparent !important;
 }
 
 /* Invalid input styling - thin border like signup page */
-:host ::ng-deep .p-inputtext.ng-invalid.ng-touched {
+.p-inputtext.ng-invalid.ng-touched {
   border: 1px solid #ff5757 !important;
 }
 
 /* Button styling */
-:host ::ng-deep .p-button {
+.p-button {
   transition: all 0.3s ease;
 }
 
-:host ::ng-deep .p-button:enabled:hover {
+.p-button:enabled:hover {
   transform: translateY(-3px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-:host ::ng-deep .p-button:enabled:active {
+.p-button:enabled:active {
   transform: translateY(0);
 }
 
@@ -169,7 +198,7 @@ form p-button {
   margin-bottom: 20px;
 }
 
-:host ::ng-deep .social-buttons .p-button {
+.social-buttons .p-button {
   border-radius: 10px !important;
   height: 54px;
   font-weight: normal;
@@ -186,20 +215,20 @@ form p-button {
 }
 
 /* Facebook button */
-:host ::ng-deep .facebook-btn:hover {
+.facebook-btn:hover {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important;
   transform: translateY(-2px) !important;
 }
 
 /* Google button */
-:host ::ng-deep .google-btn:hover {
+.google-btn:hover {
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15) !important;
   transform: translateY(-2px) !important;
   border: 1px solid #ddd !important;
 }
 
 /* Icon styling */
-:host ::ng-deep .p-button .p-button-icon {
+.p-button .p-button-icon {
   font-size: 1.2rem !important;
   margin-right: 0.5rem !important;
 }
@@ -223,6 +252,7 @@ form p-button {
   align-items: center;
   justify-content: center;
   background-color: #f9f8f7;
+  width: auto;
   overflow: hidden;
   animation: slideInFromRight 0.8s ease-in-out;
 }
@@ -253,17 +283,17 @@ form p-button {
 }
 
 @media (max-width: 991px) {
-  :host ::ng-deep .image-container {
+  .image-container {
     display: none !important;
   }
 
-  :host ::ng-deep .login-container {
+  .login-container {
     flex: 1;
   }
 }
 
 @media (max-width: 576px) {
-  :host ::ng-deep .login-card {
+  .login-card {
     padding: 20px 15px !important;
   }
 }

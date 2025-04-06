@@ -1,43 +1,58 @@
-<div class="signup-page" style="display: flex; min-height: 100vh; background-color: #ffffff;">
+<div class="signup-page"
+     style="display: flex; min-height: 100vh; background-color: #ffffff;">
   <!-- Left side - Signup form -->
-  <div class="signup-container" style="flex: 1; display: flex; justify-content: center; align-items: center; padding: 20px; background-color: #fff;">
+  <div class="signup-container"
+       style="flex: 1; display: flex; justify-content: center; align-items: center; padding: 20px; background-color: #fff;">
     <div class="signup-card" style="width: 100%; max-width: 364px; padding: 40px 30px;">
-      <h1 class="signup-title" style="font-size: 24px; font-weight: 700; text-align: center; margin-bottom: 8px; color: #000000;">SIGNUP</h1>
-      <p class="signup-subtitle" style="font-size: 14px; color: #525252; text-align: center; margin-bottom: 30px;">Get Started Now !</p>
+      <h1 class="signup-title"
+          style="font-size: 24px; font-weight: 700; text-align: center; margin-bottom: 8px; color: #000000;">
+        SIGNUP</h1>
+      <p class="signup-subtitle"
+         style="font-size: 14px; color: #525252; text-align: center; margin-bottom: 30px;">
+        Get Started Now !</p>
 
       <form [formGroup]="signupForm" (ngSubmit)="onSignup()">
         <!-- Username input -->
-        <div class="input-container" style="position: relative; margin-bottom: 20px; width: 100%;">
-          <i class="pi pi-user" style="position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: #1c1c1c; z-index: 1; font-size: 1.2rem;"></i>
+        <div class="input-container"
+             style="position: relative; margin-bottom: 20px; width: 100%;">
+          <i class="pi pi-user"
+             style="position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: #1c1c1c; z-index: 1; font-size: 1.2rem;"></i>
           <input type="text" pInputText formControlName="username" placeholder="Username"
                  style="width: 100%; border-radius: 16px !important; padding: 16px 16px 16px 50px !important; background-color: rgba(240, 238, 255, 0.8) !important; font-size: 14px; border: none !important; height: 52px;">
         </div>
 
         <!-- Email input -->
-        <div class="input-container" style="position: relative; margin-bottom: 20px; width: 100%;">
-          <i class="pi pi-envelope" style="position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: #1c1c1c; z-index: 1; font-size: 1.2rem;"></i>
+        <div class="input-container"
+             style="position: relative; margin-bottom: 20px; width: 100%;">
+          <i class="pi pi-envelope"
+             style="position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: #1c1c1c; z-index: 1; font-size: 1.2rem;"></i>
           <input type="email" pInputText formControlName="email" placeholder="Email"
                  style="width: 100%; border-radius: 16px !important; padding: 16px 16px 16px 50px !important; background-color: rgba(240, 238, 255, 0.8) !important; font-size: 14px; border: none !important; height: 52px;">
         </div>
 
         <!-- Password input -->
-        <div class="input-container" style="position: relative; margin-bottom: 20px; width: 100%;">
-          <i class="pi pi-lock" style="position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: #1c1c1c; z-index: 1; font-size: 1.2rem;"></i>
-          <input type="password" pInputText formControlName="password" placeholder="Password"
+        <div class="input-container"
+             style="position: relative; margin-bottom: 20px; width: 100%;">
+          <i class="pi pi-lock"
+             style="position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: #1c1c1c; z-index: 1; font-size: 1.2rem;"></i>
+          <input type="password" pInputText formControlName="password"
+                 placeholder="Password"
                  style="width: 100%; border-radius: 16px !important; padding: 16px 16px 16px 50px !important; background-color: rgba(240, 238, 255, 0.8) !important; font-size: 14px; border: none !important; height: 52px;">
         </div>
 
         <!-- Terms checkbox -->
         <div style="display: flex; align-items: baseline; margin-bottom: 20px;">
           <div style="margin-top: 3px;">
-            <p-checkbox formControlName="agreeTerms" [binary]="true" styleClass="mr-2"></p-checkbox>
+            <p-checkbox formControlName="agreeTerms" [binary]="true"
+                        styleClass="mr-2"></p-checkbox>
           </div>
-          <label style="margin-left: 8px; font-size: 14px; color: #000;">I agree to the terms & policy</label>
+          <label style="margin-left: 8px; font-size: 14px; color: #000;">I agree to the
+            terms & policy</label>
         </div>
 
         <!-- Signup button -->
         <p-button type="submit" label="SIGNUP" [disabled]="signupForm.invalid"
-                 [style]="{
+                  [style]="{
                    width: '100%',
                    marginBottom: '25px',
                    backgroundColor: signupForm.invalid ? 'rgba(156, 115, 80, 0.7)' : '#9c7350',
@@ -49,16 +64,19 @@
                    fontWeight: '600',
                    opacity: signupForm.invalid ? '0.8' : '1'
                  }"
-                 styleClass="p-button-rounded"></p-button>
+                  styleClass="p-button-rounded"></p-button>
 
         <div class="social-login" style="text-align: center;">
-          <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
+          <div
+            style="display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
             <div style="flex: 1; height: 1px; background-color: #e0e0e0;"></div>
-            <p style="color: #666; font-size: 14px; margin: 0 10px;">SIGNUP with Others</p>
+            <p style="color: #666; font-size: 14px; margin: 0 10px;">SIGNUP with
+              Others</p>
             <div style="flex: 1; height: 1px; background-color: #e0e0e0;"></div>
           </div>
 
-          <div class="social-buttons" style="display: flex; flex-direction: column; gap: 25px; margin-bottom: 20px;">
+          <div class="social-buttons"
+               style="display: flex; flex-direction: column; gap: 25px; margin-bottom: 20px;">
             <p-button type="button"
                       [style]="{
                         backgroundColor: '#1877F2',
@@ -99,19 +117,25 @@
                       (mouseleave)="googleHovered = false"></p-button>
           </div>
 
-          <a routerLink="/login" style="color: #525252; font-size: 14px; text-decoration: none;">Have an account? Sign In</a>
+          <a routerLink="/login"
+             style="color: #525252; font-size: 14px; text-decoration: none;">Have an
+            account? Sign In</a>
         </div>
       </form>
     </div>
   </div>
 
   <!-- Right side - Image -->
-  <div class="image-container" style="flex: 1.2; position: relative; display: flex; align-items: center; justify-content: center; background-color: #f9f8f7; overflow: hidden;">
-    <div class="illustration" style="position: absolute; z-index: 1; width: 700px; height: 700px; display: flex; align-items: center; justify-content: center;">
-      <img ngSrc="/images/Sign%20up-pana.png" alt="Sign up illustration"
-           style="width: 100%; height: 100%; object-fit: contain;"
-           onerror="this.src='https://storyset.com/illustration/sign-up/pana'; this.onerror=null;"
-           height="2000" width="2000">
+  <div class="image-container"
+       style="flex: 1.2; position: relative; display: flex; align-items: center; justify-content: center; background-color: #f9f8f7; overflow: hidden;">
+    <div class="illustration"
+         style="position: absolute; z-index: 1; width: 700px; height: 700px; display: flex; align-items: center; justify-content: center;">
+      <img
+        priority="1"
+        ngSrc="/images/Sign%20up-pana.png" alt="Sign up illustration"
+        style="width: 100%; height: 100%; object-fit: contain;"
+        onerror="this.src='https://storyset.com/illustration/sign-up/pana'; this.onerror=null;"
+        height="2000" width="2000">
     </div>
   </div>
 </div>

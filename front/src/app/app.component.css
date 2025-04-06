@@ -1,35 +1,76 @@
 .app-container {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  position: absolute;
 }
 
 .content-container {
-    flex: 1;
-    display: flex;
+  flex: 1;
+  display: flex;
+  width: 100%;
 }
 
 .layout-with-sidemenu {
-    display: flex;
-    flex: 1;
+  display: flex;
+  flex: 1;
 }
 
 .main-content {
-    flex: 1;
-    padding: 20px;
-    overflow-y: auto;
+  flex: 1;
+  overflow-y: auto;
 }
 
 /* Menubar styling */
 :host ::ng-deep .p-menubar {
-    border-radius: 0;
-    border-left: none;
-    border-right: none;
-    border-top: none;
+  border-radius: 0;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+}
+
+/* Navbar styling for small screens */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+}
+
+.navbar .menu-icon {
+  font-size: 24px;
+  cursor: pointer;
+}
+
+@media (min-width: 769px) {
+  .navbar {
+    display: none;
+  }
 }
 
 @media screen and (max-width: 768px) {
-    .layout-with-sidemenu {
-        flex-direction: column;
-    }
+  .layout-with-sidemenu {
+    flex-direction: row;
+  }
+}
+
+/* Adjust layout for small screens */
+@media (max-width: 768px) {
+  .layout-with-sidemenu {
+    flex-direction: row;
+  }
+
+  .main-content {
+    margin-top: 60px; /* Adjust for the height of the horizontal sidemenu */
+  }
+}
+
+/* Adjust layout for large screens */
+@media (min-width: 769px) {
+  .layout-with-sidemenu {
+    flex-direction: row;
+  }
 }
