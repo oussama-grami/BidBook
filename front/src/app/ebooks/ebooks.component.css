@@ -4,6 +4,9 @@
   background-color: #f8f9fa;
   position: relative;
   overflow: hidden;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
 }
 
 .sidebar {

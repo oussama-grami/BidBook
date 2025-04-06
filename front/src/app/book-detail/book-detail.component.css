@@ -1,7 +1,10 @@
 .book-detail-container {
-  max-width: 1200px;
+  max-width: 900px;
   margin: 0 auto;
-  padding: 30px 20px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .back-button {
@@ -22,8 +25,7 @@
 
 .book-content {
   display: flex;
-  gap: 40px;
-  margin-bottom: 50px;
+  gap: 20px;
 }
 
 .book-image {
@@ -31,20 +33,23 @@
 }
 
 .book-image img {
-  width: 100%;
+  width: 250px;
   height: auto;
   border-radius: 10px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
 .book-info {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .book-title {
   margin: 0 0 10px;
-  font-size: 32px;
-  color: #212529;
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
   line-height: 1.2;
   height: 3rem;
   overflow: hidden;
@@ -56,21 +61,21 @@
 
 .book-author {
   font-size: 18px;
-  color: #6c757d;
+  color: #555;
   margin: 0 0 20px;
 }
 
 .book-meta {
   display: flex;
-  gap: 15px;
+  align-items: center;
+  gap: 10px;
   margin-bottom: 25px;
 }
 
 .book-category {
-  background-color: #e9f5ff;
-  color: #007bff;
-  padding: 5px 15px;
-  border-radius: 20px;
+  background-color: #f0f0f0;
+  padding: 5px 10px;
+  border-radius: 5px;
   font-size: 14px;
   font-weight: 500;
 }
@@ -78,7 +83,7 @@
 .book-rating {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
   color: #ffc107;
 }
 
@@ -89,6 +94,8 @@
 }
 
 .book-description {
+  font-size: 16px;
+  color: #666;
   margin-bottom: 30px;
 }
 
@@ -106,13 +113,13 @@
 
 .book-actions {
   display: flex;
-  gap: 15px;
+  gap: 10px;
 }
 
-.read-btn, .download-btn, .favorite-btn {
-  padding: 12px 25px;
+.read-btn, .download-btn, .favorite-btn, .edit-price-btn, .submit-btn {
+  padding: 10px 20px;
   border: none;
-  border-radius: 8px;
+  border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
   transition: all 0.3s;
@@ -150,6 +157,16 @@
 .favorite-btn svg.favorite {
   color: #dc3545;
   fill: #dc3545;
+}
+
+.edit-price-btn {
+  background-color: #f0ad4e;
+  color: white;
+}
+
+.submit-btn {
+  background-color: #5cb85c;
+  color: white;
 }
 
 .read-btn:hover {

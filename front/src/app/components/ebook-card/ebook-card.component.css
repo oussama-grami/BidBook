@@ -58,3 +58,45 @@
   color: #007bff;
   font-weight: bold;
 }
+
+.book-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+  width: 200px;
+}
+
+.book-image {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.book-title {
+  font-size: 18px;
+  margin: 8px 0;
+}
+
+.book-reviews {
+  color: #888;
+  font-size: 14px;
+}
+
+.book-rating {
+  color: #ffb543;
+  margin: 8px 0;
+}
+
+.view-details {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.view-details:hover {
+  background-color: #0056b3;
+}

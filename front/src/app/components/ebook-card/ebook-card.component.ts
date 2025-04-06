@@ -1,20 +1,22 @@
 import { Component, Input } from '@angular/core';
-import {NgForOf, NgOptimizedImage} from '@angular/common';
+import { Book } from '../../ebooks/ebooks.component';
+import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-ebook-card',
+  selector: 'app-book-card',
   templateUrl: './ebook-card.component.html',
-  imports: [
-    NgOptimizedImage,
-    NgForOf
-  ],
-  styleUrls: ['./ebook-card.component.css']
+  styleUrls: ['./ebook-card.component.css'],
+  standalone: true,
+  imports: [CommonModule],
 })
 export class EbookCardComponent {
-  @Input() title: string = '';
-  @Input() author: string = '';
-  @Input() coverImage: string = '';
-  @Input() price: string = '';
-  @Input() rating: number = 0; // New input for rating
-  @Input() description: string = ''; // New input for description
+  @Input() book!: {
+    title: string;
+    image: string;
+    reviews: number;
+    rating: number;
+    author: string;
+    description?: string;
+    price?: string;
+  };
 }

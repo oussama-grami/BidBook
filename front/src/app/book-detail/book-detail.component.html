@@ -1,58 +1,54 @@
-<div class="surface-section p-4">
-    <div class="flex align-items-center mb-4">
-        <button pButton icon="pi pi-arrow-left" label="Back to Books" class="p-button-text" [routerLink]="['/']"></button>
+<div class="book-detail-container">
+  <div class="back-button" (click)="goBack()">
+    <i class="pi pi-arrow-left"></i>
+  </div>
+
+  <div class="book-content">
+    <div class="book-image">
+      <img [src]="book?.coverImage" [alt]="book?.title" />
     </div>
 
-    <div *ngIf="book" class="grid">
-        <!-- Book Image -->
-        <div class="col-12 md:col-4 lg:col-3">
-            <p-card styleClass="shadow-4 h-full">
-                <ng-template pTemplate="header">
-                    <img [src]="book.coverImage" [alt]="book.title" class="w-full">
-                </ng-template>
-            </p-card>
+    <div class="book-info">
+      <h1 class="book-title">{{ book?.title }}</h1>
+      <p class="book-author">By {{ book?.author }}</p>
+
+      <div class="book-meta">
+        <span class="book-category">{{ book?.category }}</span>
+        <div class="book-rating">
+          <p-rating [ngModel]="book?.rating" [readonly]="true"></p-rating>
+          <span>{{ book?.rating }}</span>
         </div>
+      </div>
 
-        <!-- Book Info -->
-        <div class="col-12 md:col-8 lg:col-9">
-            <div class="p-4">
-                <h1 class="text-3xl font-bold text-900 mb-2">{{book.title}}</h1>
-                <p class="text-xl text-600 mb-4">By {{book.author}}</p>
+      <div class="book-description">
+        <p>{{ book?.description }}</p>
+      </div>
 
-                <div class="flex gap-3 mb-4">
-                    <p-tag value="{{book.category}}" severity="info" styleClass="mr-2"></p-tag>
-                    <p-rating [ngModel]="4" [readonly]="true"></p-rating>
-                    <span class="font-medium">4.5</span>
-                </div>
-
-                <div class="mb-5">
-                    <h2 class="text-xl font-medium text-900 mb-3">Description</h2>
-                    <p class="line-height-3 text-700">{{book.description}}</p>
-                </div>
-
-                <div class="flex gap-3 flex-wrap">
-                    <p-button label="Read Now" icon="pi pi-book" styleClass="p-button-lg" [routerLink]="['/read', book.id]"></p-button>
-                    <p-button label="Download" icon="pi pi-download" styleClass="p-button-lg p-button-success" (onClick)="downloadBook()"></p-button>
-                    <p-button icon="pi pi-heart" styleClass="p-button-lg p-button-rounded p-button-outlined" [ngClass]="{'p-button-danger': isFavorite}" (onClick)="toggleFavorite()"></p-button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Related Books -->
-        <div class="col-12">
-            <h2 class="text-2xl font-bold text-900 mb-3 mt-4">Related Books</h2>
-            <div class="grid">
-                <div *ngFor="let relatedBook of relatedBooks" class="col-12 sm:col-6 md:col-4 lg:col-3 xl:col-2">
-                    <p-card styleClass="book-card" [style]="{'height':'100%'}" [routerLink]="['/books', relatedBook.id]">
-                        <ng-template pTemplate="header">
-                            <img [src]="relatedBook.coverImage" [alt]="relatedBook.title" class="book-cover">
-                        </ng-template>
-
-                        <h3 class="text-lg font-semibold text-900 mb-2 book-title">{{relatedBook.title}}</h3>
-                        <p class="text-sm text-600">{{relatedBook.author}}</p>
-                    </p-card>
-                </div>
-            </div>
-        </div>
+      <div class="book-actions">
+        <button class="edit-price-btn">Edit the price</button>
+        <button class="submit-btn">Submit</button>
+      </div>
     </div>
+  </div>
+
+  <div class="related-books">
+    <h2>Related Books</h2>
+    <div class="related-books-grid">
+      <div
+        *ngFor="let relatedBook of relatedBooks"
+        class="book-card"
+        (click)="viewBook(relatedBook.id)"
+      >
+        <img
+          [src]="relatedBook.coverImage"
+          [alt]="relatedBook.title"
+          class="book-cover"
+        />
+        <div class="book-info">
+          <h3>{{ relatedBook.title }}</h3>
+          <p class="author">{{ relatedBook.author }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
