@@ -16,6 +16,14 @@
     </p-menubar>
     
     <div class="content-container">
-        <router-outlet></router-outlet>
+        <div *ngIf="isLoggedIn" class="layout-with-sidemenu">
+            <app-side-menu></app-side-menu>
+            <div class="main-content">
+                <router-outlet></router-outlet>
+            </div>
+        </div>
+        <div *ngIf="!isLoggedIn">
+            <router-outlet></router-outlet>
+        </div>
     </div>
 </div>

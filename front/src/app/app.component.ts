@@ -5,6 +5,7 @@ import { ThemeSwitcherComponent } from './theme-switcher/theme-switcher.componen
 import { MenuItem } from 'primeng/api';
 import { MenubarModule } from 'primeng/menubar';
 import { ButtonModule } from 'primeng/button';
+import { SideMenuComponent } from './side-menu/side-menu.component';
 
 @Component({
   selector: 'app-root',
@@ -14,7 +15,8 @@ import { ButtonModule } from 'primeng/button';
     RouterOutlet,
     ThemeSwitcherComponent,
     MenubarModule,
-    ButtonModule
+    ButtonModule,
+    SideMenuComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
@@ -22,7 +24,7 @@ import { ButtonModule } from 'primeng/button';
 export class AppComponent implements OnInit {
   title = 'E-Books';
   menuItems: MenuItem[] = [];
-  isLoggedIn: boolean = false;
+  isLoggedIn: boolean = true; // Changed to true so we can see the side menu
 
   constructor(private router: Router) {}
 

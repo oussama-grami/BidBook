@@ -1,0 +1,54 @@
+<div class="side-menu">
+  <!-- Top section -->
+  <div class="top-section">
+    <!-- Logo -->
+    <div class="logo">
+      <div class="logo-icon">
+        <div class="logo-rectangle"></div>
+        <div class="logo-polygon"></div>
+      </div>
+      <span class="logo-text">Ebooks</span>
+    </div>
+
+    <!-- Top Items -->
+    <div class="top-items">
+      <!-- Navigation Items -->
+      <div *ngFor="let item of topMenuItems" 
+           class="nav-item" 
+           [class.active]="item.active">
+        <div class="content">
+          <i [class]="item.icon"></i>
+          <span class="label">{{item.label}}</span>
+          <i *ngIf="item.hasChildren" class="angle-icon pi pi-angle-down"></i>
+          <div *ngIf="item.badge" class="badge">{{item.badge}}</div>
+        </div>
+        <div class="divider"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Section -->
+  <div class="bottom-section">
+    <!-- Bottom Items -->
+    <div class="bottom-items">
+      <!-- Navigation Items -->
+      <div *ngFor="let item of bottomMenuItems" class="nav-item">
+        <div class="content">
+          <i [class]="item.icon"></i>
+          <span class="label">{{item.label}}</span>
+          <i *ngIf="item.hasChildren" class="angle-icon pi pi-angle-down"></i>
+          <div *ngIf="item.badge" class="badge">{{item.badge}}</div>
+        </div>
+        <div class="divider"></div>
+      </div>
+    </div>
+
+    <!-- Profile -->
+    <div class="profile">
+      <div class="profile-info">
+        <div class="profile-name">{{userProfile.name}}</div>
+        <div class="profile-email">{{userProfile.email}}</div>
+      </div>
+    </div>
+  </div>
+</div>
