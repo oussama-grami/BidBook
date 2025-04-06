@@ -1,0 +1,47 @@
+<div class="sidemenu">
+  <div class="top">
+    <div class="logo">
+      <div class="logo-icon">
+        <div class="rectangle"></div>
+        <div class="polygon"></div>
+      </div>
+      <span class="logo-text">Ebooks</span>
+    </div>
+
+    <div class="top-items" style="display: flex; align-items: center">
+      <p-menubar
+        [style]="{
+          width: '70%'
+        }"
+        [model]="topMenuItems"
+        class="w-full"
+      ></p-menubar>
+    </div>
+  </div>
+
+  <div class="bottom">
+    <div class="bottom-icons">
+      <p-menubar
+        [model]="bottomMenuItems"
+        class="w-full"
+      ></p-menubar>
+    </div>
+
+    <div class="profile">
+      <div class="profile-content">
+        <div class="name">Hiba Chabbouh</div>
+        <div class="email">hibachabbouh&#64;gmail.com</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .sidemenu button {
+    width: 150px; /* Fixed width for alignment */
+  }
+
+  .sidemenu button:hover {
+    background-color: rgba(0, 0, 255, 0.1); /* Blue with low opacity */
+  }
+</style>

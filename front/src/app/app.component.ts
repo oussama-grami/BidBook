@@ -6,6 +6,7 @@ import { MenuItem } from 'primeng/api';
 import { MenubarModule } from 'primeng/menubar';
 import { ButtonModule } from 'primeng/button';
 import { SideMenuComponent } from './side-menu/side-menu.component';
+import {SidemenuComponent} from './components/sidemenu/sidemenu.component';
 
 @Component({
   selector: 'app-root',
@@ -16,7 +17,8 @@ import { SideMenuComponent } from './side-menu/side-menu.component';
     ThemeSwitcherComponent,
     MenubarModule,
     ButtonModule,
-    SideMenuComponent
+    SideMenuComponent,
+    SidemenuComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'

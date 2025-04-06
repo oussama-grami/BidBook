@@ -3,6 +3,7 @@
 
 /* PrimeNG styles */
 @import "primeicons/primeicons.css";
+@import "primeflex/primeflex.min.css";
 
 * {
   box-sizing: border-box;
