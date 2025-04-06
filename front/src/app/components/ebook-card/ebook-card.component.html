@@ -1,0 +1,14 @@
+<div class="ebook-card">
+  <img ngSrc="/images/Book1.png" alt="{{ title }}"
+       class="ebook-card__image"/>
+  <div class="ebook-card__details">
+    <h3 class="ebook-card__title">{{ title }}</h3>
+    <p class="ebook-card__author">{{ author }}</p>
+    <p class="ebook-card__description">{{ description }}</p>
+    <div class="ebook-card__rating">
+      <span *ngFor="let star of [].constructor(5); let i = index"
+            [class.filled]="i < rating">★</span>
+    </div>
+    <p class="ebook-card__price">{{ price }}</p>
+  </div>
+</div>

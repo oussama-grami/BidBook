@@ -1,7 +1,7 @@
-import {Component, OnInit} from '@angular/core';
-import {CommonModule, NgOptimizedImage} from '@angular/common';
-import {RouterModule} from '@angular/router';
-import {DrawerModule} from 'primeng/drawer';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { DrawerModule } from 'primeng/drawer';
 
 interface MenuItem {
   icon: string;
@@ -15,7 +15,7 @@ interface MenuItem {
 @Component({
   selector: 'app-side-menu',
   standalone: true,
-  imports: [CommonModule, RouterModule, NgOptimizedImage,DrawerModule],
+  imports: [CommonModule, RouterModule, NgOptimizedImage, DrawerModule],
   templateUrl: './side-menu.component.html',
   styleUrls: ['./side-menu.component.css'],
 })
@@ -78,14 +78,11 @@ export class SideMenuComponent implements OnInit {
     },
   ];
 
-  constructor() {
-  }
-
+  constructor() {}
 
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
   }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 }

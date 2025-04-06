@@ -1,0 +1,61 @@
+<div class="back-arrow" (click)="goBack()">
+  <img src="/images/img.png" alt="Back" />
+</div>
+<div class="book-details">
+  <div class="book-cover">
+    <img [src]="coverImage" alt="Book Cover" />
+  </div>
+  <div class="book-info">
+    <div class="genre">Romance</div>
+    <h1>{{ title }}</h1>
+    <h2>By {{ author }}</h2>
+    <div class="rating">
+      <span *ngFor="let star of [].constructor(5); let i = index">
+        <img
+          src="/images/star-filed.png"
+          *ngIf="i < rating"
+          alt="Filled Star"
+        />
+        <img
+          src="/images/star-empty.png"
+          *ngIf="i >= rating"
+          alt="Empty Star"
+        />
+      </span>
+      <span class="votes">2000 votes</span>
+    </div>
+    <div class="price">PRICE: <span class="price-value">20D</span></div>
+    <div class="pages">
+      Number of pages: <span class="page-count">200</span>
+    </div>
+    <p class="description">
+      Lorem Ipsum is simply dummy text of the printing and typesetting industry
+    </p>
+    <div class="favorites cursor-pointer">
+      <span class="heart cursor-pointer" (click)="toggleFavorite()">
+        {{ isFavorite ? "❤️" : "🤍" }}
+      </span>
+      <a href="#" class="view-favorites">View Favorites</a>
+    </div>
+    <div class="review">
+      <p>How is the book?</p>
+      <div class="review-stars">
+        <span
+          *ngFor="let star of [].constructor(5); let i = index"
+          (click)="setUserRating(i + 1)"
+        >
+          <img
+            [src]="
+              i < userRating
+                ? '/images/star-filed.png'
+                : '/images/star-empty.png'
+            "
+            alt="Star"
+          />
+        </span>
+      </div>
+    </div>
+    <textarea class="comment" placeholder="Write a comment"></textarea>
+    <button class="cta">Offer a Price</button>
+  </div>
+</div>

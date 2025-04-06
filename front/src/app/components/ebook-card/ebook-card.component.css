@@ -1,0 +1,60 @@
+.ebook-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 16px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.ebook-card__image {
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+  margin-bottom: 12px;
+}
+
+.ebook-card__details {
+  text-align: center;
+}
+
+.ebook-card__details__title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.ebook-card__details__author {
+  font-size: 1rem;
+  color: #555;
+  margin: 4px 0;
+}
+
+.ebook-card__details__description {
+  font-size: 0.9rem;
+  color: #777;
+  margin: 8px 0;
+}
+
+.ebook-card__details__rating {
+  display: flex;
+  justify-content: center;
+  margin: 8px 0;
+}
+
+.ebook-card__details__rating span {
+  font-size: 1.2rem;
+  color: #ddd;
+}
+
+.ebook-card__details__rating span.filled {
+  color: #f5c518;
+}
+
+.ebook-card__details__price {
+  font-size: 1rem;
+  color: #007bff;
+  font-weight: bold;
+}
