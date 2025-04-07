@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { CommonModule } from '@angular/common';
 export interface Book {
   id: string;
   title: string;
@@ -17,9 +17,8 @@ export type BookCategory =
   | 'Biography'
   | 'All';
 
-
 @Component({
-  selector: "app-category-list",
+  selector: 'app-category-list',
   standalone: true,
   imports: [CommonModule],
   template: `
@@ -41,7 +40,7 @@ export type BookCategory =
       .category-nav {
         margin-bottom: 40px;
         border-bottom: 1px solid #eee;
-        padding-bottom: 10px;
+        padding-bottom: 5px;
       }
 
       .category-list {
@@ -58,10 +57,13 @@ export type BookCategory =
         font-family: Poppins, sans-serif;
         font-size: 14px;
         cursor: pointer;
+        transition: color 0.3s ease, border-bottom 0.3s ease;
       }
 
       .category-item.active {
         color: #9c7350;
+        border-bottom: 1px solid #9c7350;
+        padding-bottom: 5px;
       }
 
       @media (max-width: 640px) {
@@ -75,17 +77,18 @@ export type BookCategory =
 })
 export class CategoryListComponent {
   @Input() categories: BookCategory[] = [
-    "Fiction",
-    "Romance",
-    "Thriller",
-    "Fantasy",
-    "Biography",
-    "All",
+    'Fiction',
+    'Romance',
+    'Thriller',
+    'Fantasy',
+    'Biography',
+    'All',
   ];
-  @Input() selectedCategory: BookCategory = "All";
+  @Input() selectedCategory: BookCategory = 'All';
   @Output() categorySelected = new EventEmitter<BookCategory>();
 
   onCategorySelect(category: BookCategory): void {
     this.categorySelected.emit(category);
+    this.selectedCategory = category;
   }
 }

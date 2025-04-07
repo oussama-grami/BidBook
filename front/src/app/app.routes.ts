@@ -1,19 +1,21 @@
-import { Routes } from '@angular/router';
-import { HomepageComponent } from './homepage/homepage.component';
-import { LandingPageComponent } from './landing-page/landing-page.component';
-import { LoginPageComponent } from './login-page/login-page.component';
-import { SignupPageComponent } from './signup-page/signup-page.component';
-import { BookDetailComponent } from './book-detail/book-detail.component';
-import { ReadBookComponent } from './read-book/read-book.component';
-import { AddBookComponent } from './add-book/add-book.component';
-import { BookCatalogComponent } from './components/booksPage/library-dashboard.component';
+import {Routes} from '@angular/router';
+import {LoginPageComponent} from './login-page/login-page.component';
+import {SignupPageComponent} from './signup-page/signup-page.component';
+import {AddBookComponent} from './add-book/add-book.component';
+import {BookCatalogComponent} from './components/booksPage/library-dashboard.component';
+import {BookDetailsComponent} from './components/book-details/book-details.component';
+import {DashboardComponent} from './components/articlesPage/dashboard.component';
+import {
+  NotificationsPageComponent
+} from './components/NotificationPage/notifications-page.component';
+
 export const routes: Routes = [
-  { path: '', component: LandingPageComponent },
-  { path: 'home', component: BookCatalogComponent },
-  { path: 'login', component: LoginPageComponent },
-  { path: 'signup', component: SignupPageComponent },
-  { path: 'book/:id', component: BookDetailComponent },
-  { path: 'read/:id', component: ReadBookComponent },
-  { path: 'add-book', component: AddBookComponent },
-  { path: '**', redirectTo: '' },
+  {path: '', component: BookCatalogComponent},
+  {path: 'articles', component: DashboardComponent},
+  {path: 'book-details', component: BookDetailsComponent},
+  {path: 'login', component: LoginPageComponent},
+  {path: 'signup', component: SignupPageComponent},
+  {path: 'add-book', component: AddBookComponent},
+  {path: "notifications", component: NotificationsPageComponent},
+  {path: '**', redirectTo: ''},
 ];

@@ -100,8 +100,7 @@ export type BookCategory =
       }
 
       .book-cover {
-        width: 94px;
-        height: 160px;
+        width: 100%;
         box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
       }
 

@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {Router, RouterOutlet} from '@angular/router';
-import {ThemeSwitcherComponent} from './theme-switcher/theme-switcher.component';
 import {MenuItem} from 'primeng/api';
 import {MenubarModule} from 'primeng/menubar';
 import {ButtonModule} from 'primeng/button';
@@ -13,7 +12,6 @@ import {SideMenuComponent} from './components/side-menu/side-menu.component';
   imports: [
     CommonModule,
     RouterOutlet,
-    ThemeSwitcherComponent,
     MenubarModule,
     ButtonModule,
     SideMenuComponent,
