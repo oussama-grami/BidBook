@@ -8,6 +8,7 @@ import {DashboardComponent} from './components/articlesPage/dashboard.component'
 import {
   NotificationsPageComponent
 } from './components/NotificationPage/notifications-page.component';
+import {MessagesComponent} from './components/messages/messages.component';
 
 export const routes: Routes = [
   {path: '', component: BookCatalogComponent},
@@ -17,5 +18,6 @@ export const routes: Routes = [
   {path: 'signup', component: SignupPageComponent},
   {path: 'add-book', component: AddBookComponent},
   {path: "notifications", component: NotificationsPageComponent},
+  {path: 'messages',component:MessagesComponent},
   {path: '**', redirectTo: ''},
 ];
