@@ -1,0 +1,72 @@
+<!-- add-article.component.html -->
+<div class="add-article-container">
+  <div class="form-container">
+    <h1 class="form-title">ADD AN ARTICLE</h1>
+
+    <form [formGroup]="articleForm" (ngSubmit)="submitArticle()">
+      <div class="form-group">
+        <label for="title">Title</label>
+        <input
+          type="text"
+          id="title"
+          formControlName="title"
+          class="form-control"
+          [ngClass]="{ 'is-invalid': submitted && f['title'].errors }">
+        <div *ngIf="submitted && f['title'].errors" class="error-message">
+          <div *ngIf="f['title'].errors?.['required']">Title is required</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="picture">Picture</label>
+        <input
+          type="file"
+          id="picture"
+          formControlName="picture"
+          class="form-control"
+          [ngClass]="{ 'is-invalid': submitted && f['picture'].errors }">
+        <div *ngIf="submitted && f['picture'].errors" class="error-message">
+          <div *ngIf="f['picture'].errors?.['required']">Picture is required</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="category">Category</label>
+        <select
+          id="category"
+          formControlName="category"
+          class="form-control select-dropdown"
+          [ngClass]="{ 'is-invalid': submitted && f['category'].errors }">
+          <option value="" disabled selected>Select</option>
+          <option *ngFor="let category of categories" [value]="category">
+            {{ category }}
+          </option>
+        </select>
+        <div *ngIf="submitted && f['category'].errors" class="error-message">
+          <div *ngIf="f['category'].errors?.['required']">Category is required</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="text">Text</label>
+        <textarea
+          id="text"
+          formControlName="text"
+          class="form-control textarea"
+          placeholder="Write something"
+          [ngClass]="{ 'is-invalid': submitted && f['text'].errors }"></textarea>
+        <div *ngIf="submitted && f['text'].errors" class="error-message">
+          <div *ngIf="f['text'].errors?.['required']">Text is required</div>
+        </div>
+      </div>
+
+      <div class="form-group submit-container">
+        <button type="submit" class="submit-btn">Submit</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="image-container">
+    <img src="images/addBlog.png" alt="Add blog illustration" class="illustration-image">
+  </div>
+</div>
