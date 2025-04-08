@@ -62,8 +62,6 @@
 /* Form input styling */
 .p-inputtext {
   box-shadow: none !important;
-  padding: 12px 12px 12px 40px !important;
-  height: 45px;
 }
 
 .p-inputtext:focus {
@@ -123,12 +121,6 @@
 
 /* Element animations */
 .signup-container {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 10px;
-  background-color: #fff;
   animation: slideInFromLeft 0.8s ease-in-out;
 }
 
@@ -208,29 +200,6 @@ form p-button {
 
 @media (max-width: 576px) {
   .signup-card {
-    padding: 15px 10px !important;
+    padding: 20px 15px !important;
   }
-}
-
-.signup-card {
-  width: 100%;
-  max-width: 364px;
-  padding: 20px 15px;
-}
-
-.input-container {
-  margin-bottom: 12px;
-}
-
-/* Terms checkbox container */
-.terms-container {
-  margin: 8px 0;
-  display: flex;
-  align-items: baseline;
-}
-
-/* Social buttons */
-.social-buttons {
-  gap: 12px;
-  margin-bottom: 12px;
 }

@@ -34,6 +34,7 @@ import { ArticleCardComponent } from './articleCard.component';
 
       .articles-grid {
         display: flex;
+        flex-wrap: wrap;
         gap: 40px;
         margin-top: 60px;
       }
@@ -48,7 +49,7 @@ import { ArticleCardComponent } from './articleCard.component';
         cursor: pointer;
         background-color: #50719c;
         position: absolute;
-        right: 10px;
+        right: 30px;
         bottom: 10px;
       }
 
@@ -63,6 +64,46 @@ import { ArticleCardComponent } from './articleCard.component';
 })
 export class DashboardComponent {
   articles = [
+    {
+      date: '04.04.2025',
+      title: 'The Timeless Appeal of Fiction Books',
+      category: 'Fiction',
+      description:
+        'Fiction books have the power to transport readers to new worlds, introduce them to unforgettable characters, and evoke deep emotions.',
+      author: 'Hiba Chabbouh',
+      imageUrl:
+        'https://cdn.builder.io/api/v1/image/assets/TEMP/65b631fa4140af2d36a9f1925933b44cb4b5e3ff',
+    },
+    {
+      date: '04.04.2025',
+      title: 'The Timeless Appeal of Fiction Books',
+      category: 'Fiction',
+      description:
+        'Fiction books have the power to transport readers to new worlds, introduce them to unforgettable characters, and evoke deep emotions.',
+      author: 'Hiba Chabbouh',
+      imageUrl:
+        'https://cdn.builder.io/api/v1/image/assets/TEMP/65b631fa4140af2d36a9f1925933b44cb4b5e3ff',
+    },
+    {
+      date: '04.04.2025',
+      title: 'The Timeless Appeal of Fiction Books',
+      category: 'Fiction',
+      description:
+        'Fiction books have the power to transport readers to new worlds, introduce them to unforgettable characters, and evoke deep emotions.',
+      author: 'Hiba Chabbouh',
+      imageUrl:
+        'https://cdn.builder.io/api/v1/image/assets/TEMP/65b631fa4140af2d36a9f1925933b44cb4b5e3ff',
+    },
+    {
+      date: '04.04.2025',
+      title: 'The Timeless Appeal of Fiction Books',
+      category: 'Fiction',
+      description:
+        'Fiction books have the power to transport readers to new worlds, introduce them to unforgettable characters, and evoke deep emotions.',
+      author: 'Hiba Chabbouh',
+      imageUrl:
+        'https://cdn.builder.io/api/v1/image/assets/TEMP/65b631fa4140af2d36a9f1925933b44cb4b5e3ff',
+    },
     {
       date: '04.04.2025',
       title: 'The Timeless Appeal of Fiction Books',

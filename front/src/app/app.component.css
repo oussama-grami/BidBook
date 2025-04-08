@@ -25,7 +25,6 @@
 .main-content {
   flex: 1;
   overflow-y: auto;
-  padding-left: calc(36px + 16px); /* Button width + left spacing */
   width: 100%;
   box-sizing: border-box;
 }
@@ -82,10 +81,7 @@
   }
 
   .main-content {
-    margin-top: 0; /* Adjust for the height of the horizontal sidemenu */
-    padding-left: 8px; /* Reset padding on mobile */
-    padding-right: 8px;
-    padding-top: 56px; /* Move content below the menu button */
+    margin-top: 0;
   }
 }
 
