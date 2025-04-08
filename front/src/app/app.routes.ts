@@ -9,6 +9,7 @@ import {NotificationsPageComponent} from './components/NotificationPage/notifica
 import {ChatComponent} from './components/chat/chat.component';
 import {BlogComponent} from './components/blog/blog.component';
 import {AddBlogComponent} from './components/add-blog/add-blog.component';
+import {TransactionsHistoryComponent} from './components/transactions-history/transactions-history.component';
 
 export const routes: Routes = [
   {path: '', component: BookCatalogComponent},
@@ -21,5 +22,6 @@ export const routes: Routes = [
   {path:'chat',component:ChatComponent},
   {path:'blog',component:BlogComponent},
   {path:'addBlog',component:AddBlogComponent},
+  {path:'transactions',component:TransactionsHistoryComponent},
   {path: '**', redirectTo: ''}
 ];
