@@ -7,6 +7,7 @@ import {BookDetailsComponent} from './components/book-details/book-details.compo
 import {DashboardComponent} from './components/articlesPage/dashboard.component';
 import {NotificationsPageComponent} from './components/NotificationPage/notifications-page.component';
 import {ChatComponent} from './components/chat/chat.component';
+import {BlogComponent} from './components/blog/blog.component';
 
 export const routes: Routes = [
   {path: '', component: BookCatalogComponent},
@@ -17,5 +18,6 @@ export const routes: Routes = [
   {path: 'add-book', component: AddBookComponent},
   {path: "notifications", component: NotificationsPageComponent},
   {path:'chat',component:ChatComponent},
+  {path:'blog',component:BlogComponent},
   {path: '**', redirectTo: ''}
 ];
