@@ -1,24 +1,22 @@
-<button class="toggle-menu-btn" (click)="toggleMenu()">
+<button
+  [class.menu-open]="isMenuOpen"
+  class="toggle-menu-btn"
+  (click)="toggleMenu()"
+>
   <i class="pi pi-bars"></i>
 </button>
 <p-drawer
   [(visible)]="isMenuOpen"
   position="left"
   [modal]="true"
-  [style]="{ width: '250px' }"
+  [style]="{ width: '280px' }"
 >
-  <!-- Top section -->
-  <div class="top-section">
-    <!-- Logo -->
-    <div class="logo">
-      <div class="logo-icon">
-        <div class="logo-rectangle"></div>
-        <div class="logo-polygon"></div>
-      </div>
-      <span class="logo-text">Ebooks</span>
-    </div>
+  <div class="drawer-header">
+    <img ngSrc="/images/image.png" alt="Logo" width="32" height="32" />
+    <span class="logo-text">Ebooks</span>
+  </div>
 
-    <!-- Top Items -->
+  <div class="top-section">
     <div class="top-items">
       <div *ngFor="let item of topMenuItems" class="nav-item">
         <div class="content">
@@ -31,9 +29,7 @@
     </div>
   </div>
 
-  <!-- Bottom Section -->
   <div class="bottom-section">
-    <!-- Bottom Items -->
     <div class="bottom-items">
       <div *ngFor="let item of bottomMenuItems" class="nav-item">
         <div class="content">
@@ -45,7 +41,6 @@
       </div>
     </div>
 
-    <!-- Profile -->
     <div class="profile">
       <div class="profile-info">
         <img

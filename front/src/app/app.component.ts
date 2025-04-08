@@ -1,10 +1,20 @@
-import {Component, OnInit} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {Router, RouterOutlet} from '@angular/router';
-import {MenuItem} from 'primeng/api';
-import {MenubarModule} from 'primeng/menubar';
-import {ButtonModule} from 'primeng/button';
-import {SideMenuComponent} from './components/side-menu/side-menu.component';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import {
+  Router,
+  RouterOutlet,
+  Event,
+  NavigationStart,
+  NavigationEnd,
+  NavigationError,
+  NavigationCancel,
+} from '@angular/router';
+import { MenuItem } from 'primeng/api';
+import { MenubarModule } from 'primeng/menubar';
+import { ButtonModule } from 'primeng/button';
+import { SideMenuComponent } from './components/side-menu/side-menu.component';
+import { LoadingComponent } from './components/loading/loading.component';
+import { LoadingService } from './services/loading.service';
 
 @Component({
   selector: 'app-root',
@@ -15,6 +25,7 @@ import {SideMenuComponent} from './components/side-menu/side-menu.component';
     MenubarModule,
     ButtonModule,
     SideMenuComponent,
+    LoadingComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
@@ -25,7 +36,18 @@ export class AppComponent implements OnInit {
   isLoggedIn: boolean = true;
   isSmallScreen: boolean = false;
 
-  constructor(private router: Router) {
+  constructor(private router: Router, public loadingService: LoadingService) {
+    this.router.events.subscribe((event: Event) => {
+      if (event instanceof NavigationStart) {
+        this.loadingService.show();
+      } else if (
+        event instanceof NavigationEnd ||
+        event instanceof NavigationCancel ||
+        event instanceof NavigationError
+      ) {
+        setTimeout(() => this.loadingService.hide(), 300); // Small delay to ensure smooth transition
+      }
+    });
   }
 
   ngOnInit() {
@@ -39,11 +61,11 @@ export class AppComponent implements OnInit {
         label: 'Categories',
         icon: 'pi pi-list',
         items: [
-          {label: 'Fiction', routerLink: ['/']},
-          {label: 'Non-Fiction', routerLink: ['/']},
-          {label: 'Science', routerLink: ['/']},
-          {label: 'Technology', routerLink: ['/']},
-          {label: 'History', routerLink: ['/']},
+          { label: 'Fiction', routerLink: ['/'] },
+          { label: 'Non-Fiction', routerLink: ['/'] },
+          { label: 'Science', routerLink: ['/'] },
+          { label: 'Technology', routerLink: ['/'] },
+          { label: 'History', routerLink: ['/'] },
         ],
       },
       {
@@ -58,7 +80,6 @@ export class AppComponent implements OnInit {
   }
 
   logout() {
-    // In a real app, call auth service to logout
     this.isLoggedIn = false;
     this.router.navigate(['/login']);
   }

@@ -17,5 +17,6 @@ export const routes: Routes = [
   {path: 'signup', component: SignupPageComponent},
   {path: 'add-book', component: AddBookComponent},
   {path: "notifications", component: NotificationsPageComponent},
+  {path:'payment', loadComponent: () => import('./components/payment/payment.component').then(c => c.PaymentComponent)},
   {path: '**', redirectTo: ''},
 ];

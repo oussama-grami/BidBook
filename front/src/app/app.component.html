@@ -1,3 +1,4 @@
+<app-loading *ngIf="loadingService.loading$ | async"></app-loading>
 <div class="app-container">
   <!--<p-menubar *ngIf="isSmallScreen" [model]="menuItems" styleClass="mb-4">
     <ng-template pTemplate="start">

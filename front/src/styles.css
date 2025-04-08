@@ -12,6 +12,28 @@
   font-family: 'Poppins', sans-serif;
 }
 
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Ensure consistent background for all major containers */
+.surface-ground,
+.surface-card,
+.p-component {
+  background-color: #f8f9fa !important;
+}
+
+/* Add subtle contrast for card elements */
+.surface-card {
+  background-color: #ffffff !important;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
 /* Override PrimeNG disabled button styles */
 .p-button.p-disabled,
 .p-button:disabled {
@@ -23,4 +45,37 @@
 .p-button:disabled .p-button-label {
   color: white !important;
   opacity: 0.9 !important;
+}
+
+/* Reduce padding in all cards and components */
+.p-card, .surface-card, .p-panel, .p-dialog {
+  padding: 0.75rem !important;
+}
+
+/* Reduce gaps between form elements */
+.p-field, .form-group, .input-container {
+  margin-bottom: 0.5rem !important;
+}
+
+/* Reduce button padding */
+.p-button {
+  padding: 0.5rem 1rem !important;
+}
+
+/* Adjust input padding */
+.p-inputtext {
+  padding: 0.5rem 0.75rem !important;
+}
+
+/* Reduce margins between components */
+.mb-3 {
+  margin-bottom: 0.5rem !important;
+}
+
+.mt-3 {
+  margin-top: 0.5rem !important;
+}
+
+.p-3 {
+  padding: 0.5rem !important;
 }

@@ -1,14 +1,14 @@
 .book-details {
   display: flex;
-  gap: 20px;
-  padding: 40px;
+  gap: 12px;
+  padding: 20px;
   background-color: #ffffff;
   height: 100vh;
 }
 
 .book-details__main {
   width: 90%;
-  padding: 16px;
+  padding: 12px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -34,7 +34,7 @@
 .book-info {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .book-details__title {
@@ -75,8 +75,8 @@
   font-weight: 500;
   color: #ffffff;
   background-color: #9c7350;
-  padding: 10px 20px;
-  border-radius: 17px;
+  padding: 6px 12px;
+  border-radius: 12px;
   display: inline-block;
   align-self: flex-end;
 }
@@ -90,7 +90,7 @@
 .rating {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 3px;
 }
 
 .book-details__rating span {
@@ -166,11 +166,11 @@
   font-weight: 500;
   color: #ffffff;
   background-color: #50719c;
-  padding: 15px 30px;
+  padding: 12px 20px;
   border: none;
   border-radius: 20px;
   cursor: pointer;
-  margin-top: 20px;
+  margin-top: 12px;
 }
 
 .cta:hover {
@@ -225,9 +225,9 @@
 
 .comment {
   width: 100%;
-  height: 220px;
-  margin-top: 20px;
-  padding: 20px;
+  height: 180px;
+  margin-top: 12px;
+  padding: 12px;
   font-family: 'Poppins', sans-serif;
   font-size: 18px;
   border: 1px solid #ccc;
@@ -262,7 +262,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 20px;
+    padding: 12px;
     height: auto;
   }
 
@@ -304,13 +304,14 @@
   }
 
   .comment {
-    height: 100px;
+    height: 120px;
     font-size: 16px;
+    padding: 8px;
   }
 
   .cta {
     font-size: 18px;
-    padding: 10px 20px;
+    padding: 8px 16px;
   }
 
   .review-stars {
