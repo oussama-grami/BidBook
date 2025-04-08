@@ -5,7 +5,7 @@ import {NgOptimizedImage} from '@angular/common';
 
 @Component({
   selector: 'app-notification-element',
-  imports: [MessagesModule, NgOptimizedImage],
+  imports:[MessagesModule],
   templateUrl: './notification-element.component.html',
   styleUrls: ['./notification-element.component.css'],
 })

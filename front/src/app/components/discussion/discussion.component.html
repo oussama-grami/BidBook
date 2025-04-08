@@ -1,0 +1,39 @@
+<!-- discussion.component.html -->
+<div class="message-detail">
+  <!-- Header -->
+  <div class="detail-header">
+    <span class="detail-title">{{ username }}</span>
+  </div>
+
+  <!-- Ligne séparatrice -->
+  <div class="detail-divider"></div>
+
+  <!-- Contenu de la conversation -->
+  <div class="conversation-content">
+    <!-- Messages -->
+    <div class="message-bubbles">
+      <div
+        *ngFor="let message of messages"
+        class="message-bubble"
+        [ngClass]="message.sent ? 'sent' : 'received'"
+      >
+        <div class="bubble-content">
+          <p>{{ message.text }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Zone de saisie de message -->
+    <div class="message-input-container">
+      <div class="message-input-wrapper">
+        <input
+          type="text"
+          placeholder="Type your message"
+          class="message-input"
+          [(ngModel)]="newMessage"
+          (keyup.enter)="sendMessage()"
+        >
+      </div>
+    </div>
+  </div>
+</div>

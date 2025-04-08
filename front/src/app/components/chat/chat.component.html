@@ -1,0 +1,5 @@
+<!-- chat.component.html -->
+<div class="chat-container">
+  <app-message style="width: 30%"  (messageSelected)="onMessageSelected($event)"></app-message>
+  <app-discussion style="width: 100%" [selectedMessageId]="selectedMessageId"></app-discussion>
+</div>

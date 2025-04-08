@@ -5,10 +5,8 @@ import {AddBookComponent} from './add-book/add-book.component';
 import {BookCatalogComponent} from './components/booksPage/library-dashboard.component';
 import {BookDetailsComponent} from './components/book-details/book-details.component';
 import {DashboardComponent} from './components/articlesPage/dashboard.component';
-import {
-  NotificationsPageComponent
-} from './components/NotificationPage/notifications-page.component';
-import {MessagesComponent} from './components/messages/messages.component';
+import {NotificationsPageComponent} from './components/NotificationPage/notifications-page.component';
+import {ChatComponent} from './components/chat/chat.component';
 
 export const routes: Routes = [
   {path: '', component: BookCatalogComponent},
@@ -18,6 +16,6 @@ export const routes: Routes = [
   {path: 'signup', component: SignupPageComponent},
   {path: 'add-book', component: AddBookComponent},
   {path: "notifications", component: NotificationsPageComponent},
-  {path: 'messages',component:MessagesComponent},
-  {path: '**', redirectTo: ''},
+  {path:'chat',component:ChatComponent},
+  {path: '**', redirectTo: ''}
 ];
