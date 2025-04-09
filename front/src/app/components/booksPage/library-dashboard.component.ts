@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, input, Signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BookCardComponent } from './book-card.component';
 import { CategoryListComponent } from './category-bar.component';
@@ -33,6 +33,9 @@ export type BookCategory =
   imports: [CommonModule, BookCardComponent, CategoryListComponent],
   template: `
     <main class="catalog-container" [@fadeIn]>
+      <h1 *ngIf="isFavorite()" class="favorites-title" [@slideInRight]>
+        Favorites
+      </h1>
       <app-category-list
         [categories]="categories"
         [selectedCategory]="selectedCategory"
@@ -277,6 +280,38 @@ export type BookCategory =
           width: 40px;
         }
       }
+
+      .favorites-title {
+        font-size: 48px;
+        font-weight: bold;
+        color: #9c7350;
+        margin-bottom: 30px;
+        font-family: Poppins, sans-serif;
+        background: linear-gradient(45deg, #9c7350, #50719c);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-align: center;
+        position: relative;
+      }
+
+      .favorites-title::after {
+        content: '❤️';
+        position: absolute;
+        margin-left: 15px;
+        font-size: 36px;
+      }
+
+      @media (max-width: 991px) {
+        .favorites-title {
+          font-size: 40px;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .favorites-title {
+          font-size: 32px;
+        }
+      }
     `,
   ],
 })
@@ -290,6 +325,7 @@ export class BookCatalogComponent {
     'All',
   ];
   selectedCategory: BookCategory = 'All';
+  isFavorite: Signal<boolean> = input(true);
 
   recommendedBooks: Book[] = [
     {

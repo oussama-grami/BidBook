@@ -39,9 +39,7 @@ export const routes: Routes = [
   {
     path: 'add-book',
     loadComponent: () =>
-      import('./add-book/add-book.component').then(
-        (c) => c.AddBookComponent
-      ),
+      import('./add-book/add-book.component').then((c) => c.AddBookComponent),
   },
   {
     path: 'notifications',

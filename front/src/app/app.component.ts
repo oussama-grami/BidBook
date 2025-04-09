@@ -12,9 +12,12 @@ import {
 import { MenuItem } from 'primeng/api';
 import { MenubarModule } from 'primeng/menubar';
 import { ButtonModule } from 'primeng/button';
+import { Toast } from 'primeng/toast';
 import { SideMenuComponent } from './components/side-menu/side-menu.component';
 import { LoadingComponent } from './components/loading/loading.component';
 import { LoadingService } from './services/loading.service';
+import { fadeAnimation, slideAnimation } from './shared/animations';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -24,11 +27,13 @@ import { LoadingService } from './services/loading.service';
     RouterOutlet,
     MenubarModule,
     ButtonModule,
+    Toast,
     SideMenuComponent,
     LoadingComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
+  animations: [fadeAnimation, slideAnimation],
 })
 export class AppComponent implements OnInit {
   title = 'E-Books';
@@ -36,7 +41,11 @@ export class AppComponent implements OnInit {
   isLoggedIn: boolean = true;
   isSmallScreen: boolean = false;
 
-  constructor(private router: Router, public loadingService: LoadingService) {
+  constructor(
+    private router: Router,
+    public loadingService: LoadingService,
+    private authService: AuthService
+  ) {
     this.router.events.subscribe((event: Event) => {
       if (event instanceof NavigationStart) {
         this.loadingService.show();
@@ -45,7 +54,7 @@ export class AppComponent implements OnInit {
         event instanceof NavigationCancel ||
         event instanceof NavigationError
       ) {
-        setTimeout(() => this.loadingService.hide(), 300); // Small delay to ensure smooth transition
+        setTimeout(() => this.loadingService.hide(), 300);
       }
     });
   }
@@ -81,6 +90,6 @@ export class AppComponent implements OnInit {
 
   logout() {
     this.isLoggedIn = false;
-    this.router.navigate(['/login']);
+    this.authService.logout();
   }
 }
