@@ -15,45 +15,48 @@ import { RouterModule } from '@angular/router';
   standalone: true,
   imports: [CommonModule, RouterModule],
   template: `
-    <div
-      class="book-card"
-      [class.special]="special"
-      [@cardHover]="isHovered ? 'hovered' : 'normal'"
-      (mouseenter)="isHovered = true"
-      (mouseleave)="isHovered = false"
-      [routerLink]="['/book', book.id]"
-    >
-      <div class="book-image-container">
-        <img [src]="book.imageUrl" [alt]="book.title" class="book-image" />
-        <div class="overlay">
-          <span class="read-more">Read More</span>
+    <a 
+    [style]="{ textDecoration: 'none' }"
+    [routerLink]="['/books', book.id]">
+      <div
+        class="book-card"
+        [class.special]="special"
+        [@cardHover]="isHovered ? 'hovered' : 'normal'"
+        (mouseenter)="isHovered = true"
+        (mouseleave)="isHovered = false"
+      >
+        <div class="book-image-container">
+          <img [src]="book.imageUrl" [alt]="book.title" class="book-image" />
+          <div class="overlay">
+            <span class="read-more">Read More</span>
+          </div>
         </div>
-      </div>
-      <div class="book-info">
-        <h3 class="book-title">{{ book.title }}</h3>
-        <div class="book-meta">
-          <div class="rating">
-            <div class="stars">
-              <span *ngFor="let star of [1, 2, 3, 4, 5]" class="star">
-                <i
-                  class="pi"
-                  [class.pi-star-fill]="star <= book.rating"
-                  [class.pi-star]="star > book.rating"
-                ></i>
-              </span>
+        <div class="book-info">
+          <h3 class="book-title">{{ book.title }}</h3>
+          <div class="book-meta">
+            <div class="rating">
+              <div class="stars">
+                <span *ngFor="let star of [1, 2, 3, 4, 5]" class="star">
+                  <i
+                    class="pi"
+                    [class.pi-star-fill]="star <= book.rating"
+                    [class.pi-star]="star > book.rating"
+                  ></i>
+                </span>
+              </div>
+              <span class="rating-count">{{ book.rating }}/5</span>
             </div>
-            <span class="rating-count">{{ book.rating }}/5</span>
-          </div>
-          <div class="meta-details">
-            <span class="comments">
-              <i class="pi pi-comments"></i>
-              {{ book.comments }}
-            </span>
-            <span class="days-ago">{{ book.daysAgo }} days ago</span>
+            <div class="meta-details">
+              <span class="comments">
+                <i class="pi pi-comments"></i>
+                {{ book.comments }}
+              </span>
+              <span class="days-ago">{{ book.daysAgo }} days ago</span>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </a>
   `,
   animations: [
     trigger('cardHover', [

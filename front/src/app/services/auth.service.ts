@@ -11,10 +11,17 @@ export class AuthService {
     private notificationService: NotificationService
   ) {}
 
+  isAuthenticated(): boolean {
+    if (typeof window !== 'undefined') {
+      return !!localStorage.getItem('auth_token');
+    }
+    return false;
+  }
+
   logout() {
-    // Clear any stored auth tokens/user data
-    localStorage.removeItem('auth_token');
-    localStorage.removeItem('user_data');
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('auth_token');
+    }
 
     // Show a success notification
     this.notificationService.showSuccess(

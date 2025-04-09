@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { DrawerModule } from 'primeng/drawer';
+import { AuthService } from '../../services/auth.service';
 
 interface MenuItem {
   icon: string;
@@ -30,51 +31,67 @@ export class SideMenuComponent implements OnInit {
 
   topMenuItems: MenuItem[] = [
     {
-      icon: 'pi pi-home',
-      label: 'Home',
-      route: '/',
-      hasChildren: false,
-    },
-    {
       icon: 'pi pi-book',
       label: 'Books',
-      route: '/books',
       hasChildren: true,
       children: [
         {
-          icon: 'pi pi-bookmark',
-          label: 'Library',
+          icon: 'pi pi-list',
+          label: 'All Books',
           route: '/books',
         },
         {
           icon: 'pi pi-heart',
           label: 'Favorites',
-          route: '/books/favorites',
+          route: '/books/favorite',
         },
         {
           icon: 'pi pi-plus',
           label: 'Add Book',
-          route: '/add-book',
+          route: '/books/add',
         },
       ],
     },
     {
       icon: 'pi pi-file',
       label: 'Articles',
-      route: '/articles',
-      hasChildren: false,
+      hasChildren: true,
+      children: [
+        {
+          icon: 'pi pi-list',
+          label: 'All Articles',
+          route: '/articles',
+        },
+        {
+          icon: 'pi pi-plus',
+          label: 'Add Article',
+          route: '/articles/add',
+        },
+      ],
     },
     {
-      icon: 'pi pi-dollar',
-      label: 'Payment',
-      route: '/payment',
+      icon: 'pi pi-history',
+      label: 'History',
+      route: '/history',
       hasChildren: false,
     },
+  ];
+
+  authMenuItems: MenuItem[] = [
     {
-      icon: 'pi pi-book',
-      label: 'Book Details',
-      route: '/book-details',
-      hasChildren: false,
+      icon: 'pi pi-user',
+      label: 'Login',
+      route: '/login',
+    },
+    {
+      icon: 'pi pi-user-plus',
+      label: 'Sign Up',
+      route: '/signup',
+    },
+    {
+      icon: 'pi pi-lock',
+      label: 'Forgot Password',
+      route: '/forget-password',
     },
   ];
 
@@ -85,35 +102,21 @@ export class SideMenuComponent implements OnInit {
       route: '/notifications',
       badge: 2,
     },
-    {
-      icon: 'pi pi-cog',
-      label: 'Settings',
-      route: '/settings',
-      hasChildren: true,
-      children: [
-        {
-          icon: 'pi pi-user',
-          label: 'Profile',
-          route: '/profile',
-        },
-        {
-          icon: 'pi pi-palette',
-          label: 'Theme',
-          route: '/theme',
-        },
-      ],
-    },
-    {
-      icon: 'pi pi-sign-out',
-      label: 'Sign Out',
-      route: '/logout',
-    },
   ];
 
-  constructor() {}
+  constructor(public authService: AuthService) {}
+
+  get isAuthenticated(): boolean {
+    return this.authService.isAuthenticated();
+  }
 
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
+  }
+
+  onLogout() {
+    this.authService.logout();
+    this.isMenuOpen = false;
   }
 
   ngOnInit(): void {}

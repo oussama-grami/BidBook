@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input, Input, Signal } from '@angular/core';
 import { NgForOf } from '@angular/common';
 import {
   trigger,
@@ -8,6 +8,7 @@ import {
   transition,
 } from '@angular/animations';
 import { BackArrowComponent } from '../navigation/back-arrow.component';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-book-details',
@@ -76,10 +77,17 @@ export class BookDetailsComponent {
   @Input() coverImage: string = '/images/Book1.png';
   @Input() description: string =
     'This is a description of the book. It provides an overview of the content and themes covered in the book. The book is a thrilling adventure that takes the reader on a journey through time and space, exploring the depths of human emotion and experience. It is a must-read for anyone who loves a good story.';
-
   userRating: number = 0;
   isFavorite: boolean = false;
   starStates: string[] = Array(5).fill('inactive');
+
+  constructor(private route: ActivatedRoute) {
+    this.route.params.subscribe((params) => {
+      const bookId = params['id'];
+      console.log('Book Id from route:', bookId);
+      // You can now use this bookId to fetch book details from your service
+    });
+  }
 
   setUserRating(rating: number): void {
     this.userRating = rating;
