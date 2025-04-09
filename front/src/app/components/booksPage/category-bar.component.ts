@@ -1,5 +1,19 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { IconField } from 'primeng/iconfield';
+import { InputIcon } from 'primeng/inputicon';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import {
+  trigger,
+  state,
+  style,
+  animate,
+  transition,
+  query,
+  group,
+} from '@angular/animations';
+
 export interface Book {
   id: string;
   title: string;
@@ -20,36 +34,247 @@ export type BookCategory =
 @Component({
   selector: 'app-category-list',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, IconField, InputIcon],
   template: `
-    <nav class="category-nav">
-      <ul class="category-list">
-        <li
-          *ngFor="let category of categories"
-          class="category-item"
-          [class.active]="selectedCategory === category"
-          (click)="onCategorySelect(category)"
+    <div class="search-and-categories">
+      <div class="search-container">
+        <div
+          class="search-wrapper"
+          [@searchAnimation]="searchFocused ? 'focused' : 'unfocused'"
         >
-          {{ category }}
-        </li>
-      </ul>
-    </nav>
+          <p-iconfield iconPosition="left">
+            <p-inputicon
+              styleClass="pi pi-search search-icon"
+              [@searchIconAnimation]="searchFocused ? 'active' : 'inactive'"
+            />
+            <input
+              type="text"
+              pInputText
+              placeholder="Search articles..."
+              class="search-input"
+              (focus)="onSearchFocus()"
+              (blur)="onSearchBlur()"
+              (input)="onSearchInput($event)"
+              [value]="searchTerm"
+            />
+          </p-iconfield>
+        </div>
+      </div>
+
+      <nav class="category-nav">
+        <ul class="category-list">
+          <li
+            *ngFor="let category of categories; let i = index"
+            class="category-item"
+            [class.active]="selectedCategory === category"
+            (click)="onCategorySelect(category)"
+            [@categoryAnimation]="
+              selectedCategory === category ? 'active' : 'inactive'
+            "
+            [@travelingHighlight]="{
+              value: selectedCategory === category ? 'active' : 'inactive',
+              params: { direction: getAnimationDirection(i) }
+            }"
+          >
+            {{ category }}
+          </li>
+        </ul>
+      </nav>
+    </div>
   `,
+  animations: [
+    trigger('searchAnimation', [
+      state(
+        'unfocused',
+        style({
+          transform: 'scale(1)',
+        })
+      ),
+      state(
+        'focused',
+        style({
+          transform: 'scale(1.02)',
+        })
+      ),
+      transition('unfocused <=> focused', [
+        animate('0.3s cubic-bezier(0.4, 0, 0.2, 1)'),
+      ]),
+    ]),
+    trigger('searchIconAnimation', [
+      state(
+        'inactive',
+        style({
+          transform: 'scale(1) rotate(0deg)',
+          color: '#9ca3af',
+        })
+      ),
+      state(
+        'active',
+        style({
+          transform: 'scale(1.2) rotate(90deg)',
+          color: '#50719c',
+        })
+      ),
+      transition('inactive <=> active', [
+        animate('0.3s cubic-bezier(0.4, 0, 0.2, 1)'),
+      ]),
+    ]),
+    trigger('categoryAnimation', [
+      state(
+        'inactive',
+        style({
+          transform: 'scale(1)',
+          backgroundColor: '#f3f4f6',
+          position: 'relative',
+        })
+      ),
+      state(
+        'active',
+        style({
+          transform: 'scale(1.05)',
+          backgroundColor: '#50719c',
+          position: 'relative',
+        })
+      ),
+      transition('inactive => active', [
+        animate(
+          '0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+          style({
+            transform: 'scale(1.05)',
+            backgroundColor: '#50719c',
+          })
+        ),
+      ]),
+      transition('active => inactive', [
+        animate(
+          '0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+          style({
+            transform: 'scale(1)',
+            backgroundColor: '#f3f4f6',
+          })
+        ),
+      ]),
+    ]),
+    trigger('travelingHighlight', [
+      transition('* => *', [
+        query(':enter, :leave', style({ position: 'absolute' }), {
+          optional: true,
+        }),
+        group([
+          query(
+            ':enter',
+            [
+              style({
+                transform: 'translateX({{ direction }}100%)',
+                backgroundColor: '#50719c',
+                opacity: 0,
+              }),
+              animate(
+                '0.4s ease-out',
+                style({
+                  transform: 'translateX(0)',
+                  opacity: 1,
+                })
+              ),
+            ],
+            { optional: true }
+          ),
+          query(
+            ':leave',
+            [
+              style({
+                transform: 'translateX(0)',
+                backgroundColor: '#50719c',
+                opacity: 1,
+              }),
+              animate(
+                '0.4s ease-out',
+                style({
+                  transform: 'translateX({{ direction }}-100%)',
+                  opacity: 0,
+                })
+              ),
+            ],
+            { optional: true }
+          ),
+        ]),
+      ]),
+    ]),
+  ],
   styles: [
     `
-      .category-nav {
+      .search-and-categories {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
         margin-bottom: 40px;
-        border-bottom: 1px solid #eee;
-        padding-bottom: 5px;
+        padding-top: 20px;
+      }
+
+      .search-container {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        margin-bottom: 10px;
+      }
+
+      .search-wrapper {
+        position: relative;
+        width: 400px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .search-input {
+        width: 100%;
+        padding: 12px 40px;
+        border-radius: 25px;
+        border: 1px solid #e0e0e0;
+        font-size: 16px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        background-color: #f8f9fa;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      }
+
+      .search-wrapper:hover .search-input {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      }
+
+      .search-input:focus {
+        border-color: #50719c;
+        outline: none;
+        box-shadow: 0 6px 20px rgba(80, 113, 156, 0.15);
+      }
+
+      .search-icon {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .search-input:focus + .search-icon {
+        color: #50719c;
+      }
+
+      .search-input::placeholder {
+        color: #9ca3af;
+        transition: opacity 0.3s ease;
+      }
+
+      .search-input:focus::placeholder {
+        opacity: 0.7;
+      }
+
+      .category-nav {
+        width: 100%;
       }
 
       .category-list {
         display: flex;
-        gap: 40px;
+        gap: 20px;
         list-style: none;
         padding: 0;
         margin: 0;
         justify-content: center;
+        flex-wrap: wrap;
       }
 
       .category-item {
@@ -57,25 +282,76 @@ export type BookCategory =
         font-family: Poppins, sans-serif;
         font-size: 14px;
         cursor: pointer;
-        transition: color 0.3s ease, border-bottom 0.3s ease;
+        padding: 8px 20px;
+        border-radius: 20px;
+        background-color: #f3f4f6;
+        transition: all 400ms cubic-bezier(0.4, 0, 0.2, 1);
+        border: 2px solid transparent;
+        white-space: nowrap;
+        position: relative;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        will-change: transform, background-color, box-shadow;
+      }
+
+      .category-item:hover {
+        background-color: #e5e7eb;
+        transform: translateY(-2px) scale(1.02);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
       }
 
       .category-item.active {
-        color: #9c7350;
-        border-bottom: 1px solid #9c7350;
-        padding-bottom: 5px;
+        background-color: #50719c;
+        color: white;
+        border-color: transparent;
+        box-shadow: 0 6px 16px rgba(80, 113, 156, 0.25);
       }
 
-      @media (max-width: 640px) {
+      @media (max-width: 768px) {
+        .search-wrapper {
+          width: 90%;
+          max-width: 400px;
+        }
+
         .category-list {
-          flex-wrap: wrap;
-          gap: 20px;
+          gap: 12px;
+        }
+
+        .category-item {
+          padding: 6px 16px;
+          font-size: 13px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .search-and-categories {
+          gap: 15px;
+          padding-top: 70px;
+        }
+
+        .category-list {
+          gap: 8px;
+          margin-top: 5px;
+        }
+
+        .search-wrapper {
+          width: 90%;
+          max-width: 300px;
+        }
+
+        .search-input {
+          font-size: 14px;
+          padding: 10px 35px;
+        }
+
+        .category-item {
+          padding: 5px 12px;
+          font-size: 12px;
         }
       }
     `,
   ],
 })
-export class CategoryListComponent {
+export class CategoryListComponent implements OnInit {
   @Input() categories: BookCategory[] = [
     'Fiction',
     'Romance',
@@ -86,6 +362,40 @@ export class CategoryListComponent {
   ];
   @Input() selectedCategory: BookCategory = 'All';
   @Output() categorySelected = new EventEmitter<BookCategory>();
+  @Output() searchChanged = new EventEmitter<string>();
+
+  searchFocused = false;
+  searchTerm = '';
+  private searchSubject = new Subject<string>();
+  private previousIndex = 0;
+
+  ngOnInit() {
+    this.searchSubject
+      .pipe(debounceTime(300), distinctUntilChanged())
+      .subscribe((searchTerm) => {
+        this.searchTerm = searchTerm;
+        this.searchChanged.emit(searchTerm);
+      });
+  }
+
+  onSearchFocus() {
+    this.searchFocused = true;
+  }
+
+  onSearchBlur() {
+    this.searchFocused = false;
+  }
+
+  onSearchInput(event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.searchSubject.next(input.value);
+  }
+
+  getAnimationDirection(currentIndex: number): number {
+    const direction = currentIndex > this.previousIndex ? 1 : -1;
+    this.previousIndex = currentIndex;
+    return direction;
+  }
 
   onCategorySelect(category: BookCategory): void {
     this.categorySelected.emit(category);

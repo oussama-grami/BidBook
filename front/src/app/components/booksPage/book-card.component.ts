@@ -1,173 +1,281 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-export interface Book {
-  id: string;
-  title: string;
-  imageUrl: string;
-  rating: number;
-  comments: number;
-  daysAgo: number;
-}
-
-export type BookCategory =
-  | 'Fiction'
-  | 'Romance'
-  | 'Thriller'
-  | 'Fantasy'
-  | 'Biography'
-  | 'All';
+import { Book } from './library-dashboard.component';
+import {
+  trigger,
+  state,
+  style,
+  transition,
+  animate,
+} from '@angular/animations';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-book-card',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   template: `
-    <article class="book-card" [class.book-card-special]="special">
+    <div
+      class="book-card"
+      [class.special]="special"
+      [@cardHover]="isHovered ? 'hovered' : 'normal'"
+      (mouseenter)="isHovered = true"
+      (mouseleave)="isHovered = false"
+      [routerLink]="['/book', book.id]"
+    >
       <div class="book-image-container">
-        <img [src]="book.imageUrl" [alt]="book.title" class="book-cover" />
-        <img
-          src="https://cdn.builder.io/api/v1/image/assets/TEMP/79485267c2027ed9781f317da7b890ef07ea6e9d"
-          alt="Heart icon"
-          class="heart-icon"
-        />
+        <img [src]="book.imageUrl" [alt]="book.title" class="book-image" />
+        <div class="overlay">
+          <span class="read-more">Read More</span>
+        </div>
       </div>
-      <div class="book-details">
+      <div class="book-info">
         <h3 class="book-title">{{ book.title }}</h3>
-        <div class="rating-container">
-          <div
-            class="star-rating"
-            role="img"
-            [attr.aria-label]="'Rating: ' + book.rating + ' out of 5 stars'"
-          >
-            <i
-              *ngFor="let star of [1, 2, 3, 4, 5]"
-              class="pi"
-              [class.pi-star-fill]="star <= book.rating"
-              [class.pi-star]="star > book.rating"
-              [class.empty]="star > book.rating"
-              aria-hidden="true"
-            >
-            </i>
+        <div class="book-meta">
+          <div class="rating">
+            <div class="stars">
+              <span *ngFor="let star of [1, 2, 3, 4, 5]" class="star">
+                <i
+                  class="pi"
+                  [class.pi-star-fill]="star <= book.rating"
+                  [class.pi-star]="star > book.rating"
+                ></i>
+              </span>
+            </div>
+            <span class="rating-count">{{ book.rating }}/5</span>
           </div>
-          <div class="comment-count">
-            <i class="pi pi-comments" aria-hidden="true"></i>
-            <span>{{ book.comments }}</span>
+          <div class="meta-details">
+            <span class="comments">
+              <i class="pi pi-comments"></i>
+              {{ book.comments }}
+            </span>
+            <span class="days-ago">{{ book.daysAgo }} days ago</span>
           </div>
         </div>
-        <p class="days-ago">
-          <strong>{{ book.daysAgo }}D</strong>
-        </p>
-        <button class="view-details-btn">View details</button>
       </div>
-    </article>
+    </div>
   `,
+  animations: [
+    trigger('cardHover', [
+      state(
+        'normal',
+        style({
+          transform: 'translateY(0)',
+          boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
+        })
+      ),
+      state(
+        'hovered',
+        style({
+          transform: 'translateY(-10px)',
+          boxShadow: '0 20px 30px rgba(0, 0, 0, 0.15)',
+        })
+      ),
+      transition('normal <=> hovered', [
+        animate('300ms cubic-bezier(0.4, 0, 0.2, 1)'),
+      ]),
+    ]),
+  ],
   styles: [
     `
       .book-card {
-        border-radius: 30px;
-        padding: 30px;
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        cursor: pointer;
+        position: relative;
+        height: 100%;
         display: flex;
         flex-direction: column;
-        align-items: center;
-        background-color: #f6f6f6;
         transition: all 0.3s ease;
       }
 
-      .book-card-special {
-        background: linear-gradient(145deg, #f6f6f6, #ffffff);
-        box-shadow: 0 15px 30px rgba(156, 115, 80, 0.2);
-        transform: scale(1.02);
+      .book-card.special {
+        background: linear-gradient(145deg, #ffffff, #fff5e6);
         border: 2px solid rgba(156, 115, 80, 0.1);
+        box-shadow: 0 10px 25px rgba(156, 115, 80, 0.2);
       }
 
-      .book-card-special .book-title {
+      .book-card.special .book-title {
         color: #9c7350;
+        font-weight: 700;
+      }
+
+      .book-card.special::before {
+        content: '⭐';
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 20px;
+        opacity: 0.8;
+        z-index: 2;
+      }
+
+      .book-card.special .book-image-container::after {
+        content: 'Recommended';
+        position: absolute;
+        top: 30px;
+        left: -35px;
+        background: linear-gradient(90deg, #9c7350, #50719c);
+        color: white;
+        padding: 5px 40px;
+        transform: rotate(-45deg);
+        font-size: 12px;
         font-weight: 600;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
       }
 
-      .book-card-special .view-details-btn {
-        background-color: #9c7350;
-        box-shadow: 0 4px 15px rgba(156, 115, 80, 0.3);
+      .book-card.special:hover {
+        transform: translateY(-10px) scale(1.03);
+        box-shadow: 0 15px 30px rgba(156, 115, 80, 0.25);
       }
 
-      .book-card-special .book-cover {
-        box-shadow: 0 15px 45px rgba(0, 0, 0, 0.25);
+      .book-card.special .read-more {
+        background: linear-gradient(90deg, #9c7350, #50719c);
+        border: none;
+        font-weight: 600;
       }
 
       .book-image-container {
         position: relative;
-        margin-bottom: 20px;
+        padding-top: 140%;
+        overflow: hidden;
       }
 
-      .book-cover {
-        width: 100%;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-      }
-
-      .heart-icon {
+      .book-image {
         position: absolute;
-        top: 10px;
-        right: -40px;
-        width: 33px;
-        height: 33px;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
       }
 
-      .book-details {
-        text-align: center;
-      }
-
-      .book-title {
-        color: #000;
-        font-family: Poppins, sans-serif;
-        font-size: 15px;
-        text-transform: capitalize;
-        margin-bottom: 10px;
-      }
-
-      .rating-container {
+      .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.4);
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 20px;
-        margin-bottom: 10px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
       }
 
-      .star-rating {
+      .book-card:hover .overlay {
+        opacity: 1;
+      }
+
+      .read-more {
+        color: white;
+        font-size: 16px;
+        font-weight: 600;
+        padding: 12px 24px;
+        border: 2px solid white;
+        border-radius: 25px;
+        transform: translateY(20px);
+        transition: all 0.3s ease;
+      }
+
+      .book-card:hover .read-more {
+        transform: translateY(0);
+      }
+
+      .book-info {
+        padding: 20px;
+        flex-grow: 1;
         display: flex;
-        gap: 7px;
-        color: #ffb543;
+        flex-direction: column;
+        justify-content: space-between;
       }
 
-      .empty {
-        color: #c5c5c5;
+      .book-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #2d3748;
+        margin: 0 0 15px;
+        line-height: 1.4;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
       }
 
-      .comment-count {
+      .book-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .rating {
         display: flex;
         align-items: center;
-        gap: 8px;
-        color: #81859c;
-        font-family: Inter, sans-serif;
+        gap: 10px;
+      }
+
+      .stars {
+        display: flex;
+        gap: 2px;
+      }
+
+      .star {
+        color: #fbbf24;
+        font-size: 14px;
+      }
+
+      .rating-count {
+        color: #64748b;
+        font-size: 14px;
+      }
+
+      .meta-details {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: #64748b;
         font-size: 13px;
       }
 
-      .days-ago {
-        color: #000;
-        font-family: Poppins, sans-serif;
-        font-size: 36px;
-        font-weight: 300;
-        margin-bottom: 20px;
+      .comments {
+        display: flex;
+        align-items: center;
+        gap: 5px;
       }
 
-      .view-details-btn {
-        color: #fff;
-        font-family: Poppins, sans-serif;
+      .comments i {
         font-size: 14px;
-        padding: 10px 30px;
-        border-radius: 20px;
-        border: none;
-        cursor: pointer;
-        background-color: #50719c;
+      }
+
+      .days-ago {
+        color: #94a3b8;
+      }
+
+      @media (max-width: 640px) {
+        .book-info {
+          padding: 15px;
+        }
+
+        .book-title {
+          font-size: 16px;
+          margin-bottom: 12px;
+        }
+
+        .book-meta {
+          gap: 8px;
+        }
+
+        .star {
+          font-size: 12px;
+        }
+
+        .rating-count,
+        .meta-details {
+          font-size: 12px;
+        }
       }
     `,
   ],
@@ -175,4 +283,5 @@ export type BookCategory =
 export class BookCardComponent {
   @Input() book!: Book;
   @Input() special: boolean = false;
+  isHovered: boolean = false;
 }

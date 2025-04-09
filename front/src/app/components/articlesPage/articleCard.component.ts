@@ -1,5 +1,5 @@
-import { Component, Input } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 interface Article {
   date: string;
@@ -11,7 +11,7 @@ interface Article {
 }
 
 @Component({
-  selector: "app-article-card",
+  selector: 'app-article-card',
   standalone: true,
   imports: [CommonModule],
   template: `
@@ -33,15 +33,21 @@ interface Article {
   styles: [
     `
       .article-card {
-        width: 310px;
-        border: 4px solid #50719c;
-        border-radius: 5px;
+        width: 350px;
+        background: #fff;
+        border-radius: 12px;
         overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+      }
+
+      .article-card:hover {
+        transform: translateY(-5px);
       }
 
       .card-image {
         width: 100%;
-        height: 208px;
+        height: 200px;
         object-fit: cover;
       }
 
@@ -50,46 +56,41 @@ interface Article {
       }
 
       .article-date {
-        display: block;
-        color: #6c757d;
-        font-family: Lora;
-        font-size: 12px;
-        margin-bottom: 15px;
+        color: #6b7280;
+        font-size: 14px;
+        margin-bottom: 8px;
       }
 
       .article-title {
-        color: #495057;
-        font-family: Poppins;
         font-size: 18px;
-        font-weight: 700;
-        margin-bottom: 15px;
+        font-weight: 600;
+        margin-bottom: 12px;
+        color: #1f2937;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
       }
 
       .category-tag {
         display: inline-block;
-        padding: 5px 10px;
-        color: #fff;
-        font-family: Poppins;
-        font-size: 10px;
-        font-weight: 700;
-        border-radius: 8px;
-        margin-bottom: 15px;
-        background-color: #9c7350;
+        padding: 4px 12px;
+        background-color: #e5e7eb;
+        border-radius: 15px;
+        font-size: 12px;
+        color: #4b5563;
+        margin-bottom: 12px;
       }
 
       .article-description {
-        color: #6c757d;
-        font-family: Poppins;
-        font-size: 12px;
-        line-height: 20px;
-        margin-bottom: 20px;
-      }
-
-      .divider {
-        height: 1px;
-        margin: 20px 0;
-        background-color: #e5e5e5;
-        border: none;
+        color: #6b7280;
+        font-size: 14px;
+        line-height: 1.5;
+        margin-bottom: 16px;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
       }
 
       .card-footer {
@@ -99,10 +100,8 @@ interface Article {
       }
 
       .author-name {
-        color: #495057;
-        font-family: Poppins;
-        font-size: 12px;
-        font-weight: 700;
+        font-size: 14px;
+        color: #4b5563;
       }
 
       .details-link {
@@ -116,9 +115,43 @@ interface Article {
         padding: 0;
       }
 
-      @media (max-width: 640px) {
+      @media (max-width: 991px) {
+        .article-card {
+          width: 300px;
+        }
+
+        .card-image {
+          height: 180px;
+        }
+      }
+
+      @media (max-width: 768px) {
         .article-card {
           width: 100%;
+          max-width: 450px;
+        }
+
+        .card-image {
+          height: 220px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .card-content {
+          padding: 15px;
+        }
+
+        .card-image {
+          height: 180px;
+        }
+
+        .article-title {
+          font-size: 16px;
+        }
+
+        .article-description {
+          font-size: 13px;
+          -webkit-line-clamp: 2;
         }
       }
     `,
