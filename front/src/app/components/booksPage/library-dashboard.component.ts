@@ -1,4 +1,10 @@
-import { Component, input, Signal } from '@angular/core';
+import {
+  Component,
+  input,
+  signal,
+  Signal,
+  WritableSignal,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BookCardComponent } from './book-card.component';
 import { CategoryListComponent } from './category-bar.component';
@@ -10,6 +16,7 @@ import {
   stagger,
   query,
 } from '@angular/animations';
+import { ActivatedRoute } from '@angular/router';
 
 export interface Book {
   id: string;
@@ -18,6 +25,7 @@ export interface Book {
   rating: number;
   comments: number;
   daysAgo: number;
+  category?: BookCategory;
 }
 
 export type BookCategory =
@@ -40,6 +48,7 @@ export type BookCategory =
         [categories]="categories"
         [selectedCategory]="selectedCategory"
         (categorySelected)="onCategoryChange($event)"
+        (searchChanged)="onSearchChange($event)"
       >
       </app-category-list>
 
@@ -47,7 +56,7 @@ export type BookCategory =
         <h2 class="section-title" [@slideInRight]>Recommended</h2>
         <div class="books-grid" [@booksAnimation]>
           <app-book-card
-            *ngFor="let book of recommendedBooks"
+            *ngFor="let book of filteredRecommendedBooks"
             [book]="book"
             [special]="true"
           >
@@ -58,7 +67,10 @@ export type BookCategory =
       <section class="explore-section">
         <h2 class="section-title" [@slideInRight]>Explore other books</h2>
         <div class="books-grid" [@booksAnimation]>
-          <app-book-card *ngFor="let book of exploreBooks" [book]="book">
+          <app-book-card
+            *ngFor="let book of filteredExploreBooks"
+            [book]="book"
+          >
           </app-book-card>
         </div>
       </section>
@@ -325,7 +337,10 @@ export class BookCatalogComponent {
     'All',
   ];
   selectedCategory: BookCategory = 'All';
-  isFavorite: Signal<boolean> = input(true);
+  isFavorite: WritableSignal<boolean> = signal(true);
+  searchTerm = '';
+  filteredRecommendedBooks: Book[] = [];
+  filteredExploreBooks: Book[] = [];
 
   recommendedBooks: Book[] = [
     {
@@ -335,6 +350,7 @@ export class BookCatalogComponent {
         'https://cdn.builder.io/api/v1/image/assets/TEMP/ecdb6bbc8f17b31efa69a312a172d604f72a9214',
       rating: 4,
       comments: 97,
+      category: 'Fiction',
       daysAgo: 20,
     },
     {
@@ -343,6 +359,7 @@ export class BookCatalogComponent {
       imageUrl:
         'https://cdn.builder.io/api/v1/image/assets/TEMP/ecdb6bbc8f17b31efa69a312a172d604f72a9214',
       rating: 4,
+      category: 'Romance',
       comments: 97,
       daysAgo: 20,
     },
@@ -352,6 +369,7 @@ export class BookCatalogComponent {
       imageUrl:
         'https://cdn.builder.io/api/v1/image/assets/TEMP/ecdb6bbc8f17b31efa69a312a172d604f72a9214',
       rating: 4,
+      category: 'Thriller',
       comments: 97,
       daysAgo: 20,
     },
@@ -365,6 +383,7 @@ export class BookCatalogComponent {
         'https://cdn.builder.io/api/v1/image/assets/TEMP/ecdb6bbc8f17b31efa69a312a172d604f72a9214',
       rating: 4,
       comments: 97,
+      category: 'Fantasy',
       daysAgo: 20,
     },
     {
@@ -374,6 +393,7 @@ export class BookCatalogComponent {
         'https://cdn.builder.io/api/v1/image/assets/TEMP/ecdb6bbc8f17b31efa69a312a172d604f72a9214',
       rating: 4,
       comments: 97,
+      category: 'Biography',
       daysAgo: 20,
     },
     {
@@ -383,12 +403,55 @@ export class BookCatalogComponent {
         'https://cdn.builder.io/api/v1/image/assets/TEMP/ecdb6bbc8f17b31efa69a312a172d604f72a9214',
       rating: 4,
       comments: 97,
+      category: 'Fiction',
       daysAgo: 20,
     },
   ];
+  constructor(private readonly ActivatedRoute: ActivatedRoute) {
+    this.ActivatedRoute.data.subscribe((data: any) => {
+      this.isFavorite.set(data?.isFavorite);
+    });
+  }
+
+  ngOnInit() {
+    this.filteredRecommendedBooks = [...this.recommendedBooks];
+    this.filteredExploreBooks = [...this.exploreBooks];
+  }
 
   onCategoryChange(category: BookCategory): void {
     this.selectedCategory = category;
-    // Here you would typically filter books based on category
+    this.applyFilters();
+  }
+
+  onSearchChange(searchTerm: string) {
+    this.searchTerm = searchTerm;
+    this.applyFilters();
+  }
+
+  private applyFilters() {
+    // Reset filters
+    this.filteredRecommendedBooks = [...this.recommendedBooks];
+    this.filteredExploreBooks = [...this.exploreBooks];
+
+    // Apply category filter if not "All"
+    if (this.selectedCategory !== 'All') {
+      this.filteredRecommendedBooks = this.filteredRecommendedBooks.filter(
+        (book) => book.category === this.selectedCategory
+      );
+      this.filteredExploreBooks = this.filteredExploreBooks.filter(
+        (book) => book.category === this.selectedCategory
+      );
+    }
+
+    // Apply search filter
+    if (this.searchTerm.trim()) {
+      const searchLower = this.searchTerm.toLowerCase();
+      this.filteredRecommendedBooks = this.filteredRecommendedBooks.filter(
+        (book) => book.title.toLowerCase().includes(searchLower)
+      );
+      this.filteredExploreBooks = this.filteredExploreBooks.filter((book) =>
+        book.title.toLowerCase().includes(searchLower)
+      );
+    }
   }
 }

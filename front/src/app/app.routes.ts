@@ -9,7 +9,7 @@ export const routes: Routes = [
         (c) => c.BookCatalogComponent
       ),
     canActivate: [RouteLoadingGuard],
-    data: { animation: 'fade' },
+    data: { animation: 'fade', isFavorite: false },
   },
   {
     path: 'articles',
@@ -81,5 +81,5 @@ export const routes: Routes = [
     canActivate: [RouteLoadingGuard],
     data: { animation: 'zoom' },
   },
-  { path: '**', redirectTo: '', canActivate: [RouteLoadingGuard] }
+  { path: '**', redirectTo: '', canActivate: [RouteLoadingGuard] },
 ];
