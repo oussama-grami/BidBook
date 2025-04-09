@@ -1,22 +1,62 @@
 import { Routes } from '@angular/router';
-import { LoginPageComponent } from './login-page/login-page.component';
-import { SignupPageComponent } from './signup-page/signup-page.component';
-import { AddBookComponent } from './add-book/add-book.component';
-import { BookCatalogComponent } from './components/booksPage/library-dashboard.component';
-import { BookDetailsComponent } from './components/book-details/book-details.component';
-import { DashboardComponent } from './components/articlesPage/dashboard.component';
-import { NotificationsPageComponent } from './components/NotificationPage/notifications-page.component';
-import { ForgetPasswordComponent } from './components/forget-password/forget-password.component';
 
 export const routes: Routes = [
-  { path: '', component: BookCatalogComponent },
-  { path: 'articles', component: DashboardComponent },
-  { path: 'book-details', component: BookDetailsComponent },
-  { path: 'login', component: LoginPageComponent },
-  { path: 'signup', component: SignupPageComponent },
-  { path: 'add-book', component: AddBookComponent },
-  { path: 'notifications', component: NotificationsPageComponent },
-  { path: 'forget-password', component: ForgetPasswordComponent },
+  {
+    path: '',
+    loadComponent: () =>
+      import('./components/booksPage/library-dashboard.component').then(
+        (c) => c.BookCatalogComponent
+      ),
+  },
+  {
+    path: 'articles',
+    loadComponent: () =>
+      import('./components/articlesPage/dashboard.component').then(
+        (c) => c.DashboardComponent
+      ),
+  },
+  {
+    path: 'book-details',
+    loadComponent: () =>
+      import('./components/book-details/book-details.component').then(
+        (c) => c.BookDetailsComponent
+      ),
+  },
+  {
+    path: 'login',
+    loadComponent: () =>
+      import('./login-page/login-page.component').then(
+        (c) => c.LoginPageComponent
+      ),
+  },
+  {
+    path: 'signup',
+    loadComponent: () =>
+      import('./signup-page/signup-page.component').then(
+        (c) => c.SignupPageComponent
+      ),
+  },
+  {
+    path: 'add-book',
+    loadComponent: () =>
+      import('./add-book/add-book.component').then(
+        (c) => c.AddBookComponent
+      ),
+  },
+  {
+    path: 'notifications',
+    loadComponent: () =>
+      import('./components/NotificationPage/notifications-page.component').then(
+        (c) => c.NotificationsPageComponent
+      ),
+  },
+  {
+    path: 'forget-password',
+    loadComponent: () =>
+      import('./components/forget-password/forget-password.component').then(
+        (c) => c.ForgetPasswordComponent
+      ),
+  },
   {
     path: 'payment',
     loadComponent: () =>
