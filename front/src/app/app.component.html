@@ -4,7 +4,7 @@
   <div class="layout-with-sidemenu">
     <app-side-menu class="sidemenu"></app-side-menu>
     <div class="main-content">
-      <main [@fadeAnimation]="o.isActivated ? o.activatedRoute : ''">
+      <main [@routeAnimations]="getRouteAnimationState(o)">
         <router-outlet #o="outlet"></router-outlet>
       </main>
     </div>

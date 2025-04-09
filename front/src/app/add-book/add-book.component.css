@@ -52,17 +52,77 @@ input, select {
   width: 100%;
   max-width: 400px;
   box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: #9C7350;
+  box-shadow: 0 0 0 2px rgba(156, 115, 80, 0.1);
 }
 
 .file-input {
   border: 1px dashed rgba(196, 196, 196, 0.27);
+  padding: 12px;
+  cursor: pointer;
 }
 
-.book-image {
+.file-input:hover {
+  background-color: rgba(156, 115, 80, 0.05);
+}
+
+.preview-container {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
   width: 100%;
-  max-width: 400px;
+  max-width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+::ng-deep .preview-container .p-photo {
+  max-width: 300px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+::ng-deep .preview-container .p-photo:hover {
+  transform: translateY(-5px);
+}
+
+::ng-deep .preview-container .p-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+::ng-deep .preview-container .p-image {
+  width: 100%;
+  max-width: 300px;
+}
+
+::ng-deep .preview-container .p-image img {
+  width: 100%;
   height: auto;
-  border-radius: 20px;
+  max-height: 400px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+/* Handle the preview overlay */
+::ng-deep .p-image-preview-container {
+  max-width: 90vw;
+  max-height: 90vh;
+}
+
+::ng-deep .p-image-preview {
+  max-width: 100%;
+  max-height: 90vh;
+  object-fit: contain;
 }
 
 /* Input validation styles */
@@ -100,14 +160,25 @@ button {
   width: 100%;
   max-width: 400px;
   box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+button:enabled:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .predict-btn {
-  background-color: #9C7350;
+  background-color: #9C7350 !important;
 }
 
 .submit-btn {
-  background-color: #50719C;
+  background-color: #50719C !important;
 }
 
 .select-container {
@@ -153,6 +224,95 @@ button {
   border-radius: 20px;
 }
 
+.price-prediction-container {
+  grid-column: 1 / -1;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 15px;
+  padding: 20px;
+  margin: 20px 0;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.loading-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #9C7350;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.prediction-result {
+  padding: 20px;
+}
+
+.prediction-result h3 {
+  color: #324054;
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+
+.predicted-price {
+  font-size: 32px;
+  font-weight: 700;
+  color: #9C7350;
+  margin: 20px 0;
+}
+
+.prediction-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.accept-btn, .refuse-btn {
+  padding: 10px 25px;
+  border: none;
+  border-radius: 20px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  color: #FFFFFF;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.accept-btn {
+  background-color: #4CAF50;
+}
+
+.refuse-btn {
+  background-color: #f44336;
+}
+
+.accept-btn:hover, .refuse-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+input[readonly] {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
+.predict-btn:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
 @media (max-width: 768px) {
   .add-book-container {
     flex-direction: column;
@@ -173,6 +333,10 @@ button {
   .form-and-image {
     flex-direction: column;
     align-items: center;
+  }
+
+  .preview-container {
+    margin-top: 20px;
   }
 
   .image-container {

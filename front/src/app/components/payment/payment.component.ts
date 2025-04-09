@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -25,7 +25,7 @@ interface CartItem {
   id: string;
   title: string;
   price: number;
-  imageUrl?: string;
+  imageUrl: string;
 }
 
 @Component({
@@ -44,7 +44,6 @@ interface CartItem {
     ImageModule,
   ],
   animations: [
-    // Page entry animation
     trigger('pageAnimation', [
       transition(':enter', [
         style({ opacity: 0, transform: 'translateY(20px)' }),
@@ -54,7 +53,6 @@ interface CartItem {
         ),
       ]),
     ]),
-    // Cart items stagger animation
     trigger('cartItems', [
       transition('* => *', [
         query(
@@ -72,7 +70,6 @@ interface CartItem {
         ),
       ]),
     ]),
-    // Form fields stagger animation
     trigger('formFields', [
       transition('* => *', [
         query(
@@ -90,7 +87,6 @@ interface CartItem {
         ),
       ]),
     ]),
-    // Card type animation
     trigger('cardTypeAnimation', [
       transition(':enter', [
         style({ opacity: 0, transform: 'scale(0.8)' }),
@@ -103,7 +99,7 @@ interface CartItem {
   ],
 })
 export class PaymentComponent implements OnInit {
-  paymentForm: FormGroup;
+  paymentForm!: FormGroup;
   isProcessing: boolean = false;
   activeCardType: 'visa' | 'mastercard' | null = null;
   cartItems: CartItem[] = [
@@ -130,7 +126,15 @@ export class PaymentComponent implements OnInit {
   tax: number = 0;
   totalAmount: number = 0;
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private cdr: ChangeDetectorRef,
+    private ngZone: NgZone
+  ) {
+    this.initForm();
+  }
+
+  private initForm(): void {
     this.paymentForm = this.fb.group({
       cardNumber: [
         '',
@@ -154,11 +158,21 @@ export class PaymentComponent implements OnInit {
     this.paymentForm
       .get('cardNumber')
       ?.valueChanges.subscribe((value: string) => {
-        this.detectCardType(value);
+        this.ngZone.run(() => {
+          this.detectCardType(value);
+          this.cdr.detectChanges();
+        });
       });
   }
 
   ngOnInit() {
+    this.ngZone.run(() => {
+      this.calculateTotals();
+      this.cdr.detectChanges();
+    });
+  }
+
+  private calculateTotals(): void {
     this.subtotal = this.cartItems.reduce((sum, item) => sum + item.price, 0);
     this.tax = this.subtotal * 0.1; // 10% tax
     this.totalAmount = this.subtotal + this.tax;
@@ -215,8 +229,11 @@ export class PaymentComponent implements OnInit {
 
     // Simulate payment processing
     setTimeout(() => {
-      console.log('Payment processed:', this.paymentForm.value);
-      this.isProcessing = false;
+      this.ngZone.run(() => {
+        console.log('Payment processed:', this.paymentForm.value);
+        this.isProcessing = false;
+        this.cdr.detectChanges();
+      });
     }, 1500);
   }
 

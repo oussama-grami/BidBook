@@ -82,39 +82,86 @@
               id="picture"
               (change)="onFileSelected($event)"
               class="form-control file-input"
+              accept="image/*"
             />
           </div>
 
-          <div class="form-group price-group" *ngIf="predictedPrice">
-            <label>Edit the predicted price</label>
-            <input type="number" formControlName="price" class="form-control" />
+          <div class="preview-container" *ngIf="previewImage || selectedFile">
+            <p-image
+              [src]="previewImage || '/images/AddBook.png'"
+              [alt]="selectedFile?.name || 'Book preview'"
+              [preview]="true"
+            ></p-image>
+          </div>
+
+          <div
+            class="price-prediction-container"
+            *ngIf="isPredicting || showPriceResult"
+          >
+            <div class="loading-indicator" *ngIf="isPredicting">
+              <div class="spinner"></div>
+              <p>Predicting price...</p>
+            </div>
+
+            <div
+              class="prediction-result"
+              *ngIf="showPriceResult && predictedPrice !== null"
+            >
+              <h3>Predicted Price</h3>
+              <p class="predicted-price">{{ predictedPrice }}D</p>
+              <div class="prediction-actions">
+                <button
+                  type="button"
+                  class="accept-btn"
+                  (click)="onAcceptPrice()"
+                >
+                  Accept
+                </button>
+                <button
+                  type="button"
+                  class="refuse-btn"
+                  (click)="onRefusePrice()"
+                >
+                  Refuse
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="form-group price-group"
+            *ngIf="predictedPrice && !showPriceResult"
+          >
+            <label>Price</label>
+            <input
+              type="number"
+              formControlName="price"
+              class="form-control"
+              [readonly]="priceAccepted"
+            />
           </div>
         </div>
 
         <div class="button-group">
-          <button type="button" class="predict-btn" (click)="predictPrice()">
-            Predict Price
+          <button
+            type="button"
+            pButton
+            [disabled]="isPredicting || priceAccepted"
+            (click)="predictPrice()"
+            class="predict-btn"
+          >
+            {{ isPredicting ? "Predicting..." : "Predict Price" }}
           </button>
           <button
             type="submit"
+            pButton
+            [disabled]="addBookForm.invalid || !priceAccepted"
             class="submit-btn"
-            [disabled]="addBookForm.invalid"
           >
             Submit
           </button>
         </div>
       </form>
-
-      <div class="image-container">
-        <img
-          ngSrc="/images/AddBook.png"
-          alt="Add Book Illustration"
-          class="add-book-image"
-          priority
-          height="376"
-          width="486"
-        />
-      </div>
     </div>
   </div>
 </div>

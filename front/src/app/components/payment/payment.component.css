@@ -7,7 +7,6 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: var(--surface-ground);
   padding: 2rem;
   animation: fadeIn 0.6s ease-out;
 }
@@ -18,15 +17,6 @@
   width: 100%;
   gap: 2rem;
   margin: 0;
-}
-
-/* Cart Summary */
-.surface-card {
-  background: var(--surface-card);
-  height: fit-content;
-  border-radius: var(--border-radius);
-  box-shadow: var(--card-shadow);
-  padding: 2rem;
 }
 
 .summary-title {
@@ -96,7 +86,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--surface-ground);
   flex-shrink: 0;
   margin-right: 1rem;
 }

@@ -1,13 +1,23 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  PLATFORM_ID,
+  Inject,
+} from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { ProgressBarModule } from 'primeng/progressbar';
+import { LoadingService } from '../../services/loading.service';
+import { Subscription } from 'rxjs';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-loading',
   standalone: true,
-  imports: [CommonModule, ProgressSpinnerModule],
+  imports: [CommonModule, ProgressSpinnerModule, ProgressBarModule],
   template: `
-    <div class="loading-container">
+    <div class="loading-container" [@fadeInOut]="'in'">
       <div class="spinner-wrapper">
         <p-progress-spinner
           styleClass="custom-spinner"
@@ -16,7 +26,14 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
           animationDuration=".7s"
         >
         </p-progress-spinner>
-        <div class="loading-text">Loading...</div>
+        <div class="loading-text">{{ loadingText }}</div>
+        <div class="progress-container">
+          <p-progressBar
+            [value]="progress"
+            [showValue]="false"
+            styleClass="custom-progress"
+          ></p-progressBar>
+        </div>
       </div>
     </div>
   `,
@@ -43,6 +60,22 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
         align-items: center;
         gap: 1rem;
         animation: scaleIn 0.4s ease-out;
+        min-width: 200px;
+      }
+
+      .progress-container {
+        width: 100%;
+        margin-top: 0.5rem;
+      }
+
+      :host ::ng-deep .custom-progress {
+        height: 6px;
+        border-radius: 3px;
+      }
+
+      :host ::ng-deep .custom-progress .p-progressbar-value {
+        background: var(--primary-color);
+        transition: width 0.3s ease;
       }
 
       .loading-text {
@@ -95,5 +128,77 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
       }
     `,
   ],
+  animations: [
+    trigger('fadeInOut', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('300ms ease-in', style({ opacity: 1 })),
+      ]),
+      transition(':leave', [animate('300ms ease-out', style({ opacity: 0 }))]),
+    ]),
+  ],
 })
-export class LoadingComponent {}
+export class LoadingComponent implements OnInit, OnDestroy {
+  progress: number = 0;
+  loadingText: string = 'Loading...';
+  private subscription: Subscription = new Subscription();
+  private loadingTexts: string[] = [
+    'Loading...',
+    'Almost there...',
+    'Preparing content...',
+    'Just a moment...',
+  ];
+  private textInterval: any;
+  private isBrowser: boolean;
+
+  constructor(
+    private loadingService: LoadingService,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {
+    this.isBrowser = isPlatformBrowser(this.platformId);
+  }
+
+  ngOnInit() {
+    if (this.isBrowser) {
+      // Only subscribe to loading progress updates in browser environment
+      this.subscription.add(
+        this.loadingService.loadingProgress$.subscribe((progress: number) => {
+          this.progress = progress;
+          this.updateLoadingText(progress);
+        })
+      );
+
+      // Only start text cycle in browser environment
+      this.startTextCycle();
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.isBrowser) {
+      this.subscription.unsubscribe();
+      if (this.textInterval) {
+        clearInterval(this.textInterval);
+      }
+    }
+  }
+
+  private startTextCycle() {
+    if (this.isBrowser) {
+      let index = 0;
+      this.textInterval = setInterval(() => {
+        this.loadingText = this.loadingTexts[index];
+        index = (index + 1) % this.loadingTexts.length;
+      }, 2000);
+    }
+  }
+
+  private updateLoadingText(progress: number) {
+    if (this.isBrowser) {
+      if (progress > 80) {
+        this.loadingText = 'Almost there...';
+      } else if (progress > 50) {
+        this.loadingText = 'Preparing content...';
+      }
+    }
+  }
+}
