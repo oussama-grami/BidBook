@@ -13,9 +13,9 @@ export const routeAnimations = trigger('routeAnimations', [
         height: '100%',
       }),
     ], { optional: true }),
-    query(':enter', [style({ opacity: 0 })], { optional: true }),
-    query(':leave', [animate('300ms ease-out', style({ opacity: 0 }))], { optional: true }),
-    query(':enter', [animate('300ms ease-in', style({ opacity: 1 }))], { optional: true }),
+    query(':enter', [style({ opacity: 0, filter: 'blur(4px)' })], { optional: true }),
+    query(':leave', [animate('400ms cubic-bezier(0.4, 0.0, 0.2, 1)', style({ opacity: 0, filter: 'blur(4px)' }))], { optional: true }),
+    query(':enter', [animate('400ms 150ms cubic-bezier(0.4, 0.0, 0.2, 1)', style({ opacity: 1, filter: 'blur(0)' }))], { optional: true }),
   ]),
   
   // Slide left animation (for forward navigation)
@@ -55,11 +55,13 @@ export const routeAnimations = trigger('routeAnimations', [
     ], { optional: true }),
     group([
       query(':leave', [
-        animate('400ms ease-out', style({ transform: 'translateX(100%)', opacity: 0 })),
+        animate('500ms cubic-bezier(0.4, 0.0, 0.2, 1)', 
+          style({ transform: 'translateX(100%)', opacity: 0, filter: 'blur(4px)' })),
       ], { optional: true }),
       query(':enter', [
-        style({ transform: 'translateX(-100%)', opacity: 0 }),
-        animate('400ms ease-out', style({ transform: 'translateX(0%)', opacity: 1 })),
+        style({ transform: 'translateX(-100%)', opacity: 0, filter: 'blur(4px)' }),
+        animate('500ms 100ms cubic-bezier(0.4, 0.0, 0.2, 1)', 
+          style({ transform: 'translateX(0%)', opacity: 1, filter: 'blur(0)' })),
       ], { optional: true }),
     ]),
   ]),

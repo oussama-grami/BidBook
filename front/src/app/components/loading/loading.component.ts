@@ -19,13 +19,10 @@ import { trigger, transition, style, animate } from '@angular/animations';
   template: `
     <div class="loading-container" [@fadeInOut]="'in'">
       <div class="spinner-wrapper">
-        <p-progress-spinner
-          styleClass="custom-spinner"
-          strokeWidth="3"
-          fill="var(--surface-ground)"
-          animationDuration=".7s"
-        >
-        </p-progress-spinner>
+        <div class="elegant-spinner">
+          <div class="spinner-inner"></div>
+          <div class="spinner-inner-secondary"></div>
+        </div>
         <div class="loading-text">{{ loadingText }}</div>
         <div class="progress-container">
           <p-progressBar
@@ -33,6 +30,11 @@ import { trigger, transition, style, animate } from '@angular/animations';
             [showValue]="false"
             styleClass="custom-progress"
           ></p-progressBar>
+        </div>
+        <div class="loading-dots">
+          <span></span>
+          <span></span>
+          <span></span>
         </div>
       </div>
     </div>
@@ -48,42 +50,131 @@ import { trigger, transition, style, animate } from '@angular/animations';
         display: flex;
         justify-content: center;
         align-items: center;
-        background-color: rgba(255, 255, 255, 0.9);
-        backdrop-filter: blur(5px);
-        z-index: 1000;
-        animation: fadeIn 0.3s ease-in-out;
+        background-color: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(8px);
+        z-index: 9999;
       }
 
       .spinner-wrapper {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 1rem;
-        animation: scaleIn 0.4s ease-out;
-        min-width: 200px;
+        background-color: white;
+        padding: 2rem;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        animation: pulse 2s infinite ease-in-out;
+      }
+      
+      @keyframes pulse {
+        0% { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); }
+        50% { box-shadow: 0 10px 30px rgba(45, 104, 254, 0.15); }
+        100% { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); }
+      }
+      
+      .elegant-spinner {
+        width: 60px;
+        height: 60px;
+        position: relative;
+        margin-bottom: 1rem;
+      }
+      
+      .spinner-inner {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        border: 3px solid transparent;
+        border-top-color: var(--primary-color, #2D68FE);
+        animation: spin 1.5s linear infinite;
+      }
+      
+      .spinner-inner-secondary {
+        position: absolute;
+        width: 80%;
+        height: 80%;
+        top: 10%;
+        left: 10%;
+        border-radius: 50%;
+        border: 3px solid transparent;
+        border-top-color: var(--primary-light-color, #5B8DEF);
+        animation: spin 2s linear infinite reverse;
+      }
+      
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      
+      .loading-dots {
+        display: flex;
+        margin-top: 0.5rem;
+      }
+      
+      .loading-dots span {
+        width: 8px;
+        height: 8px;
+        margin: 0 4px;
+        border-radius: 50%;
+        background-color: var(--primary-color, #2D68FE);
+        animation: dots 1.5s infinite ease-in-out;
+      }
+      
+      .loading-dots span:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      
+      .loading-dots span:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+      
+      @keyframes dots {
+        0%, 100% { transform: scale(0.6); opacity: 0.6; }
+        50% { transform: scale(1); opacity: 1; }
       }
 
       .progress-container {
         width: 100%;
         margin-top: 0.5rem;
+        position: relative;
+        overflow: hidden;
+        border-radius: 8px;
       }
 
       :host ::ng-deep .custom-progress {
         height: 6px;
-        border-radius: 3px;
+        border-radius: 8px;
+        overflow: hidden;
       }
 
       :host ::ng-deep .custom-progress .p-progressbar-value {
-        background: var(--primary-color);
+        background: linear-gradient(90deg, var(--primary-color, #2D68FE), var(--primary-light-color, #5B8DEF));
+        box-shadow: 0 0 10px rgba(45, 104, 254, 0.5);
+        animation: shimmer-progress 2s infinite linear;
+        background-size: 200% 100%;
         transition: width 0.3s ease;
+      }
+      
+      @keyframes shimmer-progress {
+        0% { background-position: 100% 0; }
+        100% { background-position: -100% 0; }
       }
 
       .loading-text {
-        color: var(--primary-color);
-        font-size: 1rem;
+        margin: 1rem 0;
+        font-size: 1.2rem;
+        color: #333;
         font-weight: 500;
-        opacity: 0.8;
-        animation: pulse 1.5s ease-in-out infinite;
+        letter-spacing: 0.5px;
+        background: linear-gradient(90deg, var(--primary-color, #2D68FE), var(--primary-light-color, #5B8DEF));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: shimmer 2s infinite linear;
+      }
+      
+      @keyframes shimmer {
+        0% { background-position: -200% center; }
+        100% { background-position: 200% center; }
       }
 
       :host ::ng-deep .custom-spinner {

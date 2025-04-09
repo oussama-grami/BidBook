@@ -1,5 +1,6 @@
 import {
   Component,
+  Input,
   input,
   signal,
   Signal,
@@ -342,6 +343,8 @@ export class BookCatalogComponent {
   filteredRecommendedBooks: Book[] = [];
   filteredExploreBooks: Book[] = [];
 
+  //get data from the resolver
+  @Input() data:string ='';
   recommendedBooks: Book[] = [
     {
       id: '1',

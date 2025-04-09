@@ -1,11 +1,13 @@
 /* You can add global styles to this file, and also import other style files */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+@import './app/shared/enhanced-styles.css';
 
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
   font-family: 'Poppins', sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 body {
@@ -14,18 +16,36 @@ body {
   background-color: #f8f9fa;
   min-height: 100vh;
   overflow-x: hidden;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #333;
 }
 
 /* Ensure consistent background for all major containers */
 .surface-ground,
 .surface-card{
   background-color: #f8f9fa !important;
+  transition: background-color 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) !important;
 }
 
 /* Add subtle contrast for card elements */
 .surface-card {
-  border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+/* Enhanced PrimeNG button styles */
+.p-button {
+  transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) !important;
+  border-radius: 8px !important;
+  font-weight: 500 !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05) !important;
+}
+
+.p-button:hover:not(.p-disabled) {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
 }
 
 /* Override PrimeNG disabled button styles */
@@ -39,4 +59,15 @@ body {
 .p-button:disabled .p-button-label {
   color: white !important;
   opacity: 0.9 !important;
+}
+
+/* Enhanced form controls */
+.p-inputtext, .p-dropdown, .p-multiselect {
+  border-radius: 8px !important;
+  transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1) !important;
+}
+
+.p-inputtext:focus, .p-dropdown:focus, .p-multiselect:focus {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 0 0 3px rgba(45, 104, 254, 0.1) !important;
 }

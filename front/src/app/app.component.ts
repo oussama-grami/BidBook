@@ -20,12 +20,11 @@ import { MenubarModule } from 'primeng/menubar';
 import { ButtonModule } from 'primeng/button';
 import { Toast } from 'primeng/toast';
 import { SideMenuComponent } from './components/side-menu/side-menu.component';
-import { LoadingComponent } from './components/loading/loading.component';
+import { ElegantLoadingComponent } from './shared/components/elegant-loading/elegant-loading.component';
 import { LoadingService } from './services/loading.service';
-import { fadeAnimation, slideAnimation } from './shared/animations';
+import { fadeAnimation, slideAnimation, fadeScaleAnimation, pulseAnimation } from './shared/animations';
 import { routeAnimations } from './shared/route-animations';
 import { AuthService } from './services/auth.service';
-import { RouteTransitionService } from './services/route-transition.service';
 import { first } from 'rxjs/operators';
 
 @Component({
@@ -38,11 +37,11 @@ import { first } from 'rxjs/operators';
     ButtonModule,
     Toast,
     SideMenuComponent,
-    LoadingComponent,
+    ElegantLoadingComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
-  animations: [fadeAnimation, slideAnimation, routeAnimations],
+  animations: [fadeAnimation, slideAnimation, fadeScaleAnimation, pulseAnimation, routeAnimations],
 })
 export class AppComponent implements OnInit {
   title = 'E-Books';
@@ -120,9 +119,6 @@ export class AppComponent implements OnInit {
 
   getRouteAnimationState(outlet: RouterOutlet) {
     if (!outlet.isActivated) return '';
-
-    const animation =
-      outlet.activatedRoute.snapshot.data?.['animation'] || 'slideLeft';
-    return animation;
+    return outlet.activatedRoute.snapshot.data?.['animation'] || 'slideLeft';
   }
 }
