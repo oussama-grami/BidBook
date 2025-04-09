@@ -3,6 +3,58 @@
   transform: translateX(0); /* Show the menu when open */
 }
 
+/* Submenu styles */
+.submenu {
+  margin-left: 20px;
+  border-left: 2px solid #EFF6FF;
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+
+.submenu .nav-item {
+  padding-left: 12px;
+}
+
+.submenu .nav-item .content {
+  padding: 8px;
+}
+
+.submenu .nav-item .content i {
+  font-size: 16px;
+}
+
+.has-submenu {
+  background-color: transparent !important;
+}
+
+.has-submenu.active {
+  background-color: transparent !important;
+}
+
+.nav-item {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.nav-item:not(.has-submenu):hover {
+  background-color: #EFF6FF;
+  transform: translateX(4px);
+}
+
+.nav-item.active:not(.has-submenu) {
+  background-color: #EFF6FF;
+  border-right: 3px solid #2D68FE;
+}
+
+/* Angle icon animation */
+.angle-icon {
+  transition: transform 0.3s ease;
+}
+
+.pi-angle-up {
+  transform: rotate(180deg);
+}
+
 /* Top Section */
 .top-section {
   display: flex;

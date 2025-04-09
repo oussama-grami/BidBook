@@ -18,12 +18,39 @@
 
   <div class="top-section">
     <div class="top-items">
-      <div *ngFor="let item of topMenuItems" class="nav-item">
+      <div
+        *ngFor="let item of topMenuItems"
+        class="nav-item"
+        [routerLink]="item.route"
+        routerLinkActive="active"
+        [class.has-submenu]="item.hasChildren"
+        [routerLinkActiveOptions]="{ exact: true && item.route === '/' }"
+      >
         <div class="content">
           <i [class]="item.icon"></i>
           <span class="label">{{ item.label }}</span>
-          <i *ngIf="item.hasChildren" class="angle-icon pi pi-angle-down"></i>
+          <i
+            *ngIf="item.hasChildren"
+            class="pi angle-icon"
+            [class.pi-angle-down]="!item.active"
+            [class.pi-angle-up]="item.active"
+            (click)="$event.stopPropagation(); item.active = !item.active"
+          ></i>
           <div *ngIf="item.badge" class="badge">{{ item.badge }}</div>
+        </div>
+        <div *ngIf="item.hasChildren && item.active" class="submenu">
+          <div
+            *ngFor="let child of item.children"
+            class="nav-item"
+            [routerLink]="child.route"
+            routerLinkActive="active"
+          >
+            <div class="content">
+              <i [class]="child.icon"></i>
+              <span class="label">{{ child.label }}</span>
+              <div *ngIf="child.badge" class="badge">{{ child.badge }}</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -31,12 +58,38 @@
 
   <div class="bottom-section">
     <div class="bottom-items">
-      <div *ngFor="let item of bottomMenuItems" class="nav-item">
+      <div
+        *ngFor="let item of bottomMenuItems"
+        class="nav-item"
+        [routerLink]="item.route"
+        routerLinkActive="active"
+        [class.has-submenu]="item.hasChildren"
+      >
         <div class="content">
           <i [class]="item.icon"></i>
           <span class="label">{{ item.label }}</span>
-          <i *ngIf="item.hasChildren" class="angle-icon pi pi-angle-down"></i>
+          <i
+            *ngIf="item.hasChildren"
+            class="pi angle-icon"
+            [class.pi-angle-down]="!item.active"
+            [class.pi-angle-up]="item.active"
+            (click)="$event.stopPropagation(); item.active = !item.active"
+          ></i>
           <div *ngIf="item.badge" class="badge">{{ item.badge }}</div>
+        </div>
+        <div *ngIf="item.hasChildren && item.active" class="submenu">
+          <div
+            *ngFor="let child of item.children"
+            class="nav-item"
+            [routerLink]="child.route"
+            routerLinkActive="active"
+          >
+            <div class="content">
+              <i [class]="child.icon"></i>
+              <span class="label">{{ child.label }}</span>
+              <div *ngIf="child.badge" class="badge">{{ child.badge }}</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -58,5 +111,4 @@
     </div>
   </div>
 </p-drawer>
-
 <div class="overlay" [class.active]="isMenuOpen" (click)="toggleMenu()"></div>
