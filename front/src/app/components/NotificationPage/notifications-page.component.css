@@ -1,12 +1,56 @@
 .notifications-container {
   display: flex;
-  flex-direction: row;
-  height: 100vh;
-  background-color: #f8f9fa;
+  flex-direction: column;
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #f8f9fa, #ffffff);
+  padding: 40px 20px;
+  padding-top: 80px; /* Added extra padding for hamburger menu */
 }
 
 .notifications-list {
   flex: 1;
+  max-width: 800px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
   padding: 20px;
-  overflow-y: auto;
+}
+
+/* Empty state */
+.no-notifications {
+  text-align: center;
+  padding: 40px;
+  color: #71839b;
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .notifications-container {
+    padding: 20px 10px;
+  }
+
+  .notifications-list {
+    padding: 10px;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .notifications-container {
+    padding: 70px 10px 10px 10px; /* Adjusted padding for mobile */
+  }
+
+  .notifications-list {
+    padding: 5px;
+    gap: 12px;
+  }
+
+  .no-notifications {
+    padding: 20px;
+    font-size: 14px;
+  }
 }
