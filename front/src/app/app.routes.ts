@@ -1,5 +1,5 @@
-import {Routes} from '@angular/router';
-import {RouteLoadingGuard} from './shared/route-loading.guard';
+import { Routes } from '@angular/router';
+import { RouteLoadingGuard } from './shared/route-loading.guard';
 
 export const routes: Routes = [
   {
@@ -12,7 +12,7 @@ export const routes: Routes = [
             (c) => c.BookCatalogComponent
           ),
         canActivate: [RouteLoadingGuard],
-        data: {animation: 'fade', isFavorite: false},
+        data: { animation: 'fade', isFavorite: false },
       },
       {
         path: 'favorite',
@@ -21,7 +21,7 @@ export const routes: Routes = [
             (c) => c.BookCatalogComponent
           ),
         canActivate: [RouteLoadingGuard],
-        data: {animation: 'slideLeft', isFavorite: true},
+        data: { animation: 'slideLeft', isFavorite: true },
       },
       {
         path: 'add',
@@ -30,7 +30,7 @@ export const routes: Routes = [
             (c) => c.AddBookComponent
           ),
         canActivate: [RouteLoadingGuard],
-        data: {animation: 'slideLeft'},
+        data: { animation: 'slideLeft' },
       },
       {
         path: ':id',
@@ -39,7 +39,7 @@ export const routes: Routes = [
             (c) => c.BookDetailsComponent
           ),
         canActivate: [RouteLoadingGuard],
-        data: {animation: 'zoom'},
+        data: { animation: 'zoom' },
       },
     ],
   },
@@ -53,7 +53,7 @@ export const routes: Routes = [
             (c) => c.DashboardComponent
           ),
         canActivate: [RouteLoadingGuard],
-        data: {animation: 'slideLeft'},
+        data: { animation: 'slideLeft' },
       },
       {
         path: 'add',
@@ -62,7 +62,7 @@ export const routes: Routes = [
             (c) => c.AddBlogComponent
           ),
         canActivate: [RouteLoadingGuard],
-        data: {animation: 'slideLeft'},
+        data: { animation: 'slideLeft' },
       },
       {
         path: ':id',
@@ -71,7 +71,7 @@ export const routes: Routes = [
             (c) => c.BlogComponent
           ),
         canActivate: [RouteLoadingGuard],
-        data: {animation: 'zoom'},
+        data: { animation: 'zoom' },
       },
     ],
   },
@@ -82,7 +82,7 @@ export const routes: Routes = [
         (c) => c.LoginPageComponent
       ),
     canActivate: [RouteLoadingGuard],
-    data: {animation: 'fade'},
+    data: { animation: 'fade' },
   },
   {
     path: 'signup',
@@ -91,7 +91,7 @@ export const routes: Routes = [
         (c) => c.SignupPageComponent
       ),
     canActivate: [RouteLoadingGuard],
-    data: {animation: 'slideLeft'},
+    data: { animation: 'slideLeft' },
   },
   {
     path: 'forget-password',
@@ -100,7 +100,7 @@ export const routes: Routes = [
         (c) => c.ForgetPasswordComponent
       ),
     canActivate: [RouteLoadingGuard],
-    data: {animation: 'fade'},
+    data: { animation: 'fade' },
   },
   {
     path: 'notifications',
@@ -109,7 +109,7 @@ export const routes: Routes = [
         (c) => c.NotificationsPageComponent
       ),
     canActivate: [RouteLoadingGuard],
-    data: {animation: 'slideLeft'},
+    data: { animation: 'slideLeft' },
   },
   {
     path: 'payment',
@@ -118,27 +118,49 @@ export const routes: Routes = [
         (c) => c.PaymentComponent
       ),
     canActivate: [RouteLoadingGuard],
-    data: {animation: 'zoom'},
+    data: { animation: 'zoom' },
   },
   {
     path: 'chat',
     loadComponent: () =>
-      import('./components/chat/chat.component').then(
-        (c) => c.ChatComponent
-      ),
+      import('./components/chat/chat.component').then((c) => c.ChatComponent),
     canActivate: [RouteLoadingGuard],
-    data: {animation: 'slideLeft'},
+    data: { animation: 'slideLeft' },
   },
   {
     path: 'transactions',
     loadComponent: () =>
-      import('./components/transactions-history/transactions-history.component').then(
-        (c) => c.TransactionsHistoryComponent
-      ),
+      import(
+        './components/transactions-history/transactions-history.component'
+      ).then((c) => c.TransactionsHistoryComponent),
     canActivate: [RouteLoadingGuard],
-    data: {animation: 'fade'},
+    data: { animation: 'fade' },
   },
-  {path: '', redirectTo: 'books', pathMatch: 'full'},
-  {path: '**', redirectTo: 'books'}
+  // Added error page routes
+  {
+    path: 'error',
+    loadComponent: () =>
+      import('./error-page/error-page.component').then(
+        (c) => c.ErrorPageComponent
+      ),
+    data: { animation: 'fade' },
+  },
+  {
+    path: 'error/:code',
+    loadComponent: () =>
+      import('./error-page/error-page.component').then(
+        (c) => c.ErrorPageComponent
+      ),
+    data: { animation: 'slideLeft' },
+  },
+  { path: '', redirectTo: 'books', pathMatch: 'full' },
+  // Wildcard route for 404 - this should be the last route
+  {
+    path: '**',
+    loadComponent: () =>
+      import('./error-page/error-page.component').then(
+        (c) => c.ErrorPageComponent
+      ),
+    data: { animation: 'fade', errorCode: 404 },
+  },
 ];
-
