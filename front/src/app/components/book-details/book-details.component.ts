@@ -1,35 +1,29 @@
-import { Component, input, Input, Signal } from '@angular/core';
-import { NgForOf } from '@angular/common';
-import {
-  trigger,
-  state,
-  style,
-  animate,
-  transition,
-} from '@angular/animations';
-import { BackArrowComponent } from '../navigation/back-arrow.component';
-import { ActivatedRoute } from '@angular/router';
+import {Component, Input} from '@angular/core';
+import {NgForOf} from '@angular/common';
+import {animate, state, style, transition, trigger,} from '@angular/animations';
+import {BackArrowComponent} from '../navigation/back-arrow.component';
+import {ActivatedRoute, RouterLink} from '@angular/router';
 
 @Component({
   selector: 'app-book-details',
   templateUrl: './book-details.component.html',
   standalone: true,
-  imports: [NgForOf, BackArrowComponent],
+  imports: [NgForOf, BackArrowComponent, RouterLink],
   styleUrls: ['./book-details.component.css'],
   animations: [
     trigger('fadeInOut', [
       transition(':enter', [
-        style({ opacity: 0, transform: 'translateY(20px)' }),
+        style({opacity: 0, transform: 'translateY(20px)'}),
         animate(
           '0.5s ease-out',
-          style({ opacity: 1, transform: 'translateY(0)' })
+          style({opacity: 1, transform: 'translateY(0)'})
         ),
       ]),
     ]),
     trigger('scaleHeart', [
       transition('* => *', [
-        animate('0.3s', style({ transform: 'scale(1.3)' })),
-        animate('0.2s', style({ transform: 'scale(1)' })),
+        animate('0.3s', style({transform: 'scale(1.3)'})),
+        animate('0.2s', style({transform: 'scale(1)'})),
       ]),
     ]),
     trigger('starRating', [

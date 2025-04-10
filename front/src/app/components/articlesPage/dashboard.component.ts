@@ -4,16 +4,8 @@ import {
   CategoryListComponent,
   BookCategory,
 } from '../booksPage/category-bar.component';
-import { ArticleCardComponent } from './articleCard.component';
+import {Article, ArticleCardComponent} from './articleCard.component';
 
-interface Article {
-  date: string;
-  title: string;
-  category: string;
-  description: string;
-  author: string;
-  imageUrl: string;
-}
 
 @Component({
   selector: 'app-dashboard',
@@ -129,6 +121,7 @@ export class DashboardComponent implements OnInit {
 
   allArticles: Article[] = [
     {
+      id: '1',
       date: '04.04.2025',
       title: 'The Timeless Appeal of Fiction Books',
       category: 'Fiction',
@@ -139,6 +132,7 @@ export class DashboardComponent implements OnInit {
         'https://cdn.builder.io/api/v1/image/assets/TEMP/65b631fa4140af2d36a9f1925933b44cb4b5e3ff',
     },
     {
+      id: '2',
       date: '04.04.2025',
       title: 'The Timeless Appeal of Fiction Books',
       category: 'Fiction',
@@ -149,6 +143,7 @@ export class DashboardComponent implements OnInit {
         'https://cdn.builder.io/api/v1/image/assets/TEMP/65b631fa4140af2d36a9f1925933b44cb4b5e3ff',
     },
     {
+      id: '3',
       date: '04.04.2025',
       title: 'The Timeless Appeal of Fiction Books',
       category: 'Fiction',
@@ -159,6 +154,7 @@ export class DashboardComponent implements OnInit {
         'https://cdn.builder.io/api/v1/image/assets/TEMP/65b631fa4140af2d36a9f1925933b44cb4b5e3ff',
     },
     {
+      id: '4',
       date: '04.04.2025',
       title: 'The Timeless Appeal of Fiction Books',
       category: 'Fiction',
@@ -169,6 +165,7 @@ export class DashboardComponent implements OnInit {
         'https://cdn.builder.io/api/v1/image/assets/TEMP/65b631fa4140af2d36a9f1925933b44cb4b5e3ff',
     },
     {
+      id: '5',
       date: '04.04.2025',
       title: 'The Timeless Appeal of Fiction Books',
       category: 'Fiction',
@@ -179,6 +176,7 @@ export class DashboardComponent implements OnInit {
         'https://cdn.builder.io/api/v1/image/assets/TEMP/65b631fa4140af2d36a9f1925933b44cb4b5e3ff',
     },
     {
+      id: '6',
       date: '04.04.2025',
       title: 'The Timeless Appeal of Fiction Books',
       category: 'Fiction',

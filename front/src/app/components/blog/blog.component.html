@@ -6,15 +6,15 @@
 
   <div class="article-content">
     <div class="article-metadata">
-      <span class="article-date">{{ article.date }}</span>
+      <span class="article-date">{{ Date() | date : 'dd.MM.yyyy' }}</span>
     </div>
 
     <div class="article-text">
-      <p>{{ article.content }}</p>
+      <p>{{ article.description }}</p>
     </div>
 
     <div class="article-tags">
-      <span class="tag">{{ article.tag }}</span>
+      <span class="tag">{{ article.category }}</span>
     </div>
 
     <div class="article-divider"></div>
@@ -25,7 +25,7 @@
         <span class="author-name">{{ article.author }}</span>
       </div>
       <div class="blog-creation-date">
-        <span>Blog created on {{ article.creationDate }}</span>
+        <span>Blog created on {{ article.date }}</span>
       </div>
     </div>
   </div>

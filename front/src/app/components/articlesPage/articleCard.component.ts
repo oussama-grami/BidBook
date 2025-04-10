@@ -1,7 +1,9 @@
-import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {Component, Input} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {RouterLink} from '@angular/router';
 
-interface Article {
+export interface Article {
+  id: string;
   date: string;
   title: string;
   category: string;
@@ -13,19 +15,23 @@ interface Article {
 @Component({
   selector: 'app-article-card',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   template: `
     <article class="article-card">
-      <img [src]="article.imageUrl" [alt]="article.title" class="card-image" />
+      <img [src]="article.imageUrl" [alt]="article.title" class="card-image"/>
       <div class="card-content">
         <time class="article-date">{{ article.date }}</time>
         <h2 class="article-title">{{ article.title }}</h2>
         <span class="category-tag">{{ article.category }}</span>
         <p class="article-description">{{ article.description }}</p>
-        <hr class="divider" />
+        <hr class="divider"/>
         <div class="card-footer">
           <span class="author-name">By {{ article.author }}</span>
-          <button class="details-link">View details</button>
+          <button
+            [routerLink]="[article.id]"
+            class="details-link">
+            View details
+          </button>
         </div>
       </div>
     </article>

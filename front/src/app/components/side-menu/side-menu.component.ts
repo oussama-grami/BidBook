@@ -72,7 +72,7 @@ export class SideMenuComponent implements OnInit {
     {
       icon: 'pi pi-history',
       label: 'History',
-      route: '/history',
+      route: '/transactions',
       hasChildren: false,
     },
   ];

@@ -3,7 +3,7 @@
 
   <div class="book-details" [@fadeInOut]>
     <div class="book-cover">
-      <img [src]="coverImage" alt="Book Cover" class="cover-image" />
+      <img [src]="coverImage" alt="Book Cover" class="cover-image"/>
     </div>
 
     <div class="book-info">
@@ -48,7 +48,8 @@
           >
             {{ isFavorite ? "❤️" : "🤍" }}
           </span>
-          <a href="#" class="view-favorites">View Favorites</a>
+          <a href="#" [routerLink]="['..','favorite']" class="view-favorites">View
+            Favorites</a>
         </div>
 
         <div class="review" [@fadeInOut]>
