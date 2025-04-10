@@ -5,12 +5,13 @@ import {
   BookCategory,
 } from '../booksPage/category-bar.component';
 import {Article, ArticleCardComponent} from './articleCard.component';
+import {RouterLink} from '@angular/router';
 
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, ArticleCardComponent, CategoryListComponent],
+  imports: [CommonModule, ArticleCardComponent, CategoryListComponent, RouterLink],
   template: `
     <main class="main-content">
       <app-category-list
@@ -27,7 +28,7 @@ import {Article, ArticleCardComponent} from './articleCard.component';
       <div *ngIf="filteredArticles.length === 0" class="no-results">
         No articles found matching your criteria
       </div>
-      <button class="add-article-btn">Add article</button>
+      <button class="add-article-btn" [routerLink]="['add']">Add article</button>
     </main>
   `,
   styles: [
