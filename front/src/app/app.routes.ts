@@ -1,5 +1,5 @@
-import { Routes } from '@angular/router';
-import { RouteLoadingGuard } from './shared/route-loading.guard';
+import {Routes} from '@angular/router';
+import {RouteLoadingGuard} from './shared/route-loading.guard';
 
 export const routes: Routes = [
   {
@@ -12,7 +12,7 @@ export const routes: Routes = [
             (c) => c.BookCatalogComponent
           ),
         canActivate: [RouteLoadingGuard],
-        data: { animation: 'fade', isFavorite: false },
+        data: {animation: 'fade', isFavorite: false},
       },
       {
         path: 'favorite',
@@ -21,7 +21,7 @@ export const routes: Routes = [
             (c) => c.BookCatalogComponent
           ),
         canActivate: [RouteLoadingGuard],
-        data: { animation: 'slideLeft', isFavorite: true },
+        data: {animation: 'slideLeft', isFavorite: true},
       },
       {
         path: 'add',
@@ -30,7 +30,7 @@ export const routes: Routes = [
             (c) => c.AddBookComponent
           ),
         canActivate: [RouteLoadingGuard],
-        data: { animation: 'slideLeft' },
+        data: {animation: 'slideLeft'},
       },
       {
         path: ':id',
@@ -39,7 +39,7 @@ export const routes: Routes = [
             (c) => c.BookDetailsComponent
           ),
         canActivate: [RouteLoadingGuard],
-        data: { animation: 'zoom' },
+        data: {animation: 'zoom'},
       },
     ],
   },
@@ -53,25 +53,25 @@ export const routes: Routes = [
             (c) => c.DashboardComponent
           ),
         canActivate: [RouteLoadingGuard],
-        data: { animation: 'slideLeft' },
+        data: {animation: 'slideLeft'},
       },
       {
         path: 'add',
         loadComponent: () =>
-          import('./components/articlesPage/dashboard.component').then(
-            (c) => c.DashboardComponent
+          import('./components/add-blog/add-blog.component').then(
+            (c) => c.AddBlogComponent
           ),
         canActivate: [RouteLoadingGuard],
-        data: { animation: 'slideLeft' },
+        data: {animation: 'slideLeft'},
       },
       {
         path: ':id',
         loadComponent: () =>
-          import('./components/articlesPage/dashboard.component').then(
-            (c) => c.DashboardComponent
+          import('./components/blog/blog.component').then(
+            (c) => c.BlogComponent
           ),
         canActivate: [RouteLoadingGuard],
-        data: { animation: 'zoom' },
+        data: {animation: 'zoom'},
       },
     ],
   },
@@ -82,7 +82,7 @@ export const routes: Routes = [
         (c) => c.LoginPageComponent
       ),
     canActivate: [RouteLoadingGuard],
-    data: { animation: 'fade' },
+    data: {animation: 'fade'},
   },
   {
     path: 'signup',
@@ -91,7 +91,7 @@ export const routes: Routes = [
         (c) => c.SignupPageComponent
       ),
     canActivate: [RouteLoadingGuard],
-    data: { animation: 'slideLeft' },
+    data: {animation: 'slideLeft'},
   },
   {
     path: 'forget-password',
@@ -100,7 +100,7 @@ export const routes: Routes = [
         (c) => c.ForgetPasswordComponent
       ),
     canActivate: [RouteLoadingGuard],
-    data: { animation: 'fade' },
+    data: {animation: 'fade'},
   },
   {
     path: 'notifications',
@@ -109,7 +109,7 @@ export const routes: Routes = [
         (c) => c.NotificationsPageComponent
       ),
     canActivate: [RouteLoadingGuard],
-    data: { animation: 'slideLeft' },
+    data: {animation: 'slideLeft'},
   },
   {
     path: 'payment',
@@ -118,34 +118,27 @@ export const routes: Routes = [
         (c) => c.PaymentComponent
       ),
     canActivate: [RouteLoadingGuard],
-    data: { animation: 'zoom' },
+    data: {animation: 'zoom'},
   },
-  { path: '', redirectTo: 'books', pathMatch: 'full' },
-  { path: '**', redirectTo: 'books' },
-import {Routes} from '@angular/router';
-import {LoginPageComponent} from './login-page/login-page.component';
-import {SignupPageComponent} from './signup-page/signup-page.component';
-import {AddBookComponent} from './add-book/add-book.component';
-import {BookCatalogComponent} from './components/booksPage/library-dashboard.component';
-import {BookDetailsComponent} from './components/book-details/book-details.component';
-import {DashboardComponent} from './components/articlesPage/dashboard.component';
-import {NotificationsPageComponent} from './components/NotificationPage/notifications-page.component';
-import {ChatComponent} from './components/chat/chat.component';
-import {BlogComponent} from './components/blog/blog.component';
-import {AddBlogComponent} from './components/add-blog/add-blog.component';
-import {TransactionsHistoryComponent} from './components/transactions-history/transactions-history.component';
-
-export const routes: Routes = [
-  {path: '', component: BookCatalogComponent},
-  {path: 'articles', component: DashboardComponent},
-  {path: 'book-details', component: BookDetailsComponent},
-  {path: 'login', component: LoginPageComponent},
-  {path: 'signup', component: SignupPageComponent},
-  {path: 'add-book', component: AddBookComponent},
-  {path: "notifications", component: NotificationsPageComponent},
-  {path:'chat',component:ChatComponent},
-  {path:'blog',component:BlogComponent},
-  {path:'addBlog',component:AddBlogComponent},
-  {path:'transactions',component:TransactionsHistoryComponent},
-  {path: '**', redirectTo: ''}
+  {
+    path: 'chat',
+    loadComponent: () =>
+      import('./components/chat/chat.component').then(
+        (c) => c.ChatComponent
+      ),
+    canActivate: [RouteLoadingGuard],
+    data: {animation: 'slideLeft'},
+  },
+  {
+    path: 'transactions',
+    loadComponent: () =>
+      import('./components/transactions-history/transactions-history.component').then(
+        (c) => c.TransactionsHistoryComponent
+      ),
+    canActivate: [RouteLoadingGuard],
+    data: {animation: 'fade'},
+  },
+  {path: '', redirectTo: 'books', pathMatch: 'full'},
+  {path: '**', redirectTo: 'books'}
 ];
+
