@@ -102,6 +102,11 @@ export class SideMenuComponent implements OnInit {
       route: '/notifications',
       badge: 2,
     },
+    {
+      icon: 'pi pi-comments',
+      label: 'Chat',
+      route: '/chat',
+    },
   ];
 
   constructor(public authService: AuthService) {}
