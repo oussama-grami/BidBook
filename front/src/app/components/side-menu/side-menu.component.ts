@@ -41,8 +41,8 @@ export class SideMenuComponent implements OnInit {
           route: '/books',
         },
         {
-          icon: 'pi pi-heart',
-          label: 'Favorites',
+          icon: 'pi pi-money-bill',
+          label: 'My Bids',
           route: '/books/favorite',
         },
         {
