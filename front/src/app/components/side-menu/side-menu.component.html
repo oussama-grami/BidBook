@@ -1,0 +1,122 @@
+<button
+  [class.menu-open]="isMenuOpen"
+  class="toggle-menu-btn"
+  (click)="toggleMenu()"
+>
+  <i class="pi pi-bars"></i>
+</button>
+
+<p-drawer
+  [(visible)]="isMenuOpen"
+  position="left"
+  [modal]="true"
+  [style]="{ width: '280px' }"
+>
+  <div class="drawer-header">
+    <img ngSrc="/images/att.wsQJL-JwNLzgqmR5zwZr5wmrC6zSC9itC7QZA-PZWbs.jpeg"
+         alt="Logo" width="64" height="64" [style]="{
+         'border-radius': '12px'
+         }"/>
+    <span class="logo-text font-bold">BidBooks</span>
+  </div>
+
+  <div class="top-section">
+    <div class="top-items">
+      <!-- Regular menu items -->
+      <div
+        *ngFor="let item of topMenuItems"
+        class="nav-item"
+        [routerLink]="item.route"
+        routerLinkActive="active"
+        [class.has-submenu]="item.hasChildren"
+      >
+        <div class="content">
+          <i [class]="item.icon"></i>
+          <span class="label">{{ item.label }}</span>
+          <i
+            *ngIf="item.hasChildren"
+            class="pi angle-icon"
+            [class.pi-angle-down]="!item.active"
+            [class.pi-angle-up]="item.active"
+            (click)="$event.stopPropagation(); item.active = !item.active"
+          ></i>
+          <div *ngIf="item.badge" class="badge">{{ item.badge }}</div>
+        </div>
+        <div *ngIf="item.hasChildren && item.active" class="submenu">
+          <div
+            *ngFor="let child of item.children"
+            class="nav-item"
+            [routerLink]="child.route"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true  }"
+          >
+            <div class="content">
+              <i [class]="child.icon"></i>
+              <span class="label">{{ child.label }}</span>
+              <div *ngIf="child.badge" class="badge">{{ child.badge }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Auth menu items for non-authenticated users -->
+      <ng-container *ngIf="!isAuthenticated">
+        <div
+          *ngFor="let item of authMenuItems"
+          class="nav-item"
+          [routerLink]="item.route"
+          routerLinkActive="active"
+        >
+          <div class="content">
+            <i [class]="item.icon"></i>
+            <span class="label">{{ item.label }}</span>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- Logout option for authenticated users -->
+      <div *ngIf="isAuthenticated" class="nav-item" (click)="onLogout()">
+        <div class="content">
+          <i class="pi pi-sign-out"></i>
+          <span class="label">Sign Out</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-section">
+    <div class="bottom-items">
+      <div
+        *ngFor="let item of bottomMenuItems"
+        class="nav-item"
+        [routerLink]="item.route"
+        routerLinkActive="active"
+      >
+        <div class="content">
+          <i [class]="item.icon"></i>
+          <span class="label">{{ item.label }}</span>
+          <div *ngIf="item.badge" class="badge">{{ item.badge }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Profile section only for authenticated users -->
+    <div class="profile" *ngIf="isAuthenticated">
+      <div class="profile-info">
+        <img
+          class="profile-picture"
+          width="40"
+          height="40"
+          [ngSrc]="'/images/person.png'"
+          alt="Profile Picture"
+        />
+        <div class="profile-details">
+          <div class="profile-name">{{ userProfile.name }}</div>
+          <div class="profile-email">{{ userProfile.email }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</p-drawer>
+
+<div class="overlay" [class.active]="isMenuOpen" (click)="toggleMenu()"></div>

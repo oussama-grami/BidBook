@@ -1,0 +1,451 @@
+.book-details-container {
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #f8f9fa, #ffffff);
+  padding: 40px;
+  position: relative;
+}
+
+.book-details {
+  display: flex;
+  gap: 60px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 30px;
+  border-radius: 30px;
+  backdrop-filter: blur(10px);
+}
+
+.book-cover {
+  flex: 0 0 auto;
+  position: relative;
+}
+
+.cover-image {
+  width: 400px;
+  height: auto;
+  border-radius: 20px;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease;
+}
+
+.cover-image:hover {
+  transform: translateY(-10px);
+}
+
+.book-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.header-section {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.genre {
+  align-self: flex-start;
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+  background: linear-gradient(135deg, #9c7350, #50719c);
+  padding: 8px 20px;
+  border-radius: 30px;
+  box-shadow: 0 4px 15px rgba(156, 115, 80, 0.2);
+}
+
+.title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 42px;
+  font-weight: 700;
+  color: #324054;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.author {
+  font-family: 'Poppins', sans-serif;
+  font-size: 24px;
+  font-weight: 500;
+  color: #71839b;
+  margin: 0;
+}
+
+.rating-section {
+  margin: 10px 0;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rating img {
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.rating img:hover {
+  transform: scale(1.2);
+}
+
+.votes {
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  color: #71839b;
+  margin-left: 10px;
+}
+
+.details-section {
+  display: flex;
+  gap: 40px;
+  align-items: center;
+  padding: 20px 0;
+  border-top: 1px solid #eef1f5;
+  border-bottom: 1px solid #eef1f5;
+}
+
+.price, .pages {
+  font-family: 'Poppins', sans-serif;
+  font-size: 18px;
+  color: #71839b;
+}
+
+.price-value, .page-count {
+  font-family: 'Poppins', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: #9c7350;
+  margin-left: 8px;
+}
+
+.description-section {
+  background-color: rgba(248, 249, 250, 0.5);
+  backdrop-filter: blur(8px);
+  padding: 25px;
+  border-radius: 15px;
+  border: 1px solid rgba(238, 241, 245, 0.3);
+}
+
+.description {
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  line-height: 1.8;
+  color: #536471;
+  margin: 0;
+}
+
+.interaction-section {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.favorites {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.heart {
+  font-size: 24px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.heart:hover {
+  transform: scale(1.2);
+}
+
+.view-favorites {
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  color: #50719c;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.view-favorites:hover {
+  color: #9c7350;
+}
+
+.review {
+  background-color: rgba(248, 249, 250, 0.5);
+  backdrop-filter: blur(8px);
+  padding: 20px;
+  border-radius: 15px;
+  border: 1px solid rgba(238, 241, 245, 0.3);
+}
+
+.review-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: #324054;
+  margin: 0 0 15px 0;
+}
+
+.review-stars {
+  display: flex;
+  gap: 8px;
+}
+
+.review-stars img {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.review-stars img:hover {
+  transform: scale(1.2);
+}
+
+.comment {
+  width: 100%;
+  height: 150px;
+  padding: 20px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  border: 2px solid rgba(238, 241, 245, 0.5);
+  border-radius: 15px;
+  resize: none;
+  transition: all 0.3s ease;
+  background-color: rgba(248, 249, 250, 0.3);
+  backdrop-filter: blur(8px);
+}
+
+.comment:focus {
+  outline: none;
+  border-color: rgba(80, 113, 156, 0.5);
+  box-shadow: 0 0 0 4px rgba(80, 113, 156, 0.1);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.cta {
+  font-family: 'Poppins', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: white;
+  background: linear-gradient(135deg, #50719c, #9c7350);
+  padding: 15px 30px;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(80, 113, 156, 0.2);
+  align-self: center;
+}
+
+.cta:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(80, 113, 156, 0.3);
+}
+
+.cta:active {
+  transform: translateY(-1px);
+}
+
+.back-arrow {
+  position: absolute;
+  top: 30px;
+  right: 40px;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.back-arrow:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.back-arrow img {
+  width: 24px;
+  height: 24px;
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+
+.back-arrow:hover img {
+  opacity: 1;
+}
+
+@media (max-width: 1200px) {
+  .book-details {
+    gap: 40px;
+  }
+
+  .cover-image {
+    width: 300px;
+  }
+
+  .title {
+    font-size: 36px;
+  }
+}
+
+@media (max-width: 991px) {
+  .book-details-container {
+    padding: 20px;
+  }
+
+  .book-details {
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    gap: 30px;
+  }
+
+  .book-cover {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .cover-image {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+  }
+
+  .book-info {
+    width: 100%;
+    align-items: center;
+    gap: 25px;
+  }
+
+  .header-section {
+    width: 100%;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+  }
+
+  .genre {
+    align-self: center;
+  }
+
+  .rating {
+    justify-content: center;
+  }
+
+  .details-section {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    text-align: center;
+  }
+
+  .description-section {
+    width: 100%;
+    text-align: center;
+  }
+
+  .favorites {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .review {
+    width: 100%;
+    text-align: center;
+  }
+
+  .review-stars {
+    justify-content: center;
+  }
+
+  .interaction-section {
+    width: 100%;
+    align-items: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .book-details-container {
+    padding: 10px;
+    padding-top: 70px;
+  }
+
+  .book-details {
+    padding: 15px;
+    border-radius: 20px;
+    gap: 25px;
+  }
+
+  .book-info {
+    gap: 20px;
+  }
+
+  .title {
+    font-size: 28px;
+  }
+
+  .author {
+    font-size: 20px;
+  }
+
+  .genre {
+    font-size: 14px;
+    padding: 6px 16px;
+  }
+
+  .details-section {
+    flex-direction: column;
+    gap: 15px;
+    padding: 15px 0;
+  }
+
+  .price, .pages {
+    font-size: 16px;
+  }
+
+  .price-value, .page-count {
+    font-size: 20px;
+  }
+
+  .description {
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  .comment {
+    height: 120px;
+    font-size: 15px;
+    padding: 15px;
+  }
+
+  .cta {
+    width: 100%;
+    max-width: 300px;
+    font-size: 16px;
+    padding: 12px 25px;
+  }
+
+  .review-title {
+    font-size: 16px;
+  }
+
+  .review-stars img {
+    width: 22px;
+    height: 22px;
+  }
+}

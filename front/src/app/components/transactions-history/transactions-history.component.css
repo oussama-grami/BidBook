@@ -1,0 +1,228 @@
+/* transaction-history.component.scss */
+.transaction-history-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+/* Filter Card Styles */
+.filter-card {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin-bottom: 24px;
+}
+
+.filter-section {
+  margin-bottom: 24px;
+
+  &:last-of-type {
+    margin-bottom: 32px;
+  }
+}
+
+.filter-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 16px;
+}
+
+/* Period Buttons */
+.period-buttons, .status-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.period-btn, .status-btn {
+  padding: 8px 16px;
+  background-color: #f5f5f5;
+  border: none;
+  border-radius: 20px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: #e0e0e0;
+  }
+
+  &.selected {
+    background-color: #dbe4f6;
+    color: #4a73b0;
+  }
+}
+
+/* Date Range Selector */
+.date-range {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.date-input {
+  position: relative;
+  flex: 1;
+
+  input {
+    width: 100%;
+    padding: 10px 10px 10px 35px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+
+  .calendar-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+    font-size: 18px;
+    pointer-events: none;
+  }
+
+  /* Customizing the Material datepicker toggle button */
+  ::ng-deep .mat-datepicker-toggle {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+
+    .mat-icon-button {
+      width: 40px;
+      height: 40px;
+      line-height: 40px;
+    }
+  }
+}
+
+.separator {
+  font-size: 16px;
+  color: #666;
+}
+
+/* Search Button */
+.search-button-container {
+  text-align: center;
+}
+
+.search-btn {
+  background-color: #5f81b0;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  padding: 12px 40px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: #4a73b0;
+  }
+}
+
+/* Transactions List */
+.transactions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.transaction-item {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.transaction-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.transaction-direction {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.transaction-amount {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.transaction-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.transaction-type {
+  font-size: 14px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 8px;
+
+  &.bought {
+    background-color: #ffeaea;
+    color: #ff6b6b;
+  }
+
+  &.sold {
+    background-color: #e6fff0;
+    color: #00c853;
+  }
+}
+
+.transaction-date {
+  font-size: 14px;
+  color: #888;
+}
+
+/* Material datepicker customizations */
+::ng-deep .mat-calendar {
+  background-color: #dbe4f6;
+  border-radius: 8px;
+}
+
+::ng-deep .mat-calendar-body-selected {
+  background-color: #5f81b0;
+}
+
+::ng-deep .mat-calendar-body-today:not(.mat-calendar-body-selected) {
+  border-color: #5f81b0;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 600px) {
+  .date-range {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .separator {
+    text-align: center;
+    margin: 5px 0;
+  }
+
+  .transaction-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .transaction-meta {
+    margin-top: 16px;
+    align-items: flex-start;
+    align-self: stretch;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}

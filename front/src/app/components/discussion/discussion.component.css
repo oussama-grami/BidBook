@@ -1,0 +1,106 @@
+/* discussion.component.scss */
+.message-detail {
+  flex: 1;
+  height: 100%;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  width: 100%;
+}
+
+.detail-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px 20px;
+}
+
+.detail-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #000;
+}
+
+.detail-divider {
+  height: 1px;
+  background-color: #E5E5EA;
+  width: 100%;
+}
+
+.conversation-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+  background-color: #F2F2F7;
+  padding: 16px;
+}
+
+.message-bubbles {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 16px;
+}
+
+.message-bubble {
+  display: flex;
+  margin-bottom: 12px;
+  max-width: 70%;
+}
+
+.message-bubble.received {
+  align-self: flex-start;
+}
+
+.message-bubble.sent {
+  align-self: flex-end;
+}
+
+.bubble-content {
+  padding: 10px 16px;
+  border-radius: 18px;
+  font-size: 16px;
+}
+
+.received .bubble-content {
+  background-color: #E5E5EA;
+  color: #000;
+}
+
+.sent .bubble-content {
+  background-color: #007AFF;
+  color: white;
+}
+
+.bubble-content p {
+  margin: 0;
+  word-wrap: break-word;
+}
+
+.message-input-container {
+  padding: 10px 0;
+  background-color: #F2F2F7;
+}
+
+.message-input-wrapper {
+  background-color: white;
+  border-radius: 20px;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+}
+
+.message-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  color: #000;
+}
+
+.message-input::placeholder {
+  color: #8E8E93;
+}

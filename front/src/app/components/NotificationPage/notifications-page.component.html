@@ -1,0 +1,9 @@
+<div class="notifications-container">
+  <div class="notifications-list gap-5 flex-column flex">
+    <app-notification-element
+      *ngFor="let notification of notifications; let i = index"
+      [notification]="notification"
+      (close)="removeNotification(i)"
+    ></app-notification-element>
+  </div>
+</div>

@@ -1,0 +1,204 @@
+<div class="surface-ground">
+  <div class="grid">
+    <!-- Cart Summary Section -->
+    <div class="col-12 lg:col-5">
+      <div class="surface-card p-4">
+        <h2 class="text-2xl font-bold mb-4">Order Summary</h2>
+        <div class="overflow-y-auto">
+          <div
+            *ngFor="let item of cartItems"
+            class="flex align-items-center mb-3 pb-3 border-bottom-1 surface-border"
+          >
+            <div class="book-image mr-3">
+              <p-image
+                [src]="item.imageUrl"
+                [alt]="item.title"
+                [preview]="true"
+                imageClass="book-img"
+              >
+              </p-image>
+            </div>
+            <div class="flex-1">
+              <span class="block font-medium mb-2">{{ item.title }}</span>
+              <span class="text-primary">${{ item.price.toFixed(2) }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="border-top-2 surface-border pt-3 mt-3">
+          <div class="flex justify-content-between mb-3">
+            <span class="text-600">Subtotal</span>
+            <span class="text-900">${{ subtotal.toFixed(2) }}</span>
+          </div>
+          <div class="flex justify-content-between mb-3">
+            <span class="text-600">Tax</span>
+            <span class="text-900">${{ tax.toFixed(2) }}</span>
+          </div>
+          <div
+            class="flex justify-content-between font-bold border-top-1 surface-border pt-3"
+          >
+            <span class="text-900">Total</span>
+            <span class="text-900">${{ totalAmount.toFixed(2) }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Payment Form Section -->
+    <div class="col-12 lg:col-6">
+      <div class="surface-card">
+        <div class="surface-card border-round p-4 shadow-2">
+          <div
+            class="flex justify-content-between align-items-center border-bottom-1 surface-border pb-3 mb-4"
+          >
+            <div class="flex align-items-center gap-2">
+              <i class="pi pi-lock text-green-500"></i>
+              <span class="text-600">Secure Payment</span>
+            </div>
+            <div class="flex gap-3">
+              <img
+                src="/images/visa.svg"
+                alt="Visa"
+                class="card-brand-image"
+                [class.active]="activeCardType === 'visa'"
+              />
+              <img
+                src="/images/mastercard.svg"
+                alt="Mastercard"
+                class="card-brand-image"
+                [class.active]="activeCardType === 'mastercard'"
+              />
+            </div>
+          </div>
+
+          <form
+            [formGroup]="paymentForm"
+            (ngSubmit)="onSubmit()"
+            class="flex flex-column gap-4"
+            [@formFields]
+          >
+            <div class="form-field">
+              <span class="p-float-label w-full">
+                <p-inputMask
+                  formControlName="cardNumber"
+                  mask="9999 9999 9999 9999"
+                  styleClass="w-full"
+                  [class]="{
+                    'ng-dirty ng-invalid':
+                      paymentForm.get('cardNumber')?.touched &&
+                      paymentForm.get('cardNumber')?.invalid
+                  }"
+                >
+                </p-inputMask>
+                <label>Card Number</label>
+              </span>
+              <small
+                *ngIf="
+                  paymentForm.get('cardNumber')?.touched &&
+                  paymentForm.get('cardNumber')?.invalid
+                "
+                class="error-message"
+              >
+                {{ getErrorMessage("cardNumber") }}
+              </small>
+            </div>
+
+            <div class="grid formgrid m-0">
+              <div class="col-12 md:col-5 p-0 md:pr-3 form-field">
+                <span class="p-float-label w-full">
+                  <p-inputMask
+                    formControlName="expiryDate"
+                    mask="99/99"
+                    styleClass="w-full"
+                    [class]="{
+                      'ng-dirty ng-invalid':
+                        paymentForm.get('expiryDate')?.touched &&
+                        paymentForm.get('expiryDate')?.invalid
+                    }"
+                  >
+                  </p-inputMask>
+                  <label>Expiry Date (MM/YY)</label>
+                </span>
+                <small
+                  *ngIf="
+                    paymentForm.get('expiryDate')?.touched &&
+                    paymentForm.get('expiryDate')?.invalid
+                  "
+                  class="error-message"
+                >
+                  {{ getErrorMessage("expiryDate") }}
+                </small>
+              </div>
+
+              <div class="col-12 md:col-5 p-0 md:pl-3 form-field">
+                <span class="p-float-label w-full">
+                  <p-password
+                    formControlName="cvc"
+                    [feedback]="false"
+                    [toggleMask]="true"
+                    styleClass="w-full"
+                    [class]="{
+                      'ng-dirty ng-invalid':
+                        paymentForm.get('cvc')?.touched &&
+                        paymentForm.get('cvc')?.invalid
+                    }"
+                  >
+                  </p-password>
+                  <label>CVC</label>
+                </span>
+                <small
+                  *ngIf="
+                    paymentForm.get('cvc')?.touched &&
+                    paymentForm.get('cvc')?.invalid
+                  "
+                  class="error-message"
+                >
+                  {{ getErrorMessage("cvc") }}
+                </small>
+              </div>
+            </div>
+
+            <div class="form-field">
+              <span class="p-float-label w-full">
+                <input
+                  pInputText
+                  formControlName="cardName"
+                  class="w-full"
+                  [class]="{
+                    'ng-dirty ng-invalid':
+                      paymentForm.get('cardName')?.touched &&
+                      paymentForm.get('cardName')?.invalid
+                  }"
+                />
+                <label>Name on Card</label>
+              </span>
+              <small
+                *ngIf="
+                  paymentForm.get('cardName')?.touched &&
+                  paymentForm.get('cardName')?.invalid
+                "
+                class="error-message"
+              >
+                {{ getErrorMessage("cardName") }}
+              </small>
+            </div>
+
+            <p-button
+              type="submit"
+              [label]="
+                isProcessing
+                  ? 'Processing...'
+                  : 'Pay $' + totalAmount.toFixed(2)
+              "
+              [loading]="isProcessing"
+              [disabled]="paymentForm.invalid || isProcessing"
+              styleClass="w-full"
+              severity="primary"
+            >
+            </p-button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

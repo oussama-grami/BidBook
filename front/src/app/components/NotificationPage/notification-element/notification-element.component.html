@@ -1,0 +1,12 @@
+<div class="notification-container">
+  <button class="close-button bg-red-600" (click)="closeNotification()">
+    <i class="pi pi-times text-white"></i>
+  </button>
+  <div class="notification-header">
+    <span class="notification-title">{{ notification.title }}</span>
+    <span class="notification-time">{{ notification.time }}</span>
+  </div>
+  <div class="notification-body">
+    {{ notification.message }}
+  </div>
+</div>
