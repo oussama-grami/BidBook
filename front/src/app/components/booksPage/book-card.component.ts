@@ -211,13 +211,15 @@ import { RouterModule } from '@angular/router';
       }
 
       .category-badge {
-        background-color: #fbbf24;
+        display: inline-block;
+        background-color: #9c7350;
         color: white;
         padding: 4px 8px;
         border-radius: 12px;
         font-size: 12px;
         font-weight: 600;
         margin-bottom: 10px;
+        width: fit-content;
       }
 
       .book-meta {
