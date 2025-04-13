@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome to Our Book Community!</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .header {
+      text-align: center;
+      padding: 20px 0;
+      border-bottom: 2px solid #f0f0f0;
+    }
+
+    .logo {
+      max-width: 150px;
+      height: auto;
+    }
+
+    .welcome-message {
+      background-color: #f9f9f9;
+      border-left: 4px solid #0066cc;
+      padding: 15px;
+      margin: 20px 0;
+    }
+
+    .button {
+      display: inline-block;
+      background-color: #0066cc;
+      color: white;
+      padding: 12px 24px;
+      text-decoration: none;
+      border-radius: 4px;
+      margin: 20px 0;
+    }
+
+    .footer {
+      margin-top: 30px;
+      font-size: 12px;
+      text-align: center;
+      color: #777;
+      border-top: 1px solid #eee;
+      padding-top: 20px;
+    }
+
+    .social-links {
+      margin: 15px 0;
+    }
+
+    .social-links a {
+      margin: 0 10px;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+<div class="header">
+  <img src="{{logoUrl}}" alt="Book Community Logo" class="logo">
+  <h1>Welcome to Our Book Community!</h1>
+</div>
+
+<div class="welcome-message">
+  <h2>Hello {{userName}}!</h2>
+  <p>Thank you for joining our book community. We're excited to have you on board!</p>
+  <p>Your account has been successfully created with the email:
+    <strong>{{userEmail}}</strong></p>
+</div>
+
+<h3>What you can do now:</h3>
+<ul>
+  <li>Browse our extensive collection of books</li>
+  <li>Join discussions about your favorite titles</li>
+  <li>Place bids on rare editions</li>
+  <li>Share your reviews and ratings</li>
+  <li>Connect with fellow book enthusiasts</li>
+</ul>
+
+<p>To get started with your book journey, click the button below:</p>
+<center><a href="{{exploreUrl}}" class="button">Explore Now</a></center>
+
+<p>If you have any questions or need assistance, feel free to contact our support team at
+  <a href="mailto:{{supportEmail}}">{{supportEmail}}</a>.</p>
+
+<div class="personal-touch">
+  <p>We've handpicked some recommendations based on your preferences:</p>
+  <ul>
+    {{#each bookRecommendations}}
+      <li><strong>{{this.title}}</strong> by {{this.author}} - {{this.genre}}</li>
+    {{/each}}
+  </ul>
+</div>
+
+<div class="social-links">
+  <p>Follow us to stay updated:</p>
+  <a href="{{facebookUrl}}">Facebook</a>
+  <a href="{{twitterUrl}}">Twitter</a>
+  <a href="{{instagramUrl}}">Instagram</a>
+</div>
+
+<div class="footer">
+  <p>&copy; {{currentYear}} Book Community. All rights reserved.</p>
+  <p>
+    <small>
+      You received this email because you signed up for Book Community.
+      <br>
+      To unsubscribe, <a href="{{unsubscribeUrl}}">click here</a>
+    </small>
+  </p>
+</div>
+</body>
+</html>
