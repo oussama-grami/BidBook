@@ -103,6 +103,15 @@ export const routes: Routes = [
     data: { animation: 'fade' },
   },
   {
+    path: 'mfa-setup',
+    loadComponent: () =>
+      import('./mfa-setup/mfa-setup.component').then(
+        (c) => c.MfaSetupComponent
+      ),
+    canActivate: [RouteLoadingGuard],
+    data: { animation: 'fade' },
+  },
+  {
     path: 'notifications',
     loadComponent: () =>
       import('./components/NotificationPage/notifications-page.component').then(

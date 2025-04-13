@@ -2,20 +2,88 @@
 <div class="message-detail">
   <!-- Header -->
   <div class="detail-header">
-    <span class="detail-title">{{ username }}</span>
+    <span class="detail-title text-center mx-auto" *ngIf="currentContact">{{
+      currentContact.name
+    }}</span>
+    <span class="detail-title" *ngIf="!currentContact">Select a contact</span>
+    <div class="header-actions" *ngIf="!isSearching && currentContact">
+      <button class="header-btn"><i class="pi pi-phone"></i></button>
+      <button class="header-btn"><i class="pi pi-video"></i></button>
+      <button class="header-btn"><i class="pi pi-ellipsis-v"></i></button>
+    </div>
   </div>
 
   <!-- Ligne séparatrice -->
   <div class="detail-divider"></div>
 
+  <!-- Search results indicator -->
+  <div class="search-results-banner" *ngIf="isSearching">
+    <div class="search-info">
+      <span>Search results for "{{ searchQuery }}"</span>
+      <span class="results-count">{{ filteredMessages.length }} messages</span>
+    </div>
+    <button class="close-search-btn" (click)="clearSearch()">
+      <i class="pi pi-times"></i> Close search
+    </button>
+  </div>
+
+  <!-- Empty state when no contact is selected -->
+  <div class="empty-state" *ngIf="!currentContact">
+    <div class="empty-state-content">
+      <div class="empty-icon">
+        <i class="pi pi-comments"></i>
+      </div>
+      <h3>Select a conversation</h3>
+      <p>Choose a contact from the list to start chatting</p>
+    </div>
+  </div>
+
   <!-- Contenu de la conversation -->
-  <div class="conversation-content">
-    <!-- Messages -->
-    <div class="message-bubbles">
+  <div class="conversation-content" *ngIf="currentContact">
+    <!-- Skeleton loaders while messages are loading -->
+    <div class="message-bubbles" *ngIf="!messagesLoaded">
+      <div class="skeleton-container">
+        <div class="skeleton-bubble received">
+          <p-skeleton
+            width="180px"
+            height="40px"
+            styleClass="mb-2"
+          ></p-skeleton>
+        </div>
+        <div class="skeleton-bubble sent">
+          <p-skeleton
+            width="220px"
+            height="50px"
+            styleClass="mb-2"
+          ></p-skeleton>
+        </div>
+        <div class="skeleton-bubble received">
+          <p-skeleton
+            width="150px"
+            height="40px"
+            styleClass="mb-2"
+          ></p-skeleton>
+        </div>
+        <div class="skeleton-bubble sent">
+          <p-skeleton
+            width="200px"
+            height="45px"
+            styleClass="mb-2"
+          ></p-skeleton>
+        </div>
+      </div>
+    </div>
+
+    <!-- Messages when loaded -->
+    <div class="message-bubbles" *ngIf="messagesLoaded">
       <div
-        *ngFor="let message of messages"
+        *ngFor="let message of filteredMessages"
         class="message-bubble"
         [ngClass]="message.sent ? 'sent' : 'received'"
+        [pTooltip]="(message.date | date : 'medium') ?? ''"
+        tooltipPosition="top"
+        [tooltipStyleClass]="message.sent ? 'sent-tooltip' : 'received-tooltip'"
+        tabindex="0"
       >
         <div class="bubble-content">
           <p>{{ message.text }}</p>
@@ -32,7 +100,14 @@
           class="message-input"
           [(ngModel)]="newMessage"
           (keyup.enter)="sendMessage()"
+        />
+        <button
+          class="send-button"
+          [disabled]="!newMessage.trim()"
+          (click)="sendMessage()"
         >
+          <i class="pi pi-send"></i>
+        </button>
       </div>
     </div>
   </div>

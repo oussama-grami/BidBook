@@ -1,5 +1,24 @@
 <!-- chat.component.html -->
 <div class="chat-container">
-  <app-message style="width: 30%"  (messageSelected)="onMessageSelected($event)"></app-message>
-  <app-discussion style="width: 100%" [selectedMessageId]="selectedMessageId"></app-discussion>
+  <div class="sidebar-container" [class.collapsed]="isCollapsed">
+    <app-message
+      (messageSelected)="onMessageSelected($event)"
+      (searchQueryChanged)="onSearchQueryChanged($event)"
+    >
+    </app-message>
+  </div>
+
+  <div class="main-content" [class.expanded]="isCollapsed">
+    <div class="toggle-button" (click)="toggleSidebar()">
+      <i
+        class="pi"
+        [ngClass]="isCollapsed ? 'pi-angle-right' : 'pi-angle-left'"
+      ></i>
+    </div>
+    <app-discussion
+      [selectedMessageId]="selectedMessageId"
+      [searchQuery]="searchQuery"
+    >
+    </app-discussion>
+  </div>
 </div>

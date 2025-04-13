@@ -41,8 +41,8 @@ export class SideMenuComponent implements OnInit {
           route: '/books',
         },
         {
-          icon: 'pi pi-heart',
-          label: 'Favorites',
+          icon: 'pi pi-money-bill',
+          label: 'My Bids',
           route: '/books/favorite',
         },
         {
@@ -102,6 +102,16 @@ export class SideMenuComponent implements OnInit {
       route: '/notifications',
       badge: 2,
     },
+    {
+      icon: 'pi pi-comments',
+      label: 'Chat',
+      route: '/chat',
+    },
+    {
+      icon: 'pi pi-shield',
+      label: 'Security Settings',
+      route: '/mfa-setup',
+    },
   ];
 
   constructor(public authService: AuthService) {}
@@ -119,5 +129,11 @@ export class SideMenuComponent implements OnInit {
     this.isMenuOpen = false;
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    // Update user profile with email from auth service
+    const userInfo = this.authService.getCurrentUserInfo();
+    if (userInfo.email) {
+      this.userProfile.email = userInfo.email;
+    }
+  }
 }

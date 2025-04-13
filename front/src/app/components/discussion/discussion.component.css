@@ -1,4 +1,142 @@
 /* discussion.component.scss */
+.chat-container {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Contacts sidebar */
+.contacts-sidebar {
+  width: 320px;
+  border-right: 1px solid #E5E5EA;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Search styles */
+.search-container {
+  padding: 16px;
+}
+
+.search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background-color: #F2F2F7;
+  border-radius: 10px;
+  padding: 0 10px;
+}
+
+.search-icon {
+  color: #8E8E93;
+  font-size: 16px;
+  margin-right: 8px;
+}
+
+.search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  color: #000;
+  padding: 10px 0;
+  background-color: transparent;
+}
+
+.search-input::placeholder {
+  color: #8E8E93;
+}
+
+.clear-search {
+  background: none;
+  border: none;
+  color: #8E8E93;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 8px;
+}
+
+/* Contacts list */
+.contacts-list {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.contact-item {
+  display: flex;
+  padding: 12px 16px;
+  border-bottom: 1px solid #F2F2F7;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.contact-item:hover, .contact-item.active {
+  background-color: #F2F2F7;
+}
+
+.contact-avatar {
+  position: relative;
+  margin-right: 12px;
+}
+
+.contact-avatar img {
+  width: 48px;
+  height: 48px;
+  border-radius: 24px;
+  object-fit: cover;
+}
+
+.unread-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  background-color: #FF3B30;
+  color: white;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.contact-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.contact-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.contact-name {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.contact-time {
+  font-size: 12px;
+  color: #8E8E93;
+}
+
+.contact-message {
+  margin: 0;
+  font-size: 14px;
+  color: #8E8E93;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Message detail */
 .message-detail {
   flex: 1;
   height: 100%;
@@ -11,7 +149,7 @@
 
 .detail-header {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   padding: 16px 20px;
 }
@@ -22,10 +160,59 @@
   color: #000;
 }
 
+.header-actions {
+  display: flex;
+  gap: 16px;
+}
+
+.header-btn {
+  background: none;
+  border: none;
+  color: #007AFF;
+  cursor: pointer;
+  padding: 0;
+  font-size: 18px;
+}
+
 .detail-divider {
   height: 1px;
   background-color: #E5E5EA;
   width: 100%;
+}
+
+/* Search results banner */
+.search-results-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  background-color: #F2F2F7;
+  border-bottom: 1px solid #E5E5EA;
+}
+
+.search-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.results-count {
+  font-size: 12px;
+  color: #8E8E93;
+  margin-top: 4px;
+}
+
+.close-search-btn {
+  background: none;
+  border: none;
+  color: #007AFF;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+}
+
+.close-search-btn i {
+  margin-right: 4px;
 }
 
 .conversation-content {
@@ -49,6 +236,13 @@
   display: flex;
   margin-bottom: 12px;
   max-width: 70%;
+  transition: transform 0.15s ease;
+  outline: none;
+}
+
+.message-bubble:hover, .message-bubble:focus {
+  transform: translateY(-2px);
+  cursor: pointer;
 }
 
 .message-bubble.received {
@@ -103,4 +297,117 @@
 
 .message-input::placeholder {
   color: #8E8E93;
+}
+
+.send-button {
+  background: none;
+  border: none;
+  color: #007AFF;
+  cursor: pointer;
+  padding: 0;
+  font-size: 18px;
+  margin-left: 8px;
+}
+
+.send-button:disabled {
+  color: #8E8E93;
+  cursor: default;
+}
+
+/* Custom tooltip styling */
+:host ::ng-deep .sent-tooltip {
+  background-color: #007AFF !important;
+  color: white !important;
+}
+
+:host ::ng-deep .received-tooltip {
+  background-color: #E5E5EA !important;
+  color: #000 !important;
+}
+
+/* Empty state when no contact is selected */
+.empty-state {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  background-color: #F2F2F7;
+  padding: 20px;
+}
+
+.empty-state-content {
+  text-align: center;
+  max-width: 300px;
+}
+
+.empty-icon {
+  font-size: 48px;
+  color: #8E8E93;
+  margin-bottom: 16px;
+}
+
+.empty-state-content h3 {
+  font-size: 20px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.empty-state-content p {
+  font-size: 14px;
+  color: #8E8E93;
+}
+
+/* Skeleton styling - making them more visible */
+.skeleton-container {
+  padding: 16px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background-color: #F2F2F7;
+}
+
+.skeleton-bubble {
+  display: flex;
+  max-width: 70%;
+}
+
+.skeleton-bubble.sent {
+  align-self: flex-end;
+  margin-right: 10px;
+}
+
+.skeleton-bubble.received {
+  align-self: flex-start;
+  margin-left: 10px;
+}
+
+/* Make skeletons more visible with darker colors and borders */
+.skeleton-bubble.sent ::ng-deep .p-skeleton {
+  background-color: rgba(0, 122, 255, 0.4) !important;
+  border-radius: 18px !important;
+  border: 1px solid rgba(0, 122, 255, 0.6) !important;
+}
+
+.skeleton-bubble.received ::ng-deep .p-skeleton {
+  background-color: rgba(200, 200, 210, 0.95) !important;
+  border-radius: 18px !important;
+  border: 1px solid rgba(180, 180, 190, 0.95) !important;
+}
+
+/* Pulse animation for better visibility */
+.skeleton-bubble ::ng-deep .p-skeleton::after {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent) !important;
+  animation: pulse 1.5s infinite !important;
+}
+
+@keyframes pulse {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
 }

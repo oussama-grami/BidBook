@@ -15,70 +15,63 @@ import { RouterModule } from '@angular/router';
   standalone: true,
   imports: [CommonModule, RouterModule],
   template: `
-    <a 
-    [style]="{ textDecoration: 'none' }"
-    [routerLink]="['/books', book.id]">
+    <div
+      class="book-card"
+      [class.special]="special"
+      [@cardHover]="isHovered ? 'hovered' : 'normal'"
+      (mouseenter)="isHovered = true"
+      (mouseleave)="isHovered = false"
+    >
       <div
-        class="book-card"
-        [class.special]="special"
-        [@cardHover]="isHovered ? 'hovered' : 'normal'"
-        (mouseenter)="isHovered = true"
-        (mouseleave)="isHovered = false"
+        class="book-image-container"
+        [attr.data-label]="!isFavorite ? 'Recommended' : 'Bidden'"
+        [ngClass]="{ 'ribbon-lower': !isFavorite, 'ribbon-higher': isFavorite }"
       >
-        <div class="book-image-container">
-          <img [src]="book.imageUrl" [alt]="book.title" class="book-image" />
-          <div class="overlay">
-            <span class="read-more">Read More</span>
-          </div>
+        <img [src]="book.imageUrl" [alt]="book.title" class="book-image" />
+        <div class="overlay">
+          <span class="read-more" [routerLink]="['/books', book.id]"
+            >Read More</span
+          >
         </div>
-        <div class="book-info">
-          <h3 class="book-title">{{ book.title }}</h3>
-          <div class="book-meta">
-            <div class="rating">
-              <div class="stars">
-                <span *ngFor="let star of [1, 2, 3, 4, 5]" class="star">
-                  <i
-                    class="pi"
-                    [class.pi-star-fill]="star <= book.rating"
-                    [class.pi-star]="star > book.rating"
-                  ></i>
-                </span>
-              </div>
-              <span class="rating-count">{{ book.rating }}/5</span>
+      </div>
+      <div class="book-info">
+        <h3 class="book-title">{{ book.title }}</h3>
+        <div class="category-badge" *ngIf="book.category">
+          {{ book.category }}
+        </div>
+        <div class="book-meta">
+          <div class="rating">
+            <div class="stars">
+              <span *ngFor="let star of [1, 2, 3, 4, 5]" class="star">
+                <i
+                  class="pi"
+                  [class.pi-star-fill]="star <= book.rating"
+                  [class.pi-star]="star > book.rating"
+                ></i>
+              </span>
             </div>
-            <div class="meta-details">
+            <span class="rating-count">{{ book.rating }}/5</span>
+          </div>
+          <div class="meta-details">
+            <div class="meta-stats">
               <span class="comments">
                 <i class="pi pi-comments"></i>
                 {{ book.comments }}
               </span>
+              <span class="likes">
+                <i class="pi pi-heart-fill"></i>
+                {{ book.likes }}
+              </span>
               <span class="days-ago">{{ book.daysAgo }} days ago</span>
             </div>
+            <button class="bid-button" [routerLink]="['/books', book.id]">
+              Bid
+            </button>
           </div>
         </div>
       </div>
-    </a>
+    </div>
   `,
-  animations: [
-    trigger('cardHover', [
-      state(
-        'normal',
-        style({
-          transform: 'translateY(0)',
-          boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
-        })
-      ),
-      state(
-        'hovered',
-        style({
-          transform: 'translateY(-10px)',
-          boxShadow: '0 20px 30px rgba(0, 0, 0, 0.15)',
-        })
-      ),
-      transition('normal <=> hovered', [
-        animate('300ms cubic-bezier(0.4, 0, 0.2, 1)'),
-      ]),
-    ]),
-  ],
   styles: [
     `
       .book-card {
@@ -115,9 +108,8 @@ import { RouterModule } from '@angular/router';
       }
 
       .book-card.special .book-image-container::after {
-        content: 'Recommended';
+        content: attr(data-label);
         position: absolute;
-        top: 30px;
         left: -35px;
         background: linear-gradient(90deg, #9c7350, #50719c);
         color: white;
@@ -126,6 +118,14 @@ import { RouterModule } from '@angular/router';
         font-size: 12px;
         font-weight: 600;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+
+      .book-image-container.ribbon-lower::after {
+        top: 30px;
+      }
+
+      .book-image-container.ribbon-higher::after {
+        top: 18px;
       }
 
       .book-card.special:hover {
@@ -182,6 +182,8 @@ import { RouterModule } from '@angular/router';
         border-radius: 25px;
         transform: translateY(20px);
         transition: all 0.3s ease;
+        cursor: pointer;
+        text-decoration: none;
       }
 
       .book-card:hover .read-more {
@@ -206,6 +208,18 @@ import { RouterModule } from '@angular/router';
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
+      }
+
+      .category-badge {
+        display: inline-block;
+        background-color: #9c7350;
+        color: white;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 600;
+        margin-bottom: 10px;
+        width: fit-content;
       }
 
       .book-meta {
@@ -243,18 +257,54 @@ import { RouterModule } from '@angular/router';
         font-size: 13px;
       }
 
-      .comments {
+      .meta-stats {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .comments,
+      .likes {
         display: flex;
         align-items: center;
         gap: 5px;
       }
 
-      .comments i {
+      .comments i,
+      .likes i {
         font-size: 14px;
+      }
+
+      .likes i {
+        color: #9c7350;
       }
 
       .days-ago {
         color: #94a3b8;
+        display: block;
+        font-size: 12px;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .bid-button {
+        font-family: 'Poppins', sans-serif;
+        background-color: #50719c;
+        color: white;
+        border: none;
+        border-radius: 20px;
+        padding: 6px 16px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .bid-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(80, 113, 156, 0.3);
+        background-color: #445e82;
       }
 
       @media (max-width: 640px) {
@@ -279,12 +329,39 @@ import { RouterModule } from '@angular/router';
         .meta-details {
           font-size: 12px;
         }
+
+        .bid-button {
+          padding: 4px 12px;
+          font-size: 11px;
+        }
       }
     `,
+  ],
+  animations: [
+    trigger('cardHover', [
+      state(
+        'normal',
+        style({
+          transform: 'translateY(0)',
+          boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
+        })
+      ),
+      state(
+        'hovered',
+        style({
+          transform: 'translateY(-10px)',
+          boxShadow: '0 20px 30px rgba(0, 0, 0, 0.15)',
+        })
+      ),
+      transition('normal <=> hovered', [
+        animate('300ms cubic-bezier(0.4, 0, 0.2, 1)'),
+      ]),
+    ]),
   ],
 })
 export class BookCardComponent {
   @Input() book!: Book;
   @Input() special: boolean = false;
+  @Input() isFavorite: boolean = false;
   isHovered: boolean = false;
 }

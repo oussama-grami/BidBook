@@ -25,6 +25,7 @@ export interface Book {
   imageUrl: string;
   rating: number;
   comments: number;
+  likes?: number; // Adding likes property
   daysAgo: number;
   category?: BookCategory;
 }
@@ -43,7 +44,7 @@ export type BookCategory =
   template: `
     <main class="catalog-container" [@fadeIn]>
       <h1 *ngIf="isFavorite()" class="favorites-title" [@slideInRight]>
-        Favorites
+        My Bids
       </h1>
       <app-category-list
         [categories]="categories"
@@ -52,19 +53,21 @@ export type BookCategory =
         (searchChanged)="onSearchChange($event)"
       >
       </app-category-list>
-
       <section class="recommended-section">
+        @if(! isFavorite()){
         <h2 class="section-title" [@slideInRight]>Recommended</h2>
+        }
         <div class="books-grid" [@booksAnimation]>
           <app-book-card
             *ngFor="let book of filteredRecommendedBooks"
             [book]="book"
             [special]="true"
+            [isFavorite]="isFavorite()"
           >
           </app-book-card>
         </div>
       </section>
-
+      @if(! isFavorite()) {
       <section class="explore-section">
         <h2 class="section-title" [@slideInRight]>Explore other books</h2>
         <div class="books-grid" [@booksAnimation]>
@@ -75,6 +78,7 @@ export type BookCategory =
           </app-book-card>
         </div>
       </section>
+      }
     </main>
   `,
   animations: [
@@ -344,7 +348,7 @@ export class BookCatalogComponent {
   filteredExploreBooks: Book[] = [];
 
   //get data from the resolver
-  @Input() data:string ='';
+  @Input() data: string = '';
   recommendedBooks: Book[] = [
     {
       id: '1',
@@ -353,6 +357,7 @@ export class BookCatalogComponent {
         'https://cdn.builder.io/api/v1/image/assets/TEMP/ecdb6bbc8f17b31efa69a312a172d604f72a9214',
       rating: 4,
       comments: 97,
+      likes: 124,
       category: 'Fiction',
       daysAgo: 20,
     },
@@ -364,6 +369,7 @@ export class BookCatalogComponent {
       rating: 4,
       category: 'Romance',
       comments: 97,
+      likes: 85,
       daysAgo: 20,
     },
     {
@@ -374,6 +380,7 @@ export class BookCatalogComponent {
       rating: 4,
       category: 'Thriller',
       comments: 97,
+      likes: 210,
       daysAgo: 20,
     },
   ];
@@ -386,6 +393,7 @@ export class BookCatalogComponent {
         'https://cdn.builder.io/api/v1/image/assets/TEMP/ecdb6bbc8f17b31efa69a312a172d604f72a9214',
       rating: 4,
       comments: 97,
+      likes: 56,
       category: 'Fantasy',
       daysAgo: 20,
     },
@@ -396,6 +404,7 @@ export class BookCatalogComponent {
         'https://cdn.builder.io/api/v1/image/assets/TEMP/ecdb6bbc8f17b31efa69a312a172d604f72a9214',
       rating: 4,
       comments: 97,
+      likes: 142,
       category: 'Biography',
       daysAgo: 20,
     },
@@ -406,6 +415,7 @@ export class BookCatalogComponent {
         'https://cdn.builder.io/api/v1/image/assets/TEMP/ecdb6bbc8f17b31efa69a312a172d604f72a9214',
       rating: 4,
       comments: 97,
+      likes: 78,
       category: 'Fiction',
       daysAgo: 20,
     },
