@@ -260,6 +260,7 @@ import { RouterModule } from '@angular/router';
       .meta-stats {
         display: flex;
         flex-wrap: wrap;
+        align-items: center;
         gap: 10px;
       }
 
@@ -282,8 +283,9 @@ import { RouterModule } from '@angular/router';
       .days-ago {
         color: #94a3b8;
         display: block;
-        margin-top: 5px;
         font-size: 12px;
+        align-items: center;
+        justify-content: center;
       }
 
       .bid-button {
