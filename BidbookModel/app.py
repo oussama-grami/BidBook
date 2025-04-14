@@ -9,8 +9,6 @@ from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
 app = Flask(__name__)
-
-# 🔹 Charger et entraîner le modèle dès le lancement
 def train_model():
     df = pd.read_csv('bidbook.csv')
 
@@ -34,8 +32,6 @@ def train_model():
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     model.fit(X_train, y_train)
-
-    # (optionnel) Afficher l’évaluation dans le terminal
     y_pred = model.predict(X_test)
     print("✅ MAE :", mean_absolute_error(y_test, y_pred))
     rmse = np.sqrt(mean_squared_error(y_test, y_pred))
@@ -44,8 +40,6 @@ def train_model():
     print("✅ R² :", r2_score(y_test, y_pred))
 
     return model
-
-# 🔹 Entraîner une seule fois au lancement
 model = train_model()
 
 @app.route('/predict', methods=['POST'])
