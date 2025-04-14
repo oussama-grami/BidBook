@@ -3,7 +3,7 @@
 
   <div class="book-details" [@fadeInOut]>
     <div class="book-cover">
-      <img [src]="coverImage" alt="Book Cover" class="cover-image"/>
+      <img [src]="coverImage" alt="Book Cover" class="cover-image" />
     </div>
 
     <div class="book-info">
@@ -33,6 +33,9 @@
         <div class="pages">
           Number of pages: <span class="page-count">{{ pages }}</span>
         </div>
+        <div class="last-bid">
+          Current Bid: <span class="bid-value">{{ lastBidPrice }}D</span>
+        </div>
       </div>
 
       <div class="description-section" [@fadeInOut]>
@@ -48,8 +51,12 @@
           >
             {{ isFavorite ? "❤️" : "🤍" }}
           </span>
-          <a href="#" [routerLink]="['..','favorite']" class="view-favorites">View
-            Favorites</a>
+          <div class="stats-container">
+            <span class="stat-item"> {{ likes }} likes </span>
+            <span class="stat-item">
+              <i class="pi pi-comments"></i> {{ comments.length }} comments
+            </span>
+          </div>
         </div>
 
         <div class="review" [@fadeInOut]>
@@ -72,13 +79,114 @@
           </div>
         </div>
 
-        <textarea
-          class="comment"
-          placeholder="Write a comment"
-          [@fadeInOut]
-        ></textarea>
+        <!-- Updated comment section with submit button -->
+        <div class="comment-section" [@fadeInOut]>
+          <textarea
+            class="comment"
+            placeholder="Write a comment"
+            [(ngModel)]="userComment"
+          ></textarea>
+          <button class="comment-btn" (click)="submitComment()">
+            Submit Comment
+          </button>
+        </div>
 
-        <button class="cta" [@fadeInOut]>Offer a Price</button>
+        <!-- New bid section with conditional display -->
+        <div class="bid-section" [@fadeInOut]>
+          <h3 *ngIf="showBidInput">Place your bid</h3>
+
+          <!-- Bid input group - only shown after clicking the Place Bid button -->
+          <div *ngIf="showBidInput" class="bid-input-group" [@fadeInOut]>
+            <input
+              type="number"
+              class="bid-input"
+              placeholder="Enter your bid in dinars"
+              [(ngModel)]="userBidPrice"
+              min="{{ lastBidPrice + 1 }}"
+            />
+            <span class="currency">D</span>
+          </div>
+
+          <!-- Show error message only when input is visible -->
+          <div *ngIf="showBidInput && bidError" class="bid-error">
+            {{ bidError }}
+          </div>
+
+          <!-- Button text changes based on whether form is visible -->
+          <button class="bid-btn" (click)="submitBid()">
+            {{ showBidInput ? "Submit Bid" : "Place Bid" }}
+          </button>
+        </div>
+      </div>
+
+      <!-- New comments display section -->
+      <div class="comments-container" [@fadeInOut]>
+        <h3 class="comments-title">Comments ({{ comments.length }})</h3>
+
+        <div class="comments-list">
+          <!-- Show when no comments are loaded yet -->
+          <div
+            *ngIf="!commentsLoaded && !isLoadingComments"
+            class="no-comments-container"
+          >
+            <p class="no-comments-msg">No comments loaded yet</p>
+            <button class="load-more-btn" (click)="fetchComments()">
+              Load Comments
+            </button>
+          </div>
+
+          <!-- Comments list when loaded -->
+          <div
+            *ngFor="let comment of displayedComments"
+            class="comment-item"
+            [@fadeInOut]
+          >
+            <div class="comment-header">
+              <div class="user-info">
+                <img [src]="comment.userImage" alt="User" class="user-avatar" />
+                <div class="user-details">
+                  <span class="user-name">{{ comment.userName }}</span>
+                  <span class="comment-date">{{
+                    comment.date | date : "mediumDate"
+                  }}</span>
+                </div>
+              </div>
+            </div>
+            <div class="comment-text">{{ comment.text }}</div>
+          </div>
+
+          <!-- Show when comments are loaded but there are none -->
+          <div
+            *ngIf="
+              commentsLoaded && comments.length === 0 && !isLoadingComments
+            "
+            class="no-comments-container"
+          >
+            <p class="no-comments-msg">
+              No comments yet. Be the first to comment!
+            </p>
+          </div>
+
+          <!-- Skeleton loader for comments -->
+          <div *ngIf="isLoadingComments" class="comment-skeletons">
+            <div class="skeleton-comment" *ngFor="let i of [].constructor(3)">
+              <div class="skeleton-avatar"></div>
+              <div class="skeleton-content">
+                <div class="skeleton-line-short"></div>
+                <div class="skeleton-line-long"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Load more comments button -->
+          <button
+            *ngIf="showLoadMoreButton && !isLoadingComments"
+            class="load-more-btn"
+            (click)="loadMoreComments()"
+          >
+            Load More Comments
+          </button>
+        </div>
       </div>
     </div>
   </div>

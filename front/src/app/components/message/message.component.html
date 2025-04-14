@@ -3,9 +3,21 @@
   <!-- Header -->
   <div class="header">
     <span class="title">All messages</span>
-    <div class="arrow">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M8 12L4 8L8 4" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <div class="arrow" (click)="toggleCollapse()">
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M8 12L4 8L8 4"
+          stroke="#000"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
       </svg>
     </div>
   </div>
@@ -14,37 +26,208 @@
   <div class="divider"></div>
 
   <!-- Barre de recherche -->
-  <div class="search-bar">
+  <div class="search-bar" *ngIf="!isCollapsed">
     <div class="search-content">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M7.33333 12.6667C10.2789 12.6667 12.6667 10.2789 12.6667 7.33333C12.6667 4.38781 10.2789 2 7.33333 2C4.38781 2 2 4.38781 2 7.33333C2 10.2789 4.38781 12.6667 7.33333 12.6667Z" stroke="#8E8E93" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M14 14L11.1 11.1" stroke="#8E8E93" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M7.33333 12.6667C10.2789 12.6667 12.6667 10.2789 12.6667 7.33333C12.6667 4.38781 10.2789 2 7.33333 2C4.38781 2 2 4.38781 2 7.33333C2 10.2789 4.38781 12.6667 7.33333 12.6667Z"
+          stroke="#8E8E93"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M14 14L11.1 11.1"
+          stroke="#8E8E93"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
       </svg>
-      <input type="text" placeholder="Search">
+      <input
+        type="text"
+        placeholder="Search"
+        [(ngModel)]="searchQuery"
+        (input)="search()"
+      />
+      <span *ngIf="searchQuery" class="clear-search" (click)="clearSearch()">
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 16 16"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M12 4L4 12"
+            stroke="#8E8E93"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M4 4L12 12"
+            stroke="#8E8E93"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </span>
     </div>
   </div>
 
   <!-- Liste des messages -->
   <div class="message-list">
-    <div
-      *ngFor="let message of messages"
-      class="message-item"
-      [ngClass]="{'active': message.isActive}"
-      (click)="selectMessage(message.id)"
-    >
-      <div class="avatar"></div>
-      <div class="message-text">
-        <div class="message-header">
-          <span class="username">{{ message.username }}</span>
-          <span class="date">{{ message.date }}</span>
+    <!-- Skeleton Loading State -->
+    <ng-container *ngIf="loading">
+      <div class="message-item skeleton" *ngFor="let i of [1, 2, 3, 4, 5]">
+        <div class="avatar skeleton"></div>
+        <div class="message-text">
+          <div class="message-header">
+            <div class="username skeleton"></div>
+            <div class="date skeleton"></div>
+          </div>
+          <div class="text skeleton"></div>
         </div>
-        <span class="text">{{ message.text }}</span>
+        <div class="message-arrow"></div>
       </div>
-      <div class="message-arrow">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M6 12L10 8L6 4" stroke="#3C3C43" stroke-opacity="0.3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+    </ng-container>
+
+    <!-- Actual Messages - When Not Collapsed -->
+    <ng-container *ngIf="!isCollapsed && !loading">
+      <div
+        *ngFor="let contact of filteredContacts"
+        class="message-item"
+        [ngClass]="{ active: contact.id === activeContactId }"
+        (click)="selectContact(contact.id)"
+      >
+        <div class="avatar">
+          <img *ngIf="contact.avatar" [src]="contact.avatar" alt="Avatar" />
+        </div>
+        <!-- Position badge relative to message-item -->
+        <p-badge
+          *ngIf="contact.unreadCount > 0"
+          [value]="contact.unreadCount.toString()"
+          severity="danger"
+          class="message-badge"
+        >
+        </p-badge>
+        <div class="message-text">
+          <div class="message-header">
+            <span class="username">{{ contact.name }}</span>
+            <span class="date" *ngIf="contact.lastMessage?.date">{{
+              formatRelativeTime(contact.lastMessage?.date)
+            }}</span>
+          </div>
+          <span class="text" *ngIf="contact.lastMessage">{{
+            contact.lastMessage.text
+          }}</span>
+          <span class="text no-messages" *ngIf="!contact.lastMessage"
+            >No messages yet</span
+          >
+        </div>
+        <div class="message-arrow">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M6 12L10 8L6 4"
+              stroke="#3C3C43"
+              stroke-opacity="0.3"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
       </div>
-    </div>
+
+      <!-- No Results Message -->
+      <div
+        class="no-results"
+        *ngIf="filteredContacts.length === 0 && searchQuery"
+      >
+        No conversations matching "{{ searchQuery }}"
+      </div>
+    </ng-container>
+
+    <!-- Collapsed View - Show Only Active Contact -->
+    <ng-container *ngIf="isCollapsed && !loading">
+      <div
+        *ngFor="let contact of filteredContacts"
+        class="message-item active"
+        [ngClass]="{ active: contact.id === activeContactId }"
+        (click)="selectContact(contact.id)"
+        [hidden]="contact.id !== activeContactId"
+      >
+        <div class="avatar">
+          <img *ngIf="contact.avatar" [src]="contact.avatar" alt="Avatar" />
+        </div>
+        <!-- Position badge relative to message-item -->
+        <p-badge
+          *ngIf="contact.unreadCount > 0"
+          [value]="contact.unreadCount.toString()"
+          severity="danger"
+          class="message-badge"
+        >
+        </p-badge>
+        <div class="message-text">
+          <div class="message-header">
+            <span class="username">{{ contact.name }}</span>
+            <span class="date" *ngIf="contact.lastMessage?.date">{{
+              formatRelativeTime(contact.lastMessage?.date)
+            }}</span>
+          </div>
+          <span class="text" *ngIf="contact.lastMessage">{{
+            contact.lastMessage.text
+          }}</span>
+          <span class="text no-messages" *ngIf="!contact.lastMessage"
+            >No messages yet</span
+          >
+        </div>
+        <div class="message-arrow">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M6 12L10 8L6 4"
+              stroke="#3C3C43"
+              stroke-opacity="0.3"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Skeleton for Collapsed View -->
+      <div class="message-item skeleton" *ngIf="loading && isCollapsed">
+        <div class="avatar skeleton"></div>
+        <div class="message-text">
+          <div class="message-header">
+            <div class="username skeleton"></div>
+            <div class="date skeleton"></div>
+          </div>
+          <div class="text skeleton"></div>
+        </div>
+        <div class="message-arrow"></div>
+      </div>
+    </ng-container>
   </div>
 </div>
