@@ -1,0 +1,1001 @@
+titre,auteur,genre,langue,éditeur,année_édition,nombre_pages,pages_arrachées,état_général,reliure_cuir,édition_originale,avec_dédicace,nombre_exemplaires_connus,prix
+Livre 0,Auteur 118,Aventure,Anglais,Actes Sud,1950,121,19,Moyen,1,0,1,263,50.64121037463977
+Livre 1,Auteur 157,Fantastique,Espagnol,Actes Sud,1886,249,10,Moyen,0,1,1,362,61.296829971181545
+Livre 2,Auteur 5,Biographie,Français,Fayard,1913,716,16,Excellent,1,1,0,63,83.64913544668588
+Livre 3,Auteur 285,Fantastique,Allemand,Seuil,1919,252,14,Moyen,0,1,1,64,74.27953890489913
+Livre 4,Auteur 3,Poésie,Italien,Albin Michel,1988,258,19,Excellent,1,1,1,392,59.52089337175793
+Livre 5,Auteur 102,Aventure,Français,Flammarion,1891,377,10,Mauvais,1,0,0,236,50.028818443804035
+Livre 6,Auteur 259,Fantastique,Allemand,Albin Michel,1945,328,10,Excellent,1,0,1,63,72.38112391930835
+Livre 7,Auteur 257,Roman,Français,Actes Sud,1972,588,19,Mauvais,0,1,1,396,39.80187319884726
+Livre 8,Auteur 78,Poésie,Anglais,Albin Michel,1974,474,10,Mauvais,1,1,0,43,66.9920749279539
+Livre 9,Auteur 172,Art,Français,Seuil,1865,195,2,Excellent,0,1,0,486,58.72478386167147
+Livre 10,Auteur 212,Roman,Anglais,Seuil,1857,562,2,Bon,0,1,0,3,86.22118155619596
+Livre 11,Auteur 133,Fantastique,Italien,Hachette,1898,230,20,Mauvais,1,0,0,382,37.168587896253605
+Livre 12,Auteur 30,Fantastique,Allemand,Fayard,1886,910,10,Excellent,1,1,1,303,80.21974063400576
+Livre 13,Auteur 205,Thriller,Allemand,Gallimard,1889,533,1,Mauvais,0,1,0,332,53.274495677233425
+Livre 14,Auteur 157,Science-Fiction,Espagnol,Gallimard,1852,838,2,Excellent,0,1,1,431,69.80907780979827
+Livre 15,Auteur 157,Thriller,Anglais,Seuil,1951,329,1,Excellent,0,1,0,97,72.31988472622479
+Livre 16,Auteur 153,Roman,Anglais,Flammarion,1891,244,10,Bon,0,0,1,399,46.1707492795389
+Livre 17,Auteur 297,Roman,Anglais,Fayard,1893,654,16,Moyen,1,1,0,279,66.7471181556196
+Livre 18,Auteur 52,Fantastique,Allemand,Actes Sud,1979,728,4,Bon,0,0,1,21,60.37824207492794
+Livre 19,Auteur 145,Thriller,Allemand,Seuil,1927,278,9,Mauvais,0,1,1,338,51.92723342939481
+Livre 20,Auteur 95,Science,Espagnol,Actes Sud,1910,904,18,Excellent,0,1,1,1,84.13904899135447
+Livre 21,Auteur 109,Thriller,Anglais,Flammarion,1947,506,4,Excellent,0,0,0,479,33.18804034582132
+Livre 22,Auteur 51,Art,Français,Gallimard,1889,712,2,Excellent,0,0,0,113,63.31772334293949
+Livre 23,Auteur 185,Fantastique,Anglais,Hachette,1891,150,1,Bon,0,1,0,23,81.13832853025936
+Livre 24,Auteur 135,Fantastique,Italien,Fayard,1954,147,11,Excellent,0,0,1,460,37.47478386167147
+Livre 25,Auteur 256,Thriller,Anglais,Actes Sud,1900,441,18,Bon,0,1,1,97,76.42291066282421
+Livre 26,Auteur 134,Biographie,Français,Flammarion,1942,291,20,Mauvais,0,0,0,487,16.163544668587896
+Livre 27,Auteur 53,Aventure,Français,Gallimard,1986,249,2,Excellent,0,0,1,384,40.96541786743516
+Livre 28,Auteur 101,Historique,Italien,Flammarion,1957,158,4,Moyen,0,1,0,360,48.436599423631115
+Livre 29,Auteur 208,Poésie,Allemand,Flammarion,1967,58,11,Mauvais,1,0,0,411,29.697406340057633
+Livre 30,Auteur 52,Roman,Français,Seuil,1865,836,5,Bon,0,0,1,381,51.98847262247839
+Livre 31,Auteur 148,Roman,Italien,Actes Sud,1994,530,11,Bon,0,0,0,240,36.862391930835734
+Livre 32,Auteur 44,Philosophie,Allemand,Seuil,1871,306,12,Bon,1,0,1,359,59.64337175792507
+Livre 33,Auteur 287,Fantastique,Espagnol,Gallimard,1887,171,6,Moyen,0,1,1,95,78.75
+Livre 34,Auteur 281,Science,Italien,Gallimard,1908,828,17,Bon,0,1,0,56,72.13616714697406
+Livre 35,Auteur 152,Art,Italien,Gallimard,1910,870,3,Bon,0,1,1,363,63.501440922190206
+Livre 36,Auteur 53,Science-Fiction,Français,Albin Michel,1914,857,13,Excellent,1,0,1,144,70.29899135446685
+Livre 37,Auteur 279,Science,Français,Actes Sud,1982,366,20,Excellent,1,0,1,321,48.987752161383284
+Livre 38,Auteur 42,Science-Fiction,Allemand,Fayard,1914,84,15,Excellent,0,0,1,35,67.17579250720462
+Livre 39,Auteur 296,Poésie,Français,Albin Michel,1984,701,19,Moyen,1,0,1,207,49.90634005763689
+Livre 40,Auteur 187,Philosophie,Espagnol,Fayard,1863,390,13,Excellent,1,1,0,371,71.82997118155619
+Livre 41,Auteur 59,Religion,Anglais,Albin Michel,1987,923,14,Moyen,1,1,1,385,55.479106628242064
+Livre 42,Auteur 212,Philosophie,Anglais,Flammarion,1889,62,11,Mauvais,0,1,0,26,68.95172910662822
+Livre 43,Auteur 137,Roman,Allemand,Albin Michel,1943,189,9,Excellent,0,1,0,48,73.85086455331411
+Livre 44,Auteur 201,Poésie,Italien,Actes Sud,2010,729,16,Moyen,0,0,1,380,27.86023054755043
+Livre 45,Auteur 130,Aventure,Anglais,Gallimard,1984,147,10,Mauvais,1,1,1,106,68.03314121037464
+Livre 46,Auteur 187,Science-Fiction,Italien,Fayard,2010,196,5,Mauvais,1,1,0,250,51.43731988472622
+Livre 47,Auteur 281,Fantastique,Italien,Fayard,1954,862,15,Mauvais,1,0,0,89,49.78386167146974
+Livre 48,Auteur 87,Roman,Italien,Albin Michel,1851,637,19,Mauvais,0,1,1,460,50.702449567723335
+Livre 49,Auteur 49,Poésie,Anglais,Flammarion,1963,663,9,Mauvais,1,0,1,197,50.028818443804035
+Livre 50,Auteur 114,Historique,Allemand,Actes Sud,1950,968,3,Bon,0,1,1,84,75.68804034582132
+Livre 51,Auteur 182,Poésie,Espagnol,Gallimard,1910,223,5,Mauvais,0,0,1,15,59.70461095100865
+Livre 52,Auteur 26,Thriller,Français,Seuil,1967,671,19,Excellent,0,1,1,467,48.31412103746398
+Livre 53,Auteur 251,Philosophie,Allemand,Gallimard,1995,492,12,Bon,0,1,0,470,37.65850144092219
+Livre 54,Auteur 209,Fantastique,Français,Seuil,1881,655,12,Moyen,1,1,1,474,63.62391930835735
+Livre 55,Auteur 296,Aventure,Anglais,Seuil,1856,787,10,Moyen,1,1,1,139,87.81340057636888
+Livre 56,Auteur 295,Religion,Allemand,Seuil,1952,550,18,Moyen,0,1,1,302,54.43804034582132
+Livre 57,Auteur 74,Science-Fiction,Italien,Fayard,1908,952,18,Mauvais,1,1,1,415,55.96902017291067
+Livre 58,Auteur 95,Science-Fiction,Anglais,Gallimard,1938,352,18,Mauvais,0,0,1,491,23.144812680115272
+Livre 59,Auteur 98,Roman,Espagnol,Fayard,1976,936,18,Moyen,1,1,0,268,56.64265129682997
+Livre 60,Auteur 39,Aventure,Allemand,Albin Michel,1999,205,11,Excellent,1,1,1,315,65.3386167146974
+Livre 61,Auteur 21,Art,Espagnol,Fayard,1993,482,4,Moyen,1,0,0,48,57.010086455331404
+Livre 62,Auteur 286,Thriller,Allemand,Albin Michel,1864,464,14,Bon,0,1,1,469,59.27593659942363
+Livre 63,Auteur 115,Fantastique,Anglais,Albin Michel,1896,514,1,Bon,1,1,0,248,75.93299711815561
+Livre 64,Auteur 40,Religion,Français,Flammarion,1968,726,16,Mauvais,1,1,1,265,58.418587896253605
+Livre 65,Auteur 58,Religion,Italien,Actes Sud,1862,560,2,Mauvais,1,0,0,232,56.27521613832853
+Livre 66,Auteur 76,Science-Fiction,Français,Actes Sud,1989,441,1,Moyen,0,0,0,140,43.59870317002882
+Livre 67,Auteur 275,Science,Espagnol,Gallimard,1853,319,9,Excellent,0,0,0,34,70.421469740634
+Livre 68,Auteur 262,Aventure,Espagnol,Seuil,1943,377,18,Excellent,1,1,0,257,67.48198847262248
+Livre 69,Auteur 293,Biographie,Espagnol,Actes Sud,1887,485,11,Mauvais,1,0,0,102,58.418587896253605
+Livre 70,Auteur 175,Science,Allemand,Flammarion,1919,95,11,Mauvais,1,1,1,390,58.29610951008645
+Livre 71,Auteur 268,Philosophie,Français,Seuil,1920,221,4,Moyen,0,0,0,292,41.82276657060518
+Livre 72,Auteur 21,Roman,Espagnol,Flammarion,1861,535,11,Mauvais,1,1,1,162,79.36239193083573
+Livre 73,Auteur 261,Religion,Anglais,Gallimard,1925,466,9,Mauvais,0,1,1,105,66.44092219020172
+Livre 74,Auteur 269,Aventure,Italien,Fayard,1971,266,4,Mauvais,0,1,1,111,61.970461095100866
+Livre 75,Auteur 7,Science-Fiction,Allemand,Seuil,1915,824,19,Excellent,0,1,1,315,63.99135446685879
+Livre 76,Auteur 208,Biographie,Italien,Gallimard,1881,546,2,Bon,1,0,0,314,58.112391930835734
+Livre 77,Auteur 14,Science,Italien,Flammarion,1981,554,20,Bon,0,1,1,113,64.90994236311238
+Livre 78,Auteur 283,Philosophie,Anglais,Gallimard,1944,256,18,Moyen,1,1,1,44,80.40345821325649
+Livre 79,Auteur 60,Historique,Français,Gallimard,1899,880,13,Excellent,1,0,0,344,53.764409221902014
+Livre 80,Auteur 266,Biographie,Allemand,Albin Michel,1867,436,1,Mauvais,1,0,1,451,48.68155619596541
+Livre 81,Auteur 134,Biographie,Italien,Seuil,1855,639,17,Bon,1,1,0,217,77.95389048991353
+Livre 82,Auteur 194,Fantastique,Espagnol,Gallimard,1957,247,17,Bon,1,0,1,354,47.88544668587896
+Livre 83,Auteur 38,Science,Espagnol,Actes Sud,1989,888,4,Mauvais,1,1,0,496,39.2507204610951
+Livre 84,Auteur 222,Historique,Français,Flammarion,1940,792,7,Excellent,0,1,1,257,68.15561959654178
+Livre 85,Auteur 51,Biographie,Espagnol,Flammarion,1944,768,7,Bon,1,1,1,33,87.507204610951
+Livre 86,Auteur 38,Thriller,Français,Albin Michel,1985,511,7,Moyen,0,1,1,74,67.72694524495677
+Livre 87,Auteur 103,Roman,Espagnol,Seuil,1891,266,7,Bon,1,1,1,215,82.85302593659941
+Livre 88,Auteur 199,Science-Fiction,Italien,Gallimard,1966,926,4,Moyen,1,0,0,243,48.37536023054754
+Livre 89,Auteur 17,Art,Français,Actes Sud,1925,241,12,Moyen,1,1,0,494,50.88616714697405
+Livre 90,Auteur 38,Religion,Anglais,Actes Sud,1924,792,0,Excellent,0,1,1,263,71.89121037463977
+Livre 91,Auteur 13,Art,Espagnol,Actes Sud,1975,352,4,Moyen,1,0,0,402,37.536023054755034
+Livre 92,Auteur 293,Historique,Espagnol,Actes Sud,1877,309,7,Excellent,1,1,0,453,66.93083573487031
+Livre 93,Auteur 126,Science-Fiction,Français,Actes Sud,1963,679,10,Mauvais,1,0,1,365,39.434438040345825
+Livre 94,Auteur 186,Historique,Allemand,Gallimard,1908,555,12,Bon,0,0,1,438,41.08789625360231
+Livre 95,Auteur 117,Roman,Espagnol,Hachette,1993,985,8,Mauvais,0,0,0,285,25.961815561959654
+Livre 96,Auteur 249,Fantastique,Italien,Seuil,1850,178,10,Bon,0,1,1,462,62.644092219020166
+Livre 97,Auteur 222,Historique,Italien,Gallimard,1938,962,6,Moyen,1,0,0,189,54.499279538904894
+Livre 98,Auteur 83,Roman,Français,Albin Michel,1936,151,4,Mauvais,1,1,0,174,65.46109510086455
+Livre 99,Auteur 156,Thriller,Français,Gallimard,1950,530,10,Moyen,0,1,1,94,69.87031700288183
+Livre 100,Auteur 180,Science-Fiction,Allemand,Fayard,1993,386,9,Mauvais,1,1,1,203,61.296829971181545
+Livre 101,Auteur 152,Roman,Italien,Actes Sud,1961,870,10,Mauvais,1,1,0,188,59.70461095100865
+Livre 102,Auteur 101,Religion,Anglais,Gallimard,1955,921,3,Mauvais,0,1,1,325,51.13112391930835
+Livre 103,Auteur 145,Thriller,Français,Hachette,1976,163,10,Bon,1,0,1,94,63.62391930835735
+Livre 104,Auteur 176,Science-Fiction,Allemand,Flammarion,1946,169,18,Bon,0,0,1,184,50.15129682997118
+Livre 105,Auteur 261,Aventure,Italien,Actes Sud,1971,673,11,Mauvais,1,0,0,443,27.247838616714695
+Livre 106,Auteur 11,Roman,Anglais,Actes Sud,1855,138,0,Excellent,1,1,1,430,79.30115273775216
+Livre 107,Auteur 271,Poésie,Allemand,Actes Sud,1852,892,18,Excellent,0,0,0,156,60.317002881844374
+Livre 108,Auteur 219,Thriller,Italien,Albin Michel,1862,901,10,Bon,0,1,0,479,54.00936599423631
+Livre 109,Auteur 32,Biographie,Français,Albin Michel,1876,661,19,Excellent,0,0,1,398,48.37536023054754
+Livre 110,Auteur 110,Biographie,Allemand,Seuil,1879,276,2,Moyen,0,1,1,406,61.909221902017286
+Livre 111,Auteur 263,Thriller,Italien,Actes Sud,1997,964,7,Moyen,1,1,0,171,63.37896253602305
+Livre 112,Auteur 174,Historique,Anglais,Fayard,1869,472,5,Excellent,1,1,1,366,79.97478386167147
+Livre 113,Auteur 169,Science-Fiction,Espagnol,Flammarion,1967,675,7,Bon,1,0,0,98,59.27593659942363
+Livre 114,Auteur 60,Aventure,Allemand,Albin Michel,1945,397,1,Moyen,0,1,0,450,45.31340057636888
+Livre 115,Auteur 87,Roman,Italien,Flammarion,1910,275,15,Bon,1,0,0,278,52.784582132564836
+Livre 116,Auteur 206,Art,Espagnol,Fayard,1866,710,19,Mauvais,1,0,1,298,52.66210374639769
+Livre 117,Auteur 52,Thriller,Italien,Albin Michel,1861,575,16,Excellent,0,1,0,122,77.21902017291066
+Livre 118,Auteur 180,Biographie,Allemand,Flammarion,1942,277,18,Mauvais,0,1,1,168,57.74495677233429
+Livre 119,Auteur 300,Science-Fiction,Français,Actes Sud,1876,517,15,Bon,0,0,1,45,68.15561959654178
+Livre 120,Auteur 252,Fantastique,Allemand,Fayard,1915,918,10,Bon,0,1,0,309,57.92867435158501
+Livre 121,Auteur 55,Historique,Allemand,Gallimard,1921,927,12,Bon,1,0,1,243,60.623198847262245
+Livre 122,Auteur 229,Aventure,Anglais,Actes Sud,1880,426,3,Bon,0,1,0,279,66.19596541786743
+Livre 123,Auteur 217,Poésie,Espagnol,Gallimard,1908,498,1,Excellent,1,1,0,65,88.73198847262248
+Livre 124,Auteur 195,Science,Espagnol,Seuil,1859,266,2,Excellent,0,1,0,475,60.133285302593656
+Livre 125,Auteur 134,Philosophie,Espagnol,Seuil,2002,954,12,Excellent,0,0,0,497,22.899855907780978
+Livre 126,Auteur 33,Science,Italien,Albin Michel,1886,807,15,Moyen,1,1,0,264,68.82925072046109
+Livre 127,Auteur 229,Roman,Français,Actes Sud,1914,568,20,Excellent,0,1,1,174,72.44236311239193
+Livre 128,Auteur 23,Historique,Allemand,Gallimard,1859,846,11,Mauvais,1,0,0,74,63.56268011527377
+Livre 129,Auteur 266,Aventure,Espagnol,Gallimard,1890,440,7,Moyen,0,0,1,278,51.559798270893374
+Livre 130,Auteur 188,Thriller,Espagnol,Flammarion,1995,270,15,Excellent,0,0,0,215,40.10806916426513
+Livre 131,Auteur 134,Thriller,Anglais,Hachette,1853,274,3,Excellent,1,0,1,402,65.03242074927954
+Livre 132,Auteur 208,Roman,Allemand,Albin Michel,1882,696,17,Moyen,1,0,0,64,65.64481268011528
+Livre 133,Auteur 24,Religion,Allemand,Gallimard,1880,175,19,Moyen,0,0,1,221,52.60086455331412
+Livre 134,Auteur 125,Poésie,Allemand,Flammarion,1855,495,9,Mauvais,1,0,1,254,59.76585014409222
+Livre 135,Auteur 212,Biographie,Anglais,Seuil,1908,729,17,Moyen,0,1,1,58,75.07564841498558
+Livre 136,Auteur 239,Science-Fiction,Italien,Gallimard,1933,328,9,Mauvais,1,0,0,423,33.73919308357348
+Livre 137,Auteur 33,Roman,Allemand,Seuil,1873,389,15,Mauvais,0,0,1,409,37.04610951008645
+Livre 138,Auteur 215,Thriller,Anglais,Albin Michel,1926,755,12,Moyen,1,1,0,457,53.02953890489913
+Livre 139,Auteur 263,Historique,Espagnol,Flammarion,1888,336,13,Moyen,0,1,1,80,77.40273775216139
+Livre 140,Auteur 51,Poésie,Français,Seuil,2005,912,4,Mauvais,1,1,0,75,63.07276657060519
+Livre 141,Auteur 144,Aventure,Français,Fayard,1879,853,13,Moyen,0,0,1,118,60.86815561959654
+Livre 142,Auteur 41,Biographie,Français,Hachette,1858,387,1,Bon,1,0,0,233,66.19596541786743
+Livre 143,Auteur 107,Science-Fiction,Espagnol,Flammarion,1904,654,1,Mauvais,0,0,1,261,46.59942363112391
+Livre 144,Auteur 96,Fantastique,Anglais,Gallimard,1932,615,10,Mauvais,1,1,0,163,64.78746397694523
+Livre 145,Auteur 41,Thriller,Français,Albin Michel,1990,825,5,Bon,0,0,0,83,48.804034582132566
+Livre 146,Auteur 169,Poésie,Italien,Fayard,2005,269,8,Excellent,0,1,0,424,43.53746397694525
+Livre 147,Auteur 200,Thriller,Anglais,Flammarion,1870,939,19,Bon,1,0,0,440,46.538184438040346
+Livre 148,Auteur 282,Thriller,Anglais,Hachette,1916,854,18,Moyen,1,1,1,167,76.30043227665706
+Livre 149,Auteur 268,Science-Fiction,Anglais,Actes Sud,1920,374,18,Mauvais,0,0,0,34,47.21181556195965
+Livre 150,Auteur 50,Art,Italien,Flammarion,2010,380,12,Mauvais,0,1,1,283,44.211095100864554
+Livre 151,Auteur 13,Roman,Espagnol,Albin Michel,1901,314,14,Excellent,0,0,1,479,41.884005763688755
+Livre 152,Auteur 169,Art,Italien,Gallimard,1866,958,15,Excellent,1,0,1,475,55.295389048991346
+Livre 153,Auteur 73,Science-Fiction,Allemand,Seuil,1968,175,16,Bon,0,0,0,458,25.1657060518732
+Livre 154,Auteur 108,Thriller,Italien,Gallimard,1968,55,12,Bon,1,1,1,201,72.74855907780979
+Livre 155,Auteur 210,Poésie,Espagnol,Gallimard,1907,323,17,Excellent,0,0,1,256,53.88688760806916
+Livre 156,Auteur 277,Historique,Italien,Flammarion,1961,323,1,Bon,0,1,0,156,64.4200288184438
+Livre 157,Auteur 234,Aventure,Allemand,Hachette,1910,489,20,Excellent,0,0,0,405,37.35230547550432
+Livre 158,Auteur 164,Art,Anglais,Hachette,1865,295,5,Moyen,1,0,0,279,58.23487031700287
+Livre 159,Auteur 144,Biographie,Italien,Flammarion,1964,452,17,Moyen,0,0,0,357,28.472622478386164
+Livre 160,Auteur 233,Thriller,Allemand,Actes Sud,1943,835,4,Excellent,1,1,0,309,68.5842939481268
+Livre 161,Auteur 279,Fantastique,Allemand,Actes Sud,1859,431,9,Excellent,0,0,0,27,70.11527377521614
+Livre 162,Auteur 167,Poésie,Français,Albin Michel,1974,382,6,Mauvais,1,1,0,340,50.028818443804035
+Livre 163,Auteur 128,Thriller,Français,Albin Michel,1944,882,4,Excellent,1,1,0,271,70.78890489913545
+Livre 164,Auteur 135,Science,Français,Flammarion,1943,233,2,Mauvais,0,0,1,391,33.555475504322764
+Livre 165,Auteur 265,Biographie,Italien,Flammarion,1975,118,8,Moyen,0,0,0,60,48.06916426512968
+Livre 166,Auteur 213,Thriller,Italien,Actes Sud,1902,603,18,Excellent,1,1,1,114,87.38472622478385
+Livre 167,Auteur 284,Science,Anglais,Seuil,1865,494,9,Excellent,0,1,1,208,79.72982708933718
+Livre 168,Auteur 168,Religion,Allemand,Fayard,1965,448,7,Excellent,0,0,0,121,51.98847262247839
+Livre 169,Auteur 218,Science,Italien,Actes Sud,1909,221,12,Moyen,0,1,1,359,58.051152737752155
+Livre 170,Auteur 265,Roman,Français,Flammarion,1899,150,4,Moyen,0,1,1,462,55.4178674351585
+Livre 171,Auteur 150,Science,Italien,Flammarion,1856,163,12,Mauvais,0,0,1,149,55.96902017291067
+Livre 172,Auteur 65,Roman,Anglais,Fayard,1997,726,7,Excellent,1,0,0,83,59.582132564841494
+Livre 173,Auteur 86,Aventure,Anglais,Hachette,1996,467,16,Mauvais,0,0,1,129,38.82204610951008
+Livre 174,Auteur 55,Art,Allemand,Seuil,1966,81,4,Bon,0,1,1,479,49.23270893371758
+Livre 175,Auteur 145,Poésie,Espagnol,Seuil,1943,425,5,Bon,0,0,1,416,40.29178674351584
+Livre 176,Auteur 88,Roman,Anglais,Hachette,1931,660,14,Moyen,1,1,0,277,62.827809798270884
+Livre 177,Auteur 18,Art,Anglais,Gallimard,1890,227,8,Mauvais,1,1,1,407,61.72550432276657
+Livre 178,Auteur 268,Art,Allemand,Hachette,1851,756,1,Moyen,1,1,0,118,86.3436599423631
+Livre 179,Auteur 124,Fantastique,Français,Flammarion,2007,498,7,Moyen,0,1,1,330,49.35518731988472
+Livre 180,Auteur 142,Art,Espagnol,Albin Michel,1901,680,16,Mauvais,1,0,0,120,54.070605187319885
+Livre 181,Auteur 85,Art,Français,Flammarion,1922,95,3,Bon,1,1,0,32,85.36383285302593
+Livre 182,Auteur 77,Roman,Espagnol,Albin Michel,2008,126,12,Excellent,1,0,1,376,44.88472622478386
+Livre 183,Auteur 159,Religion,Allemand,Hachette,1908,729,7,Moyen,0,0,1,487,36.55619596541787
+Livre 184,Auteur 76,Thriller,Allemand,Seuil,1912,64,18,Moyen,1,0,1,207,59.03097982708934
+Livre 185,Auteur 17,Roman,Espagnol,Fayard,1915,647,20,Mauvais,1,0,0,108,51.86599423631124
+Livre 186,Auteur 48,Thriller,Français,Actes Sud,1923,674,2,Bon,1,0,1,3,78.13760806916426
+Livre 187,Auteur 101,Philosophie,Italien,Fayard,1966,636,4,Moyen,1,1,0,80,73.6671469740634
+Livre 188,Auteur 262,Thriller,Espagnol,Gallimard,1898,684,17,Excellent,1,1,1,272,78.50504322766571
+Livre 189,Auteur 35,Art,Français,Albin Michel,1916,165,9,Excellent,1,0,0,200,61.72550432276657
+Livre 190,Auteur 37,Art,Anglais,Flammarion,1917,666,12,Moyen,1,0,1,475,43.843659942363104
+Livre 191,Auteur 107,Philosophie,Anglais,Albin Michel,1962,189,2,Excellent,1,0,1,176,65.82853025936599
+Livre 192,Auteur 104,Philosophie,Italien,Gallimard,1887,697,9,Bon,0,0,0,223,51.62103746397694
+Livre 193,Auteur 99,Biographie,Allemand,Gallimard,1920,606,18,Moyen,1,1,1,134,77.83141210374639
+Livre 194,Auteur 165,Poésie,Français,Hachette,1957,483,16,Excellent,1,1,0,223,68.46181556195964
+Livre 195,Auteur 41,Fantastique,Italien,Albin Michel,1874,265,13,Mauvais,1,0,0,182,54.499279538904894
+Livre 196,Auteur 81,Religion,Italien,Albin Michel,1859,817,9,Mauvais,0,0,0,450,31.963256484149856
+Livre 197,Auteur 253,Thriller,Allemand,Flammarion,1914,75,8,Mauvais,0,1,1,387,50.82492795389049
+Livre 198,Auteur 94,Biographie,Italien,Hachette,1925,140,15,Excellent,1,0,0,117,63.86887608069164
+Livre 199,Auteur 210,Roman,Italien,Actes Sud,1855,325,6,Bon,0,1,1,359,69.56412103746396
+Livre 200,Auteur 150,Historique,Français,Gallimard,1858,722,19,Moyen,0,0,1,225,55.05043227665706
+Livre 201,Auteur 220,Historique,Espagnol,Seuil,1919,174,8,Moyen,0,1,1,138,71.58501440922191
+Livre 202,Auteur 110,Science-Fiction,Français,Hachette,1963,493,0,Moyen,0,1,0,488,41.08789625360231
+Livre 203,Auteur 96,Fantastique,Allemand,Fayard,2001,254,17,Mauvais,1,1,0,60,60.50072046109509
+Livre 204,Auteur 120,Thriller,Italien,Actes Sud,1969,392,2,Moyen,1,0,1,441,42.61887608069164
+Livre 205,Auteur 1,Fantastique,Anglais,Actes Sud,1882,415,9,Excellent,1,1,0,142,84.7514409221902
+Livre 206,Auteur 229,Thriller,Anglais,Seuil,1852,696,13,Mauvais,0,0,1,496,34.902737752161386
+Livre 207,Auteur 285,Historique,Italien,Hachette,1862,527,4,Bon,1,0,0,355,57.316282420749275
+Livre 208,Auteur 118,Religion,Anglais,Albin Michel,1945,250,7,Moyen,1,0,0,441,37.903458213256485
+Livre 209,Auteur 233,Religion,Espagnol,Seuil,1987,543,18,Moyen,1,0,0,289,38.69956772334294
+Livre 210,Auteur 238,Fantastique,Italien,Flammarion,1927,412,10,Excellent,1,1,1,337,73.11599423631124
+Livre 211,Auteur 74,Science-Fiction,Espagnol,Seuil,1927,906,1,Bon,1,0,1,54,74.83069164265129
+Livre 212,Auteur 243,Roman,Espagnol,Actes Sud,1896,371,3,Excellent,0,0,0,346,47.88544668587896
+Livre 213,Auteur 149,Philosophie,Français,Flammarion,1892,537,7,Bon,1,1,0,469,61.05187319884726
+Livre 214,Auteur 297,Religion,Allemand,Flammarion,1901,984,11,Excellent,0,0,0,199,53.825648414985594
+Livre 215,Auteur 72,Science,Espagnol,Flammarion,1942,281,16,Excellent,1,1,1,237,75.56556195965419
+Livre 216,Auteur 104,Historique,Italien,Seuil,1944,398,12,Bon,0,1,1,187,67.35951008645533
+Livre 217,Auteur 173,Philosophie,Espagnol,Fayard,1938,377,12,Excellent,1,0,0,367,47.88544668587896
+Livre 218,Auteur 283,Roman,Anglais,Fayard,1911,508,13,Mauvais,1,1,0,491,46.35446685878962
+Livre 219,Auteur 260,Fantastique,Italien,Actes Sud,1993,991,13,Bon,0,0,1,388,33.43299711815562
+Livre 220,Auteur 247,Roman,Français,Flammarion,1986,827,20,Bon,1,1,0,431,47.88544668587896
+Livre 221,Auteur 53,Biographie,Italien,Hachette,1936,441,2,Moyen,1,0,1,460,45.49711815561959
+Livre 222,Auteur 73,Science,Espagnol,Albin Michel,1982,375,8,Bon,1,1,0,73,73.97334293948126
+Livre 223,Auteur 66,Biographie,Français,Flammarion,1891,1000,4,Mauvais,0,1,1,453,50.82492795389049
+Livre 224,Auteur 266,Philosophie,Français,Albin Michel,1972,580,20,Excellent,1,1,0,137,70.6664265129683
+Livre 225,Auteur 179,Biographie,Français,Fayard,1933,476,17,Moyen,0,0,0,465,25.655619596541783
+Livre 226,Auteur 114,Historique,Espagnol,Fayard,1862,904,5,Mauvais,1,0,0,45,66.80835734870317
+Livre 227,Auteur 290,Thriller,Allemand,Fayard,1985,105,4,Excellent,0,0,1,153,54.621757925072046
+Livre 228,Auteur 270,Science,Allemand,Gallimard,1930,349,15,Moyen,1,0,1,289,52.72334293948126
+Livre 229,Auteur 45,Fantastique,Allemand,Flammarion,1972,166,6,Excellent,1,1,1,346,68.27809798270894
+Livre 230,Auteur 162,Aventure,Allemand,Seuil,1926,115,9,Mauvais,1,0,1,217,53.335734870317
+Livre 231,Auteur 227,Philosophie,Espagnol,Seuil,1940,914,18,Bon,1,0,0,212,52.233429394812674
+Livre 232,Auteur 168,Science,Espagnol,Albin Michel,1863,621,9,Excellent,1,0,0,352,58.908501440922194
+Livre 233,Auteur 89,Historique,Allemand,Hachette,1914,526,3,Bon,0,1,1,395,61.05187319884726
+Livre 234,Auteur 142,Science-Fiction,Allemand,Actes Sud,1881,303,16,Mauvais,1,1,0,59,75.56556195965419
+Livre 235,Auteur 188,Poésie,Allemand,Seuil,1925,606,1,Bon,0,1,0,148,69.31916426512967
+Livre 236,Auteur 47,Religion,Allemand,Albin Michel,1969,185,17,Bon,0,1,1,57,70.72766570605187
+Livre 237,Auteur 193,Science,Italien,Seuil,1947,140,1,Mauvais,0,1,0,389,42.680115273775215
+Livre 238,Auteur 7,Poésie,Italien,Albin Michel,1980,658,8,Bon,0,1,1,10,75.01440922190201
+Livre 239,Auteur 70,Aventure,Anglais,Actes Sud,1952,661,12,Bon,0,1,0,470,42.925072046109506
+Livre 240,Auteur 103,Thriller,Italien,Gallimard,2006,397,16,Mauvais,1,1,1,487,40.1693083573487
+Livre 241,Auteur 186,Historique,Italien,Hachette,1992,941,0,Excellent,0,0,1,311,45.31340057636888
+Livre 242,Auteur 256,Religion,Espagnol,Seuil,1973,628,20,Moyen,1,1,1,83,73.85086455331411
+Livre 243,Auteur 230,Religion,Espagnol,Fayard,1880,704,7,Moyen,0,0,1,426,43.721181556195965
+Livre 244,Auteur 137,Philosophie,Italien,Albin Michel,1907,911,14,Excellent,0,1,1,481,56.336455331412104
+Livre 245,Auteur 254,Philosophie,Anglais,Gallimard,1934,972,0,Mauvais,1,1,0,150,68.40057636887607
+Livre 246,Auteur 65,Biographie,Espagnol,Fayard,1992,542,8,Moyen,0,0,1,306,37.04610951008645
+Livre 247,Auteur 169,Religion,Anglais,Fayard,1948,595,9,Bon,0,1,1,157,69.62536023054754
+Livre 248,Auteur 159,Fantastique,Allemand,Albin Michel,1985,64,8,Moyen,1,1,0,39,72.62608069164264
+Livre 249,Auteur 85,Science-Fiction,Italien,Seuil,1964,662,12,Moyen,1,1,1,377,59.398414985590776
+Livre 250,Auteur 30,Fantastique,Français,Gallimard,1931,299,18,Mauvais,1,1,0,160,62.644092219020166
+Livre 251,Auteur 231,Science-Fiction,Allemand,Albin Michel,2008,958,3,Excellent,0,1,1,454,48.987752161383284
+Livre 252,Auteur 28,Science-Fiction,Espagnol,Hachette,1979,922,16,Bon,0,0,0,476,22.71613832853026
+Livre 253,Auteur 120,Science-Fiction,Allemand,Gallimard,1952,274,16,Mauvais,0,1,1,204,54.92795389048991
+Livre 254,Auteur 101,Science,Espagnol,Hachette,1904,85,2,Excellent,0,1,0,451,56.091498559077806
+Livre 255,Auteur 31,Science-Fiction,Italien,Flammarion,1871,376,15,Moyen,1,0,0,64,67.60446685878964
+Livre 256,Auteur 258,Poésie,Français,Albin Michel,1939,901,0,Moyen,0,0,1,325,44.82348703170029
+Livre 257,Auteur 265,Philosophie,Allemand,Albin Michel,1963,912,0,Moyen,1,0,0,350,43.414985590778095
+Livre 258,Auteur 174,Historique,Italien,Actes Sud,1944,795,17,Mauvais,1,1,1,273,60.56195965417867
+Livre 259,Auteur 36,Science-Fiction,Espagnol,Albin Michel,1909,330,7,Moyen,0,0,0,114,53.15201729106628
+Livre 260,Auteur 153,Science,Espagnol,Hachette,1880,459,17,Moyen,0,0,0,110,53.88688760806916
+Livre 261,Auteur 166,Aventure,Italien,Seuil,1965,330,14,Mauvais,0,1,1,390,42.55763688760807
+Livre 262,Auteur 136,Aventure,Allemand,Gallimard,1872,143,18,Excellent,1,0,1,286,65.21613832853026
+Livre 263,Auteur 64,Science-Fiction,Italien,Hachette,1874,118,5,Mauvais,0,0,0,150,49.72262247838617
+Livre 264,Auteur 277,Aventure,Français,Albin Michel,2005,573,13,Moyen,0,0,0,314,27.309077809798268
+Livre 265,Auteur 64,Poésie,Espagnol,Actes Sud,1904,595,14,Excellent,1,1,0,422,63.37896253602305
+Livre 266,Auteur 176,Philosophie,Anglais,Fayard,1980,548,5,Bon,0,0,1,290,43.47622478386167
+Livre 267,Auteur 111,Religion,Italien,Hachette,1964,317,5,Bon,0,0,1,460,35.02521613832853
+Livre 268,Auteur 145,Religion,Italien,Seuil,1892,554,19,Excellent,0,0,0,319,45.12968299711815
+Livre 269,Auteur 102,Science-Fiction,Espagnol,Seuil,1968,373,4,Mauvais,1,1,0,484,42.55763688760807
+Livre 270,Auteur 298,Roman,Français,Actes Sud,1982,90,8,Excellent,1,1,1,307,68.82925072046109
+Livre 271,Auteur 20,Science-Fiction,Espagnol,Albin Michel,1866,407,16,Moyen,1,1,1,126,85.54755043227665
+Livre 272,Auteur 121,Philosophie,Allemand,Flammarion,1907,488,13,Moyen,1,1,0,302,64.54250720461096
+Livre 273,Auteur 51,Poésie,Français,Albin Michel,1919,265,11,Moyen,0,1,1,105,72.68731988472621
+Livre 274,Auteur 199,Aventure,Italien,Actes Sud,1980,156,15,Mauvais,0,1,0,498,27.67651296829971
+Livre 275,Auteur 214,Science-Fiction,Allemand,Albin Michel,1987,238,19,Bon,1,0,0,215,45.987031700288185
+Livre 276,Auteur 76,Art,Espagnol,Flammarion,1866,950,11,Mauvais,0,1,0,425,47.3342939481268
+Livre 277,Auteur 82,Thriller,Anglais,Hachette,1899,509,19,Excellent,0,1,0,488,49.23270893371758
+Livre 278,Auteur 208,Aventure,Espagnol,Flammarion,1977,724,17,Excellent,0,1,0,239,55.540345821325644
+Livre 279,Auteur 111,Science,Anglais,Albin Michel,1889,792,0,Excellent,1,1,0,487,65.52233429394812
+Livre 280,Auteur 282,Poésie,Italien,Actes Sud,1906,91,15,Excellent,0,1,1,398,61.23559077809798
+Livre 281,Auteur 150,Poésie,Français,Albin Michel,1944,407,12,Moyen,0,0,0,92,48.68155619596541
+Livre 282,Auteur 67,Science-Fiction,Français,Actes Sud,1907,976,16,Moyen,0,1,1,303,60.50072046109509
+Livre 283,Auteur 63,Poésie,Espagnol,Hachette,1902,249,8,Bon,0,0,0,306,45.00720461095101
+Livre 284,Auteur 5,Thriller,Espagnol,Fayard,1905,874,16,Moyen,0,1,1,159,69.56412103746396
+Livre 285,Auteur 117,Aventure,Espagnol,Fayard,1923,619,7,Excellent,1,0,1,239,65.21613832853026
+Livre 286,Auteur 287,Science-Fiction,Allemand,Albin Michel,1881,420,19,Excellent,1,0,0,444,48.007925072046106
+Livre 287,Auteur 15,Historique,Italien,Hachette,1965,756,15,Moyen,0,0,0,93,45.12968299711815
+Livre 288,Auteur 229,Historique,Espagnol,Gallimard,1872,179,10,Mauvais,0,0,1,480,34.351585014409224
+Livre 289,Auteur 199,Philosophie,Anglais,Seuil,1868,216,7,Moyen,0,0,1,461,43.04755043227665
+Livre 290,Auteur 156,Philosophie,Espagnol,Hachette,1964,939,13,Mauvais,0,0,0,220,31.963256484149856
+Livre 291,Auteur 130,Historique,Français,Gallimard,1857,504,19,Moyen,0,0,0,332,42.49639769452449
+Livre 292,Auteur 214,Science-Fiction,Anglais,Seuil,1999,67,3,Bon,0,0,1,141,50.88616714697405
+Livre 293,Auteur 243,Aventure,Italien,Seuil,1971,665,4,Mauvais,0,1,0,296,44.51729106628242
+Livre 294,Auteur 271,Historique,Espagnol,Flammarion,1869,155,10,Mauvais,0,1,0,379,50.09005763688761
+Livre 295,Auteur 147,Philosophie,Français,Seuil,1915,221,1,Moyen,1,1,1,400,67.35951008645533
+Livre 296,Auteur 266,Historique,Espagnol,Gallimard,1920,908,18,Moyen,1,0,0,56,61.174351585014406
+Livre 297,Auteur 22,Philosophie,Français,Seuil,1993,704,3,Mauvais,1,1,1,203,63.134005763688755
+Livre 298,Auteur 188,Art,Allemand,Gallimard,1875,477,8,Mauvais,1,1,0,217,69.07420749279538
+Livre 299,Auteur 57,Fantastique,Français,Albin Michel,1890,735,1,Mauvais,0,1,0,33,71.46253602305475
+Livre 300,Auteur 271,Historique,Français,Flammarion,1937,266,12,Bon,0,0,0,343,37.22982708933718
+Livre 301,Auteur 251,Science,Allemand,Seuil,1977,458,11,Moyen,0,0,1,194,44.82348703170029
+Livre 302,Auteur 195,Philosophie,Anglais,Albin Michel,1854,313,4,Excellent,0,0,1,479,50.702449567723335
+Livre 303,Auteur 14,Poésie,Allemand,Flammarion,1898,974,19,Bon,1,1,0,28,83.64913544668588
+Livre 304,Auteur 222,Historique,Allemand,Fayard,2006,610,15,Excellent,0,0,1,361,35.94380403458213
+Livre 305,Auteur 200,Roman,Espagnol,Gallimard,1933,180,14,Excellent,0,1,0,235,62.09293948126801
+Livre 306,Auteur 179,Aventure,Espagnol,Fayard,1932,226,14,Bon,0,0,1,179,53.39697406340058
+Livre 307,Auteur 23,Poésie,Espagnol,Actes Sud,1989,240,13,Bon,1,1,1,213,69.13544668587896
+Livre 308,Auteur 115,Biographie,Anglais,Actes Sud,1963,581,4,Bon,0,1,1,138,70.48270893371756
+Livre 309,Auteur 165,Biographie,Allemand,Actes Sud,1945,533,8,Excellent,0,1,0,414,51.498559077809794
+Livre 310,Auteur 198,Art,Français,Actes Sud,2000,220,12,Excellent,1,0,0,90,57.2550432276657
+Livre 311,Auteur 178,Art,Anglais,Seuil,1973,631,13,Excellent,1,0,1,76,67.23703170028818
+Livre 312,Auteur 162,Aventure,Italien,Albin Michel,1878,967,4,Excellent,0,1,0,215,73.11599423631124
+Livre 313,Auteur 23,Poésie,Allemand,Gallimard,1862,201,14,Moyen,1,1,0,24,86.7723342939481
+Livre 314,Auteur 33,Thriller,Anglais,Albin Michel,1928,657,10,Bon,1,1,0,387,60.74567723342939
+Livre 315,Auteur 246,Religion,Italien,Albin Michel,1880,76,8,Excellent,0,0,1,485,45.925792507204605
+Livre 316,Auteur 40,Science,Allemand,Flammarion,1966,431,5,Excellent,0,1,0,142,66.5021613832853
+Livre 317,Auteur 140,Science,Français,Actes Sud,1996,65,5,Bon,1,0,0,357,40.47550432276657
+Livre 318,Auteur 27,Philosophie,Italien,Hachette,1957,574,6,Moyen,0,0,1,125,53.02953890489913
+Livre 319,Auteur 135,Art,Italien,Fayard,1871,96,13,Mauvais,1,1,0,20,80.09726224783861
+Livre 320,Auteur 299,Thriller,Anglais,Hachette,1920,60,9,Bon,0,0,1,474,38.3321325648415
+Livre 321,Auteur 193,Fantastique,Italien,Gallimard,1922,335,6,Moyen,1,0,0,288,50.39625360230547
+Livre 322,Auteur 149,Science-Fiction,Italien,Actes Sud,1902,632,4,Bon,1,0,1,137,71.89121037463977
+Livre 323,Auteur 278,Aventure,Français,Albin Michel,1880,541,17,Excellent,0,1,1,65,84.20028818443804
+Livre 324,Auteur 82,Art,Anglais,Seuil,1910,963,6,Moyen,1,1,0,456,56.887608069164266
+Livre 325,Auteur 115,Art,Italien,Gallimard,2006,585,0,Excellent,1,1,1,493,56.94884726224783
+Livre 326,Auteur 183,Roman,Italien,Hachette,1914,184,18,Mauvais,1,1,0,99,68.46181556195964
+Livre 327,Auteur 281,Science,Italien,Seuil,1899,458,7,Mauvais,0,1,0,494,40.29178674351584
+Livre 328,Auteur 232,Philosophie,Italien,Albin Michel,1883,460,17,Bon,0,0,0,298,45.06844380403457
+Livre 329,Auteur 217,Philosophie,Espagnol,Hachette,2001,925,2,Moyen,1,1,0,409,49.84510086455332
+Livre 330,Auteur 138,Religion,Italien,Actes Sud,1913,971,9,Bon,1,1,1,464,64.29755043227665
+Livre 331,Auteur 232,Religion,Espagnol,Fayard,1898,648,20,Mauvais,0,0,1,112,50.64121037463977
+Livre 332,Auteur 169,Historique,Italien,Albin Michel,1948,64,0,Excellent,1,1,0,121,80.70965417867434
+Livre 333,Auteur 71,Poésie,Anglais,Actes Sud,1922,539,17,Excellent,0,1,1,194,71.1563400576369
+Livre 334,Auteur 74,Roman,Anglais,Fayard,1951,920,11,Mauvais,0,1,0,402,38.3321325648415
+Livre 335,Auteur 261,Science,Espagnol,Hachette,1886,987,9,Excellent,1,0,0,11,76.97406340057637
+Livre 336,Auteur 223,Biographie,Français,Albin Michel,1890,902,17,Moyen,1,0,1,276,57.80619596541787
+Livre 337,Auteur 211,Historique,Italien,Hachette,1948,807,19,Bon,1,1,1,408,60.37824207492794
+Livre 338,Auteur 21,Science-Fiction,Allemand,Gallimard,1893,81,5,Bon,0,1,0,204,68.5842939481268
+Livre 339,Auteur 248,Science,Allemand,Actes Sud,1913,884,17,Mauvais,1,0,1,356,43.96613832853025
+Livre 340,Auteur 229,Thriller,Espagnol,Flammarion,1935,959,6,Bon,0,1,1,171,71.27881844380403
+Livre 341,Auteur 144,Aventure,Allemand,Hachette,1875,96,7,Mauvais,0,0,0,319,38.638328530259365
+Livre 342,Auteur 76,Roman,Français,Actes Sud,1931,924,5,Moyen,1,1,0,300,64.1750720461095
+Livre 343,Auteur 206,Poésie,Espagnol,Fayard,1938,822,16,Moyen,1,1,1,324,64.60374639769452
+Livre 344,Auteur 216,Poésie,Espagnol,Gallimard,1952,480,12,Mauvais,0,1,1,43,66.0122478386167
+Livre 345,Auteur 9,Fantastique,Espagnol,Fayard,2008,384,3,Moyen,0,0,0,43,46.59942363112391
+Livre 346,Auteur 153,Aventure,Anglais,Flammarion,1937,937,20,Moyen,0,0,1,252,43.414985590778095
+Livre 347,Auteur 235,Thriller,Français,Actes Sud,1854,678,19,Excellent,1,0,0,419,52.84582132564841
+Livre 348,Auteur 174,Thriller,Anglais,Gallimard,1904,683,19,Mauvais,0,0,1,214,43.96613832853025
+Livre 349,Auteur 270,Poésie,Italien,Seuil,1964,95,6,Bon,1,0,0,129,58.051152737752155
+Livre 350,Auteur 249,Poésie,Français,Actes Sud,1944,956,10,Mauvais,0,0,1,161,45.06844380403457
+Livre 351,Auteur 222,Biographie,Anglais,Hachette,1868,357,3,Mauvais,0,1,0,133,67.42074927953891
+Livre 352,Auteur 179,Roman,Anglais,Fayard,1881,671,16,Moyen,0,0,0,194,48.92651296829971
+Livre 353,Auteur 18,Aventure,Français,Actes Sud,1857,384,15,Mauvais,0,0,0,263,41.82276657060518
+Livre 354,Auteur 120,Science-Fiction,Italien,Hachette,1964,764,2,Moyen,1,0,0,414,38.76080691642651
+Livre 355,Auteur 250,Aventure,Français,Albin Michel,1886,185,18,Moyen,1,0,0,452,41.08789625360231
+Livre 356,Auteur 214,Thriller,Anglais,Fayard,1885,342,4,Bon,1,0,0,253,60.74567723342939
+Livre 357,Auteur 158,Aventure,Allemand,Gallimard,1854,175,7,Bon,1,1,1,298,82.30187319884726
+Livre 358,Auteur 185,Science,Espagnol,Actes Sud,1984,220,11,Bon,0,0,1,140,50.3350144092219
+Livre 359,Auteur 60,Religion,Anglais,Albin Michel,1939,579,11,Mauvais,1,0,0,156,48.742795389048986
+Livre 360,Auteur 280,Roman,Allemand,Gallimard,1969,225,3,Mauvais,1,1,1,315,59.21469740634006
+Livre 361,Auteur 158,Fantastique,Allemand,Albin Michel,1980,505,9,Excellent,0,0,0,84,51.80475504322766
+Livre 362,Auteur 166,Art,Italien,Hachette,1967,132,5,Moyen,1,0,1,300,50.57997118155619
+Livre 363,Auteur 287,Thriller,Anglais,Fayard,1872,814,14,Mauvais,0,0,0,212,43.414985590778095
+Livre 364,Auteur 151,Philosophie,Allemand,Hachette,1885,993,8,Excellent,0,1,1,161,80.46469740634006
+Livre 365,Auteur 204,Poésie,Français,Seuil,1934,923,16,Moyen,1,1,1,431,58.54106628242074
+Livre 366,Auteur 73,Art,Allemand,Flammarion,1969,242,2,Moyen,0,0,0,225,40.53674351585015
+Livre 367,Auteur 48,Science-Fiction,Français,Actes Sud,1949,304,1,Moyen,1,0,1,362,50.21253602305475
+Livre 368,Auteur 200,Philosophie,Espagnol,Albin Michel,1911,135,4,Excellent,0,1,1,447,60.99063400576368
+Livre 369,Auteur 266,Science,Anglais,Actes Sud,1931,326,3,Excellent,0,1,0,227,66.19596541786743
+Livre 370,Auteur 197,Fantastique,Anglais,Gallimard,1910,804,20,Excellent,0,0,1,96,62.39913544668588
+Livre 371,Auteur 277,Art,Espagnol,Hachette,1890,917,0,Bon,1,1,0,169,81.81195965417866
+Livre 372,Auteur 110,Religion,Anglais,Flammarion,1920,126,7,Moyen,0,0,1,145,56.03025936599423
+Livre 373,Auteur 111,Science,Anglais,Actes Sud,1948,76,11,Mauvais,0,0,1,416,28.656340057636882
+Livre 374,Auteur 137,Fantastique,Italien,Hachette,1968,127,0,Bon,0,1,0,182,62.27665706051873
+Livre 375,Auteur 86,Aventure,Allemand,Flammarion,1968,382,1,Excellent,1,1,0,53,82.11815561959654
+Livre 376,Auteur 234,Historique,Espagnol,Fayard,1990,214,7,Excellent,1,0,1,462,43.35374639769452
+Livre 377,Auteur 267,Roman,Anglais,Albin Michel,1971,455,14,Bon,1,1,0,223,64.29755043227665
+Livre 378,Auteur 48,Science,Allemand,Actes Sud,2001,749,14,Mauvais,0,0,1,12,45.987031700288185
+Livre 379,Auteur 202,Aventure,Espagnol,Seuil,1901,996,19,Moyen,0,0,0,419,31.779538904899134
+Livre 380,Auteur 202,Biographie,Anglais,Flammarion,1976,501,5,Bon,0,0,1,363,39.49567723342939
+Livre 381,Auteur 109,Poésie,Allemand,Gallimard,1897,634,14,Bon,0,0,0,77,57.80619596541787
+Livre 382,Auteur 274,Thriller,Allemand,Seuil,1928,687,15,Excellent,0,1,0,250,61.48054755043228
+Livre 383,Auteur 250,Roman,Italien,Seuil,1876,652,6,Bon,0,1,0,397,58.54106628242074
+Livre 384,Auteur 108,Aventure,Anglais,Seuil,1895,901,6,Bon,1,1,1,250,80.52593659942363
+Livre 385,Auteur 275,Science-Fiction,Français,Albin Michel,1995,951,5,Bon,1,0,1,144,59.76585014409222
+Livre 386,Auteur 39,Thriller,Espagnol,Flammarion,1925,240,20,Mauvais,1,1,1,270,62.154178674351584
+Livre 387,Auteur 159,Biographie,Italien,Flammarion,1975,259,9,Mauvais,0,1,1,276,49.84510086455332
+Livre 388,Auteur 223,Religion,Allemand,Seuil,1888,300,20,Excellent,1,1,1,31,93.56988472622479
+Livre 389,Auteur 201,Historique,Allemand,Albin Michel,1934,366,12,Bon,1,0,0,10,67.17579250720462
+Livre 390,Auteur 76,Philosophie,Anglais,Actes Sud,2003,548,2,Bon,0,0,1,454,31.53458213256484
+Livre 391,Auteur 273,Thriller,Anglais,Flammarion,2006,340,20,Mauvais,0,1,1,6,59.21469740634006
+Livre 392,Auteur 222,Philosophie,Espagnol,Fayard,1935,675,19,Bon,0,1,0,490,41.63904899135447
+Livre 393,Auteur 182,Philosophie,Italien,Actes Sud,1985,819,14,Excellent,0,0,1,256,45.252161383285305
+Livre 394,Auteur 186,Roman,Espagnol,Fayard,1939,613,11,Moyen,0,0,1,199,49.171469740634
+Livre 395,Auteur 162,Philosophie,Allemand,Hachette,1862,263,5,Bon,1,1,1,395,75.99423631123918
+Livre 396,Auteur 90,Religion,Allemand,Fayard,1864,428,1,Bon,0,0,1,486,46.90561959654178
+Livre 397,Auteur 243,Philosophie,Français,Flammarion,1977,981,18,Moyen,1,1,1,8,78.56628242074927
+Livre 398,Auteur 81,Historique,Espagnol,Seuil,1913,269,1,Moyen,0,1,1,252,67.48198847262248
+Livre 399,Auteur 131,Biographie,Espagnol,Flammarion,1976,897,7,Bon,0,1,0,309,51.37608069164265
+Livre 400,Auteur 183,Biographie,Allemand,Fayard,1865,527,13,Bon,1,1,1,1,97.30547550432277
+Livre 401,Auteur 158,Historique,Anglais,Albin Michel,1951,871,18,Mauvais,0,1,0,209,48.007925072046106
+Livre 402,Auteur 185,Roman,Français,Gallimard,1890,744,3,Excellent,0,0,1,255,60.317002881844374
+Livre 403,Auteur 246,Biographie,Français,Hachette,1897,86,4,Moyen,0,1,1,20,82.73054755043226
+Livre 404,Auteur 206,Science-Fiction,Italien,Actes Sud,1976,163,16,Mauvais,1,1,1,328,53.580691642651296
+Livre 405,Auteur 235,Aventure,Anglais,Hachette,1971,351,6,Mauvais,1,0,0,468,27.247838616714695
+Livre 406,Auteur 296,Biographie,Italien,Fayard,1957,921,3,Excellent,0,1,1,33,81.01585014409221
+Livre 407,Auteur 97,Art,Espagnol,Albin Michel,1949,993,12,Bon,0,1,1,31,76.30043227665706
+Livre 408,Auteur 289,Fantastique,Français,Actes Sud,1933,956,8,Mauvais,0,1,0,37,63.80763688760807
+Livre 409,Auteur 77,Historique,Anglais,Albin Michel,1907,570,6,Mauvais,1,0,1,259,54.00936599423631
+Livre 410,Auteur 297,Aventure,Espagnol,Actes Sud,1997,826,18,Mauvais,0,0,1,442,18.9193083573487
+Livre 411,Auteur 71,Thriller,Anglais,Fayard,1989,721,14,Mauvais,0,0,0,442,15.0
+Livre 412,Auteur 204,Poésie,Italien,Hachette,1921,60,2,Excellent,1,0,1,112,74.76945244956772
+Livre 413,Auteur 109,Fantastique,Italien,Albin Michel,2007,76,1,Moyen,1,1,0,124,66.86959654178673
+Livre 414,Auteur 89,Poésie,Anglais,Actes Sud,1988,371,0,Moyen,1,0,0,10,61.174351585014406
+Livre 415,Auteur 166,Philosophie,Italien,Flammarion,1897,808,10,Moyen,0,1,0,85,70.78890489913545
+Livre 416,Auteur 39,Art,Espagnol,Flammarion,1931,496,5,Mauvais,1,1,0,73,71.95244956772333
+Livre 417,Auteur 94,Religion,Français,Hachette,1936,436,16,Excellent,0,1,0,161,65.64481268011528
+Livre 418,Auteur 226,Religion,Espagnol,Hachette,1882,406,16,Mauvais,0,1,0,142,61.174351585014406
+Livre 419,Auteur 146,Science-Fiction,Français,Gallimard,1992,916,14,Bon,0,0,0,312,31.779538904899134
+Livre 420,Auteur 72,Aventure,Espagnol,Flammarion,1960,617,13,Excellent,0,0,1,122,56.826368876080686
+Livre 421,Auteur 30,Religion,Anglais,Gallimard,1962,890,20,Moyen,1,1,1,67,76.17795389048992
+Livre 422,Auteur 158,Art,Français,Gallimard,1988,788,11,Moyen,1,1,1,24,78.38256484149855
+Livre 423,Auteur 212,Art,Français,Actes Sud,1961,571,17,Bon,0,1,1,247,60.072046109510076
+Livre 424,Auteur 14,Art,Italien,Flammarion,1907,700,19,Moyen,0,0,0,267,40.35302593659942
+Livre 425,Auteur 180,Thriller,Espagnol,Seuil,1863,396,7,Bon,0,1,0,130,76.17795389048992
+Livre 426,Auteur 29,Fantastique,Allemand,Gallimard,1975,608,18,Mauvais,0,0,1,4,48.436599423631115
+Livre 427,Auteur 53,Science-Fiction,Espagnol,Hachette,1915,682,11,Excellent,0,1,1,105,79.30115273775216
+Livre 428,Auteur 202,Philosophie,Allemand,Albin Michel,1996,874,19,Moyen,1,0,1,455,33.2492795389049
+Livre 429,Auteur 248,Fantastique,Français,Hachette,1873,357,9,Moyen,1,1,1,240,79.85230547550432
+Livre 430,Auteur 182,Roman,Anglais,Gallimard,1865,432,1,Bon,0,0,1,228,62.5828530259366
+Livre 431,Auteur 280,Historique,Allemand,Seuil,1887,985,5,Bon,0,1,1,168,77.64769452449568
+Livre 432,Auteur 172,Biographie,Français,Seuil,1999,436,3,Excellent,1,0,1,158,62.09293948126801
+Livre 433,Auteur 222,Poésie,Italien,Fayard,1905,174,14,Mauvais,0,0,0,98,46.35446685878962
+Livre 434,Auteur 103,Poésie,Anglais,Albin Michel,2007,778,0,Moyen,1,1,0,452,47.08933717579251
+Livre 435,Auteur 144,Roman,Anglais,Albin Michel,1921,88,18,Moyen,1,1,0,414,54.43804034582132
+Livre 436,Auteur 280,Historique,Italien,Gallimard,1895,624,16,Excellent,0,1,0,156,70.97262247838617
+Livre 437,Auteur 234,Thriller,Français,Actes Sud,1873,172,5,Excellent,1,1,1,105,95.46829971181556
+Livre 438,Auteur 47,Biographie,Anglais,Hachette,1858,391,20,Mauvais,1,0,0,138,57.010086455331404
+Livre 439,Auteur 230,Thriller,Anglais,Gallimard,1987,490,20,Moyen,1,1,0,357,49.23270893371758
+Livre 440,Auteur 62,Religion,Espagnol,Hachette,2010,359,9,Excellent,1,1,0,321,58.112391930835734
+Livre 441,Auteur 183,Fantastique,Allemand,Flammarion,1891,929,18,Moyen,1,1,1,401,65.03242074927954
+Livre 442,Auteur 234,Fantastique,Anglais,Actes Sud,1850,296,2,Mauvais,1,0,1,450,50.51873198847262
+Livre 443,Auteur 124,Religion,Espagnol,Fayard,1950,483,8,Excellent,1,1,1,268,75.13688760806916
+Livre 444,Auteur 154,Art,Espagnol,Gallimard,1981,721,9,Bon,0,0,0,220,40.29178674351584
+Livre 445,Auteur 22,Religion,Français,Fayard,1934,843,13,Mauvais,0,0,1,294,37.22982708933718
+Livre 446,Auteur 195,Fantastique,Espagnol,Fayard,1977,723,20,Mauvais,1,1,1,77,67.60446685878964
+Livre 447,Auteur 115,Religion,Italien,Seuil,1932,614,18,Mauvais,0,1,1,300,50.88616714697405
+Livre 448,Auteur 27,Religion,Espagnol,Hachette,1920,935,8,Bon,1,0,0,132,62.644092219020166
+Livre 449,Auteur 142,Historique,Italien,Seuil,1939,575,14,Excellent,1,1,0,250,69.62536023054754
+Livre 450,Auteur 160,Fantastique,Italien,Fayard,1944,254,17,Mauvais,0,0,1,234,38.45461095100865
+Livre 451,Auteur 25,Historique,Anglais,Actes Sud,1861,625,15,Excellent,1,0,0,148,69.80907780979827
+Livre 452,Auteur 279,Science,Espagnol,Seuil,1851,257,17,Moyen,0,1,0,382,56.091498559077806
+Livre 453,Auteur 4,Historique,Anglais,Actes Sud,1995,214,13,Moyen,1,1,0,19,71.0951008645533
+Livre 454,Auteur 79,Thriller,Espagnol,Gallimard,1872,112,12,Moyen,0,1,1,13,83.77161383285303
+Livre 455,Auteur 158,Poésie,Allemand,Gallimard,1934,127,17,Excellent,0,1,0,267,59.09221902017291
+Livre 456,Auteur 262,Art,Anglais,Gallimard,1912,684,6,Bon,1,0,1,292,60.56195965417867
+Livre 457,Auteur 49,Science-Fiction,Anglais,Seuil,1924,326,14,Excellent,0,0,0,418,36.678674351585016
+Livre 458,Auteur 39,Religion,Anglais,Albin Michel,2001,133,11,Moyen,1,1,0,472,43.231268011527376
+Livre 459,Auteur 80,Thriller,Anglais,Seuil,1899,859,15,Excellent,1,0,1,72,75.93299711815561
+Livre 460,Auteur 248,Fantastique,Allemand,Flammarion,1892,545,10,Bon,1,0,1,457,51.68227665706052
+Livre 461,Auteur 26,Science,Espagnol,Actes Sud,1906,177,9,Bon,1,0,1,15,77.34149855907779
+Livre 462,Auteur 113,Historique,Français,Gallimard,2004,86,16,Bon,0,0,0,4,48.55907780979827
+Livre 463,Auteur 95,Science,Italien,Flammarion,1871,175,8,Bon,0,0,0,463,39.18948126801153
+Livre 464,Auteur 215,Thriller,Anglais,Gallimard,1875,591,10,Excellent,1,0,1,479,55.479106628242064
+Livre 465,Auteur 209,Fantastique,Français,Flammarion,1927,1000,4,Excellent,0,0,1,367,48.62031700288185
+Livre 466,Auteur 274,Aventure,Espagnol,Fayard,2005,439,8,Moyen,0,1,0,134,55.1729106628242
+Livre 467,Auteur 165,Philosophie,Italien,Albin Michel,1997,255,18,Mauvais,0,1,0,327,35.14769452449568
+Livre 468,Auteur 225,Art,Italien,Albin Michel,1887,732,1,Mauvais,1,1,0,422,57.19380403458213
+Livre 469,Auteur 160,Philosophie,Français,Albin Michel,1891,421,12,Mauvais,0,1,1,434,49.538904899135446
+Livre 470,Auteur 85,Science,Allemand,Seuil,1917,656,17,Excellent,1,1,1,141,84.20028818443804
+Livre 471,Auteur 146,Roman,Anglais,Gallimard,1986,834,15,Mauvais,1,0,0,487,21.49135446685879
+Livre 472,Auteur 244,Religion,Allemand,Fayard,2005,672,1,Mauvais,0,0,1,275,33.371757925072046
+Livre 473,Auteur 52,Biographie,Français,Gallimard,1879,88,19,Mauvais,1,1,1,13,83.8328530259366
+Livre 474,Auteur 158,Poésie,Italien,Fayard,1965,553,7,Bon,0,0,1,104,56.091498559077806
+Livre 475,Auteur 113,Fantastique,Anglais,Fayard,1988,185,19,Bon,0,0,0,478,20.572766570605186
+Livre 476,Auteur 94,Art,Allemand,Actes Sud,1892,528,12,Bon,0,0,1,384,46.35446685878962
+Livre 477,Auteur 165,Thriller,Allemand,Actes Sud,1937,176,14,Bon,0,1,0,231,58.78602305475504
+Livre 478,Auteur 171,Historique,Français,Albin Michel,1866,623,15,Excellent,0,1,0,240,69.68659942363112
+Livre 479,Auteur 185,Historique,Français,Flammarion,1973,509,15,Excellent,0,1,0,128,63.440201729106626
+Livre 480,Auteur 148,Biographie,Italien,Gallimard,1973,824,6,Bon,1,0,1,19,69.80907780979827
+Livre 481,Auteur 61,Biographie,Français,Fayard,1852,829,14,Excellent,1,0,1,398,62.03170028818443
+Livre 482,Auteur 200,Science-Fiction,Français,Actes Sud,1871,54,7,Excellent,0,1,0,336,65.64481268011528
+Livre 483,Auteur 267,Fantastique,Allemand,Hachette,2002,447,3,Excellent,0,0,0,261,40.10806916426513
+Livre 484,Auteur 209,Aventure,Anglais,Hachette,1852,455,10,Moyen,0,0,0,83,61.11311239193083
+Livre 485,Auteur 138,Fantastique,Italien,Flammarion,1936,947,0,Moyen,0,0,0,186,47.5792507204611
+Livre 486,Auteur 24,Thriller,Espagnol,Hachette,1934,977,4,Excellent,1,1,0,37,86.3436599423631
+Livre 487,Auteur 105,Historique,Français,Actes Sud,1885,377,7,Moyen,1,0,0,133,64.11383285302594
+Livre 488,Auteur 31,Philosophie,Espagnol,Flammarion,1924,147,18,Moyen,1,1,0,289,61.72550432276657
+Livre 489,Auteur 163,Science-Fiction,Allemand,Gallimard,1893,805,17,Bon,0,1,1,189,71.95244956772333
+Livre 490,Auteur 59,Philosophie,Italien,Albin Michel,1905,930,2,Bon,1,1,0,273,72.99351585014409
+Livre 491,Auteur 226,Aventure,Allemand,Seuil,1937,102,7,Moyen,1,0,0,274,49.11023054755043
+Livre 492,Auteur 250,Roman,Italien,Albin Michel,1993,967,2,Bon,0,1,0,492,39.618155619596536
+Livre 493,Auteur 222,Art,Anglais,Flammarion,1884,833,2,Excellent,0,1,1,32,90.32420749279538
+Livre 494,Auteur 20,Science-Fiction,Allemand,Albin Michel,1944,72,2,Excellent,0,0,1,275,52.784582132564836
+Livre 495,Auteur 89,Art,Allemand,Actes Sud,1999,394,1,Mauvais,1,1,1,222,61.84798270893371
+Livre 496,Auteur 270,Religion,Italien,Fayard,1875,701,11,Moyen,0,0,0,449,35.57636887608069
+Livre 497,Auteur 233,Roman,Italien,Seuil,1916,330,8,Excellent,0,0,1,131,63.195244956772335
+Livre 498,Auteur 65,Historique,Italien,Flammarion,1853,897,6,Bon,0,0,1,369,53.88688760806916
+Livre 499,Auteur 79,Poésie,Allemand,Seuil,2006,659,8,Excellent,1,0,1,415,43.96613832853025
+Livre 500,Auteur 112,Roman,Anglais,Actes Sud,1883,147,14,Moyen,1,1,1,39,89.40561959654178
+Livre 501,Auteur 172,Poésie,Français,Albin Michel,2007,397,10,Excellent,1,1,1,404,59.21469740634006
+Livre 502,Auteur 276,Historique,Espagnol,Albin Michel,1921,55,0,Mauvais,1,0,0,365,41.51657060518732
+Livre 503,Auteur 128,Thriller,Italien,Gallimard,1990,332,1,Excellent,1,0,0,195,55.4178674351585
+Livre 504,Auteur 119,Aventure,Espagnol,Hachette,1922,752,20,Bon,1,1,1,402,63.62391930835735
+Livre 505,Auteur 255,Roman,Français,Gallimard,1863,174,4,Excellent,0,1,0,295,70.05403458213257
+Livre 506,Auteur 240,Biographie,Espagnol,Actes Sud,1958,347,4,Moyen,0,0,0,472,26.14553314121037
+Livre 507,Auteur 248,Thriller,Allemand,Fayard,1925,876,16,Mauvais,0,0,0,117,42.12896253602305
+Livre 508,Auteur 189,Biographie,Italien,Actes Sud,1869,324,3,Excellent,0,0,1,383,55.05043227665706
+Livre 509,Auteur 46,Biographie,Allemand,Fayard,1977,373,8,Bon,0,0,0,359,32.575648414985594
+Livre 510,Auteur 25,Roman,Italien,Fayard,1893,603,1,Moyen,0,1,0,437,52.47838616714697
+Livre 511,Auteur 40,Poésie,Italien,Albin Michel,1863,670,19,Bon,1,1,1,376,72.74855907780979
+Livre 512,Auteur 156,Roman,Français,Flammarion,1895,79,7,Mauvais,0,1,0,289,53.335734870317
+Livre 513,Auteur 199,Science,Français,Actes Sud,1915,623,8,Excellent,0,0,1,178,60.43948126801152
+Livre 514,Auteur 38,Science-Fiction,Anglais,Actes Sud,1862,576,18,Excellent,0,1,0,464,55.540345821325644
+Livre 515,Auteur 126,Aventure,Espagnol,Actes Sud,1897,519,4,Moyen,1,0,0,296,53.580691642651296
+Livre 516,Auteur 195,Biographie,Espagnol,Actes Sud,1933,748,18,Mauvais,0,0,1,447,26.451729106628243
+Livre 517,Auteur 240,Historique,Italien,Fayard,1989,397,18,Bon,1,0,0,23,57.80619596541787
+Livre 518,Auteur 148,Fantastique,Espagnol,Albin Michel,1851,54,7,Excellent,0,1,0,476,59.52089337175793
+Livre 519,Auteur 226,Aventure,Espagnol,Seuil,1938,737,7,Bon,1,0,1,353,53.335734870317
+Livre 520,Auteur 49,Historique,Italien,Actes Sud,1902,219,7,Bon,1,1,1,316,75.32060518731988
+Livre 521,Auteur 38,Fantastique,Espagnol,Gallimard,1994,745,16,Mauvais,0,1,0,394,32.024495677233425
+Livre 522,Auteur 141,Historique,Français,Seuil,1936,881,18,Mauvais,1,0,1,454,34.841498559077806
+Livre 523,Auteur 117,Philosophie,Français,Actes Sud,1980,634,13,Mauvais,1,0,1,119,51.498559077809794
+Livre 524,Auteur 105,Aventure,Espagnol,Seuil,1981,958,16,Excellent,1,0,1,461,41.76152737752162
+Livre 525,Auteur 116,Science,Espagnol,Flammarion,1934,115,11,Bon,0,0,0,366,36.49495677233429
+Livre 526,Auteur 267,Aventure,Allemand,Gallimard,1943,888,7,Mauvais,1,0,1,54,61.84798270893371
+Livre 527,Auteur 197,Roman,Allemand,Fayard,2007,588,20,Moyen,0,1,0,91,53.88688760806916
+Livre 528,Auteur 112,Roman,Espagnol,Actes Sud,1987,614,4,Excellent,0,0,0,195,45.680835734870314
+Livre 529,Auteur 271,Poésie,Italien,Hachette,1990,743,0,Bon,0,1,1,119,69.56412103746396
+Livre 530,Auteur 277,Science-Fiction,Italien,Actes Sud,1964,685,13,Mauvais,0,1,0,59,57.13256484149855
+Livre 531,Auteur 1,Science,Espagnol,Fayard,1938,667,1,Bon,0,0,0,177,50.64121037463977
+Livre 532,Auteur 123,Religion,Italien,Gallimard,1895,474,18,Bon,0,1,1,377,59.88832853025936
+Livre 533,Auteur 20,Roman,Anglais,Albin Michel,1965,452,16,Bon,0,1,0,248,53.70317002881844
+Livre 534,Auteur 249,Religion,Italien,Flammarion,1928,117,15,Bon,1,0,1,459,45.61959654178674
+Livre 535,Auteur 153,Historique,Anglais,Actes Sud,1920,877,16,Moyen,0,0,0,38,53.70317002881844
+Livre 536,Auteur 155,Fantastique,Français,Flammarion,1994,785,8,Moyen,1,1,0,493,43.721181556195965
+Livre 537,Auteur 261,Science-Fiction,Français,Gallimard,2010,989,17,Excellent,1,0,0,149,50.88616714697405
+Livre 538,Auteur 131,Religion,Anglais,Gallimard,1882,479,9,Excellent,1,1,0,301,75.01440922190201
+Livre 539,Auteur 127,Historique,Allemand,Actes Sud,1856,114,19,Excellent,1,0,0,197,66.19596541786743
+Livre 540,Auteur 8,Aventure,Espagnol,Flammarion,1883,842,6,Mauvais,0,1,1,79,74.09582132564842
+Livre 541,Auteur 71,Religion,Anglais,Actes Sud,1855,803,8,Moyen,1,1,1,300,78.68876080691642
+Livre 542,Auteur 206,Biographie,Français,Seuil,1860,869,6,Excellent,1,0,0,499,51.192363112391924
+Livre 543,Auteur 140,Art,Italien,Fayard,1915,328,16,Moyen,0,1,0,384,48.436599423631115
+Livre 544,Auteur 208,Roman,Espagnol,Hachette,2006,400,17,Mauvais,0,1,0,140,45.80331412103746
+Livre 545,Auteur 176,Roman,Espagnol,Flammarion,1968,239,8,Bon,1,0,1,119,63.685158501440924
+Livre 546,Auteur 15,Aventure,Allemand,Flammarion,1867,795,19,Mauvais,0,0,0,359,33.49423631123919
+Livre 547,Auteur 288,Biographie,Espagnol,Flammarion,2004,336,19,Mauvais,0,1,0,411,28.840057636887607
+Livre 548,Auteur 222,Roman,Espagnol,Hachette,1982,934,15,Excellent,1,0,0,94,58.29610951008645
+Livre 549,Auteur 136,Philosophie,Italien,Gallimard,1919,753,14,Mauvais,0,1,0,115,58.908501440922194
+Livre 550,Auteur 132,Science,Espagnol,Albin Michel,1975,457,6,Excellent,0,0,1,438,37.78097982708934
+Livre 551,Auteur 26,Art,Allemand,Seuil,1972,694,14,Bon,0,0,0,431,26.94164265129683
+Livre 552,Auteur 292,Philosophie,Allemand,Albin Michel,1902,611,19,Moyen,1,0,1,197,60.56195965417867
+Livre 553,Auteur 223,Roman,Italien,Hachette,1917,414,14,Excellent,0,0,1,319,49.72262247838617
+Livre 554,Auteur 119,Fantastique,Italien,Fayard,1936,773,12,Bon,0,1,1,201,67.48198847262248
+Livre 555,Auteur 193,Biographie,Allemand,Flammarion,1911,822,16,Bon,0,1,1,329,61.48054755043228
+Livre 556,Auteur 159,Philosophie,Anglais,Hachette,1892,885,2,Bon,0,1,1,48,85.30259365994236
+Livre 557,Auteur 156,Poésie,Anglais,Albin Michel,1979,518,4,Bon,1,1,1,44,83.46541786743515
+Livre 558,Auteur 8,Religion,Espagnol,Flammarion,1982,271,7,Excellent,0,0,1,427,37.29106628242074
+Livre 559,Auteur 22,Historique,Anglais,Seuil,1863,631,3,Mauvais,0,1,0,254,60.623198847262245
+Livre 560,Auteur 209,Roman,Français,Flammarion,1860,229,1,Mauvais,0,0,0,398,37.47478386167147
+Livre 561,Auteur 172,Aventure,Espagnol,Fayard,1857,567,1,Moyen,0,1,0,26,82.05691642651296
+Livre 562,Auteur 109,Roman,Français,Gallimard,1998,164,5,Mauvais,1,0,0,229,38.88328530259366
+Livre 563,Auteur 288,Biographie,Allemand,Flammarion,1921,501,1,Bon,1,1,0,491,57.98991354466859
+Livre 564,Auteur 147,Art,Français,Gallimard,1980,724,4,Moyen,1,1,1,88,77.5864553314121
+Livre 565,Auteur 77,Science-Fiction,Espagnol,Flammarion,1973,121,10,Bon,0,0,0,182,43.292507204610956
+Livre 566,Auteur 52,Art,Anglais,Hachette,1860,437,15,Mauvais,0,0,0,90,52.049711815561956
+Livre 567,Auteur 95,Thriller,Français,Albin Michel,1908,302,10,Bon,1,0,1,315,58.418587896253605
+Livre 568,Auteur 257,Art,Italien,Albin Michel,1956,453,16,Excellent,0,1,1,410,54.070605187319885
+Livre 569,Auteur 127,Thriller,Allemand,Albin Michel,1975,277,3,Excellent,0,1,0,357,52.84582132564841
+Livre 570,Auteur 270,Art,Espagnol,Gallimard,1938,257,12,Bon,0,0,1,178,53.335734870317
+Livre 571,Auteur 281,Biographie,Espagnol,Seuil,1872,113,13,Mauvais,0,0,1,130,54.86671469740633
+Livre 572,Auteur 240,Fantastique,Espagnol,Albin Michel,1885,409,7,Mauvais,0,0,1,454,35.27017291066282
+Livre 573,Auteur 291,Science,Espagnol,Fayard,1880,55,8,Excellent,1,1,0,66,89.95677233429394
+Livre 574,Auteur 137,Religion,Allemand,Hachette,1874,916,3,Bon,1,0,1,69,79.79106628242074
+Livre 575,Auteur 127,Science-Fiction,Anglais,Albin Michel,1948,887,5,Bon,1,1,0,148,74.46325648414984
+Livre 576,Auteur 62,Philosophie,Allemand,Gallimard,1855,905,15,Mauvais,1,0,0,158,57.68371757925072
+Livre 577,Auteur 239,Art,Français,Fayard,1919,858,13,Bon,1,0,0,115,62.27665706051873
+Livre 578,Auteur 4,Aventure,Allemand,Actes Sud,1889,928,19,Excellent,0,1,0,164,70.29899135446685
+Livre 579,Auteur 300,Philosophie,Français,Fayard,1998,966,2,Moyen,0,0,0,351,29.26873198847262
+Livre 580,Auteur 103,Thriller,Français,Fayard,1916,293,18,Excellent,0,1,1,413,58.17363112391931
+Livre 581,Auteur 88,Science,Allemand,Gallimard,1938,404,9,Bon,1,0,1,218,60.99063400576368
+Livre 582,Auteur 214,Science-Fiction,Français,Fayard,1924,58,5,Moyen,1,0,1,426,48.13040345821325
+Livre 583,Auteur 298,Science,Allemand,Hachette,1952,774,17,Bon,0,0,1,193,49.171469740634
+Livre 584,Auteur 100,Historique,Français,Seuil,1936,410,6,Mauvais,1,1,1,46,78.81123919308357
+Livre 585,Auteur 207,Philosophie,Espagnol,Hachette,2009,957,2,Bon,0,0,0,220,39.00576368876081
+Livre 586,Auteur 279,Philosophie,Italien,Gallimard,1853,569,12,Bon,1,1,0,471,64.1750720461095
+Livre 587,Auteur 211,Biographie,Italien,Hachette,1886,614,2,Mauvais,1,0,1,2,73.54466858789624
+Livre 588,Auteur 225,Science,Italien,Flammarion,1980,642,16,Bon,1,1,0,7,75.81051873198847
+Livre 589,Auteur 244,Aventure,Italien,Gallimard,1924,219,20,Moyen,0,0,1,267,44.0886167146974
+Livre 590,Auteur 44,Biographie,Allemand,Flammarion,1959,276,2,Bon,1,1,1,293,71.27881844380403
+Livre 591,Auteur 295,Science,Espagnol,Hachette,1975,598,18,Excellent,1,0,1,324,50.273775216138326
+Livre 592,Auteur 270,Biographie,Italien,Actes Sud,1969,133,4,Bon,0,0,1,464,34.47406340057637
+Livre 593,Auteur 152,Thriller,Allemand,Gallimard,1850,865,13,Bon,0,0,0,231,54.43804034582132
+Livre 594,Auteur 89,Aventure,Français,Actes Sud,1949,505,2,Excellent,0,0,1,402,44.394812680115265
+Livre 595,Auteur 146,Fantastique,Anglais,Seuil,2006,303,16,Moyen,0,0,0,488,15.612391930835734
+Livre 596,Auteur 132,Philosophie,Français,Gallimard,1884,284,2,Moyen,0,1,0,236,65.58357348703169
+Livre 597,Auteur 200,Science-Fiction,Allemand,Fayard,1871,86,6,Mauvais,1,0,1,136,65.95100864553314
+Livre 598,Auteur 104,Art,Anglais,Albin Michel,1926,836,11,Moyen,1,1,0,415,55.90778097982709
+Livre 599,Auteur 199,Poésie,Allemand,Gallimard,1965,886,9,Moyen,1,0,0,46,59.03097982708934
+Livre 600,Auteur 294,Poésie,Italien,Gallimard,1959,319,4,Bon,0,0,1,347,42.86383285302593
+Livre 601,Auteur 80,Science,Français,Gallimard,1870,359,11,Excellent,1,0,1,380,61.84798270893371
+Livre 602,Auteur 91,Art,Allemand,Gallimard,1900,482,11,Mauvais,0,0,1,442,32.94308357348703
+Livre 603,Auteur 23,Biographie,Espagnol,Seuil,1977,336,8,Moyen,1,0,0,9,60.133285302593656
+Livre 604,Auteur 50,Poésie,Anglais,Hachette,2002,213,4,Excellent,1,1,0,452,52.60086455331412
+Livre 605,Auteur 230,Fantastique,Français,Gallimard,1946,861,8,Mauvais,1,1,0,438,46.84438040345821
+Livre 606,Auteur 46,Fantastique,Français,Actes Sud,1982,576,2,Mauvais,1,0,1,17,60.86815561959654
+Livre 607,Auteur 4,Philosophie,Anglais,Actes Sud,1942,227,4,Bon,0,0,0,394,35.94380403458213
+Livre 608,Auteur 300,Thriller,Allemand,Seuil,1898,417,1,Moyen,1,0,0,165,62.39913544668588
+Livre 609,Auteur 40,Science-Fiction,Français,Fayard,1912,802,6,Moyen,1,0,1,59,71.76873198847262
+Livre 610,Auteur 296,Thriller,Espagnol,Seuil,1927,612,15,Bon,0,0,1,188,53.15201729106628
+Livre 611,Auteur 240,Historique,Espagnol,Seuil,1966,993,8,Mauvais,0,0,1,140,44.27233429394812
+Livre 612,Auteur 144,Science,Italien,Seuil,1886,748,1,Bon,0,0,0,93,62.154178674351584
+Livre 613,Auteur 47,Philosophie,Français,Gallimard,1927,212,11,Mauvais,1,1,0,125,67.42074927953891
+Livre 614,Auteur 15,Fantastique,Espagnol,Actes Sud,1966,893,11,Moyen,0,0,1,420,32.330691642651296
+Livre 615,Auteur 30,Biographie,Français,Fayard,1909,576,2,Bon,1,1,0,118,81.99567723342939
+Livre 616,Auteur 47,Thriller,Anglais,Albin Michel,1870,762,11,Bon,1,0,1,434,55.479106628242064
+Livre 617,Auteur 9,Biographie,Anglais,Actes Sud,1968,998,1,Moyen,1,1,0,433,52.72334293948126
+Livre 618,Auteur 212,Art,Italien,Seuil,1915,307,17,Moyen,1,0,1,328,51.559798270893374
+Livre 619,Auteur 119,Thriller,Français,Flammarion,1974,595,15,Moyen,0,0,1,283,38.51585014409221
+Livre 620,Auteur 92,Thriller,Français,Seuil,1937,609,4,Bon,1,1,1,111,84.50648414985591
+Livre 621,Auteur 170,Science-Fiction,Italien,Albin Michel,1971,637,1,Moyen,1,1,0,130,70.91138328530259
+Livre 622,Auteur 224,Religion,Espagnol,Hachette,1952,102,10,Mauvais,1,0,1,312,44.02737752161383
+Livre 623,Auteur 28,Art,Anglais,Albin Michel,1864,780,16,Mauvais,0,0,0,192,45.00720461095101
+Livre 624,Auteur 176,Poésie,Espagnol,Fayard,1856,821,5,Bon,1,1,0,300,76.42291066282421
+Livre 625,Auteur 210,Science-Fiction,Français,Gallimard,1927,512,8,Mauvais,0,1,1,341,52.049711815561956
+Livre 626,Auteur 17,Aventure,Anglais,Seuil,1917,732,15,Excellent,0,1,0,119,70.85014409221901
+Livre 627,Auteur 38,Religion,Italien,Actes Sud,1919,692,9,Excellent,0,0,1,340,49.72262247838617
+Livre 628,Auteur 257,Art,Français,Hachette,1888,266,20,Bon,1,1,0,462,57.98991354466859
+Livre 629,Auteur 123,Aventure,Français,Hachette,2005,769,12,Bon,0,1,0,73,60.74567723342939
+Livre 630,Auteur 179,Religion,Allemand,Actes Sud,1908,814,11,Mauvais,0,1,1,288,56.70389048991353
+Livre 631,Auteur 94,Poésie,Italien,Flammarion,1996,961,7,Mauvais,1,1,0,457,39.863112391930834
+Livre 632,Auteur 21,Historique,Allemand,Gallimard,1876,500,20,Bon,1,0,0,174,61.78674351585014
+Livre 633,Auteur 151,Aventure,Allemand,Actes Sud,1932,509,18,Mauvais,1,0,1,424,37.168587896253605
+Livre 634,Auteur 240,Fantastique,Espagnol,Albin Michel,1994,808,5,Bon,1,1,1,494,53.764409221902014
+Livre 635,Auteur 200,Science-Fiction,Allemand,Gallimard,1856,974,4,Moyen,1,0,1,403,58.17363112391931
+Livre 636,Auteur 290,Roman,Allemand,Hachette,1933,589,9,Moyen,0,1,0,386,48.2528818443804
+Livre 637,Auteur 117,Art,Anglais,Albin Michel,1887,729,8,Moyen,0,1,1,82,78.93371757925073
+Livre 638,Auteur 278,Aventure,Français,Actes Sud,1932,529,16,Bon,1,1,0,279,65.03242074927954
+Livre 639,Auteur 102,Science-Fiction,Français,Gallimard,1922,285,18,Moyen,1,1,1,359,63.80763688760807
+Livre 640,Auteur 167,Historique,Espagnol,Seuil,1941,541,11,Moyen,0,1,0,105,63.86887608069164
+Livre 641,Auteur 255,Aventure,Français,Actes Sud,1977,804,3,Bon,0,1,0,358,49.477665706051866
+Livre 642,Auteur 142,Poésie,Français,Hachette,1952,712,4,Moyen,1,0,1,395,46.90561959654178
+Livre 643,Auteur 239,Philosophie,Allemand,Albin Michel,1988,493,14,Excellent,0,0,0,308,35.57636887608069
+Livre 644,Auteur 11,Aventure,Espagnol,Hachette,1875,909,10,Bon,1,0,0,444,48.436599423631115
+Livre 645,Auteur 194,Roman,Français,Seuil,1921,563,3,Moyen,1,1,0,319,64.84870317002881
+Livre 646,Auteur 224,Philosophie,Espagnol,Actes Sud,1962,515,7,Mauvais,1,0,0,389,32.88184438040346
+Livre 647,Auteur 240,Biographie,Français,Albin Michel,1975,461,0,Mauvais,1,0,1,109,56.70389048991353
+Livre 648,Auteur 220,Art,Espagnol,Gallimard,1920,583,15,Moyen,0,0,1,197,50.39625360230547
+Livre 649,Auteur 132,Roman,Italien,Gallimard,1976,229,9,Bon,1,0,1,71,65.3386167146974
+Livre 650,Auteur 283,Thriller,Italien,Gallimard,1928,196,15,Excellent,0,0,1,448,40.1693083573487
+Livre 651,Auteur 220,Science,Anglais,Seuil,1875,921,0,Bon,1,0,0,275,61.84798270893371
+Livre 652,Auteur 27,Philosophie,Anglais,Gallimard,1996,346,20,Mauvais,1,1,1,458,41.94524495677233
+Livre 653,Auteur 120,Art,Espagnol,Albin Michel,1984,726,12,Moyen,1,0,1,302,46.231988472622476
+Livre 654,Auteur 64,Biographie,Espagnol,Hachette,1911,150,10,Excellent,1,1,1,109,89.03818443804035
+Livre 655,Auteur 30,Thriller,Italien,Flammarion,1870,441,3,Moyen,0,1,0,143,72.68731988472621
+Livre 656,Auteur 16,Fantastique,Anglais,Seuil,1969,865,7,Bon,1,1,1,22,85.11887608069163
+Livre 657,Auteur 286,Thriller,Allemand,Actes Sud,1916,171,3,Moyen,1,0,0,435,43.04755043227665
+Livre 658,Auteur 274,Art,Français,Albin Michel,1925,493,6,Bon,1,1,1,498,61.664265129682995
+Livre 659,Auteur 259,Fantastique,Anglais,Fayard,1921,534,14,Mauvais,1,0,0,176,48.804034582132566
+Livre 660,Auteur 113,Historique,Espagnol,Fayard,1933,929,10,Excellent,1,1,1,85,87.81340057636888
+Livre 661,Auteur 14,Historique,Espagnol,Actes Sud,1932,595,14,Moyen,1,1,1,65,81.81195965417866
+Livre 662,Auteur 96,Poésie,Allemand,Flammarion,1921,180,2,Mauvais,1,0,1,262,53.335734870317
+Livre 663,Auteur 104,Philosophie,Français,Actes Sud,1901,437,5,Mauvais,1,1,0,229,66.0734870317003
+Livre 664,Auteur 14,Biographie,Français,Flammarion,1916,988,17,Moyen,1,0,1,235,57.13256484149855
+Livre 665,Auteur 56,Historique,Français,Seuil,1910,73,1,Bon,1,1,1,105,89.09942363112391
+Livre 666,Auteur 155,Art,Espagnol,Albin Michel,1944,843,13,Excellent,0,0,1,89,60.80691642651296
+Livre 667,Auteur 295,Science,Allemand,Flammarion,1856,620,7,Bon,1,1,0,135,85.9149855907781
+Livre 668,Auteur 148,Historique,Français,Actes Sud,1964,814,13,Bon,1,0,1,480,40.53674351585015
+Livre 669,Auteur 55,Religion,Allemand,Hachette,1864,906,1,Moyen,0,0,0,115,60.43948126801152
+Livre 670,Auteur 28,Roman,Italien,Hachette,1883,51,15,Excellent,0,0,1,371,50.39625360230547
+Livre 671,Auteur 94,Roman,Allemand,Flammarion,1930,90,2,Excellent,0,0,1,237,56.826368876080686
+Livre 672,Auteur 161,Biographie,Anglais,Hachette,1920,734,20,Bon,1,1,0,204,69.87031700288183
+Livre 673,Auteur 119,Art,Italien,Albin Michel,1873,891,19,Mauvais,0,0,0,184,43.47622478386167
+Livre 674,Auteur 262,Science-Fiction,Italien,Actes Sud,1945,110,9,Moyen,0,0,0,458,27.064121037463977
+Livre 675,Auteur 114,Thriller,Français,Gallimard,1921,961,13,Bon,0,1,0,305,56.52017291066282
+Livre 676,Auteur 21,Philosophie,Français,Actes Sud,1872,429,4,Mauvais,0,1,1,105,74.46325648414984
+Livre 677,Auteur 30,Science-Fiction,Français,Hachette,2009,625,9,Excellent,1,0,1,388,44.94596541786744
+Livre 678,Auteur 272,Aventure,Italien,Actes Sud,1956,205,17,Mauvais,0,1,0,418,34.902737752161386
+Livre 679,Auteur 130,Poésie,Anglais,Hachette,1991,301,20,Moyen,1,0,0,471,26.451729106628243
+Livre 680,Auteur 88,Historique,Anglais,Flammarion,1962,316,6,Moyen,1,0,0,113,56.21397694524495
+Livre 681,Auteur 91,Science-Fiction,Allemand,Fayard,2001,944,4,Bon,1,0,0,389,38.20965417867435
+Livre 682,Auteur 291,Art,Italien,Hachette,2003,758,15,Excellent,0,1,0,81,62.644092219020166
+Livre 683,Auteur 135,Religion,Italien,Hachette,1997,159,16,Mauvais,1,0,0,97,43.721181556195965
+Livre 684,Auteur 247,Roman,Italien,Hachette,1924,241,16,Excellent,1,1,1,164,82.24063400576368
+Livre 685,Auteur 245,Art,Espagnol,Flammarion,1951,930,20,Mauvais,1,0,1,325,40.29178674351584
+Livre 686,Auteur 263,Roman,Espagnol,Actes Sud,2002,916,8,Bon,0,1,1,341,52.049711815561956
+Livre 687,Auteur 28,Philosophie,Italien,Actes Sud,1878,906,11,Mauvais,0,0,1,21,61.4193083573487
+Livre 688,Auteur 253,Art,Allemand,Gallimard,1898,728,9,Mauvais,0,1,0,391,46.10951008645533
+Livre 689,Auteur 130,Roman,Italien,Gallimard,1911,558,8,Bon,1,1,1,285,75.81051873198847
+Livre 690,Auteur 222,Roman,Italien,Seuil,1936,61,1,Moyen,1,1,1,431,62.889048991354464
+Livre 691,Auteur 192,Art,Allemand,Flammarion,1912,381,17,Mauvais,0,0,0,308,31.718299711815558
+Livre 692,Auteur 92,Philosophie,Français,Actes Sud,1863,856,12,Bon,0,1,0,17,81.56700288184437
+Livre 693,Auteur 42,Roman,Anglais,Actes Sud,1909,398,0,Mauvais,0,1,1,43,74.95317002881845
+Livre 694,Auteur 48,Science-Fiction,Anglais,Actes Sud,1953,345,14,Moyen,1,0,0,452,34.10662824207493
+Livre 695,Auteur 281,Poésie,Français,Hachette,1863,355,2,Bon,1,0,1,473,56.70389048991353
+Livre 696,Auteur 147,Historique,Espagnol,Hachette,1939,652,13,Mauvais,1,1,1,153,69.74783861671469
+Livre 697,Auteur 107,Philosophie,Français,Fayard,1911,995,19,Bon,0,0,1,376,42.373919308357344
+Livre 698,Auteur 39,Science,Allemand,Hachette,1888,905,14,Excellent,0,1,1,126,80.40345821325649
+Livre 699,Auteur 82,Poésie,Espagnol,Gallimard,1947,424,18,Moyen,1,1,0,441,49.60014409221902
+Livre 700,Auteur 251,Art,Anglais,Seuil,1975,619,0,Moyen,1,0,0,350,41.94524495677233
+Livre 701,Auteur 182,Biographie,Italien,Gallimard,1900,891,13,Moyen,1,0,1,393,50.64121037463977
+Livre 702,Auteur 31,Science,Allemand,Flammarion,1971,181,3,Excellent,1,1,1,475,61.4193083573487
+Livre 703,Auteur 120,Art,Allemand,Hachette,1904,99,12,Bon,1,1,1,364,70.60518731988472
+Livre 704,Auteur 19,Religion,Anglais,Fayard,1861,405,13,Excellent,0,0,0,116,63.195244956772335
+Livre 705,Auteur 122,Religion,Français,Seuil,1913,174,20,Excellent,0,0,0,332,41.455331412103746
+Livre 706,Auteur 239,Art,Anglais,Hachette,1963,310,9,Excellent,1,1,0,313,64.35878962536022
+Livre 707,Auteur 210,Science,Français,Hachette,1853,506,10,Excellent,1,0,0,56,77.95389048991353
+Livre 708,Auteur 104,Poésie,Espagnol,Gallimard,1932,906,13,Moyen,1,1,1,307,67.29827089337175
+Livre 709,Auteur 252,Science,Allemand,Flammarion,1899,885,0,Excellent,1,1,1,294,82.24063400576368
+Livre 710,Auteur 194,Science,Italien,Seuil,1987,718,3,Moyen,0,0,0,308,32.94308357348703
+Livre 711,Auteur 245,Biographie,Anglais,Hachette,1899,659,11,Mauvais,0,0,1,393,36.066282420749275
+Livre 712,Auteur 176,Science-Fiction,Allemand,Seuil,1892,142,4,Moyen,0,0,0,225,49.35518731988472
+Livre 713,Auteur 50,Art,Anglais,Seuil,1974,950,8,Moyen,0,1,0,58,63.62391930835735
+Livre 714,Auteur 130,Biographie,Français,Gallimard,1978,302,9,Excellent,1,0,0,309,47.456772334293944
+Livre 715,Auteur 55,Biographie,Anglais,Flammarion,1977,148,8,Bon,0,1,1,199,63.80763688760807
+Livre 716,Auteur 121,Thriller,Allemand,Actes Sud,2001,251,16,Bon,0,1,1,378,47.456772334293944
+Livre 717,Auteur 277,Philosophie,Italien,Actes Sud,1969,771,16,Moyen,1,1,0,458,46.476945244956774
+Livre 718,Auteur 30,Roman,Français,Albin Michel,1929,701,5,Moyen,0,0,1,95,58.60230547550432
+Livre 719,Auteur 31,Religion,Français,Hachette,1890,986,0,Moyen,1,1,1,315,75.93299711815561
+Livre 720,Auteur 222,Poésie,Allemand,Hachette,1987,224,10,Mauvais,0,1,1,375,42.00648414985591
+Livre 721,Auteur 253,Religion,Espagnol,Albin Michel,1987,53,16,Excellent,0,0,1,214,46.96685878962536
+Livre 722,Auteur 22,Science,Anglais,Gallimard,1929,763,17,Excellent,0,0,1,65,62.889048991354464
+Livre 723,Auteur 128,Roman,Allemand,Gallimard,1908,133,11,Bon,1,0,0,213,58.23487031700287
+Livre 724,Auteur 86,Historique,Allemand,Fayard,1999,308,10,Mauvais,0,0,1,360,26.14553314121037
+Livre 725,Auteur 184,Historique,Anglais,Actes Sud,1895,105,8,Bon,1,0,1,160,70.11527377521614
+Livre 726,Auteur 263,Poésie,Français,Seuil,1885,881,1,Mauvais,1,0,1,468,45.43587896253602
+Livre 727,Auteur 258,Religion,Anglais,Flammarion,1983,489,8,Moyen,1,0,0,346,38.76080691642651
+Livre 728,Auteur 199,Art,Italien,Seuil,1916,525,17,Excellent,1,1,1,384,69.44164265129683
+Livre 729,Auteur 3,Biographie,Espagnol,Flammarion,2000,1000,12,Mauvais,1,0,0,385,26.94164265129683
+Livre 730,Auteur 269,Thriller,Français,Gallimard,1896,770,0,Mauvais,1,1,1,423,62.46037463976945
+Livre 731,Auteur 116,Art,Allemand,Seuil,1949,756,1,Moyen,0,0,0,248,41.884005763688755
+Livre 732,Auteur 228,Biographie,Français,Hachette,1920,144,15,Excellent,1,0,0,298,53.39697406340058
+Livre 733,Auteur 10,Roman,Italien,Fayard,1903,186,13,Mauvais,0,1,0,402,43.59870317002882
+Livre 734,Auteur 101,Roman,Espagnol,Gallimard,2005,80,12,Moyen,1,0,1,436,35.45389048991355
+Livre 735,Auteur 10,Philosophie,Allemand,Flammarion,1861,243,5,Mauvais,1,1,1,195,79.178674351585
+Livre 736,Auteur 236,Historique,Italien,Actes Sud,1870,591,3,Bon,0,0,0,350,47.762968299711815
+Livre 737,Auteur 160,Poésie,Espagnol,Fayard,1990,857,19,Moyen,0,0,1,279,35.57636887608069
+Livre 738,Auteur 286,Science,Allemand,Albin Michel,1978,843,11,Mauvais,0,1,1,82,60.74567723342939
+Livre 739,Auteur 174,Art,Espagnol,Gallimard,1907,923,2,Bon,0,0,1,214,57.98991354466859
+Livre 740,Auteur 196,Biographie,Français,Flammarion,1927,254,4,Mauvais,1,1,0,468,48.55907780979827
+Livre 741,Auteur 144,Science-Fiction,Italien,Seuil,1871,60,13,Mauvais,0,1,1,220,64.78746397694523
+Livre 742,Auteur 210,Poésie,Français,Seuil,1923,68,13,Moyen,0,0,0,77,51.86599423631124
+Livre 743,Auteur 154,Biographie,Espagnol,Flammarion,1872,447,16,Moyen,0,1,1,391,59.398414985590776
+Livre 744,Auteur 227,Roman,Français,Flammarion,1864,214,9,Excellent,0,0,0,411,45.987031700288185
+Livre 745,Auteur 206,Science,Espagnol,Flammarion,1916,943,7,Mauvais,1,0,1,281,51.2536023054755
+Livre 746,Auteur 107,Art,Anglais,Actes Sud,1955,413,3,Mauvais,0,1,1,401,46.476945244956774
+Livre 747,Auteur 130,Art,Allemand,Albin Michel,1895,411,15,Excellent,1,0,0,278,57.68371757925072
+Livre 748,Auteur 18,Poésie,Anglais,Hachette,1869,282,2,Moyen,1,0,0,78,70.97262247838617
+Livre 749,Auteur 27,Thriller,Anglais,Seuil,1913,83,19,Mauvais,0,1,0,288,47.51801152737752
+Livre 750,Auteur 78,Philosophie,Espagnol,Fayard,1925,644,12,Bon,1,1,1,497,59.88832853025936
+Livre 751,Auteur 227,Religion,Italien,Seuil,2003,445,12,Bon,1,0,1,20,64.23631123919307
+Livre 752,Auteur 196,Fantastique,Anglais,Seuil,1926,707,8,Bon,1,1,1,276,74.52449567723343
+Livre 753,Auteur 298,Science-Fiction,Allemand,Seuil,1969,683,4,Mauvais,1,1,0,435,45.43587896253602
+Livre 754,Auteur 109,Aventure,Allemand,Actes Sud,1876,922,9,Mauvais,1,0,0,359,44.63976945244957
+Livre 755,Auteur 220,Poésie,Espagnol,Hachette,1920,443,16,Excellent,1,0,0,30,69.5028818443804
+Livre 756,Auteur 233,Art,Anglais,Actes Sud,1900,65,19,Excellent,0,0,0,158,54.00936599423631
+Livre 757,Auteur 155,Thriller,Anglais,Seuil,1898,682,4,Mauvais,0,0,0,456,28.35014409221902
+Livre 758,Auteur 252,Historique,Français,Seuil,1908,618,18,Moyen,1,1,1,27,85.85374639769451
+Livre 759,Auteur 157,Thriller,Espagnol,Gallimard,1864,164,11,Excellent,1,0,0,400,55.23414985590778
+Livre 760,Auteur 197,Science-Fiction,Allemand,Albin Michel,1877,309,18,Moyen,1,0,1,288,58.357348703170025
+Livre 761,Auteur 298,Art,Espagnol,Hachette,1952,73,13,Mauvais,0,1,1,187,56.887608069164266
+Livre 762,Auteur 288,Science,Allemand,Fayard,1990,121,17,Excellent,0,0,0,188,41.76152737752162
+Livre 763,Auteur 259,Fantastique,Français,Fayard,1918,957,1,Bon,0,1,0,237,64.72622478386167
+Livre 764,Auteur 150,Science,Allemand,Fayard,1868,495,16,Excellent,1,1,1,401,74.585734870317
+Livre 765,Auteur 297,Thriller,Français,Fayard,1946,978,13,Excellent,0,0,0,457,31.902017291066283
+Livre 766,Auteur 55,Art,Espagnol,Fayard,1880,371,9,Bon,1,1,1,422,70.91138328530259
+Livre 767,Auteur 8,Art,Français,Gallimard,1863,358,5,Moyen,0,1,0,175,70.97262247838617
+Livre 768,Auteur 45,Philosophie,Anglais,Actes Sud,1876,972,14,Excellent,0,0,0,437,41.39409221902017
+Livre 769,Auteur 288,Art,Italien,Albin Michel,1964,410,0,Moyen,0,0,1,451,34.04538904899135
+Livre 770,Auteur 268,Biographie,Anglais,Seuil,1874,262,18,Bon,1,0,0,247,58.17363112391931
+Livre 771,Auteur 157,Roman,Anglais,Seuil,1961,620,2,Moyen,1,1,0,459,51.68227665706052
+Livre 772,Auteur 11,Historique,Espagnol,Gallimard,1865,461,4,Mauvais,0,1,1,26,80.1585014409222
+Livre 773,Auteur 271,Biographie,Italien,Albin Michel,1924,336,17,Mauvais,0,1,0,169,54.070605187319885
+Livre 774,Auteur 7,Fantastique,Italien,Hachette,1885,137,9,Moyen,1,0,0,231,57.5
+Livre 775,Auteur 139,Biographie,Français,Albin Michel,1927,777,8,Bon,1,1,1,12,90.56916426512967
+Livre 776,Auteur 27,Science,Espagnol,Actes Sud,1899,675,12,Bon,0,1,0,373,55.356628242074926
+Livre 777,Auteur 242,Science-Fiction,Français,Seuil,1855,612,1,Mauvais,0,0,0,245,47.456772334293944
+Livre 778,Auteur 58,Historique,Anglais,Actes Sud,1967,760,13,Bon,0,1,1,183,64.48126801152736
+Livre 779,Auteur 36,Poésie,Allemand,Fayard,1959,159,15,Moyen,0,0,0,433,25.04322766570605
+Livre 780,Auteur 282,Aventure,Allemand,Hachette,1981,187,20,Moyen,1,0,0,499,25.961815561959654
+Livre 781,Auteur 162,Biographie,Espagnol,Actes Sud,1973,569,0,Bon,0,1,0,282,55.540345821325644
+Livre 782,Auteur 101,Aventure,Espagnol,Albin Michel,1935,848,8,Mauvais,0,0,0,117,43.35374639769452
+Livre 783,Auteur 214,Roman,Allemand,Actes Sud,1965,290,13,Mauvais,0,1,0,193,48.804034582132566
+Livre 784,Auteur 259,Biographie,Allemand,Flammarion,1968,741,18,Moyen,1,1,1,142,71.46253602305475
+Livre 785,Auteur 7,Art,Anglais,Flammarion,2010,941,17,Excellent,1,1,0,116,68.21685878962535
+Livre 786,Auteur 249,Philosophie,Italien,Albin Michel,1962,494,6,Mauvais,1,1,0,14,71.46253602305475
+Livre 787,Auteur 199,Roman,Italien,Fayard,1959,360,1,Moyen,0,1,1,50,74.21829971181556
+Livre 788,Auteur 144,Fantastique,Français,Albin Michel,1926,211,9,Excellent,0,0,1,127,61.909221902017286
+Livre 789,Auteur 87,Biographie,Espagnol,Gallimard,1965,937,5,Excellent,1,1,1,222,77.03530259365994
+Livre 790,Auteur 159,Art,Italien,Hachette,1890,225,10,Bon,0,1,1,23,84.62896253602304
+Livre 791,Auteur 207,Science,Allemand,Actes Sud,1876,184,0,Mauvais,0,1,0,106,69.01296829971182
+Livre 792,Auteur 25,Philosophie,Italien,Albin Michel,1888,54,13,Excellent,0,0,1,192,61.358069164265125
+Livre 793,Auteur 76,Thriller,Français,Seuil,1862,530,0,Excellent,1,0,0,44,80.64841498559078
+Livre 794,Auteur 296,Science-Fiction,Espagnol,Albin Michel,1948,975,10,Excellent,0,0,1,250,51.37608069164265
+Livre 795,Auteur 199,Historique,Espagnol,Actes Sud,1908,473,6,Bon,1,0,1,382,55.540345821325644
+Livre 796,Auteur 68,Religion,Anglais,Seuil,1869,374,19,Mauvais,1,0,0,262,48.37536023054754
+Livre 797,Auteur 25,Religion,Français,Hachette,1893,140,0,Excellent,0,0,1,101,70.29899135446685
+Livre 798,Auteur 62,Roman,Anglais,Fayard,1953,417,17,Mauvais,0,0,0,407,20.63400576368876
+Livre 799,Auteur 74,Biographie,Français,Gallimard,1928,130,4,Excellent,0,0,1,129,63.07276657060519
+Livre 800,Auteur 212,Religion,Espagnol,Gallimard,1850,605,15,Bon,1,0,1,270,66.7471181556196
+Livre 801,Auteur 162,Aventure,Espagnol,Albin Michel,1872,506,16,Mauvais,0,0,0,383,32.330691642651296
+Livre 802,Auteur 193,Art,Anglais,Hachette,1981,621,1,Moyen,1,0,1,178,57.56123919308357
+Livre 803,Auteur 289,Art,Allemand,Actes Sud,1895,605,7,Bon,1,0,1,262,64.1750720461095
+Livre 804,Auteur 30,Science,Anglais,Hachette,1930,752,15,Moyen,0,0,0,219,41.70028818443804
+Livre 805,Auteur 227,Science,Italien,Fayard,1940,279,17,Moyen,1,1,0,474,48.742795389048986
+Livre 806,Auteur 252,Thriller,Italien,Flammarion,1967,755,1,Bon,1,0,1,129,65.3386167146974
+Livre 807,Auteur 299,Science-Fiction,Allemand,Albin Michel,1963,350,0,Moyen,1,1,1,461,58.051152737752155
+Livre 808,Auteur 181,Thriller,Espagnol,Gallimard,1906,421,5,Bon,0,0,0,173,53.580691642651296
+Livre 809,Auteur 239,Poésie,Français,Fayard,1911,931,9,Mauvais,0,0,1,460,31.105907780979823
+Livre 810,Auteur 98,Science-Fiction,Espagnol,Seuil,1992,671,9,Moyen,0,0,0,89,43.90489913544668
+Livre 811,Auteur 107,Art,Anglais,Gallimard,1885,386,8,Excellent,1,1,1,291,81.68948126801152
+Livre 812,Auteur 114,Aventure,Italien,Hachette,1861,228,19,Moyen,0,0,0,191,50.64121037463977
+Livre 813,Auteur 245,Thriller,Allemand,Hachette,1949,340,5,Moyen,1,1,0,319,60.80691642651296
+Livre 814,Auteur 198,Science-Fiction,Allemand,Flammarion,1871,715,18,Moyen,1,1,0,342,64.97118155619596
+Livre 815,Auteur 295,Roman,Français,Gallimard,1978,96,17,Bon,0,1,1,410,48.007925072046106
+Livre 816,Auteur 12,Thriller,Français,Flammarion,1907,965,2,Bon,0,1,1,468,57.74495677233429
+Livre 817,Auteur 248,Thriller,Allemand,Albin Michel,1974,832,8,Moyen,1,1,1,235,68.09438040345822
+Livre 818,Auteur 126,Poésie,Italien,Flammarion,1889,691,1,Mauvais,1,0,0,74,62.95028818443804
+Livre 819,Auteur 211,Science-Fiction,Anglais,Seuil,1970,75,18,Moyen,1,0,1,303,46.04827089337175
+Livre 820,Auteur 148,Art,Italien,Gallimard,1900,143,4,Moyen,0,1,0,69,73.23847262247838
+Livre 821,Auteur 33,Aventure,Français,Seuil,1937,381,1,Excellent,1,1,0,218,75.81051873198847
+Livre 822,Auteur 169,Philosophie,Français,Fayard,1948,396,9,Mauvais,0,0,0,105,42.19020172910662
+Livre 823,Auteur 18,Religion,Italien,Gallimard,1966,382,0,Excellent,0,1,0,107,70.1765129682997
+Livre 824,Auteur 68,Religion,Espagnol,Hachette,1879,61,18,Mauvais,1,1,1,470,56.152737752161386
+Livre 825,Auteur 130,Biographie,Anglais,Hachette,1916,466,6,Excellent,0,1,1,488,57.2550432276657
+Livre 826,Auteur 263,Historique,Anglais,Albin Michel,1992,342,15,Bon,1,1,0,340,54.2543227665706
+Livre 827,Auteur 46,Science,Espagnol,Actes Sud,1900,643,11,Mauvais,0,0,1,282,42.74135446685878
+Livre 828,Auteur 238,Science,Italien,Albin Michel,1942,997,3,Bon,0,0,0,229,46.35446685878962
+Livre 829,Auteur 184,Science-Fiction,Anglais,Actes Sud,1964,275,10,Moyen,0,0,0,389,28.656340057636882
+Livre 830,Auteur 39,Aventure,Espagnol,Fayard,1850,497,5,Moyen,1,0,0,442,50.09005763688761
+Livre 831,Auteur 272,Biographie,Allemand,Gallimard,1929,476,8,Excellent,1,0,0,268,56.27521613832853
+Livre 832,Auteur 109,Historique,Espagnol,Albin Michel,1997,324,3,Moyen,1,1,1,373,58.357348703170025
+Livre 833,Auteur 177,Historique,Italien,Actes Sud,1850,598,9,Mauvais,0,1,1,316,62.705331412103746
+Livre 834,Auteur 9,Roman,Espagnol,Actes Sud,1891,415,17,Bon,1,0,0,472,42.61887608069164
+Livre 835,Auteur 83,Art,Espagnol,Seuil,1967,799,14,Moyen,1,0,0,330,39.863112391930834
+Livre 836,Auteur 179,Religion,Français,Actes Sud,1938,443,18,Bon,1,0,1,27,69.93155619596541
+Livre 837,Auteur 217,Roman,Anglais,Flammarion,1901,509,4,Moyen,1,0,1,489,47.39553314121038
+Livre 838,Auteur 95,Roman,Espagnol,Actes Sud,1984,930,5,Mauvais,0,0,0,358,23.512247838616712
+Livre 839,Auteur 23,Thriller,Anglais,Seuil,1972,876,15,Moyen,0,1,0,405,40.47550432276657
+Livre 840,Auteur 225,Science-Fiction,Italien,Flammarion,2008,201,10,Mauvais,1,1,1,394,47.456772334293944
+Livre 841,Auteur 287,Science,Allemand,Flammarion,1932,730,8,Bon,1,0,0,232,55.05043227665706
+Livre 842,Auteur 199,Science,Anglais,Actes Sud,1982,497,1,Moyen,1,0,0,482,32.69812680115274
+Livre 843,Auteur 210,Science-Fiction,Italien,Fayard,1906,764,7,Bon,1,0,0,378,49.60014409221902
+Livre 844,Auteur 114,Science-Fiction,Italien,Gallimard,1913,869,14,Mauvais,1,1,0,173,65.27737752161383
+Livre 845,Auteur 251,Science,Anglais,Gallimard,1901,350,13,Moyen,1,0,1,11,73.91210374639769
+Livre 846,Auteur 103,Historique,Anglais,Actes Sud,1915,482,9,Mauvais,1,1,1,348,61.970461095100866
+Livre 847,Auteur 253,Aventure,Allemand,Hachette,1885,872,13,Moyen,1,1,1,73,87.38472622478385
+Livre 848,Auteur 143,Science,Allemand,Gallimard,1983,398,18,Excellent,0,1,0,283,51.80475504322766
+Livre 849,Auteur 177,Historique,Allemand,Albin Michel,1910,806,15,Mauvais,0,0,1,450,30.003602305475503
+Livre 850,Auteur 231,Religion,Anglais,Seuil,1972,319,13,Moyen,1,0,1,89,60.43948126801152
+Livre 851,Auteur 112,Fantastique,Espagnol,Seuil,1868,680,12,Bon,1,1,1,179,86.3436599423631
+Livre 852,Auteur 268,Roman,Français,Fayard,1901,451,17,Excellent,0,0,1,28,68.5842939481268
+Livre 853,Auteur 260,Science-Fiction,Allemand,Fayard,1928,450,4,Mauvais,1,0,1,90,62.39913544668588
+Livre 854,Auteur 249,Religion,Espagnol,Seuil,1996,787,9,Mauvais,0,1,0,32,56.091498559077806
+Livre 855,Auteur 178,Historique,Anglais,Flammarion,1858,874,14,Excellent,1,1,0,493,64.66498559077809
+Livre 856,Auteur 27,Fantastique,Espagnol,Gallimard,1918,725,19,Excellent,0,0,1,389,43.78242074927954
+Livre 857,Auteur 184,Science,Français,Gallimard,2006,75,9,Excellent,0,1,1,175,64.48126801152736
+Livre 858,Auteur 259,Science,Allemand,Flammarion,1993,630,13,Moyen,1,1,0,102,66.257204610951
+Livre 859,Auteur 127,Aventure,Anglais,Actes Sud,1984,952,12,Mauvais,0,1,1,201,52.4171469740634
+Livre 860,Auteur 90,Historique,Français,Hachette,1998,795,16,Mauvais,1,1,0,137,56.45893371757925
+Livre 861,Auteur 93,Art,Espagnol,Fayard,1921,363,8,Bon,0,1,0,412,51.498559077809794
+Livre 862,Auteur 286,Aventure,Espagnol,Fayard,1926,669,9,Mauvais,0,1,0,195,54.68299711815561
+Livre 863,Auteur 293,Philosophie,Espagnol,Albin Michel,1855,472,12,Bon,0,0,0,111,61.48054755043228
+Livre 864,Auteur 198,Historique,Allemand,Fayard,1863,374,13,Excellent,0,1,1,100,85.36383285302593
+Livre 865,Auteur 272,Historique,Français,Flammarion,1989,172,0,Mauvais,1,1,1,402,52.35590778097982
+Livre 866,Auteur 222,Science,Français,Actes Sud,1880,572,17,Mauvais,1,1,1,458,57.071325648414984
+Livre 867,Auteur 299,Biographie,Allemand,Fayard,1979,693,13,Mauvais,1,1,1,317,54.805475504322764
+Livre 868,Auteur 166,Thriller,Français,Hachette,1998,270,20,Bon,0,0,0,1,48.2528818443804
+Livre 869,Auteur 167,Science,Espagnol,Actes Sud,1893,770,12,Moyen,1,1,1,68,87.01729106628241
+Livre 870,Auteur 296,Thriller,Allemand,Hachette,1891,730,9,Excellent,1,0,0,456,49.11023054755043
+Livre 871,Auteur 220,Poésie,Allemand,Hachette,1917,394,14,Moyen,0,0,0,211,44.0886167146974
+Livre 872,Auteur 102,Poésie,Anglais,Seuil,1922,846,18,Excellent,0,1,0,365,54.2543227665706
+Livre 873,Auteur 131,Philosophie,Français,Fayard,1887,105,14,Excellent,0,1,1,298,69.99279538904898
+Livre 874,Auteur 63,Philosophie,Anglais,Actes Sud,1920,198,9,Bon,1,1,0,333,65.3386167146974
+Livre 875,Auteur 226,Science,Allemand,Flammarion,1911,999,16,Mauvais,0,0,0,94,45.252161383285305
+Livre 876,Auteur 199,Thriller,Espagnol,Seuil,1939,214,11,Excellent,0,0,0,414,36.0050432276657
+Livre 877,Auteur 247,Historique,Anglais,Seuil,1902,921,20,Moyen,0,0,1,213,50.09005763688761
+Livre 878,Auteur 151,Philosophie,Français,Albin Michel,2009,465,20,Bon,1,1,1,50,74.52449567723343
+Livre 879,Auteur 34,Thriller,Espagnol,Fayard,1958,415,4,Bon,0,0,0,457,30.126080691642652
+Livre 880,Auteur 167,Biographie,Français,Fayard,1852,375,14,Bon,0,0,1,87,68.82925072046109
+Livre 881,Auteur 31,Historique,Italien,Fayard,1982,203,12,Excellent,0,0,1,471,33.065561959654175
+Livre 882,Auteur 161,Aventure,Italien,Seuil,1973,681,16,Excellent,0,1,0,78,66.19596541786743
+Livre 883,Auteur 189,Religion,Espagnol,Actes Sud,1874,920,17,Moyen,0,0,0,360,39.31195965417868
+Livre 884,Auteur 237,Aventure,Espagnol,Albin Michel,1900,996,3,Moyen,0,0,0,370,39.80187319884726
+Livre 885,Auteur 137,Historique,Italien,Fayard,1851,899,5,Moyen,1,0,0,308,58.17363112391931
+Livre 886,Auteur 205,Science,Allemand,Hachette,1869,566,1,Excellent,0,0,0,452,45.31340057636888
+Livre 887,Auteur 162,Science,Anglais,Hachette,1902,602,5,Excellent,1,0,1,427,56.887608069164266
+Livre 888,Auteur 83,Religion,Anglais,Albin Michel,1928,798,2,Bon,0,1,1,117,76.66786743515851
+Livre 889,Auteur 150,Thriller,Espagnol,Fayard,1938,395,8,Moyen,0,1,0,268,55.1729106628242
+Livre 890,Auteur 67,Religion,Italien,Flammarion,1977,309,9,Mauvais,1,0,0,437,27.49279538904899
+Livre 891,Auteur 211,Biographie,Anglais,Seuil,1894,953,12,Mauvais,0,0,0,314,35.0864553314121
+Livre 892,Auteur 31,Biographie,Italien,Albin Michel,1863,500,8,Excellent,1,1,1,36,100.0
+Livre 893,Auteur 250,Thriller,Italien,Seuil,1916,185,14,Moyen,0,1,1,426,52.47838616714697
+Livre 894,Auteur 161,Aventure,Espagnol,Albin Michel,1991,447,14,Bon,1,0,1,478,37.04610951008645
+Livre 895,Auteur 108,Historique,Anglais,Gallimard,1976,618,6,Bon,0,0,0,312,36.18876080691642
+Livre 896,Auteur 278,Science,Français,Fayard,1877,597,15,Bon,1,0,0,255,58.23487031700287
+Livre 897,Auteur 200,Thriller,Français,Fayard,1970,467,7,Moyen,1,1,1,37,81.01585014409221
+Livre 898,Auteur 216,Art,Allemand,Hachette,1955,891,17,Moyen,1,1,0,241,61.174351585014406
+Livre 899,Auteur 209,Poésie,Italien,Flammarion,1964,723,1,Moyen,1,1,0,276,62.827809798270884
+Livre 900,Auteur 26,Art,Italien,Flammarion,1957,89,3,Excellent,0,1,1,396,58.78602305475504
+Livre 901,Auteur 43,Fantastique,Espagnol,Hachette,1905,849,9,Bon,0,0,1,167,58.96974063400576
+Livre 902,Auteur 125,Biographie,Allemand,Gallimard,1861,657,8,Excellent,0,0,0,151,62.5828530259366
+Livre 903,Auteur 227,Historique,Allemand,Fayard,1867,475,14,Moyen,1,0,1,401,53.88688760806916
+Livre 904,Auteur 137,Science-Fiction,Français,Hachette,1994,440,13,Bon,0,0,0,96,45.06844380403457
+Livre 905,Auteur 215,Historique,Italien,Albin Michel,1866,503,0,Mauvais,0,1,1,388,59.09221902017291
+Livre 906,Auteur 13,Art,Espagnol,Fayard,1923,106,8,Mauvais,1,1,1,235,68.21685878962535
+Livre 907,Auteur 262,Fantastique,Allemand,Flammarion,1917,800,10,Excellent,1,0,1,334,59.21469740634006
+Livre 908,Auteur 278,Science-Fiction,Anglais,Hachette,1910,350,16,Moyen,0,0,0,28,55.540345821325644
+Livre 909,Auteur 272,Roman,Espagnol,Hachette,1941,928,7,Moyen,1,1,0,423,54.805475504322764
+Livre 910,Auteur 115,Art,Espagnol,Gallimard,1908,218,19,Mauvais,1,1,1,8,80.5871757925072
+Livre 911,Auteur 267,Thriller,Espagnol,Flammarion,1911,612,7,Excellent,1,0,1,299,63.01152737752162
+Livre 912,Auteur 5,Science-Fiction,Allemand,Actes Sud,1877,389,15,Mauvais,1,0,1,383,47.3342939481268
+Livre 913,Auteur 123,Historique,Espagnol,Fayard,1918,647,0,Excellent,1,1,1,339,77.15778097982708
+Livre 914,Auteur 10,Religion,Espagnol,Flammarion,1926,388,19,Excellent,0,1,0,168,65.52233429394812
+Livre 915,Auteur 29,Philosophie,Français,Actes Sud,1964,365,7,Excellent,1,1,1,70,85.85374639769451
+Livre 916,Auteur 281,Art,Allemand,Actes Sud,1921,54,8,Bon,1,1,0,382,62.52161383285302
+Livre 917,Auteur 266,Aventure,Espagnol,Flammarion,1974,643,19,Mauvais,1,0,0,19,50.39625360230547
+Livre 918,Auteur 55,Poésie,Italien,Seuil,1915,213,17,Excellent,1,0,1,224,64.05259365994236
+Livre 919,Auteur 89,Art,Italien,Flammarion,1863,969,14,Mauvais,1,0,1,110,66.0734870317003
+Livre 920,Auteur 18,Historique,Allemand,Gallimard,1993,922,8,Excellent,1,1,1,251,70.91138328530259
+Livre 921,Auteur 112,Philosophie,Espagnol,Flammarion,1961,579,3,Mauvais,1,1,0,227,59.45965417867435
+Livre 922,Auteur 69,Art,Italien,Hachette,1875,444,19,Moyen,1,0,1,400,51.43731988472622
+Livre 923,Auteur 134,Science,Allemand,Seuil,1920,274,18,Moyen,0,1,0,434,44.149855907780974
+Livre 924,Auteur 267,Aventure,Allemand,Flammarion,1988,443,20,Mauvais,0,0,0,192,28.595100864553316
+Livre 925,Auteur 82,Biographie,Anglais,Gallimard,1897,615,1,Moyen,0,1,1,70,80.5871757925072
+Livre 926,Auteur 143,Aventure,Français,Hachette,1912,955,6,Mauvais,1,1,1,103,78.2600864553314
+Livre 927,Auteur 55,Science-Fiction,Allemand,Gallimard,1892,412,20,Mauvais,0,0,1,346,37.04610951008645
+Livre 928,Auteur 5,Historique,Italien,Flammarion,2008,462,12,Moyen,0,1,0,480,32.39193083573487
+Livre 929,Auteur 34,Philosophie,Anglais,Seuil,1893,903,11,Moyen,1,1,0,29,83.5878962536023
+Livre 930,Auteur 69,Roman,Allemand,Hachette,1960,573,6,Bon,1,0,1,443,45.43587896253602
+Livre 931,Auteur 110,Biographie,Italien,Hachette,1944,548,8,Moyen,0,1,1,45,74.21829971181556
+Livre 932,Auteur 18,Fantastique,Italien,Seuil,2007,130,5,Mauvais,0,1,0,268,41.51657060518732
+Livre 933,Auteur 249,Religion,Français,Albin Michel,1998,657,8,Bon,1,1,0,418,50.88616714697405
+Livre 934,Auteur 124,Religion,Italien,Fayard,1897,74,10,Moyen,1,0,1,432,49.538904899135446
+Livre 935,Auteur 149,Art,Espagnol,Albin Michel,1881,884,20,Bon,0,0,1,83,63.685158501440924
+Livre 936,Auteur 179,Aventure,Anglais,Seuil,1852,931,1,Bon,1,1,1,348,81.32204610951007
+Livre 937,Auteur 50,Historique,Espagnol,Albin Michel,1963,351,1,Mauvais,1,1,1,377,56.76512968299711
+Livre 938,Auteur 70,Philosophie,Français,Seuil,1926,840,18,Mauvais,0,1,0,236,49.4164265129683
+Livre 939,Auteur 199,Poésie,Allemand,Actes Sud,1926,118,16,Bon,0,0,1,162,54.560518731988466
+Livre 940,Auteur 74,Art,Anglais,Seuil,1964,182,11,Excellent,1,0,1,367,51.13112391930835
+Livre 941,Auteur 102,Religion,Anglais,Albin Michel,1993,750,12,Bon,1,0,0,3,60.37824207492794
+Livre 942,Auteur 146,Historique,Français,Gallimard,1874,243,4,Moyen,1,1,0,471,60.99063400576368
+Livre 943,Auteur 58,Biographie,Espagnol,Flammarion,1926,842,17,Bon,0,0,0,388,34.290345821325644
+Livre 944,Auteur 50,Roman,Anglais,Fayard,2000,338,13,Moyen,0,0,1,5,52.96829971181556
+Livre 945,Auteur 12,Poésie,Anglais,Albin Michel,2004,781,6,Excellent,0,0,0,177,44.0886167146974
+Livre 946,Auteur 119,Science-Fiction,Français,Seuil,1878,915,6,Moyen,0,1,1,36,83.46541786743515
+Livre 947,Auteur 77,Roman,Italien,Gallimard,1960,305,3,Moyen,1,0,1,436,43.721181556195965
+Livre 948,Auteur 85,Thriller,Français,Gallimard,2008,366,20,Excellent,1,1,1,466,52.233429394812674
+Livre 949,Auteur 157,Aventure,Espagnol,Albin Michel,1941,346,15,Moyen,1,0,0,224,49.23270893371758
+Livre 950,Auteur 123,Science-Fiction,Français,Actes Sud,1886,321,8,Excellent,1,0,1,422,58.23487031700287
+Livre 951,Auteur 6,Aventure,Allemand,Fayard,1984,88,6,Moyen,0,0,1,191,45.680835734870314
+Livre 952,Auteur 261,Roman,Italien,Gallimard,1998,267,7,Moyen,1,1,0,479,44.394812680115265
+Livre 953,Auteur 76,Roman,Allemand,Albin Michel,1897,494,13,Mauvais,0,0,0,299,35.3314121037464
+Livre 954,Auteur 168,Thriller,Espagnol,Fayard,1907,368,6,Bon,1,0,1,414,53.70317002881844
+Livre 955,Auteur 204,Roman,Espagnol,Flammarion,1935,555,19,Mauvais,1,0,0,342,35.39265129682997
+Livre 956,Auteur 34,Religion,Français,Fayard,1876,141,8,Mauvais,0,0,1,495,33.555475504322764
+Livre 957,Auteur 94,Science-Fiction,Allemand,Gallimard,1977,514,14,Mauvais,0,1,1,491,34.902737752161386
+Livre 958,Auteur 65,Science-Fiction,Italien,Hachette,1964,655,20,Mauvais,0,1,1,46,61.909221902017286
+Livre 959,Auteur 178,Aventure,Anglais,Flammarion,1968,154,5,Moyen,0,0,0,139,45.00720461095101
+Livre 960,Auteur 224,Religion,Italien,Seuil,2009,350,19,Bon,0,1,0,139,54.070605187319885
+Livre 961,Auteur 115,Thriller,Allemand,Fayard,1909,127,8,Moyen,1,0,1,337,54.499279538904894
+Livre 962,Auteur 33,Historique,Anglais,Fayard,1935,275,19,Mauvais,1,1,1,23,76.36167146974063
+Livre 963,Auteur 106,Fantastique,Français,Seuil,1906,364,3,Moyen,0,0,0,277,44.76224783861671
+Livre 964,Auteur 233,Philosophie,Anglais,Hachette,1911,325,3,Bon,0,1,0,20,78.2600864553314
+Livre 965,Auteur 280,Thriller,Espagnol,Flammarion,1874,979,4,Excellent,1,0,1,303,68.21685878962535
+Livre 966,Auteur 299,Religion,Français,Hachette,1853,511,5,Mauvais,0,0,1,125,59.94956772334294
+Livre 967,Auteur 3,Science-Fiction,Anglais,Actes Sud,1913,587,19,Excellent,1,0,0,352,49.72262247838617
+Livre 968,Auteur 287,Science-Fiction,Anglais,Fayard,1899,149,11,Moyen,0,1,1,301,63.134005763688755
+Livre 969,Auteur 65,Thriller,Espagnol,Actes Sud,1875,557,20,Excellent,1,0,1,163,71.76873198847262
+Livre 970,Auteur 249,Roman,Anglais,Hachette,1864,275,17,Moyen,0,1,1,214,70.91138328530259
+Livre 971,Auteur 135,Religion,Allemand,Flammarion,1873,573,0,Excellent,1,1,1,293,85.48631123919307
+Livre 972,Auteur 207,Poésie,Italien,Flammarion,1896,523,1,Bon,0,0,0,326,46.66066282420749
+Livre 973,Auteur 95,Philosophie,Espagnol,Gallimard,1896,702,9,Moyen,1,0,0,242,55.479106628242064
+Livre 974,Auteur 254,Philosophie,Italien,Hachette,1871,603,15,Bon,1,1,1,440,69.07420749279538
+Livre 975,Auteur 129,Philosophie,Italien,Albin Michel,1918,797,8,Bon,0,0,1,178,57.010086455331404
+Livre 976,Auteur 194,Science,Français,Hachette,1938,562,4,Moyen,1,0,1,22,71.46253602305475
+Livre 977,Auteur 208,Philosophie,Italien,Gallimard,1855,224,4,Bon,1,1,0,258,79.42363112391931
+Livre 978,Auteur 289,Historique,Anglais,Actes Sud,1939,455,11,Excellent,1,0,1,50,73.60590778097982
+Livre 979,Auteur 56,Fantastique,Français,Fayard,1920,647,14,Excellent,1,1,1,425,67.35951008645533
+Livre 980,Auteur 42,Fantastique,Allemand,Hachette,1977,558,6,Bon,0,1,0,14,69.62536023054754
+Livre 981,Auteur 134,Aventure,Italien,Hachette,1942,426,7,Moyen,0,0,1,130,54.2543227665706
+Livre 982,Auteur 120,Philosophie,Français,Hachette,1913,828,3,Excellent,1,0,0,176,65.39985590778097
+Livre 983,Auteur 49,Poésie,Français,Seuil,1987,602,12,Excellent,0,1,1,344,55.540345821325644
+Livre 984,Auteur 80,Thriller,Italien,Fayard,2003,351,5,Mauvais,1,1,1,417,48.191642651296824
+Livre 985,Auteur 24,Art,Allemand,Hachette,2005,259,13,Moyen,1,1,1,155,67.6657060518732
+Livre 986,Auteur 252,Biographie,Espagnol,Actes Sud,2006,781,15,Moyen,1,1,0,318,50.82492795389049
+Livre 987,Auteur 284,Biographie,Anglais,Fayard,1900,357,13,Mauvais,1,1,1,359,61.909221902017286
+Livre 988,Auteur 282,Aventure,Français,Albin Michel,1994,746,17,Excellent,0,0,1,17,57.867435158501436
+Livre 989,Auteur 183,Aventure,Français,Flammarion,1909,608,4,Mauvais,0,1,1,475,47.273054755043226
+Livre 990,Auteur 148,Art,Anglais,Hachette,1970,237,16,Moyen,1,0,0,213,46.04827089337175
+Livre 991,Auteur 224,Fantastique,Espagnol,Flammarion,1895,661,3,Bon,0,0,1,39,69.87031700288183
+Livre 992,Auteur 218,Aventure,Français,Flammarion,1883,602,17,Moyen,0,1,1,475,52.60086455331412
+Livre 993,Auteur 14,Science-Fiction,Français,Actes Sud,1996,656,8,Mauvais,0,1,1,162,54.560518731988466
+Livre 994,Auteur 214,Biographie,Français,Seuil,1856,349,3,Bon,1,1,1,262,85.48631123919307
+Livre 995,Auteur 19,Roman,Espagnol,Actes Sud,1998,156,9,Moyen,1,1,1,500,48.62031700288185
+Livre 996,Auteur 262,Historique,Espagnol,Actes Sud,1925,551,1,Mauvais,0,0,0,130,45.925792507204605
+Livre 997,Auteur 281,Aventure,Espagnol,Flammarion,1994,370,3,Excellent,0,0,1,322,43.47622478386167
+Livre 998,Auteur 260,Thriller,Espagnol,Gallimard,1856,421,18,Moyen,1,0,1,318,59.09221902017291
+Livre 999,Auteur 147,Aventure,Allemand,Fayard,1945,897,7,Excellent,0,0,0,457,33.86167146974063
