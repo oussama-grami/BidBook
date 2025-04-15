@@ -1,12 +1,10 @@
-<p-toast position="top-right"
-
-></p-toast>
-<app-elegant-loading *ngIf="loadingService.loading$ | async" text="Loading content"></app-elegant-loading>
+<p-toast position="top-right"></p-toast>
+<p-scrolltop target="parent" [threshold]="100" icon="pi pi-arrow-up" [buttonProps]="{ severity: 'primary', raised: true, rounded: true }" />
 <div class="app-container" [@fadeScaleAnimation]>
   <div class="layout-with-sidemenu">
     <app-side-menu class="sidemenu"></app-side-menu>
     <div class="main-content">
-      <main [@routeAnimations]="getRouteAnimationState(o)">
+      <main [@fadeAnimation]="getRouteAnimationState(o)">
         <router-outlet #o="outlet"></router-outlet>
       </main>
     </div>

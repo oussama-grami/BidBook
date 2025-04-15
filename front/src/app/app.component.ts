@@ -20,13 +20,15 @@ import { MenubarModule } from 'primeng/menubar';
 import { ButtonModule } from 'primeng/button';
 import { Toast } from 'primeng/toast';
 import { SideMenuComponent } from './components/side-menu/side-menu.component';
-import { ElegantLoadingComponent } from './shared/components/elegant-loading/elegant-loading.component';
-import { LoadingService } from './services/loading.service';
-import { fadeAnimation, slideAnimation, fadeScaleAnimation, pulseAnimation } from './shared/animations';
-import { routeAnimations } from './shared/route-animations';
+import {
+  fadeAnimation,
+  slideAnimation,
+  fadeScaleAnimation,
+  pulseAnimation,
+} from './shared/animations';
 import { AuthService } from './services/auth.service';
 import { first } from 'rxjs/operators';
-
+import { ScrollTop } from 'primeng/scrolltop';
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -37,11 +39,16 @@ import { first } from 'rxjs/operators';
     ButtonModule,
     Toast,
     SideMenuComponent,
-    ElegantLoadingComponent,
+    ScrollTop,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
-  animations: [fadeAnimation, slideAnimation, fadeScaleAnimation, pulseAnimation, routeAnimations],
+  animations: [
+    fadeAnimation,
+    slideAnimation,
+    fadeScaleAnimation,
+    pulseAnimation,
+  ],
 })
 export class AppComponent implements OnInit {
   title = 'E-Books';
@@ -51,25 +58,18 @@ export class AppComponent implements OnInit {
   private applicationRef = inject(ApplicationRef);
   private ngZone = inject(NgZone);
 
-  constructor(
-    private router: Router,
-    public loadingService: LoadingService,
-    private authService: AuthService
-  ) {
+  constructor(private router: Router, private authService: AuthService) {
     // Run router events outside Angular zone to avoid stability issues
     this.ngZone.runOutsideAngular(() => {
       this.router.events.subscribe((event: Event) => {
         if (event instanceof NavigationStart) {
-          this.ngZone.run(() => this.loadingService.show());
+          // Navigation started
         } else if (
           event instanceof NavigationEnd ||
           event instanceof NavigationCancel ||
           event instanceof NavigationError
         ) {
-          // Small delay to ensure view is ready
-          setTimeout(() => {
-            this.ngZone.run(() => this.loadingService.hide());
-          }, 100);
+          // Navigation ended
         }
       });
     });
@@ -79,7 +79,6 @@ export class AppComponent implements OnInit {
       .pipe(first((isStable) => isStable))
       .subscribe(() => {
         console.log('Application is now stable');
-        this.loadingService.hide();
       });
   }
 
