@@ -84,6 +84,15 @@ export const routes: Routes = [
     data: { animation: 'slideLeft' },
   },
   {
+    path: 'verify-email',
+    loadComponent: () =>
+      import(
+        './components/email-verification/email-verification.component'
+      ).then((c) => c.EmailVerificationComponent),
+    canActivate: [RouteLoadingGuard],
+    data: { animation: 'fade' },
+  },
+  {
     path: 'forget-password',
     loadComponent: () =>
       import('./components/forget-password/forget-password.component').then(
