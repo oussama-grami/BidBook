@@ -8,6 +8,21 @@ from sklearn.pipeline import Pipeline
 from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
+field_mapping = {
+    "title": "titre",
+    "author": "auteur",
+    "category": "genre",
+    "language": "langue",
+    "editor": "éditeur",
+    "edition": "année_édition",
+    "totalPages": "nombre_pages",
+    "damagedPages": "pages_arrachées",
+    "state": "état_général",
+    "leatherBinding": "reliure_cuir",
+    "original": "édition_originale",
+    "dedication": "avec_dédicace",
+    "numberOfCopies": "nombre_exemplaires_connus"
+}
 app = Flask(__name__)
 def train_model():
     df = pd.read_csv('bidbook.csv')
@@ -45,10 +60,9 @@ model = train_model()
 @app.route('/predict', methods=['POST'])
 def predict():
     input_data = request.get_json()
-
-    input_df = pd.DataFrame([input_data])
+    translated_data = {field_mapping[k]: v for k, v in input_data.items() if k in field_mapping}
+    input_df = pd.DataFrame([translated_data])
     prediction = model.predict(input_df)[0]
-
     return jsonify({'prediction': round(prediction, 2)})
 
 @app.route('/')
