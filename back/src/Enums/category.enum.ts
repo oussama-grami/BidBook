@@ -5,6 +5,13 @@ export enum Category {
     HISTORY = 'HISTORY',
     BIOGRAPHY = 'BIOGRAPHY',
     ROMANCE = 'ROMANCE',
-    OTHER = 'OTHER'
-  }
-  
+    OTHER = 'OTHER',
+    ADVENTURE = 'ADVENTURE',
+    FANTASY = 'FANTASY',
+    POETRY = 'POETRY',
+    ART = 'ART',
+    NOVEL = 'NOVEL',
+    THRILLER = 'THRILLER',
+    PHILOSOPHY = 'PHILOSOPHY',
+    RELIGION = 'RELIGION'
+}
