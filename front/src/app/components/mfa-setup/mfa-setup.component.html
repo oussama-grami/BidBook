@@ -51,10 +51,14 @@
           Authenticator or Authy)
         </p>
         <div class="qr-container">
+          <!-- Updated to use our ImagePreloadDirective -->
           <img
+            *ngIf="qrCodeUrl"
             [src]="qrCodeUrl"
             alt="QR Code for MFA Setup"
-            *ngIf="qrCodeUrl"
+            appImagePreload
+            fallback="/images/image.png"
+            (loaded)="onQrCodeLoaded($event)"
           />
           <p-progressSpinner
             *ngIf="!qrCodeUrl && isLoading"

@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { DataLoadingResolver } from './shared/resolvers/data-loading.resolver';
 
 export const routes: Routes = [
   {
@@ -10,6 +11,7 @@ export const routes: Routes = [
           import('./components/booksPage/library-dashboard.component').then(
             (c) => c.BookCatalogComponent
           ),
+        resolve: { pageData: DataLoadingResolver },
         data: { animation: 'fade', isFavorite: false },
       },
       {
@@ -18,6 +20,7 @@ export const routes: Routes = [
           import('./components/booksPage/library-dashboard.component').then(
             (c) => c.BookCatalogComponent
           ),
+        resolve: { pageData: DataLoadingResolver },
         data: { animation: 'slideLeft', isFavorite: true },
       },
       {
@@ -26,6 +29,7 @@ export const routes: Routes = [
           import('./components/add-book/add-book.component').then(
             (c) => c.AddBookComponent
           ),
+        resolve: { pageData: DataLoadingResolver },
         data: { animation: 'slideLeft' },
       },
       {
@@ -34,6 +38,7 @@ export const routes: Routes = [
           import('./components/book-details/book-details.component').then(
             (c) => c.BookDetailsComponent
           ),
+        resolve: { pageData: DataLoadingResolver },
         data: { animation: 'zoom' },
       },
     ],
@@ -47,6 +52,7 @@ export const routes: Routes = [
           import('./components/articlesPage/dashboard.component').then(
             (c) => c.DashboardComponent
           ),
+        resolve: { pageData: DataLoadingResolver },
         data: { animation: 'slideLeft' },
       },
       {
@@ -55,6 +61,7 @@ export const routes: Routes = [
           import('./components/add-blog/add-blog.component').then(
             (c) => c.AddBlogComponent
           ),
+        resolve: { pageData: DataLoadingResolver },
         data: { animation: 'slideLeft' },
       },
       {
@@ -63,6 +70,7 @@ export const routes: Routes = [
           import('./components/blog/blog.component').then(
             (c) => c.BlogComponent
           ),
+        resolve: { pageData: DataLoadingResolver },
         data: { animation: 'zoom' },
       },
     ],
@@ -73,6 +81,7 @@ export const routes: Routes = [
       import('./components/login-page/login-page.component').then(
         (c) => c.LoginPageComponent
       ),
+    resolve: { pageData: DataLoadingResolver },
     data: { animation: 'fade' },
   },
   {
@@ -81,6 +90,7 @@ export const routes: Routes = [
       import('./components/signup-page/signup-page.component').then(
         (c) => c.SignupPageComponent
       ),
+    resolve: { pageData: DataLoadingResolver },
     data: { animation: 'slideLeft' },
   },
   {
@@ -89,6 +99,7 @@ export const routes: Routes = [
       import(
         './components/email-verification/email-verification.component'
       ).then((c) => c.EmailVerificationComponent),
+    resolve: { pageData: DataLoadingResolver },
     data: { animation: 'fade' },
   },
   {
@@ -97,6 +108,7 @@ export const routes: Routes = [
       import('./components/forget-password/forget-password.component').then(
         (c) => c.ForgetPasswordComponent
       ),
+    resolve: { pageData: DataLoadingResolver },
     data: { animation: 'fade' },
   },
   {
@@ -105,6 +117,7 @@ export const routes: Routes = [
       import('./components/mfa-setup/mfa-setup.component').then(
         (c) => c.MfaSetupComponent
       ),
+    resolve: { pageData: DataLoadingResolver },
     data: { animation: 'fade' },
   },
   {
@@ -113,6 +126,7 @@ export const routes: Routes = [
       import('./components/NotificationPage/notifications-page.component').then(
         (c) => c.NotificationsPageComponent
       ),
+    resolve: { pageData: DataLoadingResolver },
     data: { animation: 'slideLeft' },
   },
   {
@@ -121,12 +135,14 @@ export const routes: Routes = [
       import('./components/payment/payment.component').then(
         (c) => c.PaymentComponent
       ),
+    resolve: { pageData: DataLoadingResolver },
     data: { animation: 'zoom' },
   },
   {
     path: 'chat',
     loadComponent: () =>
       import('./components/chat/chat.component').then((c) => c.ChatComponent),
+    resolve: { pageData: DataLoadingResolver },
     data: { animation: 'slideLeft' },
   },
   {
@@ -135,6 +151,7 @@ export const routes: Routes = [
       import(
         './components/transactions-history/transactions-history.component'
       ).then((c) => c.TransactionsHistoryComponent),
+    resolve: { pageData: DataLoadingResolver },
     data: { animation: 'fade' },
   },
   // Added error page routes
@@ -144,6 +161,7 @@ export const routes: Routes = [
       import('./components/error-page/error-page.component').then(
         (c) => c.ErrorPageComponent
       ),
+    resolve: { pageData: DataLoadingResolver },
     data: { animation: 'fade' },
   },
   {
@@ -152,6 +170,7 @@ export const routes: Routes = [
       import('./components/error-page/error-page.component').then(
         (c) => c.ErrorPageComponent
       ),
+    resolve: { pageData: DataLoadingResolver },
     data: { animation: 'slideLeft' },
   },
   { path: '', redirectTo: 'books', pathMatch: 'full' },
@@ -162,6 +181,7 @@ export const routes: Routes = [
       import('./components/error-page/error-page.component').then(
         (c) => c.ErrorPageComponent
       ),
+    resolve: { pageData: DataLoadingResolver },
     data: { animation: 'fade', errorCode: 404 },
   },
 ];

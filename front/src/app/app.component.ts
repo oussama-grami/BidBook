@@ -25,10 +25,16 @@ import {
   slideAnimation,
   fadeScaleAnimation,
   pulseAnimation,
+  zoomAnimation,
+  rotateAnimation,
+  slideUpAnimation,
+  routeTransitionAnimations,
 } from './shared/animations';
 import { AuthService } from './services/auth.service';
 import { first } from 'rxjs/operators';
-import { ScrollTop } from 'primeng/scrolltop';
+import { LoadingComponent } from './components/loading/loading.component';
+import { LoadingService } from './services/loading.service';
+
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -39,7 +45,7 @@ import { ScrollTop } from 'primeng/scrolltop';
     ButtonModule,
     Toast,
     SideMenuComponent,
-    ScrollTop,
+    LoadingComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
@@ -48,6 +54,10 @@ import { ScrollTop } from 'primeng/scrolltop';
     slideAnimation,
     fadeScaleAnimation,
     pulseAnimation,
+    zoomAnimation,
+    rotateAnimation,
+    slideUpAnimation,
+    routeTransitionAnimations,
   ],
 })
 export class AppComponent implements OnInit {
@@ -57,19 +67,34 @@ export class AppComponent implements OnInit {
   isSmallScreen: boolean = false;
   private applicationRef = inject(ApplicationRef);
   private ngZone = inject(NgZone);
+  isLoading = false;
 
-  constructor(private router: Router, private authService: AuthService) {
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+    private loadingService: LoadingService
+  ) {
     // Run router events outside Angular zone to avoid stability issues
     this.ngZone.runOutsideAngular(() => {
       this.router.events.subscribe((event: Event) => {
         if (event instanceof NavigationStart) {
           // Navigation started
+          this.ngZone.run(() => {
+            // Using loadingService instead of directly setting isLoading
+            // loadingService will handle this internally
+          });
         } else if (
           event instanceof NavigationEnd ||
           event instanceof NavigationCancel ||
           event instanceof NavigationError
         ) {
           // Navigation ended
+          this.ngZone.run(() => {
+            // Let loadingService handle the end of navigation
+            setTimeout(() => {
+              // Small delay for smoother transitions
+            }, 300);
+          });
         }
       });
     });
@@ -118,6 +143,25 @@ export class AppComponent implements OnInit {
 
   getRouteAnimationState(outlet: RouterOutlet) {
     if (!outlet.isActivated) return '';
-    return outlet.activatedRoute.snapshot.data?.['animation'] || 'slideLeft';
+
+    // Get the animation type from the route data
+    const animation = outlet.activatedRoute.snapshot.data?.['animation'];
+
+    // Map the animation string to the appropriate animation trigger
+    switch (animation) {
+      case 'fade':
+        return 'fadeAnimation';
+      case 'slideLeft':
+        return 'slideAnimation';
+      case 'slideUp':
+        return 'slideUpAnimation';
+      case 'zoom':
+        return 'zoomAnimation';
+      case 'rotate':
+        return 'rotateAnimation';
+      default:
+        // Default to fade animation if none specified
+        return 'fadeAnimation';
+    }
   }
 }
