@@ -89,7 +89,6 @@ export const routes: Routes = [
       import(
         './components/email-verification/email-verification.component'
       ).then((c) => c.EmailVerificationComponent),
-    canActivate: [RouteLoadingGuard],
     data: { animation: 'fade' },
   },
   {
