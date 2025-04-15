@@ -23,7 +23,7 @@ export const routes: Routes = [
       {
         path: 'add',
         loadComponent: () =>
-          import('./add-book/add-book.component').then(
+          import('./components/add-book/add-book.component').then(
             (c) => c.AddBookComponent
           ),
         data: { animation: 'slideLeft' },
@@ -70,7 +70,7 @@ export const routes: Routes = [
   {
     path: 'login',
     loadComponent: () =>
-      import('./login-page/login-page.component').then(
+      import('./components/login-page/login-page.component').then(
         (c) => c.LoginPageComponent
       ),
     data: { animation: 'fade' },
@@ -78,7 +78,7 @@ export const routes: Routes = [
   {
     path: 'signup',
     loadComponent: () =>
-      import('./signup-page/signup-page.component').then(
+      import('./components/signup-page/signup-page.component').then(
         (c) => c.SignupPageComponent
       ),
     data: { animation: 'slideLeft' },
@@ -102,7 +102,7 @@ export const routes: Routes = [
   {
     path: 'mfa-setup',
     loadComponent: () =>
-      import('./mfa-setup/mfa-setup.component').then(
+      import('./components/mfa-setup/mfa-setup.component').then(
         (c) => c.MfaSetupComponent
       ),
     data: { animation: 'fade' },
@@ -141,7 +141,7 @@ export const routes: Routes = [
   {
     path: 'error',
     loadComponent: () =>
-      import('./error-page/error-page.component').then(
+      import('./components/error-page/error-page.component').then(
         (c) => c.ErrorPageComponent
       ),
     data: { animation: 'fade' },
@@ -149,7 +149,7 @@ export const routes: Routes = [
   {
     path: 'error/:code',
     loadComponent: () =>
-      import('./error-page/error-page.component').then(
+      import('./components/error-page/error-page.component').then(
         (c) => c.ErrorPageComponent
       ),
     data: { animation: 'slideLeft' },
@@ -159,7 +159,7 @@ export const routes: Routes = [
   {
     path: '**',
     loadComponent: () =>
-      import('./error-page/error-page.component').then(
+      import('./components/error-page/error-page.component').then(
         (c) => c.ErrorPageComponent
       ),
     data: { animation: 'fade', errorCode: 404 },

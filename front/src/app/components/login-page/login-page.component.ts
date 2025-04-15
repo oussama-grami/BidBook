@@ -10,7 +10,7 @@ import { Router, RouterModule } from '@angular/router';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
-import { AuthService } from '../services/auth.service';
+import { AuthService } from '../../services/auth.service';
 import { finalize } from 'rxjs';
 import { MessageModule } from 'primeng/message';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';

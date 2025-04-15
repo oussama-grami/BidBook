@@ -6,8 +6,8 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { MessageModule } from 'primeng/message';
-import { AuthService } from '../services/auth.service';
-import { NotificationService } from '../services/notification.service';
+import { AuthService } from '../../services/auth.service';
+import { NotificationService } from '../../services/notification.service';
 import { finalize } from 'rxjs';
 
 @Component({
