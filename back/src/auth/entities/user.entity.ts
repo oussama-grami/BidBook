@@ -1,18 +1,45 @@
 import { CommonEntity } from '../../Common/Common.entity';
 import { Column, Entity } from 'typeorm';
+import { Role } from '../../Enums/roles.enum';
 
 @Entity('_user')
 export class User extends CommonEntity {
   @Column()
   firstName: string;
+
   @Column()
   lastName: string;
-  @Column()
+
+  @Column({ unique: true })
   email: string;
-  @Column()
+
+  @Column({ nullable: true })
   password: string;
-  @Column()
+
+  @Column({ nullable: true })
   imageUrl: string;
-  @Column()
+
+  @Column({ default: false })
+  isEmailVerified: boolean;
+
+  @Column({ nullable: true, type: 'varchar' })
+  verificationToken: string | null;
+
+  @Column({ default: false })
   isMFAEnabled: boolean;
+
+  @Column({ nullable: true, type: 'varchar' })
+  mfaSecret: string | null;
+
+  @Column('simple-array', { nullable: true })
+  recoveryCodes: string[] | null;
+
+  @Column({ nullable: true })
+  googleId: string;
+
+  @Column({ nullable: true })
+  githubId: string;
+
+  @Column({ type: 'enum', enum: Role, default: Role.USER })
+  role: Role;
 }

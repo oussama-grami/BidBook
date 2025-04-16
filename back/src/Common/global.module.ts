@@ -70,14 +70,7 @@ config({ path: `${process.cwd()}/Config/.env` });
           from: '"No Reply" <noreply@booksproject.com>',
         },
         template: {
-          dir: join(
-            process.cwd(),
-            'dist',
-            'src',
-            'Common',
-            'Emailing',
-            'templates',
-          ),
+          dir: join(__dirname, 'Emailing', 'templates'),
           adapter: new HandlebarsAdapter(),
           options: {
             strict: true,
