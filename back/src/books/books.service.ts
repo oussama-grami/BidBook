@@ -12,25 +12,26 @@ export class BooksService {
     @InjectRepository(Book)
     private readonly bookRepository: Repository<Book>,
   ) {}
+  
   async create(bookData: CreateBookDto, picturePath: string) {
     let predictedPrice: number;
-    
+
     try {
       const response = await axios.post('http://localhost:5000/predict', bookData);
       predictedPrice = response.data.prediction;
     } catch (error) {
       throw new InternalServerErrorException('Price prediction service unavailable');
     }
-  
+
     const bookToSave = this.bookRepository.create({
       ...bookData,
       price: predictedPrice,
       picture: picturePath,
     });
-  
+
     return await this.bookRepository.save(bookToSave);
   }
-
+ 
 
 
 

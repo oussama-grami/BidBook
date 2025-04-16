@@ -86,6 +86,5 @@ export class CreateBookDto {
   @Type(() => Boolean)
   @ApiProperty()
   leatherBinding: boolean;
-  @ApiProperty()
-  pictureFile?: Express.Multer.File;
+  
 }

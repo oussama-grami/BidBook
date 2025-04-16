@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, BadRequestException } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseInterceptors,
+  UploadedFile,
+  BadRequestException,
+} from '@nestjs/common';
 import { BooksService } from './books.service';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
@@ -6,12 +17,13 @@ import { ApiConsumes, ApiBody, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
-
 import * as fs from 'fs/promises';
+
 @Controller('books')
-@ApiTags('Books')
+@ApiTags('books')
 export class BooksController {
   constructor(private readonly booksService: BooksService) {}
+
   @Post('/add')
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(
@@ -25,7 +37,7 @@ export class BooksController {
         },
       }),
       limits: {
-        fileSize: 5 * 1024 * 1024,
+        fileSize: 5 * 1024 * 1024, // 5 MB
       },
       fileFilter: (req, file, callback) => {
         const allowedMimeTypes = ['image/png', 'image/jpeg'];
@@ -34,7 +46,7 @@ export class BooksController {
         }
         callback(null, true);
       },
-    })
+    }),
   )
   async createBook(
     @UploadedFile() file: Express.Multer.File,
@@ -43,10 +55,11 @@ export class BooksController {
     if (!file) {
       throw new BadRequestException('No file was uploaded.');
     }
-  
+
     try {
       return await this.booksService.create(bookData, file.path);
     } catch (error) {
+      // Delete the file if an error occurs
       if (file?.path) {
         try {
           await fs.unlink(file.path);
@@ -57,7 +70,6 @@ export class BooksController {
       throw error;
     }
   }
-
 
   @Get()
   findAll() {
