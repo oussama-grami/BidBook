@@ -12,6 +12,8 @@ export class AuthService {
   private mfaEnabled: boolean = false;
   private mfaSecret: string | null = null;
   private userEmail: string | null = null;
+  // Track email verification status
+  private emailVerified: boolean = false;
 
   constructor(
     private router: Router,
@@ -27,6 +29,7 @@ export class AuthService {
       this.mfaEnabled = localStorage.getItem('mfa_enabled') === 'true';
       this.mfaSecret = localStorage.getItem('mfa_secret');
       this.userEmail = localStorage.getItem('user_email');
+      this.emailVerified = localStorage.getItem('email_verified') === 'true';
     }
   }
 
@@ -40,6 +43,7 @@ export class AuthService {
       if (this.userEmail) {
         localStorage.setItem('user_email', this.userEmail);
       }
+      localStorage.setItem('email_verified', this.emailVerified.toString());
     }
   }
 
@@ -96,7 +100,7 @@ export class AuthService {
     password: string
   ): Observable<{ success: boolean; message: string }> {
     // In a real app, this would verify the password with the backend
-    const isValid = password!=null && password.length >= 6;
+    const isValid = password != null && password.length >= 6;
 
     if (isValid) {
       this.mfaEnabled = false;
@@ -141,6 +145,63 @@ export class AuthService {
     }).pipe(delay(800)); // Simulate network delay
   }
 
+  // Register a new user and send verification email
+  register(userData: {
+    username: string;
+    email: string;
+    password: string;
+  }): Observable<{ success: boolean; message: string }> {
+    // In a real app, this would send the data to the backend for registration
+    // and the backend would send a verification email
+    this.userEmail = userData.email;
+    this.emailVerified = false;
+    this.saveMfaStatus();
+
+    // Simulate sending a verification email
+    return of<{ success: boolean; message: string }>({
+      success: true,
+      message:
+        'Registration successful! Please check your email to verify your account.',
+    }).pipe(delay(800));
+  }
+
+  // Verify email token received via email
+  verifyEmailToken(
+    token: string
+  ): Observable<{ success: boolean; message: string }> {
+    // In a real app, this would validate the token with the backend
+    // For demo, we'll validate any token that's at least 10 chars
+    const isValid = token != null && token.length >= 10;
+
+    if (isValid) {
+      this.emailVerified = true;
+      this.saveMfaStatus();
+    }
+
+    return of<{ success: boolean; message: string }>({
+      success: isValid,
+      message: isValid
+        ? 'Email verified successfully'
+        : 'Invalid or expired verification token',
+    }).pipe(delay(1000)); // Simulate network delay
+  }
+
+  // Resend verification email
+  resendVerificationEmail(
+    email: string
+  ): Observable<{ success: boolean; message: string }> {
+    // In a real app, this would request the backend to send another verification email
+    return of<{ success: boolean; message: string }>({
+      success: true,
+      message: 'Verification email has been sent to ' + email,
+    }).pipe(delay(800));
+  }
+
+  // Check if user's email is verified
+  isEmailVerified(): boolean {
+    return this.emailVerified;
+  }
+
   completeLogin(): void {
     // Set auth token in localStorage
     if (typeof window !== 'undefined') {
@@ -159,10 +220,15 @@ export class AuthService {
   }
 
   // Get current user info (mock implementation)
-  getCurrentUserInfo(): { email: string | null; mfaEnabled: boolean } {
+  getCurrentUserInfo(): {
+    email: string | null;
+    mfaEnabled: boolean;
+    emailVerified: boolean;
+  } {
     return {
       email: this.userEmail,
       mfaEnabled: this.mfaEnabled,
+      emailVerified: this.emailVerified,
     };
   }
 

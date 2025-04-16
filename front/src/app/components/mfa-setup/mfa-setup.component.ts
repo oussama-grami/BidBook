@@ -6,8 +6,10 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { MessageModule } from 'primeng/message';
-import { AuthService } from '../services/auth.service';
-import { NotificationService } from '../services/notification.service';
+import { AuthService } from '../../services/auth.service';
+import { NotificationService } from '../../services/notification.service';
+import { LoadingService } from '../../services/loading.service';
+import { ImagePreloadDirective } from '../../shared/directives/image-preload.directive';
 import { finalize } from 'rxjs';
 
 @Component({
@@ -21,9 +23,13 @@ import { finalize } from 'rxjs';
     InputTextModule,
     ProgressSpinnerModule,
     MessageModule,
+    ImagePreloadDirective,
   ],
   templateUrl: './mfa-setup.component.html',
   styleUrls: ['./mfa-setup.component.css'],
+  animations: [
+    // Add page-specific enter/exit animations as needed
+  ],
 })
 export class MfaSetupComponent implements OnInit {
   // User info
@@ -47,17 +53,26 @@ export class MfaSetupComponent implements OnInit {
   // Recovery codes
   recoveryCodes: string[] = [];
 
+  // Loading tracking IDs
+  private readonly componentLoadingId = 'mfa-setup-component';
+  private readonly qrCodeLoadingId = 'mfa-setup-qr-code';
+
   constructor(
     private authService: AuthService,
     private notificationService: NotificationService,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private loadingService: LoadingService
   ) {}
 
   ngOnInit(): void {
+    // Start the component loading tracker
+    this.loadingService.startLoading(this.componentLoadingId);
+
     // Check authentication status
     if (!this.authService.isAuthenticated()) {
       this.router.navigate(['/login']);
+      this.loadingService.stopLoading(this.componentLoadingId);
       return;
     }
 
@@ -68,6 +83,10 @@ export class MfaSetupComponent implements OnInit {
         'Please log in again to access this page'
       );
       this.router.navigate(['/login']);
+      this.loadingService.stopLoading(this.componentLoadingId);
+    } else {
+      // Component is fully initialized
+      this.loadingService.stopLoading(this.componentLoadingId);
     }
   }
 
@@ -77,6 +96,9 @@ export class MfaSetupComponent implements OnInit {
     this.errorMessage = '';
 
     if (this.userInfo.email) {
+      // Track QR code loading
+      this.loadingService.startLoading(this.qrCodeLoadingId);
+
       this.authService
         .generateMfaSecret(this.userInfo.email)
         .pipe(finalize(() => (this.isLoading = false)))
@@ -91,11 +113,23 @@ export class MfaSetupComponent implements OnInit {
             this.errorMessage =
               error.message ||
               'Failed to generate MFA secret. Please try again.';
+            // Stop tracking QR code loading on error
+            this.loadingService.stopLoading(this.qrCodeLoadingId);
           },
         });
     } else {
       this.errorMessage = 'User email is missing. Please log in again.';
       this.isLoading = false;
+      // Stop tracking QR code loading since we have an error
+      this.loadingService.stopLoading(this.qrCodeLoadingId);
+    }
+  }
+
+  // Handle QR code image load completion
+  onQrCodeLoaded(success: boolean): void {
+    this.loadingService.stopLoading(this.qrCodeLoadingId);
+    if (!success) {
+      this.errorMessage = 'Failed to load QR code image. Please try again.';
     }
   }
 

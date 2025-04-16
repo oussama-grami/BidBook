@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { RouteLoadingGuard } from './shared/route-loading.guard';
+import { DataLoadingResolver } from './shared/resolvers/data-loading.resolver';
 
 export const routes: Routes = [
   {
@@ -11,7 +11,7 @@ export const routes: Routes = [
           import('./components/booksPage/library-dashboard.component').then(
             (c) => c.BookCatalogComponent
           ),
-        canActivate: [RouteLoadingGuard],
+        resolve: { pageData: DataLoadingResolver },
         data: { animation: 'fade', isFavorite: false },
       },
       {
@@ -20,16 +20,16 @@ export const routes: Routes = [
           import('./components/booksPage/library-dashboard.component').then(
             (c) => c.BookCatalogComponent
           ),
-        canActivate: [RouteLoadingGuard],
+        resolve: { pageData: DataLoadingResolver },
         data: { animation: 'slideLeft', isFavorite: true },
       },
       {
         path: 'add',
         loadComponent: () =>
-          import('./add-book/add-book.component').then(
+          import('./components/add-book/add-book.component').then(
             (c) => c.AddBookComponent
           ),
-        canActivate: [RouteLoadingGuard],
+        resolve: { pageData: DataLoadingResolver },
         data: { animation: 'slideLeft' },
       },
       {
@@ -38,7 +38,7 @@ export const routes: Routes = [
           import('./components/book-details/book-details.component').then(
             (c) => c.BookDetailsComponent
           ),
-        canActivate: [RouteLoadingGuard],
+        resolve: { pageData: DataLoadingResolver },
         data: { animation: 'zoom' },
       },
     ],
@@ -52,7 +52,7 @@ export const routes: Routes = [
           import('./components/articlesPage/dashboard.component').then(
             (c) => c.DashboardComponent
           ),
-        canActivate: [RouteLoadingGuard],
+        resolve: { pageData: DataLoadingResolver },
         data: { animation: 'slideLeft' },
       },
       {
@@ -61,7 +61,7 @@ export const routes: Routes = [
           import('./components/add-blog/add-blog.component').then(
             (c) => c.AddBlogComponent
           ),
-        canActivate: [RouteLoadingGuard],
+        resolve: { pageData: DataLoadingResolver },
         data: { animation: 'slideLeft' },
       },
       {
@@ -70,7 +70,7 @@ export const routes: Routes = [
           import('./components/blog/blog.component').then(
             (c) => c.BlogComponent
           ),
-        canActivate: [RouteLoadingGuard],
+        resolve: { pageData: DataLoadingResolver },
         data: { animation: 'zoom' },
       },
     ],
@@ -78,20 +78,29 @@ export const routes: Routes = [
   {
     path: 'login',
     loadComponent: () =>
-      import('./login-page/login-page.component').then(
+      import('./components/login-page/login-page.component').then(
         (c) => c.LoginPageComponent
       ),
-    canActivate: [RouteLoadingGuard],
+    resolve: { pageData: DataLoadingResolver },
     data: { animation: 'fade' },
   },
   {
     path: 'signup',
     loadComponent: () =>
-      import('./signup-page/signup-page.component').then(
+      import('./components/signup-page/signup-page.component').then(
         (c) => c.SignupPageComponent
       ),
-    canActivate: [RouteLoadingGuard],
+    resolve: { pageData: DataLoadingResolver },
     data: { animation: 'slideLeft' },
+  },
+  {
+    path: 'verify-email',
+    loadComponent: () =>
+      import(
+        './components/email-verification/email-verification.component'
+      ).then((c) => c.EmailVerificationComponent),
+    resolve: { pageData: DataLoadingResolver },
+    data: { animation: 'fade' },
   },
   {
     path: 'forget-password',
@@ -99,16 +108,16 @@ export const routes: Routes = [
       import('./components/forget-password/forget-password.component').then(
         (c) => c.ForgetPasswordComponent
       ),
-    canActivate: [RouteLoadingGuard],
+    resolve: { pageData: DataLoadingResolver },
     data: { animation: 'fade' },
   },
   {
     path: 'mfa-setup',
     loadComponent: () =>
-      import('./mfa-setup/mfa-setup.component').then(
+      import('./components/mfa-setup/mfa-setup.component').then(
         (c) => c.MfaSetupComponent
       ),
-    canActivate: [RouteLoadingGuard],
+    resolve: { pageData: DataLoadingResolver },
     data: { animation: 'fade' },
   },
   {
@@ -117,7 +126,7 @@ export const routes: Routes = [
       import('./components/NotificationPage/notifications-page.component').then(
         (c) => c.NotificationsPageComponent
       ),
-    canActivate: [RouteLoadingGuard],
+    resolve: { pageData: DataLoadingResolver },
     data: { animation: 'slideLeft' },
   },
   {
@@ -126,14 +135,14 @@ export const routes: Routes = [
       import('./components/payment/payment.component').then(
         (c) => c.PaymentComponent
       ),
-    canActivate: [RouteLoadingGuard],
+    resolve: { pageData: DataLoadingResolver },
     data: { animation: 'zoom' },
   },
   {
     path: 'chat',
     loadComponent: () =>
       import('./components/chat/chat.component').then((c) => c.ChatComponent),
-    canActivate: [RouteLoadingGuard],
+    resolve: { pageData: DataLoadingResolver },
     data: { animation: 'slideLeft' },
   },
   {
@@ -142,24 +151,26 @@ export const routes: Routes = [
       import(
         './components/transactions-history/transactions-history.component'
       ).then((c) => c.TransactionsHistoryComponent),
-    canActivate: [RouteLoadingGuard],
+    resolve: { pageData: DataLoadingResolver },
     data: { animation: 'fade' },
   },
   // Added error page routes
   {
     path: 'error',
     loadComponent: () =>
-      import('./error-page/error-page.component').then(
+      import('./components/error-page/error-page.component').then(
         (c) => c.ErrorPageComponent
       ),
+    resolve: { pageData: DataLoadingResolver },
     data: { animation: 'fade' },
   },
   {
     path: 'error/:code',
     loadComponent: () =>
-      import('./error-page/error-page.component').then(
+      import('./components/error-page/error-page.component').then(
         (c) => c.ErrorPageComponent
       ),
+    resolve: { pageData: DataLoadingResolver },
     data: { animation: 'slideLeft' },
   },
   { path: '', redirectTo: 'books', pathMatch: 'full' },
@@ -167,9 +178,10 @@ export const routes: Routes = [
   {
     path: '**',
     loadComponent: () =>
-      import('./error-page/error-page.component').then(
+      import('./components/error-page/error-page.component').then(
         (c) => c.ErrorPageComponent
       ),
+    resolve: { pageData: DataLoadingResolver },
     data: { animation: 'fade', errorCode: 404 },
   },
 ];

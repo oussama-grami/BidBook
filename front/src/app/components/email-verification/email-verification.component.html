@@ -1,0 +1,65 @@
+<div class="verification-container">
+  <div class="verification-card">
+    <!-- Logo and header -->
+    <div class="header">
+      <h1 class="title">Email Verification</h1>
+      <p class="subtitle">Please wait while we verify your email address</p>
+    </div>
+
+    <!-- Loading state -->
+    <div *ngIf="isLoading" class="loading-container">
+      <p-progressSpinner
+        [style]="{ width: '50px', height: '50px' }"
+      ></p-progressSpinner>
+      <p class="loading-text">Verifying your email...</p>
+    </div>
+
+    <!-- Success state -->
+    <div *ngIf="!isLoading && isVerified" class="success-container">
+      <div class="success-icon">
+        <i class="pi pi-check-circle"></i>
+      </div>
+      <h2>Email Verified Successfully!</h2>
+      <p>
+        Your email has been verified. You can now access all features of our
+        application.
+      </p>
+      <p-button
+        label="Go to Login"
+        icon="pi pi-sign-in"
+        (click)="goToLogin()"
+        styleClass="p-button-primary verification-button"
+      ></p-button>
+    </div>
+
+    <!-- Error state -->
+    <div
+      *ngIf="!isLoading && !isVerified && errorMessage"
+      class="error-container"
+    >
+      <div class="error-icon">
+        <i class="pi pi-exclamation-circle"></i>
+      </div>
+      <h2>Verification Failed</h2>
+      <p-message
+        severity="error"
+        [text]="errorMessage"
+        styleClass="w-full"
+      ></p-message>
+      <div class="action-buttons">
+        <p-button
+          label="Try Again"
+          icon="pi pi-refresh"
+          (click)="verifyEmailToken()"
+          styleClass="p-button-outlined p-button-danger verification-button"
+        ></p-button>
+        <p-button
+          label="Resend Verification"
+          icon="pi pi-envelope"
+          (click)="resendVerification()"
+          styleClass="p-button-outlined p-button-info verification-button"
+        ></p-button>
+      </div>
+    </div>
+  </div>
+</div>
