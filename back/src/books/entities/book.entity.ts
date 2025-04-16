@@ -12,7 +12,13 @@ import { Bid } from 'src/bids/entities/bid.entity';
 export class Book extends CommonEntity {
   @Column()
   title: string;
+  @Column()
+  author: string;
 
+  @Column()
+  editor: string;
+
+  
   @Column({
     type: 'enum',
     enum: Category,

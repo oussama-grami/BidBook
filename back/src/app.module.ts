@@ -1,3 +1,5 @@
+
+
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -12,6 +14,8 @@ import { Bid } from './bids/entities/bid.entity';
 import { Comment } from './comments/entities/comment.entity';
 import { Notification } from './notifications/entities/notification.entity';
 import { ConfigModule, ConfigService } from '@nestjs/config'; // Ajout de ConfigService
+import { BooksService } from './books/books.service';
+import { BooksController } from './books/books.controller';
 
 config({ path: `${process.cwd()}/Config/.env` });
 
@@ -43,6 +47,7 @@ config({ path: `${process.cwd()}/Config/.env` });
     }),
     GlobalModule,
     AuthModule,
+
     TypeOrmModule.forFeature([
       User,
       Book,
@@ -52,7 +57,7 @@ config({ path: `${process.cwd()}/Config/.env` });
       Notification
     ]),
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController,BooksController],
+  providers: [AppService,BooksService],
 })
 export class AppModule {}
