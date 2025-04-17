@@ -15,7 +15,7 @@ import {
 import { BooksService } from './books.service';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
-import { ApiConsumes, ApiTags } from '@nestjs/swagger';
+import {ApiBody, ApiConsumes, ApiTags} from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
@@ -28,8 +28,29 @@ import { validate } from 'class-validator';
 export class BooksController {
   constructor(private readonly booksService: BooksService) {}
 
-@Post('/add')
-@ApiConsumes('multipart/form-data')
+  @Post('/add')
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        title: { type: 'string' },
+        author: { type: 'string' },
+        category: { type: 'string' },
+        language: { type: 'string' },
+        editor: { type: 'string' },
+        edition: { type: 'string' },
+        totalPages: { type: 'number' },
+        damagedPages: { type: 'number' },
+        age: { type: 'number' },
+        ownerId: { type: 'number' },
+        pictureFile: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
 @UseInterceptors(
   FileInterceptor('pictureFile', {
     storage: diskStorage({
@@ -54,7 +75,7 @@ export class BooksController {
 )
 async createBook(
   @UploadedFile() file: Express.Multer.File,
-  @Body() bookData: any,
+    @Body() bookData: CreateBookDto,
 ) {
   if (!file) {
     throw new BadRequestException('No file was uploaded.');
@@ -104,6 +125,27 @@ async createBook(
 
   @Patch(':id')
   @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        title: { type: 'string' },
+        author: { type: 'string' },
+        category: { type: 'string' },
+        language: { type: 'string' },
+        editor: { type: 'string' },
+        edition: { type: 'string' },
+        totalPages: { type: 'number' },
+        damagedPages: { type: 'number' },
+        age: { type: 'number' },
+        ownerId: { type: 'number' },
+        pictureFile: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
   @UseInterceptors(
       FileInterceptor('pictureFile', {
         storage: diskStorage({
