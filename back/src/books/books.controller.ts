@@ -103,9 +103,74 @@ async createBook(
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBookDto: UpdateBookDto) {
-    return this.booksService.update(+id, updateBookDto);
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(
+      FileInterceptor('pictureFile', {
+        storage: diskStorage({
+          destination: './public/upload/book',
+          filename: (req, file, callback) => {
+            const ext = extname(file.originalname).toLowerCase();
+            const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+            callback(null, `book-${uniqueSuffix}${ext}`);
+          },
+        }),
+        limits: {
+          fileSize: 5 * 1024 * 1024, // 5 MB
+        },
+        fileFilter: (req, file, callback) => {
+          if (file) {
+            const allowedMimeTypes = ['image/png', 'image/jpeg'];
+            if (!allowedMimeTypes.includes(file.mimetype)) {
+              return callback(
+                  new Error('The file must be a PNG or JPEG image.'),
+                  false,
+              );
+            }
+          }
+          callback(null, true);
+        },
+      }),
+  )
+  async update(
+      @Param('id') id: string,
+      @UploadedFile() file: Express.Multer.File,
+      @Body() bookData: any,
+  ) {
+    let filePath: string | undefined = file?.path;
+
+    try {
+      const updateBookDto = plainToInstance(UpdateBookDto, bookData);
+      const errors = await validate(updateBookDto);
+
+      if (errors.length > 0) {
+        const validationErrors = errors.map((error) => {
+          const constraints = error.constraints
+              ? Object.values(error.constraints)
+              : [];
+          return `${error.property}: ${constraints.join(', ')}`;
+        });
+        if (filePath) {
+          await fs.unlink(filePath).catch((err) =>
+              console.error('Failed to delete uploaded file:', err),
+          );
+        }
+        throw new BadRequestException(validationErrors);
+      }
+
+      return this.booksService.update(+id, updateBookDto, filePath);
+    } catch (error) {
+      if (filePath) {
+        await fs.unlink(filePath).catch((err) =>
+            console.error('Failed to delete uploaded file:', err),
+        );
+      }
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      throw new BadRequestException('Failed to update book: ' + error.message);
+    }
   }
+
 
   @Delete(':id')
   remove(@Param('id') id: string) {
