@@ -17,7 +17,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config'; // Ajout de Config
 import { BooksService } from './books/books.service';
 import { BooksController } from './books/books.controller';
 
-config({ path: `${process.cwd()}/Config/.env` });
+config({ path: `${process.cwd()}/Config/.env.dev` });
 
 @Module({
   imports: [

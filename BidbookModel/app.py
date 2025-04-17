@@ -5,69 +5,53 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
-from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
-field_mapping = {
-    "title": "titre",
-    "author": "auteur",
-    "category": "genre",
-    "language": "langue",
-    "editor": "éditeur",
-    "edition": "année_édition",
-    "totalPages": "nombre_pages",
-    "damagedPages": "pages_arrachées",
-    "state": "état_général",
-    "leatherBinding": "reliure_cuir",
-    "original": "édition_originale",
-    "dedication": "avec_dédicace",
-    "numberOfCopies": "nombre_exemplaires_connus"
-}
 app = Flask(__name__)
+
 def train_model():
-    df = pd.read_csv('bidbook.csv')
+    df = pd.read_csv("bidbook.csv")
 
-    X = df.drop("prix", axis=1)
-    y = df["prix"]
+    X = df.drop("price", axis=1)
+    y = df["price"]
 
-    binary_cols = ['édition_originale', 'reliure_cuir', 'avec_dédicace']
-    numeric_cols = ['année_édition', 'nombre_pages', 'pages_arrachées', 'nombre_exemplaires_connus']
-    categorical_cols = ['titre', 'auteur', 'genre', 'langue', 'éditeur', 'état_général']
+    numeric_cols = ['edition', 'totalPages', 'damagedPages', 'age']
+    categorical_cols = ['category', 'language']
 
     preprocessor = ColumnTransformer([
         ("num", StandardScaler(), numeric_cols),
-        ("cat", OneHotEncoder(handle_unknown="ignore"), categorical_cols),
-        ("bin", 'passthrough', binary_cols)
+        ("cat", OneHotEncoder(handle_unknown="ignore"), categorical_cols)
     ])
 
     model = Pipeline(steps=[
         ("preprocessing", preprocessor),
-        ("regressor", GradientBoostingRegressor(n_estimators=300, max_depth=6, random_state=42))
+        ("regressor", RandomForestRegressor(n_estimators=200, max_depth=10, random_state=42))
     ])
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
-    print("MAE :", mean_absolute_error(y_test, y_pred))
-    rmse = np.sqrt(mean_squared_error(y_test, y_pred))
-    print("RMSE :", rmse)
 
-    print("R² :", r2_score(y_test, y_pred))
+    print("Model Evaluation:")
+    print("MAE :", round(mean_absolute_error(y_test, y_pred), 2))
+    print("RMSE :", round(np.sqrt(mean_squared_error(y_test, y_pred)), 2))
+    print("R² :", round(r2_score(y_test, y_pred), 4))
 
     return model
+
 model = train_model()
 
 @app.route('/predict', methods=['POST'])
 def predict():
     input_data = request.get_json()
-    translated_data = {field_mapping[k]: v for k, v in input_data.items() if k in field_mapping}
-    input_df = pd.DataFrame([translated_data])
+    input_df = pd.DataFrame([input_data])
     prediction = model.predict(input_df)[0]
     return jsonify({'prediction': round(prediction, 2)})
 
 @app.route('/')
 def home():
-    return "✅ Modèle prêt à prédire ! Utilise POST /predict"
+    return "📘 AI Book Price Model Ready! Use POST /predict with JSON input."
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -9,67 +9,88 @@ import {
   UseInterceptors,
   UploadedFile,
   BadRequestException,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { BooksService } from './books.service';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
-import { ApiConsumes, ApiBody, ApiTags } from '@nestjs/swagger';
+import { ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import * as fs from 'fs/promises';
+import { plainToClass, plainToInstance } from 'class-transformer';
+import { validate } from 'class-validator';
 
 @Controller('books')
 @ApiTags('books')
 export class BooksController {
   constructor(private readonly booksService: BooksService) {}
 
-  @Post('/add')
-  @ApiConsumes('multipart/form-data')
-  @UseInterceptors(
-    FileInterceptor('pictureFile', {
-      storage: diskStorage({
-        destination: './public/upload/book',
-        filename: (req, file, callback) => {
-          const ext = extname(file.originalname).toLowerCase();
-          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-          callback(null, `book-${uniqueSuffix}${ext}`);
-        },
-      }),
-      limits: {
-        fileSize: 5 * 1024 * 1024, // 5 MB
-      },
-      fileFilter: (req, file, callback) => {
-        const allowedMimeTypes = ['image/png', 'image/jpeg'];
-        if (!allowedMimeTypes.includes(file.mimetype)) {
-          return callback(new Error('The file must be a PNG or JPEG image.'), false);
-        }
-        callback(null, true);
+@Post('/add')
+@ApiConsumes('multipart/form-data')
+@UseInterceptors(
+  FileInterceptor('pictureFile', {
+    storage: diskStorage({
+      destination: './public/upload/book',
+      filename: (req, file, callback) => {
+        const ext = extname(file.originalname).toLowerCase();
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+        callback(null, `book-${uniqueSuffix}${ext}`);
       },
     }),
-  )
-  async createBook(
-    @UploadedFile() file: Express.Multer.File,
-    @Body() bookData: CreateBookDto,
-  ) {
-    if (!file) {
-      throw new BadRequestException('No file was uploaded.');
+    limits: {
+      fileSize: 5 * 1024 * 1024, // 5 MB
+    },
+    fileFilter: (req, file, callback) => {
+      const allowedMimeTypes = ['image/png', 'image/jpeg'];
+      if (!allowedMimeTypes.includes(file.mimetype)) {
+        return callback(new Error('The file must be a PNG or JPEG image.'), false);
+      }
+      callback(null, true);
+    },
+  }),
+)
+async createBook(
+  @UploadedFile() file: Express.Multer.File,
+  @Body() bookData: any,
+) {
+  if (!file) {
+    throw new BadRequestException('No file was uploaded.');
+  }
+
+  let filePath = file.path;
+
+  try {
+    const bookDto = plainToInstance(CreateBookDto, bookData);
+    const errors = await validate(bookDto);
+
+    if (errors.length > 0) {
+      const validationErrors = errors.map(error => {
+        const constraints = error.constraints ? Object.values(error.constraints) : [];
+        return `${error.property}: ${constraints.join(', ')}`;
+      });
+
+      throw new BadRequestException(validationErrors);
     }
 
-    try {
-      return await this.booksService.create(bookData, file.path);
-    } catch (error) {
-      // Delete the file if an error occurs
-      if (file?.path) {
-        try {
-          await fs.unlink(file.path);
-        } catch (fsError) {
-          console.error('Failed to delete uploaded file:', fsError);
-        }
-      }
+    return await this.booksService.create(bookDto, filePath);
+  } catch (error) {
+    if (filePath) {
+      await fs.unlink(filePath).catch(err =>
+        console.error('Failed to delete uploaded file:', err),
+      );
+    }
+
+    if (error instanceof BadRequestException) {
       throw error;
     }
+
+    throw new BadRequestException('Failed to create book: ' + error.message);
   }
+}
+
 
   @Get()
   findAll() {

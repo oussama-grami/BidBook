@@ -13,5 +13,6 @@ export enum Category {
     NOVEL = 'NOVEL',
     THRILLER = 'THRILLER',
     PHILOSOPHY = 'PHILOSOPHY',
-    RELIGION = 'RELIGION'
+    RELIGION = 'RELIGION',
+    TECHNOLOGY = 'TECHNOLOGY '
 }

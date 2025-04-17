@@ -4,7 +4,6 @@ import { CommonEntity } from '../../Common/Common.entity';
 import { User } from '../../auth/entities/user.entity';
 import { Category } from '../../Enums/category.enum';
 import { Language } from '../../Enums/language.enum';
-import { State } from '../../Enums/state.enum';
 import { Favorite } from 'src/favorites/entities/favorite.entity';
 import { Bid } from 'src/bids/entities/bid.entity';
 
@@ -35,8 +34,8 @@ export class Book extends CommonEntity {
   @Column({ default: 0 })
   age: number;
 
-  @Column()
-  edition: string;
+  @Column({ default: 1 })
+  edition: number;
 
   @Column({ type: 'float', default: 0 })
   price: number;
@@ -57,24 +56,9 @@ export class Book extends CommonEntity {
   })
   language: Language;
 
-  @Column({
-    type: 'enum',
-    enum: State,
-    default: State.EXCELLENT,
-  })
-  state: State;
+  
 
-  @Column({ default: false })
-  original: boolean;
-
-  @Column({ default: false })
-  dedication: boolean;
-
-  @Column({ default: 1 })
-  numberOfCopies: number;
-
-  @Column({ default: false })
-  leatherBinding: boolean;
+  
 
   // Un livre appartient à un utilisateur
   @ManyToOne(() => User, (user) => user.books, { onDelete: 'SET NULL' })
