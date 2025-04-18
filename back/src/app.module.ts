@@ -4,11 +4,13 @@ import { AppService } from './app.service';
 import { config } from 'dotenv';
 import { GlobalModule } from './Common/global.module';
 import { AuthModule } from './auth/auth.module';
+import { ConversationModule } from './conversation/conversation.module';
+import { BidModule } from './bid/bid.module';
 
 config({ path: `${process.cwd()}/Config/.env` });
 
 @Module({
-  imports: [GlobalModule, AuthModule],
+  imports: [GlobalModule, AuthModule, ConversationModule, BidModule],
   controllers: [AppController],
   providers: [AppService],
 })
