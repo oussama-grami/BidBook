@@ -32,7 +32,6 @@ import { finalize } from 'rxjs';
   styleUrl: './forget-password.component.css',
 })
 export class ForgetPasswordComponent implements OnInit {
-  // Add definite assignment assertion operator (!) to fix the first error
   forgetPasswordForm!: FormGroup;
   currentStep: 'email' | 'reset' = 'email';
   isLoading = false;
@@ -64,7 +63,8 @@ export class ForgetPasswordComponent implements OnInit {
     const emailControl = this.forgetPasswordForm.get('email');
     const tokenControl = this.forgetPasswordForm.get('token');
     const newPasswordControl = this.forgetPasswordForm.get('newPassword');
-    const confirmPasswordControl = this.forgetPasswordForm.get('confirmPassword');
+    const confirmPasswordControl =
+      this.forgetPasswordForm.get('confirmPassword');
 
     if (this.currentStep === 'email') {
       emailControl?.setValidators([Validators.required, Validators.email]);
@@ -73,14 +73,17 @@ export class ForgetPasswordComponent implements OnInit {
       confirmPasswordControl?.clearValidators();
     } else {
       emailControl?.clearValidators();
-      
+
       if (!this.resetToken) {
         tokenControl?.setValidators([Validators.required]);
       } else {
         tokenControl?.clearValidators();
       }
-      
-      newPasswordControl?.setValidators([Validators.required, Validators.minLength(8)]);
+
+      newPasswordControl?.setValidators([
+        Validators.required,
+        Validators.minLength(8),
+      ]);
       confirmPasswordControl?.setValidators([Validators.required]);
     }
 
@@ -115,8 +118,8 @@ export class ForgetPasswordComponent implements OnInit {
       const confirmPassword = form.get('confirmPassword');
 
       if (
-        newPassword?.value && 
-        confirmPassword?.value && 
+        newPassword?.value &&
+        confirmPassword?.value &&
         newPassword.value !== confirmPassword.value
       ) {
         confirmPassword.setErrors({ passwordMismatch: true });
@@ -139,8 +142,8 @@ export class ForgetPasswordComponent implements OnInit {
     const confirmPassword = control.get('confirmPassword');
 
     if (
-      newPassword?.value && 
-      confirmPassword?.value && 
+      newPassword?.value &&
+      confirmPassword?.value &&
       newPassword.value !== confirmPassword.value
     ) {
       confirmPassword.setErrors({ passwordMismatch: true });
@@ -187,14 +190,18 @@ export class ForgetPasswordComponent implements OnInit {
         });
     } else if (this.currentStep === 'reset') {
       // Check if password fields are valid
-      const newPasswordValid = this.forgetPasswordForm.get('newPassword')?.valid;
-      const confirmPasswordValid = this.forgetPasswordForm.get('confirmPassword')?.valid;
-      const passwordsMatch = this.forgetPasswordForm.get('newPassword')?.value === 
-                             this.forgetPasswordForm.get('confirmPassword')?.value;
-      
+      const newPasswordValid =
+        this.forgetPasswordForm.get('newPassword')?.valid;
+      const confirmPasswordValid =
+        this.forgetPasswordForm.get('confirmPassword')?.valid;
+      const passwordsMatch =
+        this.forgetPasswordForm.get('newPassword')?.value ===
+        this.forgetPasswordForm.get('confirmPassword')?.value;
+
       if (newPasswordValid && confirmPasswordValid && passwordsMatch) {
         this.isLoading = true;
-        const token = this.resetToken || this.forgetPasswordForm.get('token')?.value;
+        const token =
+          this.resetToken || this.forgetPasswordForm.get('token')?.value;
         const password = this.forgetPasswordForm.get('newPassword')?.value;
 
         this.authService
