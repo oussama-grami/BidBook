@@ -4,7 +4,6 @@ import { AppService } from './app.service';
 import { config } from 'dotenv';
 import { GlobalModule } from './Common/global.module';
 import { AuthModule } from './auth/auth.module';
-import { TestMiddlewareMiddleware } from './test-middleware/test-middleware.middleware';
 
 config({ path: `${process.cwd()}/Config/.env` });
 
@@ -13,8 +12,4 @@ config({ path: `${process.cwd()}/Config/.env` });
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer): any {
-    consumer.apply(TestMiddlewareMiddleware).forRoutes('*');
-  }
-}
+export class AppModule {}

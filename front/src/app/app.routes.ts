@@ -121,6 +121,24 @@ export const routes: Routes = [
     data: { animation: 'fade' },
   },
   {
+    path: 'auth/callback',
+    loadComponent: () =>
+      import('./components/auth-callback/auth-callback.component').then(
+        (c) => c.AuthCallbackComponent
+      ),
+    resolve: { pageData: DataLoadingResolver },
+    data: { animation: 'fade' },
+  },
+  {
+    path: 'auth/callback/:provider',
+    loadComponent: () =>
+      import('./components/auth-callback/auth-callback.component').then(
+        (c) => c.AuthCallbackComponent
+      ),
+    resolve: { pageData: DataLoadingResolver },
+    data: { animation: 'fade' },
+  },
+  {
     path: 'notifications',
     loadComponent: () =>
       import('./components/NotificationPage/notifications-page.component').then(

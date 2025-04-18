@@ -33,7 +33,10 @@ import { finalize } from 'rxjs';
 })
 export class MfaSetupComponent implements OnInit {
   // User info
-  userInfo: { email: string | null; mfaEnabled: boolean } = {
+  userInfo: {
+    email: string | null;
+    mfaEnabled: boolean;
+  } = {
     email: null,
     mfaEnabled: false,
   };
@@ -48,7 +51,6 @@ export class MfaSetupComponent implements OnInit {
   secretKey = '';
   qrCodeUrl = '';
   otpCode = '';
-  password = '';
 
   // Recovery codes
   recoveryCodes: string[] = [];
@@ -56,6 +58,7 @@ export class MfaSetupComponent implements OnInit {
   // Loading tracking IDs
   private readonly componentLoadingId = 'mfa-setup-component';
   private readonly qrCodeLoadingId = 'mfa-setup-qr-code';
+  password: any;
 
   constructor(
     private authService: AuthService,
@@ -76,7 +79,7 @@ export class MfaSetupComponent implements OnInit {
       return;
     }
 
-    // Get current user info
+    // Get current user info from local storage initially
     this.userInfo = this.authService.getCurrentUserInfo();
     if (!this.userInfo.email) {
       this.notificationService.showError(
@@ -84,10 +87,45 @@ export class MfaSetupComponent implements OnInit {
       );
       this.router.navigate(['/login']);
       this.loadingService.stopLoading(this.componentLoadingId);
-    } else {
-      // Component is fully initialized
-      this.loadingService.stopLoading(this.componentLoadingId);
+      return;
     }
+
+    // Fetch latest user profile from server to get current MFA status
+    this.fetchCurrentMfaStatus();
+  }
+
+  // Fetch the current MFA status from the server
+  private fetchCurrentMfaStatus(): void {
+    this.isLoading = true;
+    this.loadingService.startLoading('fetching-mfa-status');
+
+    this.authService
+      .getProfile()
+      .pipe(
+        finalize(() => {
+          this.isLoading = false;
+          this.loadingService.stopLoading('fetching-mfa-status');
+          this.loadingService.stopLoading(this.componentLoadingId);
+        })
+      )
+      .subscribe({
+        next: (user) => {
+          // Update the MFA status based on the latest from server
+          this.userInfo = {
+            email: user.email,
+            mfaEnabled: user.isMFAEnabled || false,
+          };
+
+          // Force change detection to update the view
+          this.cdr.detectChanges();
+        },
+        error: (error) => {
+          console.error('Failed to fetch user profile:', error);
+          this.notificationService.showError(
+            'Failed to fetch current MFA status. Using cached information.'
+          );
+        },
+      });
   }
 
   // Start MFA setup process
@@ -95,34 +133,28 @@ export class MfaSetupComponent implements OnInit {
     this.isLoading = true;
     this.errorMessage = '';
 
-    if (this.userInfo.email) {
-      // Track QR code loading
-      this.loadingService.startLoading(this.qrCodeLoadingId);
+    // Track QR code loading
+    this.loadingService.startLoading(this.qrCodeLoadingId);
 
-      this.authService
-        .generateMfaSecret(this.userInfo.email)
-        .pipe(finalize(() => (this.isLoading = false)))
-        .subscribe({
-          next: (response) => {
-            this.secretKey = response.secret;
-            this.qrCodeUrl = response.qrCode;
-            this.setupStarted = true;
-            this.step = 1;
-          },
-          error: (error) => {
-            this.errorMessage =
-              error.message ||
-              'Failed to generate MFA secret. Please try again.';
-            // Stop tracking QR code loading on error
-            this.loadingService.stopLoading(this.qrCodeLoadingId);
-          },
-        });
-    } else {
-      this.errorMessage = 'User email is missing. Please log in again.';
-      this.isLoading = false;
-      // Stop tracking QR code loading since we have an error
-      this.loadingService.stopLoading(this.qrCodeLoadingId);
-    }
+    this.authService
+      .generateMfaSecret()
+      .pipe(finalize(() => (this.isLoading = false)))
+      .subscribe({
+        next: (response) => {
+          console.log('MFA secret response:', response);
+          this.secretKey = response.secret;
+          this.qrCodeUrl = response.qrCode;
+          this.setupStarted = true;
+          this.step = 1;
+        },
+        error: (error) => {
+          this.errorMessage =
+            error.error?.message ||
+            'Failed to generate MFA secret. Please try again.';
+          // Stop tracking QR code loading on error
+          this.loadingService.stopLoading(this.qrCodeLoadingId);
+        },
+      });
   }
 
   // Handle QR code image load completion
@@ -168,17 +200,17 @@ export class MfaSetupComponent implements OnInit {
       .subscribe({
         next: (response) => {
           if (response.success) {
-            // Generate sample recovery codes (in production these would come from the backend)
-            this.recoveryCodes = this.generateSampleRecoveryCodes();
             // Move to step 3 to show recovery codes
+            this.recoveryCodes = response.recoveryCodes;
             this.nextStep();
           } else {
             this.errorMessage = response.message;
           }
         },
         error: (error) => {
+          console.error('Error enabling MFA:', error);
           this.errorMessage =
-            error.message || 'Failed to enable MFA. Please try again.';
+            error.error?.message || 'Failed to enable MFA. Please try again.';
         },
       });
   }
@@ -193,24 +225,11 @@ export class MfaSetupComponent implements OnInit {
     this.step = 1;
   }
 
-  // Generate sample recovery codes (in production these would come from the backend)
-  private generateSampleRecoveryCodes(): string[] {
-    return [
-      'AB12-CD34-EF56',
-      'GH78-IJ90-KL12',
-      'MN34-OP56-QR78',
-      'ST90-UV12-WX34',
-      'YZ56-AB78-CD90',
-      'EF12-GH34-IJ56',
-      'KL78-MN90-OP12',
-      'QR34-ST56-UV78',
-    ];
-  }
-
   // Disable MFA
   disableMfa(): void {
     if (!this.password) {
-      this.errorMessage = 'Please enter your password';
+      this.errorMessage =
+        'Password is required to disable two-factor authentication';
       return;
     }
 
@@ -235,7 +254,7 @@ export class MfaSetupComponent implements OnInit {
         },
         error: (error) => {
           this.errorMessage =
-            error.message || 'Failed to disable MFA. Please try again.';
+            error.error?.message || 'Failed to disable MFA. Please try again.';
         },
       });
   }

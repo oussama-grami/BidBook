@@ -6,6 +6,7 @@ import {
   Logger,
   NotFoundException,
   UnauthorizedException,
+  Res,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -22,10 +23,30 @@ import { ConfigService } from '@nestjs/config';
 import * as QRCode from 'qrcode';
 import { v4 as uuidv4 } from 'uuid';
 import { MailService } from '../Common/Emailing/mail.service';
+import { RefreshTokenDto } from './dto/refresh-token.dto';
+import { SignUpResponseDto } from './dto/responses/sign-up-response.dto';
+import { VerifyEmailResponseDto } from './dto/responses/verify-email-response.dto';
+import {
+  LoginResponseDto,
+  MfaRequiredResponseDto,
+} from './dto/responses/login-response.dto';
+import { RefreshTokenResponseDto } from './dto/responses/refresh-token-response.dto';
+import { LogoutResponseDto } from './dto/responses/logout-response.dto';
+import { MfaVerifyResponseDto } from './dto/responses/mfa-verify-response.dto';
+import { MfaGenerateResponseDto } from './dto/responses/mfa-generate-response.dto';
+import { MfaEnableResponseDto } from './dto/responses/mfa-enable-response.dto';
+import { MfaDisableResponseDto } from './dto/responses/mfa-disable-response.dto';
+import { OAuthResponseDto } from './dto/responses/oauth-response.dto';
+import { RedisCacheService } from '../Common/cache/redis-cache.service';
+import { Response } from 'express';
+import { DisableMfaDto } from './dto/disable-mfa.dto';
+import { Role } from 'src/Enums/roles.enum';
 
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
+  // Email verification token expiry in seconds (24 hours)
+  private readonly EMAIL_VERIFICATION_EXPIRY = 24 * 60 * 60;
 
   constructor(
     @InjectRepository(User)
@@ -33,11 +54,12 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
     private readonly mailService: MailService,
+    private readonly redisCacheService: RedisCacheService,
   ) {}
 
   // Sign up function with automatic email verification
-  async signUp(signUpDto: SignUpDto): Promise<{ message: string }> {
-    const { email, password, firstName, lastName } = signUpDto;
+  async signUp(signUpDto: SignUpDto): Promise<SignUpResponseDto> {
+    const { email, password, firstName, lastName, imageUrl } = signUpDto;
 
     // Check if user already exists
     const userExists = await this.userRepository.findOneBy({ email });
@@ -60,16 +82,26 @@ export class AuthService {
       verificationToken,
       isEmailVerified: false,
       isMFAEnabled: false,
+      imageUrl
     });
 
     await this.userRepository.save(user);
 
     try {
+      // Store verification token in Redis with expiry
+      await this.redisCacheService.storeVerificationToken(
+        verificationToken,
+        email,
+        this.EMAIL_VERIFICATION_EXPIRY,
+      );
+
       // Send verification email
       await this.sendVerificationEmail(email, verificationToken);
     } catch (error) {
       // Log the error but don't prevent user creation
-      this.logger.error(`Failed to send verification email: ${error.message}`);
+      this.logger.error(
+        `Failed to handle verification process: ${error.message}`,
+      );
     }
 
     return {
@@ -80,21 +112,43 @@ export class AuthService {
   // Verify email function
   async verifyEmail(
     verifyEmailDto: VerifyEmailDto,
-  ): Promise<{ message: string }> {
+  ): Promise<VerifyEmailResponseDto> {
     const { token } = verifyEmailDto;
 
-    // Find user with this verification token
-    const user = await this.userRepository.findOneBy({
-      verificationToken: token,
-    });
-    if (!user) {
-      throw new NotFoundException('Invalid verification token');
-    }
+    // Check if token exists in Redis and is valid
+    const email =
+      await this.redisCacheService.getEmailFromVerificationToken(token);
 
-    // Update user as verified
-    user.isEmailVerified = true;
-    user.verificationToken = null;
-    await this.userRepository.save(user);
+    if (!email) {
+      // If not in Redis, check if it's an old token in the database
+      const user = await this.userRepository.findOneBy({
+        verificationToken: token,
+      });
+
+      if (!user) {
+        throw new NotFoundException('Invalid or expired verification token');
+      }
+
+      // Update user as verified
+      user.isEmailVerified = true;
+      user.verificationToken = null;
+      await this.userRepository.save(user);
+    } else {
+      // Token found in Redis - it's valid and not expired
+      const user = await this.userRepository.findOneBy({ email });
+
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+
+      // Update user as verified
+      user.isEmailVerified = true;
+      user.verificationToken = null;
+      await this.userRepository.save(user);
+
+      // Invalidate the verification token in Redis
+      await this.redisCacheService.invalidateVerificationToken(token);
+    }
 
     return {
       message: 'Email verified successfully',
@@ -102,8 +156,10 @@ export class AuthService {
   }
 
   // Login function with email verification and MFA check
-  async login(loginDto: LoginDto): Promise<any> {
-    const { email, password } = loginDto;
+  async login(
+    loginDto: LoginDto,
+  ): Promise<LoginResponseDto | MfaRequiredResponseDto> {
+    const { email, password, rememberMe = false } = loginDto;
 
     // Find user
     const user = await this.userRepository.findOneBy({ email });
@@ -119,18 +175,24 @@ export class AuthService {
 
     // Check if email is verified
     if (!user.isEmailVerified) {
-      // For testing purposes, you can temporarily skip this check or
-      // resend the verification email instead of throwing an exception
+      // Resend verification email
       try {
-        if (user.verificationToken) {
-          await this.sendVerificationEmail(email, user.verificationToken);
-        } else {
-          // Generate a new token if the old one is missing
-          const newToken = uuidv4();
-          user.verificationToken = newToken;
-          await this.userRepository.save(user);
-          await this.sendVerificationEmail(email, newToken);
-        }
+        // Generate a new token
+        const newToken = uuidv4();
+
+        // Store the new token in Redis with expiry
+        await this.redisCacheService.storeVerificationToken(
+          newToken,
+          email,
+          this.EMAIL_VERIFICATION_EXPIRY,
+        );
+
+        // Update user in database
+        user.verificationToken = newToken;
+        await this.userRepository.save(user);
+
+        // Send verification email
+        await this.sendVerificationEmail(email, newToken);
       } catch (error) {
         this.logger.error(
           `Failed to resend verification email: ${error.message}`,
@@ -144,11 +206,8 @@ export class AuthService {
 
     // Check if MFA is enabled
     if (user.isMFAEnabled) {
-      // Return a temporary token that will be used to complete the MFA verification
-      const mfaToken = this.jwtService.sign(
-        { sub: user.id, email: user.email, isMfaAuthenticated: false },
-        { expiresIn: '5m' },
-      );
+      // Return a temporary token specifically for MFA verification with a special claim
+      const mfaToken = this.generateMfaToken(user);
 
       return {
         message: 'MFA verification required',
@@ -157,51 +216,167 @@ export class AuthService {
       };
     }
 
-    // Generate full access token
-    const token = this.generateAccessToken(user);
+    // Generate access token
+    const accessToken = await this.generateAccessToken(user);
+
+    // Generate refresh token if rememberMe is true
+    let refreshToken;
+    if (rememberMe) {
+      refreshToken = await this.generateRefreshToken(user);
+    }
 
     return {
-      accessToken: token,
+      accessToken,
+      refreshToken,
       user: {
         id: user.id,
         email: user.email,
         firstName: user.firstName,
-        lastName: user.lastName
+        lastName: user.lastName,
       },
     };
   }
 
   // Verify MFA code during login
-  async verifyMfaLogin(mfaVerifyDto: MfaVerifyDto, user: User): Promise<any> {
-    const { code } = mfaVerifyDto;
+  async verifyMfaLogin(
+    mfaVerifyDto: MfaVerifyDto,
+    user: User,
+  ): Promise<MfaVerifyResponseDto> {
+    const { code, rememberMe = false } = mfaVerifyDto;
 
-    // Verify code
-    const isCodeValid = authenticator.verify({
-      token: code,
-      secret: user.mfaSecret || '',
-    });
+    // Check if input is a 6-digit OTP or an 8-character recovery code
+    const isOtpFormat = /^\d{6}$/.test(code);
+    const isRecoveryCodeFormat = /^[a-zA-Z0-9]{8}$/.test(code);
 
-    if (!isCodeValid) {
-      throw new UnauthorizedException('Invalid MFA code');
+    let isValid = false;
+
+    if (isOtpFormat) {
+      // Verify OTP code
+      isValid = authenticator.verify({
+        token: code,
+        secret: user.mfaSecret || '',
+      });
+    } else if (isRecoveryCodeFormat && user.recoveryCodes) {
+      // Verify recovery code
+      const recoveryCodeIndex = user.recoveryCodes.findIndex(
+        (rc) => rc === code,
+      );
+
+      if (recoveryCodeIndex !== -1) {
+        isValid = true;
+
+        // Remove the used recovery code
+        user.recoveryCodes.splice(recoveryCodeIndex, 1);
+        await this.userRepository.save(user);
+
+        // If all recovery codes are used, generate new ones
+        if (user.recoveryCodes.length === 0) {
+          this.logger.warn(`User ${user.email} has used all recovery codes`);
+        }
+      }
+    }
+
+    if (!isValid) {
+      throw new UnauthorizedException('Invalid authentication code');
     }
 
     // Generate full access token
-    const token = this.generateAccessToken(user);
+    const accessToken = await this.generateAccessToken(user);
+
+    // Generate refresh token only if rememberMe is true
+    let refreshToken;
+    if (rememberMe) {
+      refreshToken = await this.generateRefreshToken(user);
+    }
 
     return {
-      accessToken: token,
+      accessToken,
+      refreshToken,
       user: {
         id: user.id,
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
         isMFAEnabled: user.isMFAEnabled,
+        imgUrl: user.imageUrl,
+        role: user.role as Role,
       },
     };
   }
 
+  // Refresh access token using refresh token
+  async refreshToken(
+    refreshTokenDto: RefreshTokenDto,
+  ): Promise<RefreshTokenResponseDto> {
+    const { refreshToken } = refreshTokenDto;
+
+    // First check if token is blacklisted
+    const isBlacklisted =
+      await this.redisCacheService.isTokenBlacklisted(refreshToken);
+    if (isBlacklisted) {
+      throw new UnauthorizedException('Invalid refresh token');
+    }
+
+    // Verify refresh token
+    try {
+      const payload = this.jwtService.verify(refreshToken, {
+        secret:
+          this.configService.get<string>('REFRESH_SECRET_KEY') ||
+          this.configService.get<string>('SECRET_KEY'),
+      });
+
+      // Find user with this ID
+      const user = await this.userRepository.findOneBy({ id: payload.sub });
+      if (!user) {
+        throw new UnauthorizedException('User not found');
+      }
+
+      // Generate new access token
+      const accessToken = await this.generateAccessToken(user);
+
+      // Generate new refresh token
+      const newRefreshToken = await this.generateRefreshToken(user);
+
+      // Invalidate the old refresh token
+      await this.redisCacheService.blacklistToken(
+        refreshToken,
+        30 * 24 * 60 * 60, // 30 days expiry for blacklist
+      );
+
+      return {
+        accessToken,
+        refreshToken: newRefreshToken,
+      };
+    } catch (error) {
+      if (error instanceof UnauthorizedException) {
+        throw error;
+      }
+      this.logger.error(`Failed to refresh token: ${error.message}`);
+      throw new UnauthorizedException('Invalid refresh token');
+    }
+  }
+
+  // Logout and invalidate both access and refresh tokens
+  async logout(user: User): Promise<LogoutResponseDto> {
+    try {
+      // Invalidate all user tokens in Redis
+      await this.redisCacheService.invalidateAllUserTokens(user.id);
+
+      // Also clear refresh token in the database for extra security
+      user.refreshToken = undefined;
+      await this.userRepository.save(user);
+
+      return {
+        message: 'Logged out successfully',
+      };
+    } catch (error) {
+      this.logger.error(`Logout failed: ${error.message}`);
+      throw error;
+    }
+  }
+
   // Initiate MFA setup by generating QR code
-  async generateMfaSecret(user: User): Promise<any> {
+  async generateMfaSecret(user: User): Promise<MfaGenerateResponseDto> {
     // Generate a secret
     const secret = authenticator.generateSecret();
 
@@ -225,9 +400,17 @@ export class AuthService {
   }
 
   // Enable MFA after verifying code
-  async enableMfa(mfaEnableDto: MfaEnableDto, user: User): Promise<any> {
+  async enableMfa(
+    mfaEnableDto: MfaEnableDto,
+    user: User,
+  ): Promise<MfaEnableResponseDto> {
     const { code } = mfaEnableDto;
 
+    const foundUser = await this.userRepository.findOneBy({ id: user.id });
+    if (!foundUser) {
+      throw new NotFoundException('User not found');
+    }
+    user.mfaSecret = foundUser.mfaSecret;
     // Check if user has a secret
     if (!user.mfaSecret) {
       throw new BadRequestException('MFA setup not initiated');
@@ -258,12 +441,32 @@ export class AuthService {
   }
 
   // Disable MFA
-  async disableMfa(user: User): Promise<any> {
-    // Update user
-    user.isMFAEnabled = false;
-    user.mfaSecret = null;
-    user.recoveryCodes = null;
-    await this.userRepository.save(user);
+  async disableMfa(
+    disableMfaDto: DisableMfaDto,
+    user: User,
+  ): Promise<MfaDisableResponseDto> {
+    const { password } = disableMfaDto;
+
+    // Find user to get the current password hash
+    const currentUser = await this.userRepository.findOneBy({ id: user.id });
+    if (!currentUser) {
+      throw new NotFoundException('User not found');
+    }
+
+    // Verify password
+    const isPasswordValid = await bcrypt.compare(
+      password,
+      currentUser.password,
+    );
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('Invalid password');
+    }
+
+    // Update user to disable MFA
+    currentUser.isMFAEnabled = false;
+    currentUser.mfaSecret = null;
+    currentUser.recoveryCodes = null;
+    await this.userRepository.save(currentUser);
 
     return {
       message: 'MFA disabled successfully',
@@ -271,7 +474,7 @@ export class AuthService {
   }
 
   // Handle Google OAuth authentication
-  async googleLogin(user: any): Promise<any> {
+  async googleLogin(user: any): Promise<OAuthResponseDto> {
     if (!user) {
       throw new UnauthorizedException('No user from Google');
     }
@@ -286,7 +489,7 @@ export class AuthService {
         lastName: user.lastName,
         imageUrl: user.picture,
         googleId: user.googleId,
-        isEmailVerified: true, // Google accounts already have verified emails
+        isEmailVerified: true,
       });
 
       await this.userRepository.save(dbUser);
@@ -297,22 +500,29 @@ export class AuthService {
       await this.userRepository.save(dbUser);
     }
 
-    // Generate token
-    const token = this.generateAccessToken(dbUser);
+    // Generate access token
+    const accessToken = await this.generateAccessToken(dbUser);
+
+    // Generate refresh token for social login (assuming we want long sessions for social logins)
+    const refreshToken = await this.generateRefreshToken(dbUser);
 
     return {
-      accessToken: token,
+      accessToken,
+      refreshToken,
       user: {
         id: dbUser.id,
         email: dbUser.email,
         firstName: dbUser.firstName,
         lastName: dbUser.lastName,
+        isMFAEnabled: dbUser.isMFAEnabled,
+        imgUrl: dbUser.imageUrl,
+        role: dbUser.role as Role,
       },
     };
   }
 
   // Handle GitHub OAuth authentication
-  async githubLogin(user: any): Promise<any> {
+  async githubLogin(user: any): Promise<OAuthResponseDto> {
     if (!user) {
       throw new UnauthorizedException('No user from GitHub');
     }
@@ -338,16 +548,23 @@ export class AuthService {
       await this.userRepository.save(dbUser);
     }
 
-    // Generate token
-    const token = this.generateAccessToken(dbUser);
+    // Generate access token
+    const accessToken = await this.generateAccessToken(dbUser);
+
+    // Generate refresh token for social login
+    const refreshToken = await this.generateRefreshToken(dbUser);
 
     return {
-      accessToken: token,
+      accessToken,
+      refreshToken,
       user: {
         id: dbUser.id,
         email: dbUser.email,
         firstName: dbUser.firstName,
         lastName: dbUser.lastName,
+        isMFAEnabled: dbUser.isMFAEnabled,
+        imgUrl: dbUser.imageUrl,
+        role: dbUser.role as Role,
       },
     };
   }
@@ -358,15 +575,79 @@ export class AuthService {
     return bcrypt.hash(password, salt);
   }
 
-  // Helper method to generate JWT token
-  private generateAccessToken(user: User): string {
+  // Helper method to generate access JWT token and store in Redis
+  private async generateAccessToken(user: User): Promise<string> {
     const payload = {
       sub: user.id,
       email: user.email,
       isMfaAuthenticated: true,
     };
 
-    return this.jwtService.sign(payload);
+    const expiresIn = this.configService.get<string>('EXPIRES_IN') || '1h';
+    const expiryInSeconds = this.parseExpiryToSeconds(expiresIn);
+
+    // Create the token
+    const token = this.jwtService.sign(payload, { expiresIn });
+
+    // Store token in Redis for tracking and future invalidation
+    await this.redisCacheService.storeUserToken(
+      user.id,
+      'access',
+      token,
+      expiryInSeconds,
+    );
+
+    return token;
+  }
+
+  // Helper method to generate refresh token and store in Redis
+  private async generateRefreshToken(user: User): Promise<string> {
+    const payload = {
+      sub: user.id,
+      email: user.email,
+      type: 'refresh',
+    };
+
+    const expiresIn =
+      this.configService.get<string>('REFRESH_EXPIRES_IN') || '30d';
+    const expiryInSeconds = this.parseExpiryToSeconds(expiresIn);
+
+    // Create refresh token with longer expiry
+    const refreshToken = this.jwtService.sign(payload, {
+      secret:
+        this.configService.get<string>('REFRESH_SECRET_KEY') ||
+        this.configService.get<string>('SECRET_KEY'),
+      expiresIn,
+    });
+
+    // Store refresh token in Redis
+    await this.redisCacheService.storeUserToken(
+      user.id,
+      'refresh',
+      refreshToken,
+      expiryInSeconds,
+    );
+
+    // Also save refresh token to user in database as fallback
+    user.refreshToken = refreshToken;
+    await this.userRepository.save(user);
+
+    return refreshToken;
+  }
+
+  // Helper method to generate limited JWT token for MFA authentication
+  private generateMfaToken(user: User): string {
+    const payload = {
+      sub: user.id,
+      email: user.email,
+      isMfaAuthenticated: false,
+      isMfaToken: true,
+    };
+
+    // Set a shorter expiration time for MFA tokens
+    return this.jwtService.sign(payload, {
+      expiresIn: '5m', // Short expiration time for security
+    });
   }
 
   // Helper method to generate recovery codes
@@ -391,5 +672,69 @@ export class AuthService {
       // Rethrow the error to let the caller decide how to handle it
       throw error;
     }
+  }
+
+  // Helper function to parse JWT expiry strings to seconds
+  private parseExpiryToSeconds(expiry: string): number {
+    const match = expiry.match(/^(\d+)([smhdy])$/);
+    if (!match) return 3600; // Default 1 hour
+
+    const value = parseInt(match[1]);
+    const unit = match[2];
+
+    switch (unit) {
+      case 's':
+        return value;
+      case 'm':
+        return value * 60;
+      case 'h':
+        return value * 60 * 60;
+      case 'd':
+        return value * 24 * 60 * 60;
+      case 'y':
+        return value * 365 * 24 * 60 * 60;
+      default:
+        return 3600;
+    }
+  }
+
+  // Méthodes privées pour gérer les cookies JWT
+  public setAccessTokenCookie(
+    res: Response,
+    token: string,
+    options?: { shortLived?: boolean },
+  ): void {
+    // Configuration pour le cookie Access Token
+    res.cookie('access_token', token, {
+      httpOnly: true, // Non accessible par JavaScript côté client
+      secure: this.configService.get('NODE_ENV') !== 'dev', // HTTPS en production
+      sameSite: 'strict',
+      maxAge: options?.shortLived
+        ? 5 * 60 * 1000 // 5 minutes for MFA tokens
+        : this.parseExpiryToSeconds(
+            this.configService.get<string>('EXPIRES_IN') || '1h',
+          ) * 1000,
+      path: '/', // Cookie accessible sur toutes les routes
+    });
+  }
+
+  public setRefreshTokenCookie(res: Response, token: string): void {
+    // Configuration pour le cookie Refresh Token
+    res.cookie('refresh_token', token, {
+      httpOnly: true, // Non accessible par JavaScript côté client
+      secure: this.configService.get('NODE_ENV') !== 'dev', // HTTPS en production
+      sameSite: 'strict',
+      maxAge:
+        this.parseExpiryToSeconds(
+          this.configService.get<string>('REFRESH_EXPIRES_IN') || '30d',
+        ) * 1000,
+      path: '/auth', // Cookie accessible sur toutes les routes d'authentification
+    });
+  }
+
+  public clearAuthCookies(res: Response): void {
+    // Suppression des cookies d'authentification
+    res.clearCookie('access_token', { path: '/' });
+    res.clearCookie('refresh_token', { path: '/auth' });
   }
 }

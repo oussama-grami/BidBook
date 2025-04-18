@@ -6,6 +6,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { join } from 'path';
 import { MailService } from './Emailing/mail.service';
+import { RedisCacheModule } from './cache/redis-cache.module';
 
 config({ path: `${process.cwd()}/Config/.env` });
 
@@ -78,8 +79,9 @@ config({ path: `${process.cwd()}/Config/.env` });
         },
       }),
     }),
+    RedisCacheModule,
   ],
-  exports: [TypeOrmModule, ConfigModule, MailService],
+  exports: [TypeOrmModule, ConfigModule, MailService, RedisCacheModule],
   providers: [MailService],
 })
 export class GlobalModule {}

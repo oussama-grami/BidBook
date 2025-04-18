@@ -21,14 +21,16 @@ export class MfaAuthGuard extends AuthGuard('jwt') {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    const token = this.extractTokenFromHeader(request);
-
-    if (!token) {
-      throw new UnauthorizedException('MFA token is missing');
-    }
-
+    const token = request.cookies['access_token'];
     try {
       const payload = this.jwtService.verify(token);
+
+      // Ensure this is actually an MFA token
+      if (!payload.isMfaToken) {
+        throw new UnauthorizedException(
+          'This endpoint requires a specific token for MFA verification',
+        );
+      }
 
       // Find the user
       const user = await this.userRepository.findOneBy({ id: payload.sub });
@@ -49,10 +51,5 @@ export class MfaAuthGuard extends AuthGuard('jwt') {
     } catch (error) {
       throw new UnauthorizedException('Invalid MFA token');
     }
-  }
-
-  private extractTokenFromHeader(request: any): string | undefined {
-    const [type, token] = request.headers.authorization?.split(' ') ?? [];
-    return type === 'Bearer' ? token : undefined;
   }
 }

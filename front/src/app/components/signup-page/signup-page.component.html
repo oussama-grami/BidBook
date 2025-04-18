@@ -39,7 +39,54 @@
       </p>
 
       <form [formGroup]="signupForm" (ngSubmit)="onSignup()">
-        <!-- Username input -->
+        <!-- Profile Image Upload -->
+        <div
+          class="profile-upload-container"
+          style="margin-bottom: 20px; text-align: center"
+        >
+          <div
+            class="profile-image-preview"
+            style="
+              width: 100px;
+              height: 100px;
+              margin: 0 auto;
+              border-radius: 50%;
+              overflow: hidden;
+              position: relative;
+              background-color: rgba(240, 238, 255, 0.8);
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              border: 2px dashed #9c7350;
+              cursor: pointer;
+            "
+            (click)="profileImageInput.click()"
+            [style.background-image]="
+              profileImagePreview ? 'url(' + profileImagePreview + ')' : 'none'
+            "
+            [style.background-size]="'cover'"
+            [style.background-position]="'center'"
+          >
+            <i
+              *ngIf="!profileImagePreview"
+              class="pi pi-user"
+              style="font-size: 2rem; color: #9c7350"
+            ></i>
+          </div>
+          <input
+            #profileImageInput
+            type="file"
+            style="display: none"
+            accept="image/*"
+            (change)="onProfileImageSelected($event)"
+            formControlName="profileImage"
+          />
+          <p style="margin-top: 10px; font-size: 12px; color: #525252">
+            Click to upload profile image (optional)
+          </p>
+        </div>
+
+        <!-- First Name input -->
         <div
           class="input-container"
           style="position: relative; margin-bottom: 20px; width: 100%"
@@ -59,8 +106,42 @@
           <input
             type="text"
             pInputText
-            formControlName="username"
-            placeholder="Username"
+            formControlName="firstName"
+            placeholder="First Name"
+            style="
+              width: 100%;
+              border-radius: 16px !important;
+              padding: 16px 16px 16px 50px !important;
+              background-color: rgba(240, 238, 255, 0.8) !important;
+              font-size: 14px;
+              border: none !important;
+              height: 52px;
+            "
+          />
+        </div>
+
+        <!-- Last Name input -->
+        <div
+          class="input-container"
+          style="position: relative; margin-bottom: 20px; width: 100%"
+        >
+          <i
+            class="pi pi-user"
+            style="
+              position: absolute;
+              left: 18px;
+              top: 50%;
+              transform: translateY(-50%);
+              color: #1c1c1c;
+              z-index: 1;
+              font-size: 1.2rem;
+            "
+          ></i>
+          <input
+            type="text"
+            pInputText
+            formControlName="lastName"
+            placeholder="Last Name"
             style="
               width: 100%;
               border-radius: 16px !important;

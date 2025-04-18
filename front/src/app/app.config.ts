@@ -6,6 +6,14 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { MessageService } from 'primeng/api';
 import { providePrimeNG } from 'primeng/config';
 import { MyPreset } from './shared/mytheme';
+import {
+  HTTP_INTERCEPTORS,
+  provideHttpClient,
+  withInterceptorsFromDi,
+  withFetch,
+} from '@angular/common/http';
+import { CredentialsInterceptor } from './shared/interceptors/credentials.interceptor';
+import { AuthInterceptor } from './shared/interceptors/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -13,6 +21,17 @@ export const appConfig: ApplicationConfig = {
     provideClientHydration(),
     provideAnimations(),
     MessageService,
+    provideHttpClient(withInterceptorsFromDi(), withFetch()),
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: CredentialsInterceptor,
+      multi: true,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true,
+    },
     providePrimeNG({
       theme: {
         preset: MyPreset,

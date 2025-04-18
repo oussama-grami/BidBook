@@ -42,4 +42,8 @@ export class User extends CommonEntity {
 
   @Column({ type: 'enum', enum: Role, default: Role.USER })
   role: Role;
+
+  @Column({ nullable: true })
+  refreshToken?: string;
+
 }

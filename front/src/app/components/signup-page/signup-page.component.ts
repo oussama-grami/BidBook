@@ -45,19 +45,66 @@ export class SignupPageComponent {
   googleHovered = false;
   isLoading = false;
   errorMessage = '';
+  profileImagePreview: string | null = null;
+  selectedProfileImage: File | null = null;
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private authService: AuthService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private cdr: ChangeDetectorRef
   ) {
     this.signupForm = this.fb.group({
-      username: ['', Validators.required],
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8)]],
+      profileImage: [null], // Optional profile image field
       agreeTerms: [false, Validators.requiredTrue],
     });
+  }
+
+  // Handle profile image selection
+  onProfileImageSelected(event: Event) {
+    const fileInput = event.target as HTMLInputElement;
+
+    if (fileInput.files && fileInput.files.length > 0) {
+      const file = fileInput.files[0];
+
+      // Validate file type and size
+      const validImageTypes = [
+        'image/jpeg',
+        'image/png',
+        'image/jpg',
+        'image/gif',
+      ];
+      if (!validImageTypes.includes(file.type)) {
+        this.errorMessage =
+          'Please select a valid image file (JPEG, PNG, JPG, GIF)';
+        return;
+      }
+
+      // Max size: 5MB
+      if (file.size > 5 * 1024 * 1024) {
+        this.errorMessage = 'Image size should not exceed 5MB';
+        return;
+      }
+
+      // Store the file for later upload
+      this.selectedProfileImage = file;
+
+      // Create preview
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.profileImagePreview = reader.result as string;
+        this.cdr.detectChanges(); // Force UI update
+      };
+      reader.readAsDataURL(file);
+
+      // Clear any previous error messages
+      this.errorMessage = '';
+    }
   }
 
   passwordMatchingValidator(control: AbstractControl): ValidationErrors | null {
@@ -80,9 +127,11 @@ export class SignupPageComponent {
       this.errorMessage = '';
 
       const userData = {
-        username: this.signupForm.value.username,
-        email: this.signupForm.value.email,
-        password: this.signupForm.value.password,
+        fisrtname: this.signupForm.value.firstName || '',
+        lastname: this.signupForm.value.lastName || '',
+        email: this.signupForm.value.email || '',
+        password: this.signupForm.value.password || '',
+        imgUrl: this.selectedProfileImage || undefined,
       };
 
       this.authService

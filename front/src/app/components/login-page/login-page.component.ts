@@ -14,6 +14,8 @@ import { AuthService } from '../../services/auth.service';
 import { finalize } from 'rxjs';
 import { MessageModule } from 'primeng/message';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { environment } from '../../../environments/environment.development';
+import { CheckboxModule } from 'primeng/checkbox';
 
 @Component({
   selector: 'app-login-page',
@@ -28,6 +30,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
     NgOptimizedImage,
     MessageModule,
     ProgressSpinnerModule,
+    CheckboxModule,
   ],
   templateUrl: './login-page.component.html',
   styleUrl: './login-page.component.css',
@@ -51,6 +54,7 @@ export class LoginPageComponent {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
+      rememberMe: [false],
     });
 
     this.otpForm = this.fb.group({
@@ -68,12 +72,12 @@ export class LoginPageComponent {
 
   onLogin() {
     if (this.loginForm.valid) {
-      const { email, password } = this.loginForm.value;
+      const { email, password, rememberMe } = this.loginForm.value;
       this.isLoading = true;
       this.errorMessage = '';
 
       this.authService
-        .initiateLogin(email, password)
+        .initiateLogin(email, password, rememberMe)
         .pipe(finalize(() => (this.isLoading = false)))
         .subscribe({
           next: (response) => {
@@ -81,7 +85,11 @@ export class LoginPageComponent {
               this.showOtpStep = true;
               this.requiresOtp = true;
             } else {
-              this.authService.completeLogin();
+              if (response.success) {
+                this.authService.completeLogin();
+              } else {
+                this.errorMessage = response.message;
+              }
             }
           },
           error: (error) => {
@@ -90,7 +98,6 @@ export class LoginPageComponent {
           },
         });
     } else {
-      // Mark all fields as touched to trigger validation
       this.loginForm.markAllAsTouched();
       Object.keys(this.loginForm.controls).forEach((key) => {
         const control = this.loginForm.get(key);
@@ -102,17 +109,16 @@ export class LoginPageComponent {
   onVerifyOtp() {
     if (this.otpForm.valid) {
       const { otpCode } = this.otpForm.value;
-      const { email } = this.loginForm.value;
       this.isLoading = true;
       this.errorMessage = '';
-
+      console.log(this.loginForm.controls['rememberMe'].value);
       this.authService
-        .verifyOtp(email, otpCode)
+        .verifyOtp(otpCode,this.loginForm.controls['rememberMe'].value)
         .pipe(finalize(() => (this.isLoading = false)))
         .subscribe({
           next: (response) => {
+            console.log(response);
             if (response.success) {
-              this.authService.completeLogin();
             } else {
               this.errorMessage = response.message;
             }
@@ -137,5 +143,15 @@ export class LoginPageComponent {
     this.requiresOtp = false;
     this.otpForm.reset();
     this.errorMessage = '';
+  }
+
+  loginWithGoogle() {
+    const apiUrl = environment.apiUrl;
+    window.location.href = `${apiUrl}/auth/google`;
+  }
+
+  loginWithGithub() {
+    const apiUrl = environment.apiUrl;
+    window.location.href = `${apiUrl}/auth/github`;
   }
 }

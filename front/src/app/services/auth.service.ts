@@ -1,40 +1,83 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { NotificationService } from './notification.service';
-import { Observable, of } from 'rxjs';
-import { delay } from 'rxjs/operators';
+import {
+  BehaviorSubject,
+  catchError,
+  map,
+  Observable,
+  of,
+  tap,
+  throwError,
+} from 'rxjs';
+import {
+  AuthenticationService,
+  LoginDto,
+  MfaEnableDto,
+  MfaVerifyDto,
+  SignUpResponseDto,
+  UserDto,
+  VerifyEmailDto,
+  DisableMfaDto,
+} from './Api';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  // Mock storage for user MFA status - in a real app this would come from the backend
+  // Track user state
   private mfaEnabled: boolean = false;
   private mfaSecret: string | null = null;
   private userEmail: string | null = null;
-  // Track email verification status
   private emailVerified: boolean = false;
+
+  // Track authentication state
+  private authState = new BehaviorSubject<boolean>(false);
+  public authState$ = this.authState.asObservable();
+  private currentUser = new BehaviorSubject<UserDto | null>(null);
+  public currentUser$ = this.currentUser.asObservable();
+
+  // Token refresh
+  private isRefreshing = false;
 
   constructor(
     private router: Router,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private apiAuthService: AuthenticationService
   ) {
-    // Try to load MFA status from localStorage on service initialization
-    this.loadMfaStatus();
+    // Try to load user state from localStorage on service initialization
+    this.loadUserState();
+
+    // Check authentication status on startup
+    if (this.isAuthenticated()) {
+      this.loadUserData();
+      this.authState.next(true);
+    }
   }
 
-  // Load MFA status from storage
-  private loadMfaStatus(): void {
+  // Load user state from storage
+  private loadUserState(): void {
     if (typeof window !== 'undefined') {
       this.mfaEnabled = localStorage.getItem('mfa_enabled') === 'true';
       this.mfaSecret = localStorage.getItem('mfa_secret');
       this.userEmail = localStorage.getItem('user_email');
       this.emailVerified = localStorage.getItem('email_verified') === 'true';
+
+      // Try to load saved user data
+      const userData = localStorage.getItem('user_data');
+      if (userData) {
+        try {
+          const user = JSON.parse(userData);
+          this.currentUser.next(user);
+        } catch (e) {
+          console.error('Failed to parse user data from localStorage');
+        }
+      }
     }
   }
 
-  // Save MFA status to storage
-  private saveMfaStatus(): void {
+  // Save user state to storage
+  private saveUserState(): void {
     if (typeof window !== 'undefined') {
       localStorage.setItem('mfa_enabled', this.mfaEnabled.toString());
       if (this.mfaSecret) {
@@ -47,154 +90,269 @@ export class AuthService {
     }
   }
 
+  // Load user data from server
+  private loadUserData(): void {
+    this.getProfile().subscribe({
+      next: (user) => {
+        // User is authenticated, update state
+        this.authState.next(true);
+      },
+      error: (err) => {
+        // Failed to get profile, might be auth issue
+        if (err.status === 401) {
+          this.refreshToken().subscribe({
+            next: () => this.getProfile().subscribe(),
+            error: () => {
+              // If refresh also failed, clear auth state
+              this.clearAuthData();
+              this.authState.next(false);
+            },
+          });
+        } else {
+          this.clearAuthData();
+          this.authState.next(false);
+        }
+      },
+    });
+  }
+
   // Check if a user has MFA enabled
   hasOtpEnabled(email: string): boolean {
-    // In a real app, this would check with the backend
-    if (email === this.userEmail) {
-      return this.mfaEnabled;
-    }
-    return false;
+    return this.mfaEnabled;
   }
 
-  // Generate a new MFA secret
-  generateMfaSecret(
-    email: string
-  ): Observable<{ secret: string; qrCode: string }> {
-    // In a real app, this would call the backend to generate a proper secret
-    // For demo purposes, we'll create a mock secret
-    const mockSecret = 'ABCDEF123456789';
-    const mockQrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=otpauth://totp/BooksApp:${encodeURIComponent(
-      email
-    )}?secret=${mockSecret}&issuer=BooksApp`;
-
-    // Store the secret
-    this.mfaSecret = mockSecret;
-    this.userEmail = email;
-
-    return of({
-      secret: mockSecret,
-      qrCode: mockQrCodeUrl,
-    }).pipe(delay(500));
+  // Generate a new MFA secret from API
+  generateMfaSecret(): Observable<{ secret: string; qrCode: string }> {
+    return this.apiAuthService.authControllerGenerateMfaSecret().pipe(
+      tap((response) => {
+        this.mfaSecret = response.secret;
+        this.saveUserState();
+      }),
+      catchError((error) => {
+        this.notificationService.showError('Failed to generate MFA secret');
+        return throwError(() => error);
+      })
+    );
   }
 
-  // Enable MFA for user with explicit type annotation
-  enableMfa(
-    otpCode: string
-  ): Observable<{ success: boolean; message: string }> {
-    // In a real app, this would validate the OTP with the backend
-    const isValid: boolean = otpCode.length === 6;
+  // Enable MFA for user
+  enableMfa(otpCode: string): Observable<{
+    success: boolean;
+    message: string;
+    recoveryCodes: string[];
+  }> {
+    const mfaEnableDto: MfaEnableDto = {
+      code: otpCode,
+    };
 
-    if (isValid) {
-      this.mfaEnabled = true;
-      this.saveMfaStatus();
-    }
-
-    return of<{ success: boolean; message: string }>({
-      success: isValid,
-      message: isValid ? 'MFA enabled successfully' : 'Invalid OTP code',
-    }).pipe(delay(500));
+    return this.apiAuthService.authControllerEnableMfa(mfaEnableDto).pipe(
+      map((response) => {
+        this.mfaEnabled = true;
+        this.saveUserState();
+        return {
+          success: true,
+          message: 'MFA enabled successfully',
+          recoveryCodes: response.recoveryCodes,
+        };
+      }),
+      catchError((error) => {
+        const message = error.error?.message || 'Failed to enable MFA';
+        console.error('Error enabling MFA:', error);
+        this.notificationService.showError(message);
+        return of({ success: false, message, recoveryCodes: [] });
+      })
+    );
   }
 
-  // Disable MFA for user with explicit type annotation
+  // Disable MFA for user
   disableMfa(
     password: string
   ): Observable<{ success: boolean; message: string }> {
-    // In a real app, this would verify the password with the backend
-    const isValid = password != null && password.length >= 6;
+    const disableMfaDto: DisableMfaDto = {
+      password,
+    };
 
-    if (isValid) {
-      this.mfaEnabled = false;
-      this.saveMfaStatus();
-    }
-
-    return of<{ success: boolean; message: string }>({
-      success: isValid,
-      message: isValid ? 'MFA disabled successfully' : 'Invalid password',
-    }).pipe(delay(500));
+    return this.apiAuthService.authControllerDisableMfa(disableMfaDto).pipe(
+      map((response) => {
+        this.mfaEnabled = false;
+        this.saveUserState();
+        return { success: true, message: 'MFA disabled successfully' };
+      }),
+      catchError((error) => {
+        const message = error.error?.message || 'Failed to disable MFA';
+        this.notificationService.showError(message);
+        return of({ success: false, message });
+      })
+    );
   }
 
-  // Initial login attempt that checks if OTP is required
+  // Initial login attempt
   initiateLogin(
     email: string,
-    password: string
-  ): Observable<{ requiresOtp: boolean; message: string }> {
-    // Store email for future use
-    this.userEmail = email;
+    password: string,
+    rememberMe: boolean
+  ): Observable<{ requiresOtp: boolean; message: string; success: boolean }> {
+    const loginDto: LoginDto = {
+      email,
+      password,
+      rememberMe: true,
+    };
 
-    // Simulate API call with delay
-    return of<{ requiresOtp: boolean; message: string }>({
-      requiresOtp: this.hasOtpEnabled(email),
-      message: this.hasOtpEnabled(email)
-        ? 'OTP required to complete login'
-        : 'Login successful',
-    }).pipe(delay(800)); // Simulate network delay
+    return this.apiAuthService.authControllerLogin(loginDto).pipe(
+      map((response) => {
+        this.userEmail = email;
+        // If MFA is required
+        if ('isMfaRequired' in response) {
+          return {
+            requiresOtp: true,
+            message: 'OTP required to complete login',
+            success: false,
+          };
+        }
+
+        // Regular login success
+        this.setAuthData(response.user);
+        this.completeLogin();
+        return {
+          requiresOtp: false,
+          message: 'Login successful',
+          success: true,
+        };
+      }),
+      catchError((error) => {
+        console.log('Auth service : ', error);
+        const message = error.error?.message || 'Login failed';
+        this.notificationService.showError(message);
+        return of({ requiresOtp: false, message, success: false });
+      })
+    );
   }
 
-  // Verify the OTP code with explicit type annotation
+  // Verify the OTP code
   verifyOtp(
-    email: string,
-    otpCode: string
-  ): Observable<{ success: boolean; message: string }> {
-    // Simulate API call with delay
-    return of<{ success: boolean; message: string }>({
-      success: otpCode.length === 6, // Simple validation that OTP is 6 digits
-      message:
-        otpCode.length === 6
-          ? 'OTP verification successful'
-          : 'Invalid OTP code',
-    }).pipe(delay(800)); // Simulate network delay
+    code: string,
+    rememberMe: boolean
+  ): Observable<{
+    success: boolean;
+    message: string;
+  }> {
+    const mfaVerifyDto: MfaVerifyDto = {
+      code,
+      rememberMe,
+    };
+
+    return this.apiAuthService.authControllerVerifyMfaToken(mfaVerifyDto).pipe(
+      map((response) => {
+        console.log(response);
+        if (response.user) {
+          this.setAuthData(response.user);
+          this.completeLogin();
+        }
+        return { success: true, message: 'OTP verification successful' };
+      }),
+      catchError((error) => {
+        console.log(error);
+        const message = error.error?.message || 'Invalid OTP code';
+        this.notificationService.showError(message);
+        return of({ success: false, message });
+      })
+    );
   }
 
-  // Register a new user and send verification email
+  // Register a new user
   register(userData: {
-    username: string;
+    fisrtname: string;
+    lastname: string;
     email: string;
     password: string;
+    imgUrl?: File;
   }): Observable<{ success: boolean; message: string }> {
-    // In a real app, this would send the data to the backend for registration
-    // and the backend would send a verification email
-    this.userEmail = userData.email;
-    this.emailVerified = false;
-    this.saveMfaStatus();
-
-    // Simulate sending a verification email
-    return of<{ success: boolean; message: string }>({
-      success: true,
-      message:
-        'Registration successful! Please check your email to verify your account.',
-    }).pipe(delay(800));
+    return this.apiAuthService
+      .authControllerSignUp(
+        userData.fisrtname,
+        userData.lastname,
+        userData.email,
+        userData.password,
+        userData.imgUrl
+      )
+      .pipe(
+        map((response: SignUpResponseDto) => {
+          this.userEmail = userData.email;
+          this.emailVerified = false;
+          this.saveUserState();
+          this.notificationService.showSuccess(
+            'Registration successful! Please check your email to verify your account.'
+          );
+          return {
+            success: true,
+            message:
+              'Registration successful! Please check your email to verify your account.',
+          };
+        }),
+        catchError((error) => {
+          const message = error.error?.message || 'Registration failed';
+          this.notificationService.showError(message);
+          return of({ success: false, message });
+        })
+      );
   }
 
-  // Verify email token received via email
+  // Verify email token
   verifyEmailToken(
     token: string
   ): Observable<{ success: boolean; message: string }> {
-    // In a real app, this would validate the token with the backend
-    // For demo, we'll validate any token that's at least 10 chars
-    const isValid = token != null && token.length >= 10;
+    const verifyEmailDto: VerifyEmailDto = {
+      token,
+    };
 
-    if (isValid) {
-      this.emailVerified = true;
-      this.saveMfaStatus();
-    }
-
-    return of<{ success: boolean; message: string }>({
-      success: isValid,
-      message: isValid
-        ? 'Email verified successfully'
-        : 'Invalid or expired verification token',
-    }).pipe(delay(1000)); // Simulate network delay
+    return this.apiAuthService.authControllerVerifyEmail(verifyEmailDto).pipe(
+      map((response) => {
+        this.emailVerified = true;
+        this.saveUserState();
+        this.notificationService.showSuccess('Email verified successfully');
+        return { success: true, message: 'Email verified successfully' };
+      }),
+      catchError((error) => {
+        const message =
+          error.error?.message || 'Invalid or expired verification token';
+        this.notificationService.showError(message);
+        return of({ success: false, message });
+      })
+    );
   }
 
-  // Resend verification email
+  // Resend verification email - mock implementation until API supports it
   resendVerificationEmail(
     email: string
   ): Observable<{ success: boolean; message: string }> {
-    // In a real app, this would request the backend to send another verification email
-    return of<{ success: boolean; message: string }>({
+    // This is still mocked as it seems this endpoint might not exist yet
+    return of({
       success: true,
       message: 'Verification email has been sent to ' + email,
-    }).pipe(delay(800));
+    });
+  }
+
+  // Refresh the access token using the refresh token in HTTP-only cookies
+  refreshToken(): Observable<any> {
+    if (this.isRefreshing) {
+      return of(null);
+    }
+
+    this.isRefreshing = true;
+
+    return this.apiAuthService.authControllerRefreshToken().pipe(
+      tap(() => {
+        // Token is refreshed and stored in cookies by the backend
+        this.isRefreshing = false;
+      }),
+      catchError((error) => {
+        this.isRefreshing = false;
+        this.clearAuthData();
+        this.authState.next(false);
+        this.router.navigate(['/login']);
+        return throwError(() => error);
+      })
+    );
   }
 
   // Check if user's email is verified
@@ -203,11 +361,7 @@ export class AuthService {
   }
 
   completeLogin(): void {
-    // Set auth token in localStorage
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('auth_token', 'mock_token_' + Date.now());
-    }
-
+    this.authState.next(true);
     this.notificationService.showSuccess('Login successful');
     this.router.navigate(['/']);
   }
@@ -219,7 +373,7 @@ export class AuthService {
     return false;
   }
 
-  // Get current user info (mock implementation)
+  // Get current user info
   getCurrentUserInfo(): {
     email: string | null;
     mfaEnabled: boolean;
@@ -232,17 +386,79 @@ export class AuthService {
     };
   }
 
-  logout() {
+  // Set authentication data from login/social response
+  setAuthData(userData: any): void {
+    if (typeof window !== 'undefined' && userData) {
+      // Store user data
+      localStorage.setItem('auth_token', 'token_exists'); // The actual token is in HTTP-only cookies
+      localStorage.setItem('user_email', userData.email || '');
+      localStorage.setItem('user_data', JSON.stringify(userData));
+
+      // Update local state
+      this.userEmail = userData.email;
+      this.emailVerified = userData.emailVerified ?? true;
+      this.mfaEnabled = userData.isMfaEnabled || false;
+      this.saveUserState();
+
+      // Update BehaviorSubjects
+      this.currentUser.next(userData);
+      this.authState.next(true);
+    }
+  }
+
+  // Clear all authentication data
+  private clearAuthData(): void {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('auth_token');
+      localStorage.removeItem('user_data');
+      localStorage.removeItem('user_email');
+      localStorage.removeItem('mfa_enabled');
+      localStorage.removeItem('mfa_secret');
+      localStorage.removeItem('email_verified');
     }
 
-    // Show a success notification
-    this.notificationService.showSuccess(
-      'You have been successfully logged out'
-    );
+    this.userEmail = null;
+    this.mfaEnabled = false;
+    this.mfaSecret = null;
+    this.emailVerified = false;
+    this.currentUser.next(null);
+  }
 
-    // Navigate to login page
-    this.router.navigate(['/login']);
+  // Logout the user
+  logout() {
+    this.apiAuthService.authControllerLogout().subscribe({
+      next: () => {
+        this.clearAuthData();
+        this.authState.next(false);
+        this.notificationService.showSuccess(
+          'You have been successfully logged out'
+        );
+        this.router.navigate(['/login']);
+      },
+      error: (error) => {
+        this.clearAuthData();
+        this.authState.next(false);
+        this.notificationService.showError('Error during logout');
+        this.router.navigate(['/login']);
+      },
+    });
+  }
+
+  // Get user profile
+  getProfile(): Observable<UserDto> {
+    return this.apiAuthService.authControllerGetProfile().pipe(
+      tap((user) => {
+        if (user) {
+          this.setAuthData(user);
+          this.userEmail = user.email;
+          this.mfaEnabled = user.isMFAEnabled || false;
+          this.saveUserState();
+        }
+      }),
+      catchError((error) => {
+        console.error('Error fetching profile:', error);
+        return throwError(() => error);
+      })
+    );
   }
 }

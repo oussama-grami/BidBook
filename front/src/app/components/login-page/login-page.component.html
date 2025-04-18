@@ -28,6 +28,18 @@
             />
           </div>
 
+          <!-- Remember Me checkbox -->
+          <div class="remember-me-container">
+            <p-checkbox
+              formControlName="rememberMe"
+              [binary]="true"
+              inputId="rememberMe"
+            ></p-checkbox>
+            <label for="rememberMe" class="remember-me-label"
+              >Remember Me</label
+            >
+          </div>
+
           <div *ngIf="errorMessage" class="error-message">
             <p-message severity="error" [text]="errorMessage"></p-message>
           </div>
@@ -119,6 +131,25 @@
                 [outlined]="true"
                 (mouseenter)="googleHovered = true"
                 (mouseleave)="googleHovered = false"
+                (click)="loginWithGoogle()"
+              ></p-button>
+
+              <p-button
+                type="button"
+                [style]="{
+                  backgroundColor: '#24292e',
+                  color: 'white',
+                  borderRadius: '10px',
+                  height: '54px',
+                  fontWeight: 'normal',
+                  width: '100%',
+                  transition: 'all 0.2s ease',
+                  marginTop: '10px'
+                }"
+                styleClass="github-btn"
+                label="Sign In with GitHub"
+                icon="pi pi-github"
+                (click)="loginWithGithub()"
               ></p-button>
             </div>
             <a routerLink="/forget-password" class="forgot-password"
