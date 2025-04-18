@@ -245,6 +245,18 @@ export class LoadingComponent implements OnInit, OnDestroy {
       // Subscribe to loading status
       this.subscription.add(
         this.loadingService.loading$.subscribe((isLoading: boolean) => {
+          // Special check for post-logout state
+          const isPostLogout =
+            typeof window !== 'undefined' &&
+            window.location.pathname === '/login' &&
+            !localStorage.getItem('auth_token');
+
+          // Force hide loader if we're in a post-logout state
+          if (isPostLogout) {
+            this.forceHideLoader();
+            return;
+          }
+
           this.isLoading = isLoading;
 
           if (isLoading) {
@@ -265,6 +277,15 @@ export class LoadingComponent implements OnInit, OnDestroy {
         })
       );
 
+      // Add window route change listener for additional safety
+      if (typeof window !== 'undefined') {
+        window.addEventListener(
+          'popstate',
+          this.checkAndResetLoader.bind(this)
+        );
+      }
+
+      // Rest of the existing code...
       // Subscribe to loading progress updates
       this.subscription.add(
         this.loadingService.loadingProgress$.subscribe((progress: number) => {
@@ -278,9 +299,37 @@ export class LoadingComponent implements OnInit, OnDestroy {
     }
   }
 
+  // Force hide the loading spinner regardless of state
+  private forceHideLoader(): void {
+    this.isLoading = false;
+    this.displayLoader = false;
+    document.body.style.overflow = '';
+    this.cdr.detectChanges();
+  }
+
+  // Check if we're on login page after logout and reset loader if needed
+  private checkAndResetLoader(): void {
+    if (
+      typeof window !== 'undefined' &&
+      window.location.pathname === '/login' &&
+      !localStorage.getItem('auth_token')
+    ) {
+      this.forceHideLoader();
+    }
+  }
+
   ngOnDestroy() {
     if (this.isBrowser) {
       document.body.style.overflow = ''; // Reset overflow in case component is destroyed while loading
+
+      // Remove event listener
+      if (typeof window !== 'undefined') {
+        window.removeEventListener(
+          'popstate',
+          this.checkAndResetLoader.bind(this)
+        );
+      }
+
       this.subscription.unsubscribe();
       if (this.textInterval) {
         clearInterval(this.textInterval);

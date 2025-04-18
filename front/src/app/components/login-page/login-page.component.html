@@ -34,9 +34,10 @@
               formControlName="rememberMe"
               [binary]="true"
               inputId="rememberMe"
+              id="rememberMe"
             ></p-checkbox>
             <label for="rememberMe" class="remember-me-label"
-              >Remember Me</label
+            >Remember Me</label
             >
           </div>
 
@@ -84,7 +85,7 @@
             </div>
 
             <div class="social-buttons">
-              <p-button
+              <!--<p-button
                 type="button"
                 [style]="{
                   backgroundColor: '#1877F2',
@@ -105,7 +106,7 @@
                 icon="pi pi-facebook"
                 (mouseenter)="facebookHovered = true"
                 (mouseleave)="facebookHovered = false"
-              ></p-button>
+              ></p-button>-->
 
               <p-button
                 type="button"
@@ -153,7 +154,7 @@
               ></p-button>
             </div>
             <a routerLink="/forget-password" class="forgot-password"
-              >Forgot Password?</a
+            >Forgot Password?</a
             >
           </div>
         </form>

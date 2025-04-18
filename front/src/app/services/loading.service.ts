@@ -35,7 +35,17 @@ export class LoadingService {
         )
       )
       .subscribe((event) => {
+        // Check if we're in the middle of logout navigation
+        const isLogoutNavigation =
+          typeof window !== 'undefined' &&
+          localStorage.getItem('performing_logout') === 'true';
+
         if (event instanceof NavigationStart) {
+          // Don't show loader for logout navigation
+          if (isLogoutNavigation) {
+            return;
+          }
+
           this.routeLoading = true;
           this.updateLoadingState();
           // Start with 20% progress when navigation begins
@@ -94,6 +104,16 @@ export class LoadingService {
    */
   setProgress(value: number): void {
     this.progressSubject.next(Math.min(100, Math.max(0, value)));
+  }
+
+  /**
+   * Force reset the loading state (use with caution)
+   */
+  forceResetLoading(): void {
+    this.routeLoading = false;
+    this.resourcesLoading.clear();
+    this.updateLoadingState();
+    this.progressSubject.next(0);
   }
 
   /**

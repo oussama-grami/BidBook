@@ -1,5 +1,5 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { CommonModule, NgOptimizedImage } from '@angular/common';
+import {ChangeDetectorRef, Component} from '@angular/core';
+import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {
   AbstractControl,
   FormBuilder,
@@ -8,17 +8,18 @@ import {
   ValidationErrors,
   Validators,
 } from '@angular/forms';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { InputTextModule } from 'primeng/inputtext';
-import { ButtonModule } from 'primeng/button';
-import { PasswordModule } from 'primeng/password';
-import { CheckboxModule } from 'primeng/checkbox';
-import { RippleModule } from 'primeng/ripple';
-import { AuthService } from '../../services/auth.service';
-import { NotificationService } from '../../services/notification.service';
-import { MessageModule } from 'primeng/message';
-import { finalize } from 'rxjs';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import {Router, RouterModule} from '@angular/router';
+import {InputTextModule} from 'primeng/inputtext';
+import {ButtonModule} from 'primeng/button';
+import {PasswordModule} from 'primeng/password';
+import {CheckboxModule} from 'primeng/checkbox';
+import {RippleModule} from 'primeng/ripple';
+import {AuthService} from '../../services/auth.service';
+import {NotificationService} from '../../services/notification.service';
+import {MessageModule} from 'primeng/message';
+import {finalize} from 'rxjs';
+import {ProgressSpinnerModule} from 'primeng/progressspinner';
+import {environment} from '../../../environments/environment.development';
 
 @Component({
   selector: 'app-signup-page',
@@ -116,7 +117,7 @@ export class SignupPageComponent {
       confirmPassword &&
       password.value !== confirmPassword.value
     ) {
-      return { passwordMismatch: true };
+      return {passwordMismatch: true};
     }
     return null;
   }
@@ -164,5 +165,15 @@ export class SignupPageComponent {
         control?.markAsDirty();
       });
     }
+  }
+
+  loginWithGithub() {
+    const apiUrl = environment.apiUrl;
+    window.location.href = `${apiUrl}/auth/github`;
+  }
+
+  loginWithGoogle() {
+    const apiUrl = environment.apiUrl;
+    window.location.href = `${apiUrl}/auth/google`;
   }
 }

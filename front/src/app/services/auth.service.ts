@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { NotificationService } from './notification.service';
+import { LoadingService } from './loading.service';
 import {
   BehaviorSubject,
   catchError,
@@ -9,6 +10,8 @@ import {
   of,
   tap,
   throwError,
+  timeout,
+  finalize,
 } from 'rxjs';
 import {
   AuthenticationService,
@@ -43,7 +46,8 @@ export class AuthService {
   constructor(
     private router: Router,
     private notificationService: NotificationService,
-    private apiAuthService: AuthenticationService
+    private apiAuthService: AuthenticationService,
+    private loadingService: LoadingService
   ) {
     // Try to load user state from localStorage on service initialization
     this.loadUserState();
@@ -432,22 +436,49 @@ export class AuthService {
 
   // Logout the user
   logout() {
-    this.apiAuthService.authControllerLogout().subscribe({
-      next: () => {
-        this.clearAuthData();
-        this.authState.next(false);
-        this.notificationService.showSuccess(
-          'You have been successfully logged out'
-        );
-        this.router.navigate(['/login']);
-      },
-      error: (error) => {
-        this.clearAuthData();
-        this.authState.next(false);
-        this.notificationService.showError('Error during logout');
-        this.router.navigate(['/login']);
-      },
-    });
+    // First, force reset any existing loading state
+    if (typeof window !== 'undefined') {
+      document.body.style.overflow = '';
+    }
+
+    // Import the loading service if it's not already imported
+    const loadingService = this.loadingService;
+    if (loadingService) {
+      loadingService.forceResetLoading();
+    }
+
+    this.apiAuthService
+      .authControllerLogout()
+      .pipe(
+        // Add timeout to prevent hanging if server is slow to respond
+        timeout(5000),
+        catchError((error) => {
+          console.error('Logout error:', error);
+          // Still proceed with local logout even if server request fails
+          return of({ message: 'Logout completed locally' });
+        })
+      )
+      .subscribe({
+        next: () => this.completeLogout(),
+        error: () => this.completeLogout(),
+      });
+  }
+
+  // Helper method to handle logout completion
+  private completeLogout(): void {
+    // Clear all auth data
+    this.clearAuthData();
+    this.authState.next(false);
+
+    // Show success message and navigate
+    this.notificationService.showSuccess(
+      'You have been successfully logged out'
+    );
+
+    // Navigate after a tiny delay to ensure loading state is cleared
+    setTimeout(() => {
+      this.router.navigate(['/login']);
+    }, 10);
   }
 
   // Get user profile
