@@ -1,20 +1,20 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule, NgOptimizedImage } from '@angular/common';
+import {Component, OnInit} from '@angular/core';
+import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {
+  AbstractControl,
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
-  Validators,
-  AbstractControl,
   ValidationErrors,
   ValidatorFn,
+  Validators,
 } from '@angular/forms';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { InputTextModule } from 'primeng/inputtext';
-import { ButtonModule } from 'primeng/button';
-import { MessageModule } from 'primeng/message';
-import { AuthService } from '../../services/auth.service';
-import { finalize } from 'rxjs';
+import {ActivatedRoute, Router, RouterModule} from '@angular/router';
+import {InputTextModule} from 'primeng/inputtext';
+import {ButtonModule} from 'primeng/button';
+import {MessageModule} from 'primeng/message';
+import {AuthService} from '../../services/auth.service';
+import {finalize} from 'rxjs';
 
 @Component({
   selector: 'app-forget-password',
@@ -122,11 +122,11 @@ export class ForgetPasswordComponent implements OnInit {
         confirmPassword?.value &&
         newPassword.value !== confirmPassword.value
       ) {
-        confirmPassword.setErrors({ passwordMismatch: true });
-        return { passwordMismatch: true };
+        confirmPassword.setErrors({passwordMismatch: true});
+        return {passwordMismatch: true};
       } else if (confirmPassword) {
         // Clear the error if passwords match
-        const errors = { ...confirmPassword.errors };
+        const errors = {...confirmPassword.errors};
         if (errors) {
           delete errors['passwordMismatch'];
           confirmPassword.setErrors(Object.keys(errors).length ? errors : null);
@@ -146,11 +146,11 @@ export class ForgetPasswordComponent implements OnInit {
       confirmPassword?.value &&
       newPassword.value !== confirmPassword.value
     ) {
-      confirmPassword.setErrors({ passwordMismatch: true });
-      return { passwordMismatch: true };
+      confirmPassword.setErrors({passwordMismatch: true});
+      return {passwordMismatch: true};
     } else if (confirmPassword) {
       // Clear the error if passwords match
-      const errors = { ...confirmPassword.errors };
+      const errors = {...confirmPassword.errors};
       if (errors) {
         delete errors['passwordMismatch'];
         confirmPassword.setErrors(Object.keys(errors).length ? errors : null);

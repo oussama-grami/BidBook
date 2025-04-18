@@ -11,6 +11,11 @@
       {
         "include": "**/*.hbs",
         "watchAssets": true
+      },
+      {
+        "include": "public/images/**/*",
+        "watchAssets": true,
+        "outDir": "dist/public"
       }
     ],
     "watchAssets": true

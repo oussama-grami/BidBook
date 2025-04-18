@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { MailerService } from '@nestjs-modules/mailer';
+import * as path from 'path';
 
 @Injectable()
 export class MailService {
@@ -11,14 +12,26 @@ export class MailService {
     private configService: ConfigService,
   ) {}
 
+  // Helper method to get the logo CID for email templates
+  private getLogoCid(): string {
+    return 'logo';
+  }
+
   async sendWelcomingEmail(email: string) {
     try {
       await this.mailerService.sendMail({
         to: email,
         subject: 'Welcome to Nice App!',
-        template: './welcoming', // Add ./ prefix to make it relative to the template directory
+        template: './welcoming',
+        attachments: [
+          {
+            filename: 'logo.jpeg',
+            path: path.join(process.cwd(), 'public', 'images', 'logo.jpeg'),
+            cid: this.getLogoCid(),
+          },
+        ],
         context: {
-          logoUrl: '/public/images/img.png',
+          logoUrl: `cid:${this.getLogoCid()}`,
           userName: 'Sarah Johnson',
           userEmail: 'sarah.johnson@email.com',
           exploreUrl: 'https://yoursite.com/explore',
@@ -80,10 +93,17 @@ export class MailService {
     try {
       await this.mailerService.sendMail({
         to: email,
-        subject: 'Verify Your Email Address',
-        template: './welcoming',
+        subject: 'Verify Your Email Address - Book Community',
+        template: './verification-email',
+        attachments: [
+          {
+            filename: 'logo.jpeg',
+            path: path.join(process.cwd(), 'public', 'images', 'logo.jpeg'),
+            cid: this.getLogoCid(),
+          },
+        ],
         context: {
-          logoUrl: '/public/images/img.png',
+          logoUrl: `cid:${this.getLogoCid()}`,
           userName: 'New User',
           userEmail: email,
           verificationUrl: verificationUrl,
@@ -99,10 +119,6 @@ export class MailService {
           twitterUrl: 'https://twitter.com/bookcommunity',
           instagramUrl: 'https://instagram.com/bookcommunity',
           currentYear: new Date().getFullYear().toString(),
-          // Add empty bookRecommendations to prevent template errors
-          bookRecommendations: [],
-          exploreUrl: verificationUrl,
-          unsubscribeUrl: '#',
         },
       });
 
@@ -145,13 +161,19 @@ export class MailService {
     try {
       await this.mailerService.sendMail({
         to: email,
-        subject: 'Reset Your Password',
-        template: './welcoming',
+        subject: 'Reset Your Password - Book Community',
+        template: './reset-password',
+        attachments: [
+          {
+            filename: 'logo.jpeg',
+            path: path.join(process.cwd(), 'public', 'images', 'logo.jpeg'),
+            cid: this.getLogoCid(),
+          },
+        ],
         context: {
-          logoUrl: '/public/images/img.png',
+          logoUrl: `cid:${this.getLogoCid()}`,
           userName: 'User',
           userEmail: email,
-          verificationUrl: resetUrl,
           supportEmail: 'support@bookcommunity.com',
           message:
             'You requested a password reset. Click the button below to set a new password:',
@@ -164,9 +186,6 @@ export class MailService {
           twitterUrl: 'https://twitter.com/bookcommunity',
           instagramUrl: 'https://instagram.com/bookcommunity',
           currentYear: new Date().getFullYear().toString(),
-          bookRecommendations: [],
-          exploreUrl: resetUrl,
-          unsubscribeUrl: '#',
         },
       });
 
