@@ -88,7 +88,7 @@ export class MailService {
       'FRONTEND_URL',
       'http://localhost:3000',
     );
-    const verificationUrl = `${baseUrl}/api/auth/verify-email?token=${token}`;
+    const verificationUrl = `${baseUrl}/verify-email?token=${token}`;
 
     try {
       await this.mailerService.sendMail({
@@ -135,6 +135,7 @@ export class MailService {
     email: string,
     token: string,
     expiryMinutes: number,
+    isResend: boolean = false,
   ) {
     // Calculate expiry date for the reset link
     const expiryDate = new Date();
@@ -158,10 +159,20 @@ export class MailService {
     );
     const resetUrl = `${baseUrl}/forget-password/reset?token=${token}`;
 
+    // Customize the subject based on whether this is a new request or a resend
+    const subject = isResend
+      ? 'Your New Password Reset Link - Book Community'
+      : 'Reset Your Password - Book Community';
+
+    // Customize the message for resend cases
+    const message = isResend
+      ? 'You recently requested another password reset link. Please use this new link to set your password:'
+      : 'You requested a password reset. Click the button below to set a new password:';
+
     try {
       await this.mailerService.sendMail({
         to: email,
-        subject: 'Reset Your Password - Book Community',
+        subject: subject,
         template: './reset-password',
         attachments: [
           {
@@ -175,13 +186,14 @@ export class MailService {
           userName: 'User',
           userEmail: email,
           supportEmail: 'support@bookcommunity.com',
-          message:
-            'You requested a password reset. Click the button below to set a new password:',
+          message: message,
           buttonText: 'Reset Password',
           buttonUrl: resetUrl,
           expiryDate: expiryDateFormatted,
           expiryWarning:
             'This password reset link will expire on ' + expiryDateFormatted,
+          securityNote:
+            'For security reasons, this reset link can be used only once and will expire after the time shown above.',
           facebookUrl: 'https://facebook.com/bookcommunity',
           twitterUrl: 'https://twitter.com/bookcommunity',
           instagramUrl: 'https://instagram.com/bookcommunity',

@@ -89,7 +89,7 @@ export class AuthService {
       verificationToken,
       isEmailVerified: false,
       isMFAEnabled: false,
-      imageUrl
+      imageUrl,
     });
 
     await this.userRepository.save(user);
@@ -182,33 +182,117 @@ export class AuthService {
 
     // Check if email is verified
     if (!user.isEmailVerified) {
-      // Resend verification email
-      try {
-        // Generate a new token
-        const newToken = uuidv4();
+      // Check when the last verification email was sent
+      const lastSentKey = `verification_email_last_sent:${user.id}`;
+      const lastSent = await this.redisCacheService.get(lastSentKey);
 
-        // Store the new token in Redis with expiry
-        await this.redisCacheService.storeVerificationToken(
-          newToken,
-          email,
-          this.EMAIL_VERIFICATION_EXPIRY,
-        );
+      // Use the same cooldown period as the email verification expiry
+      // This ensures we don't send a new email until the previous token has expired
+      const cooldownPeriod = this.EMAIL_VERIFICATION_EXPIRY;
 
-        // Update user in database
-        user.verificationToken = newToken;
-        await this.userRepository.save(user);
+      if (!lastSent) {
+        // No record of recent email - send a new one
+        try {
+          // Generate a new token
+          const newToken = uuidv4();
 
-        // Send verification email
-        await this.sendVerificationEmail(email, newToken);
-      } catch (error) {
-        this.logger.error(
-          `Failed to resend verification email: ${error.message}`,
-        );
+          // Store the new token in Redis with expiry
+          await this.redisCacheService.storeVerificationToken(
+            newToken,
+            email,
+            this.EMAIL_VERIFICATION_EXPIRY,
+          );
+
+          // Update user in database
+          user.verificationToken = newToken;
+          await this.userRepository.save(user);
+
+          // Send verification email
+          await this.sendVerificationEmail(email, newToken);
+
+          // Record this email sending time
+          // Set the expiry to match the token expiry so they're in sync
+          await this.redisCacheService.set(
+            lastSentKey,
+            Date.now().toString(),
+            cooldownPeriod,
+          );
+
+          throw new ForbiddenException(
+            'Email not verified. Please verify your email first. A new verification email has been sent.',
+          );
+        } catch (error) {
+          this.logger.error(
+            `Failed to resend verification email: ${error.message}`,
+          );
+          throw new ForbiddenException(
+            'Email not verified. Please verify your email first.',
+          );
+        }
+      } else {
+        // An email was recently sent - check if we're in cooldown period
+        const lastSentTime = parseInt(lastSent);
+        const currentTime = Date.now();
+        const timeElapsed = (currentTime - lastSentTime) / 1000; // convert to seconds
+
+        if (timeElapsed < cooldownPeriod) {
+          // Still in cooldown period - calculate remaining time
+          const remainingTime = cooldownPeriod - timeElapsed;
+          let timeMessage;
+
+          if (remainingTime > 3600) {
+            const hoursRemaining = Math.ceil(remainingTime / 3600);
+            timeMessage = `${hoursRemaining} hour(s)`;
+          } else if (remainingTime > 60) {
+            const minutesRemaining = Math.ceil(remainingTime / 60);
+            timeMessage = `${minutesRemaining} minute(s)`;
+          } else {
+            timeMessage = `${Math.ceil(remainingTime)} second(s)`;
+          }
+
+          throw new ForbiddenException(
+            `Email not verified. Please check your email for the verification link. You can request a new verification email in ${timeMessage}.`,
+          );
+        } else {
+          // Cooldown period has passed - send a new email
+          try {
+            // Generate a new token
+            const newToken = uuidv4();
+
+            // Store the new token in Redis with expiry
+            await this.redisCacheService.storeVerificationToken(
+              newToken,
+              email,
+              this.EMAIL_VERIFICATION_EXPIRY,
+            );
+
+            // Update user in database
+            user.verificationToken = newToken;
+            await this.userRepository.save(user);
+
+            // Send verification email
+            await this.sendVerificationEmail(email, newToken);
+
+            // Update the last sent time
+            await this.redisCacheService.set(
+              lastSentKey,
+              Date.now().toString(),
+              cooldownPeriod,
+            );
+
+            throw new ForbiddenException(
+              'Email not verified. Please verify your email first. A new verification email has been sent.',
+            );
+          } catch (error) {
+            this.logger.error(
+              `Failed to resend verification email: ${error.message}`,
+            );
+            throw new ForbiddenException(
+              'Email not verified. Please verify your email first.',
+            );
+          }
+        }
       }
-
-      throw new ForbiddenException(
-        'Email not verified. Please verify your email first. A new verification email has been sent.',
-      );
     }
 
     // Check if MFA is enabled
@@ -586,34 +670,89 @@ export class AuthService {
     const user = await this.userRepository.findOneBy({ email });
     if (!user) {
       // For security reasons, always return success even if email doesn't exist
+      this.logger.debug(
+        `Password reset attempted for non-existent email: ${email}`,
+      );
       return {
-        message: 'If your email exists in our system, you will receive a password reset link',
+        message:
+          'If your email exists in our system, you will receive a password reset link',
       };
+    }
+
+    // Check if a reset was recently requested - implement rate limiting
+    const resetCooldownKey = `password_reset_cooldown:${user.id}`;
+    const lastResetTime = await this.redisCacheService.get(resetCooldownKey);
+
+    // Use a shorter cooldown period than the token expiry (e.g., 2 minutes)
+    const cooldownPeriod = 120; // 2 minutes in seconds
+
+    if (lastResetTime) {
+      // A reset was recently requested - check if we're in cooldown period
+      const currentTime = Date.now();
+      const lastRequestTime = parseInt(lastResetTime);
+      const timeElapsed = (currentTime - lastRequestTime) / 1000; // convert to seconds
+
+      if (timeElapsed < cooldownPeriod) {
+        // Still in cooldown period - calculate remaining time
+        const remainingTime = Math.ceil(cooldownPeriod - timeElapsed);
+        let timeMessage;
+
+        if (remainingTime > 60) {
+          timeMessage = `${Math.ceil(remainingTime / 60)} minute(s)`;
+        } else {
+          timeMessage = `${remainingTime} second(s)`;
+        }
+
+        this.logger.debug(
+          `Password reset rate limited for user ${user.id}. Can try again in ${timeMessage}`,
+        );
+
+        // Return a specific message for rate limiting, but maintain security by not confirming email exists
+        return {
+          message: `If your email exists in our system, you'll need to wait before requesting another reset. Please try again in ${timeMessage} or check your inbox for the previous email.`,
+        };
+      }
     }
 
     // Generate a random token
     const token = uuidv4();
 
     try {
-      // Store token in Redis with expiry
+      // 1. Invalidate any existing tokens for this user
+      // This ensures each email has a unique valid token
+      await this.redisCacheService.invalidateUserPasswordResetTokens(email);
+
+      // 2. Store token in Redis with expiry
       await this.redisCacheService.storePasswordResetToken(
         token,
         email,
         this.PASSWORD_RESET_EXPIRY,
       );
 
-      // Send password reset email
+      // 3. Set the cooldown for this user
+      await this.redisCacheService.set(
+        resetCooldownKey,
+        Date.now().toString(),
+        cooldownPeriod,
+      );
+
+      // 4. Send password reset email
+      const isResend = lastResetTime !== null;
       await this.mailService.sendPasswordResetEmail(
         email,
         token,
         this.PASSWORD_RESET_EXPIRY / 60, // Convert seconds to minutes
+        isResend,
       );
 
       return {
-        message: 'Password reset instructions have been sent to your email',
+        message:
+          'If your email exists in our system, you will receive a password reset link',
       };
     } catch (error) {
-      this.logger.error(`Failed to send password reset email: ${error.message}`);
+      this.logger.error(
+        `Failed to send password reset email: ${error.message}`,
+      );
       throw new InternalServerErrorException('Error sending reset email');
     }
   }
@@ -648,8 +787,13 @@ export class AuthService {
     // Invalidate all existing sessions for this user
     await this.redisCacheService.invalidateAllUserTokens(user.id);
 
-    // Invalidate the password reset token
+    // Invalidate the password reset token to prevent reuse
     await this.redisCacheService.invalidatePasswordResetToken(token);
+
+    // Clear any reset cooldown since the reset was successful
+    await this.redisCacheService.del(`password_reset_cooldown:${user.id}`);
+
+    this.logger.debug(`Password reset successful for user ${user.id}`);
 
     return {
       message: 'Password has been reset successfully',

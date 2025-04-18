@@ -169,7 +169,12 @@ export class RedisCacheService {
     expiryInSeconds: number,
   ): Promise<void> {
     try {
+      // Store the token with email mapping
       await this.redis.set(`pwreset_${token}`, email, 'EX', expiryInSeconds);
+
+      // Store mapping of email to token for tracking purposes
+      await this.redis.sadd(`email_pwreset_tokens:${email}`, token);
+
       this.logger.debug(
         `Stored password reset token for ${email} with ${expiryInSeconds}s expiry`,
       );
@@ -196,12 +201,93 @@ export class RedisCacheService {
   // Invalidate password reset token after successful reset
   async invalidatePasswordResetToken(token: string): Promise<void> {
     try {
+      // Get the email associated with this token first
+      const email = await this.getEmailFromPasswordResetToken(token);
+
+      if (email) {
+        // Remove this token from the user's token set
+        await this.redis.srem(`email_pwreset_tokens:${email}`, token);
+      }
+
+      // Then delete the token itself
       await this.redis.del(`pwreset_${token}`);
       this.logger.debug(`Invalidated password reset token ${token}`);
     } catch (error) {
       this.logger.error(
         `Failed to invalidate password reset token: ${error.message}`,
       );
+    }
+  }
+
+  // Invalidate all password reset tokens for a specific email
+  async invalidateUserPasswordResetTokens(email: string): Promise<void> {
+    try {
+      // Get all active reset tokens for this email
+      const tokens = await this.redis.smembers(`email_pwreset_tokens:${email}`);
+
+      if (tokens && tokens.length > 0) {
+        const pipeline = this.redis.pipeline();
+
+        // Delete each token
+        tokens.forEach((token) => {
+          pipeline.del(`pwreset_${token}`);
+        });
+
+        // Execute the pipeline
+        await pipeline.exec();
+
+        // Then clear the set of tokens
+        await this.redis.del(`email_pwreset_tokens:${email}`);
+
+        this.logger.debug(
+          `Invalidated ${tokens.length} password reset tokens for ${email}`,
+        );
+      }
+    } catch (error) {
+      this.logger.error(
+        `Failed to invalidate user password reset tokens: ${error.message}`,
+      );
+      throw error;
+    }
+  }
+
+  // Delete a specific key from Redis
+  async del(key: string): Promise<void> {
+    try {
+      await this.redis.del(key);
+      this.logger.debug(`Deleted key: ${key}`);
+    } catch (error) {
+      this.logger.error(`Failed to delete key ${key}: ${error.message}`);
+      throw error;
+    }
+  }
+
+  // Generic method to store any value with expiry
+  async set(
+    key: string,
+    value: string,
+    expiryInSeconds: number,
+  ): Promise<void> {
+    try {
+      await this.redis.set(key, value, 'EX', expiryInSeconds);
+      this.logger.debug(
+        `Stored value for key ${key} with ${expiryInSeconds}s expiry`,
+      );
+    } catch (error) {
+      this.logger.error(
+        `Failed to store value for key ${key}: ${error.message}`,
+      );
+      throw error;
+    }
+  }
+
+  // Generic method to get any stored value
+  async get(key: string): Promise<string | null> {
+    try {
+      return await this.redis.get(key);
+    } catch (error) {
+      this.logger.error(`Failed to get value for key ${key}: ${error.message}`);
+      return null;
     }
   }
 }
