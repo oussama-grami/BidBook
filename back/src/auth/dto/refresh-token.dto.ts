@@ -5,3 +5,9 @@ export class RefreshTokenDto {
   @IsString()
   refreshToken: string;
 }
+
+export class RefresResponse {
+  @IsNotEmpty()
+  @IsString()
+  message: string;
+}

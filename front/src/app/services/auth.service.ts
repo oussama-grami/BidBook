@@ -341,9 +341,23 @@ export class AuthService {
     this.isRefreshing = true;
 
     return this.apiAuthService.authControllerRefreshToken().pipe(
-      tap(() => {
+      map((response) => {
         // Token is refreshed and stored in cookies by the backend
         this.isRefreshing = false;
+        // Make sure authentication state is updated
+        this.authState.next(true);
+
+        // If we have cached user data, restore it
+        const userData = localStorage.getItem('user_data');
+        if (userData) {
+          try {
+            const user = JSON.parse(userData);
+            this.currentUser.next(user);
+          } catch (e) {
+            console.error('Failed to parse user data from localStorage');
+          }
+        }
+        return response;
       }),
       catchError((error) => {
         this.isRefreshing = false;
@@ -407,7 +421,7 @@ export class AuthService {
   }
 
   // Clear all authentication data
-  private clearAuthData(): void {
+  public clearAuthData(): void {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('auth_token');
       localStorage.removeItem('user_data');

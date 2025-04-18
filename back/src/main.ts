@@ -5,9 +5,11 @@ import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
 import helmet from 'helmet';
+import { NestExpressApplication } from '@nestjs/platform-express';
+import { join } from 'path';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const configService = app.get(ConfigService);
 
   // Enable cookie parser middleware
@@ -15,7 +17,7 @@ async function bootstrap() {
 
   // Add Helmet for security headers
   app.use(helmet());
-
+  app.useStaticAssets(join(__dirname, '..', 'public', 'uploads'));
   // Enable CORS with credentials
   app.enableCors({
     origin: [

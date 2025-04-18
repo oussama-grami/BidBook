@@ -62,6 +62,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { unlink } from 'fs/promises';
 import { join } from 'path';
+import { RefresResponse } from './dto/refresh-token.dto';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -192,7 +193,7 @@ export class AuthController {
   @ApiCookieAuth('refresh_token')
   @ApiOkResponse({
     description: 'Access token has been refreshed',
-    type: String,
+    type: RefresResponse,
   })
   async refreshToken(@Req() req, @Res({ passthrough: true }) res: Response) {
     // Get the refresh token from the cookie
@@ -211,7 +212,7 @@ export class AuthController {
     }
 
     // Return a success message (without tokens)
-    return 'Tokens refreshed successfully';
+    return { message: 'Token refreshed successfully' };
   }
 
   @Post('logout')
