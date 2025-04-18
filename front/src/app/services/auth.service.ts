@@ -497,4 +497,46 @@ export class AuthService {
       })
     );
   }
+
+  // Request a password reset
+  forgotPassword(
+    email: string
+  ): Observable<{ success: boolean; message: string }> {
+    return this.apiAuthService.authControllerForgotPassword({ email }).pipe(
+      map((response) => {
+        this.notificationService.showSuccess(
+          'Password reset email sent. Please check your inbox.'
+        );
+        return { success: true, message: response.message };
+      }),
+      catchError((error) => {
+        const message =
+          error.error?.message || 'Failed to request password reset';
+        this.notificationService.showError(message);
+        return of({ success: false, message });
+      })
+    );
+  }
+
+  // Reset password with token
+  resetPassword(
+    token: string,
+    password: string
+  ): Observable<{ success: boolean; message: string }> {
+    return this.apiAuthService
+      .authControllerResetPassword({ token, password })
+      .pipe(
+        map((response) => {
+          this.notificationService.showSuccess(
+            'Password reset successful. You can now log in with your new password.'
+          );
+          return { success: true, message: response.message };
+        }),
+        catchError((error) => {
+          const message = error.error?.message || 'Failed to reset password';
+          this.notificationService.showError(message);
+          return of({ success: false, message });
+        })
+      );
+  }
 }

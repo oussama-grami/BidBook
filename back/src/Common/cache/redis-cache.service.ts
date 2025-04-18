@@ -161,4 +161,47 @@ export class RedisCacheService {
       );
     }
   }
+
+  // Store password reset token with expiry date
+  async storePasswordResetToken(
+    token: string,
+    email: string,
+    expiryInSeconds: number,
+  ): Promise<void> {
+    try {
+      await this.redis.set(`pwreset_${token}`, email, 'EX', expiryInSeconds);
+      this.logger.debug(
+        `Stored password reset token for ${email} with ${expiryInSeconds}s expiry`,
+      );
+    } catch (error) {
+      this.logger.error(
+        `Failed to store password reset token: ${error.message}`,
+      );
+      throw error;
+    }
+  }
+
+  // Verify and get email from password reset token
+  async getEmailFromPasswordResetToken(token: string): Promise<string | null> {
+    try {
+      return await this.redis.get(`pwreset_${token}`);
+    } catch (error) {
+      this.logger.error(
+        `Failed to get email from password reset token: ${error.message}`,
+      );
+      return null;
+    }
+  }
+
+  // Invalidate password reset token after successful reset
+  async invalidatePasswordResetToken(token: string): Promise<void> {
+    try {
+      await this.redis.del(`pwreset_${token}`);
+      this.logger.debug(`Invalidated password reset token ${token}`);
+    } catch (error) {
+      this.logger.error(
+        `Failed to invalidate password reset token: ${error.message}`,
+      );
+    }
+  }
 }

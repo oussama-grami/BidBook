@@ -114,4 +114,68 @@ export class MailService {
       throw error; // Rethrow to allow caller to handle
     }
   }
+
+  async sendPasswordResetEmail(
+    email: string,
+    token: string,
+    expiryMinutes: number,
+  ) {
+    // Calculate expiry date for the reset link
+    const expiryDate = new Date();
+    expiryDate.setMinutes(expiryDate.getMinutes() + expiryMinutes);
+
+    // Format the expiry date in a user-friendly way
+    const expiryDateFormatted = expiryDate.toLocaleString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      timeZoneName: 'short',
+    });
+
+    // Generate the reset password URL with base URL from config
+    const baseUrl = this.configService.get<string>(
+      'FRONTEND_URL',
+      'http://localhost:3000',
+    );
+    const resetUrl = `${baseUrl}/forget-password/reset?token=${token}`;
+
+    try {
+      await this.mailerService.sendMail({
+        to: email,
+        subject: 'Reset Your Password',
+        template: './welcoming',
+        context: {
+          logoUrl: '/public/images/img.png',
+          userName: 'User',
+          userEmail: email,
+          verificationUrl: resetUrl,
+          supportEmail: 'support@bookcommunity.com',
+          message:
+            'You requested a password reset. Click the button below to set a new password:',
+          buttonText: 'Reset Password',
+          buttonUrl: resetUrl,
+          expiryDate: expiryDateFormatted,
+          expiryWarning:
+            'This password reset link will expire on ' + expiryDateFormatted,
+          facebookUrl: 'https://facebook.com/bookcommunity',
+          twitterUrl: 'https://twitter.com/bookcommunity',
+          instagramUrl: 'https://instagram.com/bookcommunity',
+          currentYear: new Date().getFullYear().toString(),
+          bookRecommendations: [],
+          exploreUrl: resetUrl,
+          unsubscribeUrl: '#',
+        },
+      });
+
+      this.logger.log(
+        `Password reset email sent to ${email} with expiry date ${expiryDateFormatted}`,
+      );
+    } catch (error) {
+      this.logger.error('Error sending password reset email:', error.message);
+      throw error;
+    }
+  }
 }

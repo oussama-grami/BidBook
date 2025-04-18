@@ -115,6 +115,15 @@ export const routes: Routes = [
     data: { animation: 'fade' },
   },
   {
+    path: 'forget-password/reset',
+    loadComponent: () =>
+      import('./components/forget-password/forget-password.component').then(
+        (c) => c.ForgetPasswordComponent
+      ),
+    resolve: { pageData: DataLoadingResolver },
+    data: { animation: 'fade', resetMode: true },
+  },
+  {
     path: 'mfa-setup',
     canActivate: [tokenValidationGuard],
     loadComponent: () =>

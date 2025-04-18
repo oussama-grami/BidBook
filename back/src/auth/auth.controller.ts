@@ -37,6 +37,7 @@ import {
   ApiBearerAuth,
   ApiCookieAuth,
   ApiConsumes,
+  ApiResponse,
 } from '@nestjs/swagger';
 import { FullAuthGuard } from './guards/full-auth.guard';
 import { SignUpResponseDto } from './dto/responses/sign-up-response.dto';
@@ -63,6 +64,10 @@ import { diskStorage } from 'multer';
 import { unlink } from 'fs/promises';
 import { join } from 'path';
 import { RefresResponse } from './dto/refresh-token.dto';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { ForgotPasswordResponseDto } from './dto/responses/forgot-password-response.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
+import { ResetPasswordResponseDto } from './dto/responses/reset-password-response.dto';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -364,6 +369,36 @@ export class AuthController {
   })
   getProfile(@Req() req): User {
     return req.user;
+  }
+
+  @Post('forgot-password')
+  @ApiOperation({ summary: 'Request password reset email' })
+  @ApiResponse({
+    status: 200,
+    description: 'Password reset email sent',
+    type: ForgotPasswordResponseDto,
+  })
+  async forgotPassword(
+    @Body() forgotPasswordDto: ForgotPasswordDto,
+  ): Promise<ForgotPasswordResponseDto> {
+    return this.authService.forgotPassword(forgotPasswordDto);
+  }
+
+  @Post('reset-password')
+  @ApiOperation({ summary: 'Reset password with token' })
+  @ApiResponse({
+    status: 200,
+    description: 'Password reset successful',
+    type: ResetPasswordResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid or expired token',
+  })
+  async resetPassword(
+    @Body() resetPasswordDto: ResetPasswordDto,
+  ): Promise<ResetPasswordResponseDto> {
+    return this.authService.resetPassword(resetPasswordDto);
   }
 
   /**

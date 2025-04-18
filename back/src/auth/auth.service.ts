@@ -7,6 +7,7 @@ import {
   NotFoundException,
   UnauthorizedException,
   Res,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -41,12 +42,18 @@ import { RedisCacheService } from '../Common/cache/redis-cache.service';
 import { Response } from 'express';
 import { DisableMfaDto } from './dto/disable-mfa.dto';
 import { Role } from 'src/Enums/roles.enum';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { ForgotPasswordResponseDto } from './dto/responses/forgot-password-response.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
+import { ResetPasswordResponseDto } from './dto/responses/reset-password-response.dto';
 
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
   // Email verification token expiry in seconds (24 hours)
   private readonly EMAIL_VERIFICATION_EXPIRY = 24 * 60 * 60;
+  // Password reset token expiry in seconds (30 minutes)
+  private readonly PASSWORD_RESET_EXPIRY = 30 * 60;
 
   constructor(
     @InjectRepository(User)
@@ -566,6 +573,86 @@ export class AuthService {
         imgUrl: dbUser.imageUrl,
         role: dbUser.role as Role,
       },
+    };
+  }
+
+  // Request password reset
+  async forgotPassword(
+    forgotPasswordDto: ForgotPasswordDto,
+  ): Promise<ForgotPasswordResponseDto> {
+    const { email } = forgotPasswordDto;
+
+    // Check if user exists
+    const user = await this.userRepository.findOneBy({ email });
+    if (!user) {
+      // For security reasons, always return success even if email doesn't exist
+      return {
+        message: 'If your email exists in our system, you will receive a password reset link',
+      };
+    }
+
+    // Generate a random token
+    const token = uuidv4();
+
+    try {
+      // Store token in Redis with expiry
+      await this.redisCacheService.storePasswordResetToken(
+        token,
+        email,
+        this.PASSWORD_RESET_EXPIRY,
+      );
+
+      // Send password reset email
+      await this.mailService.sendPasswordResetEmail(
+        email,
+        token,
+        this.PASSWORD_RESET_EXPIRY / 60, // Convert seconds to minutes
+      );
+
+      return {
+        message: 'Password reset instructions have been sent to your email',
+      };
+    } catch (error) {
+      this.logger.error(`Failed to send password reset email: ${error.message}`);
+      throw new InternalServerErrorException('Error sending reset email');
+    }
+  }
+
+  // Reset password with token
+  async resetPassword(
+    resetPasswordDto: ResetPasswordDto,
+  ): Promise<ResetPasswordResponseDto> {
+    const { token, password } = resetPasswordDto;
+
+    // Check if token exists in Redis and is valid
+    const email =
+      await this.redisCacheService.getEmailFromPasswordResetToken(token);
+
+    if (!email) {
+      throw new BadRequestException('Invalid or expired reset token');
+    }
+
+    // Find the user
+    const user = await this.userRepository.findOneBy({ email });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    // Hash the new password
+    const hashedPassword = await this.hashPassword(password);
+
+    // Update the user's password
+    user.password = hashedPassword;
+    await this.userRepository.save(user);
+
+    // Invalidate all existing sessions for this user
+    await this.redisCacheService.invalidateAllUserTokens(user.id);
+
+    // Invalidate the password reset token
+    await this.redisCacheService.invalidatePasswordResetToken(token);
+
+    return {
+      message: 'Password has been reset successfully',
     };
   }
 
