@@ -101,13 +101,13 @@
     </div>
 
     <!-- Profile section only for authenticated users -->
-    <div class="profile" >
+    <div class="profile">
       <div class="profile-info">
         <img
           class="profile-picture"
           width="40"
           height="40"
-          [ngSrc]="'/images/person.png'"
+          [ngSrc]="userProfile.picture || '/images/person.png'"
           alt="Profile Picture"
         />
         <div class="profile-details">

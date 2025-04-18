@@ -67,7 +67,6 @@ export class AuthCallbackComponent implements OnInit {
             this.router.navigate(['/']);
           },
           error: (err) => {
-            console.error('Authentication error:', err);
             this.error =
               err.error?.message || 'Failed to authenticate. Please try again.';
           },

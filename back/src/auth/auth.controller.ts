@@ -114,8 +114,9 @@ export class AuthController {
     @Body() signUpDto: SignUpDto,
   ): Promise<SignUpResponseDto> {
     try {
-      signUpDto.imageUrl = `http://localhost:3000/users/${imageUrl.filename}`;
-      console.log('Signup dto :', signUpDto);
+      // Ensure filename is properly encoded to handle spaces and special characters
+      const encodedFilename = encodeURIComponent(imageUrl.filename);
+      signUpDto.imageUrl = `http://localhost:3000/uploads/users/${encodedFilename}`;
       return this.authService.signUp(signUpDto);
     } catch {
       await unlink(join(imageUrl.path));
@@ -156,7 +157,6 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const result = await this.authService.login(loginDto);
-    console.log('Login result:', result);
     // If MFA is required, store the temporary token in an HTTP-only cookie
     if ('isMfaRequired' in result && result.mfaToken) {
       this.authService.setAccessTokenCookie(res, result.mfaToken, {
@@ -198,7 +198,6 @@ export class AuthController {
   async refreshToken(@Req() req, @Res({ passthrough: true }) res: Response) {
     // Get the refresh token from the cookie
     const refreshToken = req.cookies['refresh_token'];
-    console.log('Refresh token:', refreshToken);
     if (!refreshToken) {
       throw new UnauthorizedException('Refresh token not found');
     }
@@ -257,8 +256,6 @@ export class AuthController {
       mfaVerifyDto,
       req.user,
     );
-
-    console.log('MFA verification result:', result);
     // Set authentication cookies
     if (result.refreshToken) {
       this.authService.setRefreshTokenCookie(res, result.refreshToken);
@@ -269,8 +266,6 @@ export class AuthController {
       this.authService.setAccessTokenCookie(res, result.accessToken);
       delete result.accessToken;
     }
-
-    console.log('Response : ', res);
     // Return only the user data
     return { user: result.user };
   }
@@ -301,7 +296,6 @@ export class AuthController {
     @Body() mfaEnableDto: MfaEnableDto,
     @Req() req,
   ): Promise<MfaEnableResponseDto> {
-    console.log(req.user);
     return this.authService.enableMfa(mfaEnableDto, req.user);
   }
 

@@ -15,9 +15,32 @@ async function bootstrap() {
   // Enable cookie parser middleware
   app.use(cookieParser());
 
-  // Add Helmet for security headers
-  app.use(helmet());
-  app.useStaticAssets(join(__dirname, '..', 'public', 'uploads'));
+  // Add Helmet for security headers but allow images to be loaded from the same origin
+  app.use(
+    helmet({
+      crossOriginResourcePolicy: {
+        policy: 'cross-origin',
+      },
+    }),
+  );
+
+  // Serve static assets with appropriate prefixes
+  app.useStaticAssets(join(__dirname, '..', 'public', 'uploads'), {
+    prefix: '/',
+    setHeaders: (res, path) => {
+      if (
+        path.endsWith('.png') ||
+        path.endsWith('.jpg') ||
+        path.endsWith('.jpeg') ||
+        path.endsWith('.svg')
+      ) {
+        // Set proper CORS headers for images
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+      }
+    },
+  });
+
   // Enable CORS with credentials
   app.enableCors({
     origin: [
@@ -27,6 +50,7 @@ async function bootstrap() {
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    exposedHeaders: ['Content-Disposition'],
   });
 
   app.useGlobalPipes(

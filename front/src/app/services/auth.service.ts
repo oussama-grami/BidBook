@@ -69,9 +69,7 @@ export class AuthService {
         try {
           const user = JSON.parse(userData);
           this.currentUser.next(user);
-        } catch (e) {
-          console.error('Failed to parse user data from localStorage');
-        }
+        } catch (e) {}
       }
     }
   }
@@ -157,7 +155,6 @@ export class AuthService {
       }),
       catchError((error) => {
         const message = error.error?.message || 'Failed to enable MFA';
-        console.error('Error enabling MFA:', error);
         this.notificationService.showError(message);
         return of({ success: false, message, recoveryCodes: [] });
       })
@@ -220,7 +217,6 @@ export class AuthService {
         };
       }),
       catchError((error) => {
-        console.log('Auth service : ', error);
         const message = error.error?.message || 'Login failed';
         this.notificationService.showError(message);
         return of({ requiresOtp: false, message, success: false });
@@ -243,7 +239,6 @@ export class AuthService {
 
     return this.apiAuthService.authControllerVerifyMfaToken(mfaVerifyDto).pipe(
       map((response) => {
-        console.log(response);
         if (response.user) {
           this.setAuthData(response.user);
           this.completeLogin();
@@ -251,7 +246,6 @@ export class AuthService {
         return { success: true, message: 'OTP verification successful' };
       }),
       catchError((error) => {
-        console.log(error);
         const message = error.error?.message || 'Invalid OTP code';
         this.notificationService.showError(message);
         return of({ success: false, message });
@@ -353,9 +347,7 @@ export class AuthService {
           try {
             const user = JSON.parse(userData);
             this.currentUser.next(user);
-          } catch (e) {
-            console.error('Failed to parse user data from localStorage');
-          }
+          } catch (e) {}
         }
         return response;
       }),
@@ -470,7 +462,6 @@ export class AuthService {
         }
       }),
       catchError((error) => {
-        console.error('Error fetching profile:', error);
         return throwError(() => error);
       })
     );

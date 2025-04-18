@@ -111,13 +111,11 @@ export class LoginPageComponent {
       const { otpCode } = this.otpForm.value;
       this.isLoading = true;
       this.errorMessage = '';
-      console.log(this.loginForm.controls['rememberMe'].value);
       this.authService
         .verifyOtp(otpCode,this.loginForm.controls['rememberMe'].value)
         .pipe(finalize(() => (this.isLoading = false)))
         .subscribe({
           next: (response) => {
-            console.log(response);
             if (response.success) {
             } else {
               this.errorMessage = response.message;

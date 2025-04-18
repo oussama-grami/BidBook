@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { DrawerModule } from 'primeng/drawer';
-import { AuthService } from '../../services/auth.service';
+import {Component, OnInit} from '@angular/core';
+import {CommonModule, NgOptimizedImage} from '@angular/common';
+import {RouterModule} from '@angular/router';
+import {DrawerModule} from 'primeng/drawer';
+import {AuthService} from '../../services/auth.service';
 
 interface MenuItem {
   icon: string;
@@ -26,7 +26,7 @@ export class SideMenuComponent implements OnInit {
   userProfile = {
     name: 'Hiba Chabbouh',
     email: 'hibachabbouh@gmail.com',
-    picture: undefined,
+    picture: '',
   };
 
   topMenuItems: MenuItem[] = [
@@ -114,7 +114,13 @@ export class SideMenuComponent implements OnInit {
     },
   ];
 
-  constructor(public authService: AuthService) {}
+  constructor(public authService: AuthService) {
+    this.authService.getProfile().subscribe((res) => {
+      this.userProfile.picture = res.imgUrl;
+      this.userProfile.name = res.firstName + ' ' + res.lastName;
+      this.userProfile.email = res.email;
+    });
+  }
 
   get isAuthenticated(): boolean {
     return this.authService.isAuthenticated();

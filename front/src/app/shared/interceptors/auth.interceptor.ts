@@ -1,4 +1,4 @@
-import {Injectable, Injector} from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import {
   HttpErrorResponse,
   HttpEvent,
@@ -6,12 +6,12 @@ import {
   HttpInterceptor,
   HttpRequest,
 } from '@angular/common/http';
-import {BehaviorSubject, from, Observable, throwError} from 'rxjs';
-import {catchError, filter, finalize, switchMap, take} from 'rxjs/operators';
-import {AuthService} from '../../services/auth.service';
-import {environment} from '../../../environments/environment.development';
-import {Router} from '@angular/router';
-import {NotificationService} from '../../services/notification.service';
+import { BehaviorSubject, from, Observable, throwError } from 'rxjs';
+import { catchError, filter, finalize, switchMap, take } from 'rxjs/operators';
+import { AuthService } from '../../services/auth.service';
+import { environment } from '../../../environments/environment.development';
+import { Router } from '@angular/router';
+import { NotificationService } from '../../services/notification.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -25,8 +25,7 @@ export class AuthInterceptor implements HttpInterceptor {
     private injector: Injector,
     private router: Router,
     private notificationService: NotificationService
-  ) {
-  }
+  ) {}
 
   // Lazy getter for AuthService to avoid circular dependency
   private get authService(): AuthService {
@@ -68,7 +67,6 @@ export class AuthInterceptor implements HttpInterceptor {
   }
 
   private handle401Error(request: HttpRequest<any>, next: HttpHandler) {
-    console.log('Handling 401 error : ', request.url, this.isRefreshing);
     if (!this.isRefreshing) {
       this.isRefreshing = true;
       this.refreshTokenSubject.next(null);
@@ -78,24 +76,37 @@ export class AuthInterceptor implements HttpInterceptor {
         switchMap(() => {
           this.isRefreshing = false;
           this.refreshTokenSubject.next(true);
-          console.log('Token refreshed successfully and this is the request ', request);
           // After a successful refresh, the cookies are automatically included
           // in subsequent requests because the browser handles them
           // We just need to retry the original request
           return next.handle(request);
         }),
         catchError((err) => {
-          console.log("Error refreshing token: ", err);
           this.isRefreshing = false;
 
-          // If refresh token fails, log out and redirect to login
-          this.authService.clearAuthData();
-          this.router.navigate(['/login'], {
-            queryParams: {redirectUrl: this.router.url},
-          });
-          this.notificationService.showWarning(
-            'Your session has expired. Please log in again.'
-          );
+          // Check if this is the specific "Refresh token not found" error that occurs
+          // when tokens are still refreshed successfully
+          const isTokenNotFoundError =
+            err instanceof HttpErrorResponse &&
+            err.status === 401 &&
+            err.error?.message === 'Refresh token not found';
+
+          // Only show errors and redirect if this is a genuine refresh token failure
+          // AND it's not the "Refresh token not found" error that we know can be ignored
+          if (
+            err instanceof HttpErrorResponse &&
+            (err.status === 401 || err.status === 403) &&
+            !isTokenNotFoundError
+          ) {
+            // If refresh token fails, log out and redirect to login
+            this.authService.clearAuthData();
+            this.router.navigate(['/login'], {
+              queryParams: { redirectUrl: this.router.url },
+            });
+            this.notificationService.showWarning(
+              'Your session has expired. Please log in again.'
+            );
+          }
 
           return throwError(() => err);
         }),
