@@ -11,8 +11,10 @@ export class MailService {
     private mailerService: MailerService,
     private configService: ConfigService,
   ) {}
-
-  // Helper method to get the logo CID for email templates
+  /**
+   * Returns the CID for the logo image used in email templates.
+   * This is used to embed the logo in the email body.
+   */
   private getLogoCid(): string {
     return 'logo';
   }
