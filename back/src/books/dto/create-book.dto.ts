@@ -66,6 +66,10 @@ export class CreateBookDto {
   @IsInt()
   @Type(() => Number)
   ownerId?: number;
+  @IsOptional()
+  @IsNumber()
+  @Type(() => Number)
+  price?: number;
 
   @IsOptional()
   @ValidateIf(() => false)
