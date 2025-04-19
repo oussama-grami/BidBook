@@ -6,6 +6,7 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { MessageService } from 'primeng/api';
 import { providePrimeNG } from 'primeng/config';
 import { MyPreset } from '../mytheme';
+import { provideHttpClient } from '@angular/common/http';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -19,7 +20,8 @@ export const appConfig: ApplicationConfig = {
         options: {
           darkModeSelector: '.dark-theme',
         },
-      }
-    })
+      },
+    }),
+    provideHttpClient() 
   ],
 };
