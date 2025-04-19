@@ -1,0 +1,75 @@
+scalar DateTime
+ enum Category {
+FICTION
+NON_FICTION
+SCIENCE
+HISTORY
+BIOGRAPHY
+ROMANCE
+OTHER
+ADVENTURE
+FANTASY
+POETRY
+ART
+NOVEL
+THRILLER
+PHILOSOPHY
+RELIGION
+TECHNOLOGY
+}
+
+enum Language {
+ENGLISH
+GERMAN
+FRENCH
+ITALIAN
+SPANISH
+OTHER
+}
+
+type User {
+    id: ID!
+    username: String!
+}
+
+type Comment {
+    id: ID!
+    text: String!
+    user: User!
+    createdAt: DateTime!
+}
+
+type Bid {
+    id: ID!
+    amount: Float!
+    bidder: User!
+    createdAt: DateTime!
+}
+
+type Book {
+    id: ID!
+    title: String!
+    author: String!
+    picture: String!
+    owner: User!
+    commentsCount: Int!
+    description: String
+    comments: [Comment!]
+    bids: [Bid!]
+    price: Float
+    numberOfPages: Int
+    damagedPages: Int
+    age: Int
+    edition: Int
+    rating: Float
+    votes: Int
+    language: Language
+    editor: String
+    category: Category
+}
+
+ type Query {
+    viewBooks(limit: Int, offset: Int): [Book!]!
+    bookDetails(id: ID!): Book
+    myBids(limit: Int, offset: Int): [Book!]!
+}

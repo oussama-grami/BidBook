@@ -1,6 +1,7 @@
 
 
 import { Module } from '@nestjs/common';
+import {GraphQLModule} from "@nestjs/graphql";
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { config } from 'dotenv';
@@ -16,6 +17,8 @@ import { Notification } from './notifications/entities/notification.entity';
 import { ConfigModule, ConfigService } from '@nestjs/config'; // Ajout de ConfigService
 import { BooksService } from './books/books.service';
 import { BooksController } from './books/books.controller';
+import {ApolloDriver, ApolloDriverConfig} from "@nestjs/apollo";
+import {join} from "path";
 
 config({ path: `${process.cwd()}/Config/.env.dev` });
 
@@ -56,6 +59,14 @@ config({ path: `${process.cwd()}/Config/.env.dev` });
       Bid,
       Notification
     ]),
+      GraphQLModule.forRoot<ApolloDriverConfig>({
+        driver: ApolloDriver,
+        typePaths: ['./**/*.graphql'],
+        definitions: {
+          path: join(process.cwd(), 'src/graphql.ts'),
+          outputAs: 'class',
+        }
+      })
   ],
   controllers: [AppController,BooksController],
   providers: [AppService,BooksService],
