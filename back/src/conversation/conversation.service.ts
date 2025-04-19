@@ -2,9 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Conversation } from './entities/conversation.entity';
-import { Message } from './entities/message.entity';
+import { Message } from 'src/conversation/entities/message.entity';
 import { User } from '../auth/entities/user.entity';
 
+// **** change userRepository instances to queries
 // ****change looking for participants by using the linked bid
 @Injectable()
 export class ConversationService {
@@ -27,30 +28,92 @@ export class ConversationService {
     });
   }
 
-  async getOrCreateConversation(userId1: string, userId2: string) {
-    // Check if conversation already exists
-    // **** look for a winning bid between the two users
-    const existingConversation = await this.conversationRepository
+  /**
+   * Create conversation linked to a bid (for won bids)
+   */
+  async createBidConversation(bidId: string, participants: string[]) {
+    const users = await this.userRepository.findByIds(participants);
+    
+    return this.conversationRepository.save({
+      isActive: true,
+      bid: { id: bidId }, // Link to the bid
+      participants: users
+    });
+  }
+
+  /**
+   * Find conversation by bid ID
+   */
+  async findByBidId(bidId: string) {
+    return this.conversationRepository.findOne({
+      where: { bid: { id: bidId } },
+      relations: ['participants', 'bid']
+    });
+  }
+
+  /**
+   * Update conversation active status
+   */
+  async setConversationStatus(id: string, isActive: boolean) {
+    await this.conversationRepository.update(id, { isActive });
+    return this.conversationRepository.findOneBy({ id });
+  }
+
+  /**
+   * Find active conversations between two users
+   * (Modified from getOrCreateConversation)
+   */
+  async findActiveConversation(userId1: string, userId2: string) {
+    return this.conversationRepository
       .createQueryBuilder('conversation')
       .innerJoin('conversation.participants', 'participant1')
       .innerJoin('conversation.participants', 'participant2')
       .where('participant1.id = :userId1', { userId1 })
       .andWhere('participant2.id = :userId2', { userId2 })
+      .andWhere('conversation.isActive = true')
       .getOne();
+  }
 
-    if (existingConversation) {
-      return existingConversation;
-    }
-
-    // Create a new conversation
-    const user1 = await this.userRepository.findOne({ where: { id: userId1 } });
-    const user2 = await this.userRepository.findOne({ where: { id: userId2 } });
-    
-    const newConversation = this.conversationRepository.create({
-      participants: [user1, user2]
+  async getOrCreateConversation(userId1: string, userId2: string) {
+    // First check for existing ACTIVE conversation
+    const existing = await this.findActiveConversation(userId1, userId2);
+    if (existing) return existing;
+  
+    // Then check for any bid-linked conversations
+    const bidConversation = await this.conversationRepository
+      .createQueryBuilder('conversation')
+      .innerJoin('conversation.bid', 'bid')
+      .innerJoin('bid.user', 'user')
+      .where('user.id IN (:...userIds)', { userIds: [userId1, userId2] })
+      .andWhere('conversation.isActive = true')
+      .getOne();
+  
+    if (bidConversation) return bidConversation;
+  
+    // Fallback to creating new conversation
+    const users = await this.userRepository.findByIds([userId1, userId2]);
+    return this.conversationRepository.save({
+      participants: users,
+      isActive: true
     });
-    
-    return this.conversationRepository.save(newConversation);
+  }
+
+  async findByConversationId(id: string) {
+    return this.conversationRepository.findOne({
+      where: { id },
+      relations: ['participants', 'bid']
+    });
+  }
+  
+  async getActiveBidConversations(userId: string) {
+    return this.conversationRepository.find({
+      where: {
+        participants: { id: userId },
+        isActive: true,
+        bid: Not(IsNull())
+      },
+      relations: ['bid']
+    });
   }
 
   async addMessage(conversationId: string, senderId: string, content: string) {

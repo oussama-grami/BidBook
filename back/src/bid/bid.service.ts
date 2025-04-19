@@ -3,9 +3,19 @@ import { CreateBidDto } from './dto/create-bid.dto';
 import { UpdateBidDto } from './dto/update-bid.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { Bid } from 'src/bid/entities/bid.entity';
+import { BidStatus } from 'src/Enums/bidstatus.enum';
+
 
 @Injectable()
 export class BidService {
+  constructor(
+    @InjectRepository(Bid)
+    private bidRepository: Repository<Bid>,
+    private eventEmitter: EventEmitter2,
+  ) {}
+
   create(createBidDto: CreateBidDto) {
     return 'This action adds a new bid';
   }
@@ -25,27 +35,45 @@ export class BidService {
   remove(id: number) {
     return `This action removes a #${id} bid`;
   }
+
   /**
-   * 
-   * @param id the id of the updated bid
-   * @param status the new status of the bid
-   * @returns 
+   * Updates the status of a bid and emits appropriate events
+   * @param id The id of the bid to update
+   * @param status The new status (must be a valid BidStatus value)
+   * @returns The updated bid
    */
-  async updateBidStatus(id: string, status: string) {
-    const bid = await this.bidRepository.findOne({ where: { id } });
+  async updateBidStatus(id: string, status: BidStatus) {
+    const bid = await this.bidRepository.findOne({ 
+      where: { id },
+      relations: ['conversation', 'bidder']
+    });
 
-    if (status === 'won' && !bid.conversation) {
-      const conversation = this.conversationRepository.create({
-        isActive: true,
-        bid, // Links the conversation to the bid
-      });
-      await this.conversationRepository.save(conversation);
-
-      bid.conversation = conversation;
-      await this.bidRepository.save(bid);
+    if (!bid) {
+      throw new Error('Bid not found');
     }
 
-    // Update other bid properties...
-    return this.bidRepository.save({ ...bid, status });
+    // Validate the status
+    if (!Object.values(BidStatus).includes(status)) {
+      throw new Error('Invalid bid status');
+    }
+
+    // Handle status changes
+    if (status === BidStatus.WON && !bid.conversation) {
+      this.eventEmitter.emit('bid.won', { bid });
+    }
+    else if (status === BidStatus.LOST && bid.conversation?.isActive) {
+      this.eventEmitter.emit('bid.lost', { bid });
+    }
+
+    // Update bid status using the enum
+    bid.bidStatus = status;
+    return this.bidRepository.save(bid);
+  }
+
+  /**
+   * Helper method to get all possible bid statuses
+   */
+  getBidStatuses(): Record<string, string> {
+    return BidStatus;
   }
 }
