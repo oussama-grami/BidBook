@@ -1,9 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { ConversationService } from '../conversation.service';
-import { ConversationGateway } from '../conversation.gateway';
-import { Bid } from 'src/bid/entities/bid.entity'
-
+import { Bid } from 'src/bid/entities/bid.entity';
 
 @Injectable()
 export class BidEventsListener {
@@ -11,14 +9,10 @@ export class BidEventsListener {
     private conversationService: ConversationService
   ) {}
 
-  // 
   @OnEvent('bid.won')
   async handleBidWon({ bid }: { bid: Bid }) {
-    // Assuming bid has sellerId and bidderId
-    await this.conversationService.createBidConversation(
-      bid.id,
-      [bid.bidder.id, bid.auction.sellerId]
-    );
+    // Create conversation when bid is won
+    await this.conversationService.createBidConversation(bid);
   }
 
   @OnEvent('bid.lost')

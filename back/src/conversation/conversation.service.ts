@@ -4,9 +4,9 @@ import { Repository } from 'typeorm';
 import { Conversation } from './entities/conversation.entity';
 import { Message } from 'src/conversation/entities/message.entity';
 import { User } from '../auth/entities/user.entity';
+import { Bid } from 'src/bid/entities/bid.entity';
 
-// **** change userRepository instances to queries
-// ****change looking for participants by using the linked bid
+
 @Injectable()
 export class ConversationService {
   constructor(
@@ -16,149 +16,182 @@ export class ConversationService {
     private messageRepository: Repository<Message>,
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    @InjectRepository(Bid)
+    private bidRepository: Repository<Bid>,
   ) {}
 
-  async getPendingMessages(userId: string) {
+  async getUnreadMessages(userId: number, conversationId: number) {
+    const conversation = await this.conversationRepository.findOne({
+      where: { id: conversationId },
+      relations: ['bidder', 'owner']
+    });
+  
+    if (!conversation) {
+      throw new Error('Conversation not found');
+    }
+  
+    const isUserBidder = conversation.bidder.id === userId;
+    const isUserOwner = conversation.owner.id === userId;
+  
+    if (!isUserBidder && !isUserOwner) {
+      throw new Error('User is not part of this conversation');
+    }
+  
+    // fetch unread messages sent by the other user
     return this.messageRepository.find({
       where: {
-        receiver: { id: userId },
-        isRead: false
+        isRead: false,
+        conversation: { id: conversationId },
+        isFromBidder: isUserOwner
       },
-      relations: ['sender', 'conversation']
+      relations: ['conversation']
     });
   }
 
   /**
-   * Create conversation linked to a bid (for won bids)
-   */
-  async createBidConversation(bidId: string, participants: string[]) {
-    const users = await this.userRepository.findByIds(participants);
-    
+ * Create conversation linked to a bid
+ */
+  async createBidConversation(bid: Bid) {
+    if (!bid.bidder || !bid.book?.owner) {
+      throw new Error('Bid parameter must include bidder, book, and book.owner');
+    }
+  
     return this.conversationRepository.save({
       isActive: true,
-      bid: { id: bidId }, // Link to the bid
-      participants: users
+      bid: bid,
+      bidder: bid.bidder,
+      owner: bid.book.owner
     });
   }
 
   /**
-   * Find conversation by bid ID
-   */
-  async findByBidId(bidId: string) {
-    return this.conversationRepository.findOne({
-      where: { bid: { id: bidId } },
-      relations: ['participants', 'bid']
-    });
-  }
+ * Find conversation by bid ID
+ */
+async findByBidId(bidId: number) {
+  return this.conversationRepository.findOne({
+    where: { bid: { id: bidId } },
+    relations: ['bidder', 'owner', 'bid']
+  });
+}
 
   /**
    * Update conversation active status
    */
-  async setConversationStatus(id: string, isActive: boolean) {
+  async setConversationStatus(id: number, isActive: boolean) {
     await this.conversationRepository.update(id, { isActive });
     return this.conversationRepository.findOneBy({ id });
   }
 
   /**
-   * Find active conversations between two users
-   * (Modified from getOrCreateConversation)
-   */
-  async findActiveConversation(userId1: string, userId2: string) {
-    return this.conversationRepository
-      .createQueryBuilder('conversation')
-      .innerJoin('conversation.participants', 'participant1')
-      .innerJoin('conversation.participants', 'participant2')
-      .where('participant1.id = :userId1', { userId1 })
-      .andWhere('participant2.id = :userId2', { userId2 })
-      .andWhere('conversation.isActive = true')
-      .getOne();
-  }
-
-  async getOrCreateConversation(userId1: string, userId2: string) {
-    // First check for existing ACTIVE conversation
-    const existing = await this.findActiveConversation(userId1, userId2);
-    if (existing) return existing;
-  
-    // Then check for any bid-linked conversations
-    const bidConversation = await this.conversationRepository
-      .createQueryBuilder('conversation')
-      .innerJoin('conversation.bid', 'bid')
-      .innerJoin('bid.user', 'user')
-      .where('user.id IN (:...userIds)', { userIds: [userId1, userId2] })
-      .andWhere('conversation.isActive = true')
-      .getOne();
-  
-    if (bidConversation) return bidConversation;
-  
-    // Fallback to creating new conversation
-    const users = await this.userRepository.findByIds([userId1, userId2]);
-    return this.conversationRepository.save({
-      participants: users,
-      isActive: true
-    });
-  }
-
-  async findByConversationId(id: string) {
-    return this.conversationRepository.findOne({
-      where: { id },
-      relations: ['participants', 'bid']
-    });
-  }
-  
-  async getActiveBidConversations(userId: string) {
-    return this.conversationRepository.find({
-      where: {
-        participants: { id: userId },
-        isActive: true,
-        bid: Not(IsNull())
+ * Find active conversation between two users
+ */
+async findActiveConversation(userId1: number, userId2: number) {
+  return this.conversationRepository.findOne({
+    where: [
+      // Case 1: userId1 is bidder, userId2 is owner
+      {
+        bidder: { id: userId1 },
+        owner: { id: userId2 },
+        isActive: true
       },
-      relations: ['bid']
-    });
-  }
-
-  async addMessage(conversationId: string, senderId: string, content: string) {
-    const conversation = await this.conversationRepository.findOne({ 
-      where: { id: conversationId },
-      relations: ['participants']
-    });
-    
-    const sender = await this.userRepository.findOne({ where: { id: senderId } });
-    
-    // Find the receiver (the other participant)
-    const receiver = conversation.participants.find(p => p.id !== senderId);
-    
-    const message = this.messageRepository.create({
-      content,
-      conversation,
-      sender,
-      receiver,
-      isRead: false,
-      timestamp: new Date()
-    });
-    
-    return this.messageRepository.save(message);
-  }
-
-  async markMessagePending(messageId: string) {
-    await this.messageRepository.update(messageId, { isPending: true });
-  }
-
-  async markMessagesAsRead(conversationId: string, userId: string) {
-    await this.messageRepository.update(
-      { 
-        conversation: { id: conversationId },
-        receiver: { id: userId },
-        isRead: false
+      // Case 2: userId1 is owner, userId2 is bidder
+      {
+        bidder: { id: userId2 },
+        owner: { id: userId1 },
+        isActive: true
+      }
+    ],
+    relations: ['bidder', 'owner']
+  });
+}
+/**
+ * returns all the conversations for a user
+ * @param userId - ID of the user
+ */
+async findConversationsForUser(userId: number) {
+  return this.conversationRepository.find({
+    where: [
+      // Case 1: user is bidder
+      {
+        bidder: { id: userId }
       },
-      { isRead: true }
-    );
+      // Case 2: user is owner
+      {
+        owner: { id: userId }
+      }
+    ],
+    relations: ['bidder', 'owner', 'bid'],
+    order: {
+      startDate: 'DESC' // Most recent conversations first
+    }
+  });
+}
+
+async addMessage(conversationId: number, senderId: number, content: string) {
+  const conversation = await this.conversationRepository.findOne({ 
+    where: { id: conversationId },
+    relations: ['bidder', 'owner']
+  });
+
+  if (!conversation) {
+    throw new Error('Conversation not found');
   }
 
-  async getMessages(conversationId: string) {
-    return this.messageRepository.find({
-      where: { conversation: { id: conversationId } },
-      relations: ['sender', 'receiver'],
-      order: { timestamp: 'ASC' }
-    });
+  // Verify sender is part of conversation
+  const isFromBidder = conversation.bidder.id === senderId;
+  if (!isFromBidder && conversation.owner.id !== senderId) {
+    throw new Error('Sender is not part of this conversation');
+  }
+
+  const message = this.messageRepository.create({
+    content,
+    conversation,
+    isFromBidder,
+    isRead: false,
+    timestamp: new Date()
+  });
+
+  return this.messageRepository.save(message);
+}
+
+  async markMessagesAsRead(conversationId: number, userId: number) {
+  // First verify the user is part of the conversation
+  const conversation = await this.conversationRepository.findOne({
+    where: { id: conversationId },
+    relations: ['bidder', 'owner']
+  });
+
+  if (!conversation) {
+    throw new Error('Conversation not found');
+  }
+
+  const isUserBidder = conversation.bidder.id === userId;
+  const isUserOwner = conversation.owner.id === userId;
+
+  if (!isUserBidder && !isUserOwner) {
+    throw new Error('User is not part of this conversation');
+  }
+
+  // Mark messages as read based on whether the user is bidder or owner
+  await this.messageRepository.update(
+    {
+      conversation: { id: conversationId },
+      isFromBidder: !isUserBidder, // Messages FROM the other user
+      isRead: false
+    },
+    { isRead: true }
+  );
+}
+
+async getMessages(conversationId: number) {
+  return this.messageRepository.find({
+    where: { 
+      conversation: { id: conversationId } 
+    },
+    relations: ['conversation', 'conversation.bidder', 'conversation.owner'],
+    order: { 
+      timestamp: 'ASC' 
+    }
+  });
   }
 }

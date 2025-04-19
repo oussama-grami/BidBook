@@ -1,12 +1,9 @@
-// src/conversation/entities/message.entity.ts
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from 'typeorm';
 import { Conversation } from './conversation.entity';
+import { CommonEntity } from 'src/Common/Common.entity';
 
 @Entity()
-export class Message {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
+export class Message extends CommonEntity{
   @Column('text')
   content: string;
 
@@ -21,7 +18,4 @@ export class Message {
 
   @Column({ default: false })
   isRead: boolean;
-
-  @Column({ default: false })
-  isPending: boolean;
 }

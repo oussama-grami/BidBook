@@ -12,6 +12,7 @@ import { Server, Socket } from 'socket.io';
 import { ConversationService } from './conversation.service';
 import { User } from '../auth/entities/user.entity';
 
+
 @WebSocketGateway({
   cors: {
     origin: '*',
@@ -20,32 +21,33 @@ import { User } from '../auth/entities/user.entity';
 })
 export class ConversationGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: Server;
-  private userSocketMap = new Map<string, string>(); // userId -> socketId
+  private userSocketMap = new Map<string, string>();
 
   constructor(private readonly conversationService: ConversationService) {}
 
-  async handleConnection(client: Socket) {
-    const userId = client.handshake.query.userId as string;
-    if (!userId) {
-      client.disconnect();
-      return;
-    }
-
-    console.log(`Client connected: ${client.id}, User ID: ${userId}`);
-    
-    // Store user connection info
-    client.data.userId = userId;
-    this.userSocketMap.set(userId, client.id);
-    
-    // Send initial data (pending messages and active bid conversations)
-    const [pendingMessages, bidConversations] = await Promise.all([
-      this.conversationService.getPendingMessages(userId),
-      this.conversationService.getActiveBidConversations(userId)
-    ]);
-
-    if (pendingMessages.length > 0 || bidConversations.length > 0) {
-      client.emit('initialData', { pendingMessages, bidConversations });
-    }
+    async handleConnection(client: Socket) {
+      const userId = client.handshake.query.userId as string;
+      if (!userId) {
+        client.disconnect();
+        return;
+      }
+      
+      client.data.userId = userId;
+      this.userSocketMap.set(userId, client.id);
+      
+      // Send initial data
+      const conversations = await this.conversationService.findConversationsForUser(Number(userId));
+      
+      // Get unread messages from all conversations
+      const unreadMessages = await Promise.all(
+        conversations.map(conversation => 
+          this.conversationService.getUnreadMessages(Number(userId), conversation.id)
+        )
+      ).then(messages => messages.flat());
+  
+      if (unreadMessages.length > 0 || conversations.length > 0) {
+        client.emit('initialData', { unreadMessages, conversations });
+      }
   }
 
   handleDisconnect(client: Socket) {
@@ -56,10 +58,19 @@ export class ConversationGateway implements OnGatewayConnection, OnGatewayDiscon
     }
   }
 
-  private async verifyConversationAccess(conversationId: string, userId: string) {
-    const conversation = await this.conversationService.findByConversationId(conversationId);
-    const isParticipant = conversation.participants.some((p: User) => p.id === userId);
-    if (!isParticipant) throw new WsException('Not authorized for this conversation');
+  private async verifyConversationAccess(conversationId: number, userId: number) {
+    const conversation = await this.conversationService.findByBidId(conversationId);
+    if (!conversation) {
+      throw new WsException('Conversation not found');
+    }
+
+    const isUserBidder = conversation.bidder.id === userId;
+    const isUserOwner = conversation.owner.id === userId;
+
+    if (!isUserBidder && !isUserOwner) {
+      throw new WsException('Not authorized for this conversation');
+    }
+
     return conversation;
   }
 
@@ -67,32 +78,31 @@ export class ConversationGateway implements OnGatewayConnection, OnGatewayDiscon
   async sendMessage(
     @ConnectedSocket() client: Socket,
     @MessageBody() data: { 
-      conversationId: string, 
-      receiverId: string,
+      conversationId: number,
       content: string 
     }
   ) {
-    const senderId = client.data.userId;
-
-    // Verify conversation is active and user has access
+    const senderId = Number(client.data.userId);
     const conversation = await this.verifyConversationAccess(data.conversationId, senderId);
+    
     if (!conversation.isActive) {
       throw new WsException('This conversation is no longer active');
     }
 
-    // Store the message
     const message = await this.conversationService.addMessage(
       data.conversationId,
       senderId,
       data.content
     );
     
+    // Determine receiver based on sender role
+    const isFromBidder = conversation.bidder.id === senderId;
+    const receiverId = isFromBidder ? conversation.owner.id : conversation.bidder.id;
+    
     // Deliver to receiver if online
-    const receiverSocketId = this.userSocketMap.get(data.receiverId);
+    const receiverSocketId = this.userSocketMap.get(String(receiverId));
     if (receiverSocketId) {
       this.server.to(receiverSocketId).emit('newMessage', message);
-    } else {
-      await this.conversationService.markMessagePending(message.id);
     }
     
     return message;
@@ -101,16 +111,18 @@ export class ConversationGateway implements OnGatewayConnection, OnGatewayDiscon
   @SubscribeMessage('getConversation')
   async getConversation(
     @ConnectedSocket() client: Socket,
-    @MessageBody() data: { withUserId?: string, bidId?: string }
+    @MessageBody() data: { withUserId?: number, bidId?: number }
   ) {
-    const userId = client.data.userId;
+    const userId = Number(client.data.userId);
     let conversation;
 
     if (data.bidId) {
       conversation = await this.conversationService.findByBidId(data.bidId);
-      if (!conversation) throw new WsException('No conversation found for this bid');
+      if (!conversation) {
+        throw new WsException('No conversation found for this bid');
+      }
     } else if (data.withUserId) {
-      conversation = await this.conversationService.getOrCreateConversation(
+      conversation = await this.conversationService.findActiveConversation(
         userId, 
         data.withUserId
       );
@@ -118,45 +130,18 @@ export class ConversationGateway implements OnGatewayConnection, OnGatewayDiscon
       throw new WsException('Must provide either withUserId or bidId');
     }
 
-    // Verify participation
     await this.verifyConversationAccess(conversation.id, userId);
-
     const messages = await this.conversationService.getMessages(conversation.id);
     
-    return {
-      conversation,
-      messages
-    };
-  }
-
-  @SubscribeMessage('getBidConversation')
-  async getBidConversation(
-    @ConnectedSocket() client: Socket,
-    @MessageBody() data: { bidId: string }
-  ) {
-    const userId = client.data.userId;
-    const conversation = await this.conversationService.findByBidId(data.bidId);
-    
-    if (!conversation) {
-      throw new WsException('No conversation found for this bid');
-    }
-
-    await this.verifyConversationAccess(conversation.id, userId);
-
-    const messages = await this.conversationService.getMessages(conversation.id);
-    
-    return {
-      conversation,
-      messages
-    };
+    return { conversation, messages };
   }
 
   @SubscribeMessage('markAsRead')
   async markMessagesAsRead(
     @ConnectedSocket() client: Socket,
-    @MessageBody() data: { conversationId: string }
+    @MessageBody() data: { conversationId: number }
   ) {
-    const userId = client.data.userId;
+    const userId = Number(client.data.userId);
     await this.verifyConversationAccess(data.conversationId, userId);
     
     await this.conversationService.markMessagesAsRead(data.conversationId, userId);

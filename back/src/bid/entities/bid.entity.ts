@@ -4,12 +4,10 @@ import { User } from 'src/auth/entities/user.entity';
 import { Transaction } from 'src/transaction/entities/transaction.entity';
 import { Book } from 'src/book/entities/book.entity';
 import { BidStatus } from 'src/Enums/bidstatus.enum';
+import { CommonEntity } from 'src/Common/Common.entity';
 
 @Entity()
-export class Bid {
-    @PrimaryGeneratedColumn('uuid')
-    id: string;
-
+export class Bid extends CommonEntity {
     @Column({ type: 'float' })
     amount: number;
 
@@ -33,6 +31,6 @@ export class Bid {
         type: 'enum',
         enum: BidStatus,
         default: BidStatus.PENDING,
-      })
-      bidStatus: BidStatus;
+    })
+    bidStatus: BidStatus;
 }
