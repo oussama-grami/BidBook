@@ -8,7 +8,7 @@ import {
   Delete,
   UseInterceptors,
   UploadedFile,
-  BadRequestException,
+  BadRequestException, ParseIntPipe,
 } from '@nestjs/common';
 import { BooksService } from './books.service';
 import { CreateBookDto } from './dto/create-book.dto';
@@ -144,9 +144,97 @@ export class BooksController {
     return this.booksService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBookDto: UpdateBookDto) {
-    return this.booksService.update(+id, updateBookDto);
+  @Patch('/update/:id')
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        title: { type: 'string', nullable: true },
+        author: { type: 'string', nullable: true },
+        category: { type: 'string', nullable: true },
+        language: { type: 'string', nullable: true },
+        editor: { type: 'string', nullable: true },
+        edition: { type: 'string', nullable: true },
+        totalPages: { type: 'number', nullable: true },
+        damagedPages: { type: 'number', nullable: true },
+        age: { type: 'number', nullable: true },
+        ownerId: { type: 'number', nullable: true },
+        pictureFile: {
+          type: 'string',
+          format: 'binary',
+          nullable: true,
+        },
+      },
+    },
+  })
+  @UseInterceptors(
+      FileInterceptor('pictureFile', {
+        storage: diskStorage({
+          destination: './public/upload/book',
+          filename: (req, file, callback) => {
+            const ext = extname(file.originalname).toLowerCase();
+            const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+            callback(null, `book-${uniqueSuffix}${ext}`);
+          },
+        }),
+        limits: {
+          fileSize: 5 * 1024 * 1024, // 5 MB
+        },
+        fileFilter: (req, file, callback) => {
+          if (file) {
+            const allowedMimeTypes = ['image/png', 'image/jpeg'];
+            if (!allowedMimeTypes.includes(file.mimetype)) {
+              return callback(
+                  new Error('Only PNG and JPEG images are allowed.'),
+                  false,
+              );
+            }
+          }
+          callback(null, true);
+        },
+      }),
+  )
+  async updateBook(
+      @Param('id', ParseIntPipe) id: number,
+      @UploadedFile() file: Express.Multer.File,
+      @Body() bookData: any,
+  ) {
+    let newPicturePath: string | undefined;
+    if (file) {
+      newPicturePath = file.path;
+    }
+
+    try {
+      const updateBookDto = plainToInstance(UpdateBookDto, bookData);
+      const errors = await validate(updateBookDto);
+
+      if (errors.length > 0) {
+        const validationErrors = errors.map(error => {
+          const constraints = error.constraints
+              ? Object.values(error.constraints)
+              : [];
+          return `${error.property}: ${constraints.join(', ')}`;
+        });
+        throw new BadRequestException(validationErrors);
+      }
+
+      return await this.booksService.update(id, updateBookDto, newPicturePath);
+    } catch (error) {
+      if (newPicturePath) {
+        await fs
+            .unlink(newPicturePath)
+            .catch(err =>
+                console.error('Failed to delete newly uploaded file:', err),
+            );
+      }
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      throw new BadRequestException(
+          `An error occurred while updating the book with ID ${id}: ${error.message}`,
+      );
+    }
   }
 
   @Delete(':id')

@@ -41,6 +41,15 @@ export const routes: Routes = [
         canActivate: [RouteLoadingGuard],
         data: { animation: 'zoom' },
       },
+      {
+        path: 'update/:id',
+        loadComponent: () =>
+          import('./update-book/book-update.component').then(
+            (c) => c.BookUpdateComponent
+          ),
+        canActivate: [RouteLoadingGuard],
+        data: { animation: 'slideLeft' },
+      },
     ],
   },
   {

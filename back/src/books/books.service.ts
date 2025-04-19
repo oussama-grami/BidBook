@@ -5,7 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import axios from 'axios';
 import { Book } from './entities/book.entity';
-import * as fs from "node:fs";
+import * as fs from 'fs/promises';
 
 @Injectable()
 export class BooksService {
@@ -96,26 +96,22 @@ export class BooksService {
       throw new NotFoundException(`Book with ID ${id} not found`);
     }
 
-    const dataToPredict = {
-      title: updateBookDto.title !== undefined ? updateBookDto.title : book.title,
-      author: updateBookDto.author !== undefined ? updateBookDto.author : book.author,
-      category: updateBookDto.category !== undefined ? updateBookDto.category : book.category,
-      language: updateBookDto.language !== undefined ? updateBookDto.language : book.language,
-      editor: updateBookDto.editor !== undefined ? updateBookDto.editor : book.editor,
-      edition: updateBookDto.edition !== undefined ? updateBookDto.edition : book.edition,
-      totalPages: updateBookDto.totalPages !== undefined ? updateBookDto.totalPages : book.totalPages,
-      damagedPages:
-          updateBookDto.damagedPages !== undefined
-              ? updateBookDto.damagedPages
-              : book.damagedPages,
-      age: updateBookDto.age !== undefined ? updateBookDto.age : book.age,
-    };
+    const dataToPredict: Partial<UpdateBookDto> = {};
+    if (updateBookDto.title !== undefined) dataToPredict.title = updateBookDto.title;
+    if (updateBookDto.author !== undefined) dataToPredict.author = updateBookDto.author;
+    if (updateBookDto.category !== undefined) dataToPredict.category = updateBookDto.category;
+    if (updateBookDto.language !== undefined) dataToPredict.language = updateBookDto.language;
+    if (updateBookDto.editor !== undefined) dataToPredict.editor = updateBookDto.editor;
+    if (updateBookDto.edition !== undefined) dataToPredict.edition = updateBookDto.edition;
+    if (updateBookDto.totalPages !== undefined) dataToPredict.totalPages = updateBookDto.totalPages;
+    if (updateBookDto.damagedPages !== undefined) dataToPredict.damagedPages = updateBookDto.damagedPages;
+    if (updateBookDto.age !== undefined) dataToPredict.age = updateBookDto.age;
 
     let predictedPrice: number;
     try {
       const response = await axios.post(
           'http://localhost:5000/predict',
-          dataToPredict,
+          { ...book, ...dataToPredict },
       );
       predictedPrice = response.data.prediction;
     } catch (error) {
@@ -124,21 +120,20 @@ export class BooksService {
       );
     }
 
+    this.bookRepository.merge(book, updateBookDto);
+    book.price = predictedPrice;
 
     if (newPicturePath) {
       if (book.picture) {
         try {
-          await fs.promises.unlink(book.picture);
+          await fs.unlink(book.picture);
         } catch (error) {
           console.error('Failed to delete old picture:', error);
-
         }
       }
       book.picture = newPicturePath;
     }
 
-
-    this.bookRepository.merge(book, { ...updateBookDto, price: predictedPrice });
     return await this.bookRepository.save(book);
   }
 

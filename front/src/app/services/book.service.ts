@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class BookService {
-  private apiUrl = 'http://localhost:3000'; 
+  private apiUrl = 'http://localhost:3000';
 
   constructor(private http: HttpClient) {}
 
@@ -17,5 +17,8 @@ export class BookService {
 
   addBook(formData: FormData): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/books/add`, formData);
+  }
+  updateBook(id: number, formData: FormData): Observable<any> {
+    return this.http.patch<any>(`${this.apiUrl}/update/${id}`, formData);
   }
 }
