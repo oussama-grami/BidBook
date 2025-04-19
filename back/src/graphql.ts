@@ -37,41 +37,39 @@ export enum Language {
 }
 
 export class User {
-    id: string;
-    username: string;
+    id: number;
+    firstName: string;
+    lastName: string;
 }
 
 export class Comment {
-    id: string;
-    text: string;
+    id: number;
+    content: string;
     user: User;
     createdAt: DateTime;
 }
 
 export class Bid {
-    id: string;
+    id: number;
     amount: number;
     bidder: User;
     createdAt: DateTime;
 }
 
 export class Book {
-    id: string;
+    id: number;
     title: string;
     author: string;
     picture: string;
     owner: User;
-    commentsCount: number;
-    description?: Nullable<string>;
     comments?: Nullable<Comment[]>;
     bids?: Nullable<Bid[]>;
     price?: Nullable<number>;
-    numberOfPages?: Nullable<number>;
+    totalPages?: Nullable<number>;
     damagedPages?: Nullable<number>;
     age?: Nullable<number>;
     edition?: Nullable<number>;
     rating?: Nullable<number>;
-    votes?: Nullable<number>;
     language?: Nullable<Language>;
     editor?: Nullable<string>;
     category?: Nullable<Category>;
@@ -80,7 +78,7 @@ export class Book {
 export abstract class IQuery {
     abstract viewBooks(limit?: Nullable<number>, offset?: Nullable<number>): Book[] | Promise<Book[]>;
 
-    abstract bookDetails(id: string): Nullable<Book> | Promise<Nullable<Book>>;
+    abstract bookDetails(id: number): Nullable<Book> | Promise<Nullable<Book>>;
 
     abstract myBids(limit?: Nullable<number>, offset?: Nullable<number>): Book[] | Promise<Book[]>;
 }

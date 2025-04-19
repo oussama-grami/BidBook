@@ -57,12 +57,33 @@ export class BooksService {
     return await this.bookRepository.save(bookToSave);
   }
 
-  findAll() {
-    return `This action returns all books`;
+  async findAll(limit?: number, offset?: number): Promise<Book[]> {
+    try {
+      console.log(`Finding books with limit: ${limit}, offset: ${offset}`);
+      const books = await this.bookRepository.find({
+        take: limit,
+        skip: offset,
+        relations: ['owner'],
+      });
+      console.log(`Found ${books?.length || 0} books`);
+      return books || [];
+    } catch (error) {
+      console.error('Error in bookService.findAll:', error);
+      return [];
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} book`;
+  async findOne(id: number): Promise<Book> {
+    const book = await this.bookRepository.findOne({
+      where: { id },
+      relations: ['owner', 'comments', 'bids'],
+    });
+
+    if (!book) {
+      throw new NotFoundException(`Book with ID ${id} not found`);
+    }
+
+    return book;
   }
 
   async update(

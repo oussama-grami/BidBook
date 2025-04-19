@@ -19,6 +19,10 @@ import { BooksService } from './books/books.service';
 import { BooksController } from './books/books.controller';
 import {ApolloDriver, ApolloDriverConfig} from "@nestjs/apollo";
 import {join} from "path";
+import {BookResolver} from "./graphql/book.resolver";
+import {AuthService} from "./auth/auth.service";
+import {CommentsService} from "./comments/comments.service";
+import {BidsService} from "./bids/bids.service";
 
 config({ path: `${process.cwd()}/Config/.env.dev` });
 
@@ -60,15 +64,19 @@ config({ path: `${process.cwd()}/Config/.env.dev` });
       Notification
     ]),
       GraphQLModule.forRoot<ApolloDriverConfig>({
+        debug: true,
         driver: ApolloDriver,
+        playground: true,
+        introspection: true,
         typePaths: ['./**/*.graphql'],
         definitions: {
           path: join(process.cwd(), 'src/graphql.ts'),
           outputAs: 'class',
         }
-      })
+      }
+      )
   ],
   controllers: [AppController,BooksController],
-  providers: [AppService,BooksService],
+  providers: [AppService,BooksService, BookResolver, AuthService, CommentsService, BidsService],
 })
 export class AppModule {}

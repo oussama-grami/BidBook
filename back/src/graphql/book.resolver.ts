@@ -1,8 +1,10 @@
 import { Resolver, Query, Args, ID, ResolveField, Parent } from '@nestjs/graphql';
 import { BooksService } from '../books/books.service';
-import {AuthService} from "../auth/auth.service";
+import { AuthService } from "../auth/auth.service";
 import { CommentsService } from '../comments/comments.service';
 import{BidsService} from "../bids/bids.service";
+import {Book} from "../graphql";
+import {InternalServerErrorException} from "@nestjs/common";
 
 @Resolver('Book')
 export class BookResolver {
@@ -17,8 +19,14 @@ export class BookResolver {
     async viewBooks(
         @Args('limit') limit?: number,
         @Args('offset') offset?: number,
-    ) {
-        return this.bookService.findAll();
+    ): Promise<Book[]> {
+        try {
+            const books = await this.bookService.findAll(limit, offset);
+            return books ? books : [];
+        } catch (error) {
+            console.error('Error in viewBooks resolver:', error);
+            throw new InternalServerErrorException('Failed to fetch books');
+        }
     }
 
     @Query('bookDetails')
@@ -28,7 +36,7 @@ export class BookResolver {
 
     @ResolveField('owner', () => 'User')
     async owner(@Parent() book: any) {
-        return this.userService.findOne(book.ownerId); // Assuming your Book entity has ownerId
+        return this.userService.findOne(book.ownerId);
     }
 
     @ResolveField('comments', () => '[Comment]')
@@ -41,9 +49,4 @@ export class BookResolver {
         return this.bidService.findByBookId(book.id);
     }
 
-    @ResolveField('commentsCount', () => 'Int')
-    async commentsCount(@Parent() book: any) {
-        const comments = await this.commentService.findByBookId(book.id);
-        return comments.length;
-    }
 }

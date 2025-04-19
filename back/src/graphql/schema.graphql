@@ -28,41 +28,39 @@ OTHER
 }
 
 type User {
-    id: ID!
-    username: String!
+    id: Int!
+    firstName: String!
+    lastName: String!
 }
 
 type Comment {
-    id: ID!
-    text: String!
+    id: Int!
+    content: String!
     user: User!
     createdAt: DateTime!
 }
 
 type Bid {
-    id: ID!
+    id: Int!
     amount: Float!
     bidder: User!
     createdAt: DateTime!
 }
 
 type Book {
-    id: ID!
+    id: Int!
     title: String!
     author: String!
     picture: String!
     owner: User!
-    commentsCount: Int!
-    description: String
     comments: [Comment!]
     bids: [Bid!]
     price: Float
-    numberOfPages: Int
+    totalPages: Int
     damagedPages: Int
     age: Int
     edition: Int
     rating: Float
-    votes: Int
     language: Language
     editor: String
     category: Category
@@ -70,6 +68,6 @@ type Book {
 
  type Query {
     viewBooks(limit: Int, offset: Int): [Book!]!
-    bookDetails(id: ID!): Book
+    bookDetails(id: Int!): Book
     myBids(limit: Int, offset: Int): [Book!]!
 }
