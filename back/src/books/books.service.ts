@@ -13,7 +13,6 @@ export class BooksService {
   constructor(
     @InjectRepository(Book)
     private readonly bookRepository: Repository<Book>,
-   
   ) {}
    
   async create(bookData: CreateBookDto, picturePath: string) {
