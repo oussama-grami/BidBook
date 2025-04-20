@@ -10,17 +10,17 @@ import {
 import { Router } from '@angular/router';
 import { ImageModule } from 'primeng/image';
 import { ButtonModule } from 'primeng/button';
-import { BookService } from '../services/book.service';
 import { HttpClientModule } from '@angular/common/http';
 import { finalize } from 'rxjs/operators';
+import {BookService} from '../../services/book.service';
 
 @Component({
   selector: 'app-add-book',
   templateUrl: './add-book.component.html',
   imports: [
-    CommonModule, 
-    ReactiveFormsModule, 
-    ImageModule, 
+    CommonModule,
+    ReactiveFormsModule,
+    ImageModule,
     ButtonModule,
     HttpClientModule
   ],
@@ -39,7 +39,7 @@ export class AddBookComponent implements OnInit {
   submitError: string | null = null;
 
   constructor(
-    private fb: FormBuilder, 
+    private fb: FormBuilder,
     private router: Router,
     private bookService: BookService
   ) {}
@@ -111,8 +111,8 @@ export class AddBookComponent implements OnInit {
       },
       error: (error: any) => {
         console.error('Error predicting price:', error);
-        this.showPriceResult = false; 
-        
+        this.showPriceResult = false;
+
       }
     });
   }
@@ -131,9 +131,9 @@ export class AddBookComponent implements OnInit {
     if (this.addBookForm.valid && this.priceAccepted) {
       this.isSubmitting = true;
       this.submitError = null;
-      
+
       const formData = new FormData();
-      
+
       // Map form field names to match the backend DTO
       formData.append('title', this.addBookForm.get('title')?.value);
       formData.append('author', this.addBookForm.get('author')?.value);
@@ -145,14 +145,14 @@ export class AddBookComponent implements OnInit {
       formData.append('damagedPages', this.addBookForm.get('damagedPages')?.value);
       formData.append('age', this.addBookForm.get('age')?.value);
       formData.append('price', this.addBookForm.get('price')?.value);
-      
+
       if (this.selectedFile) {
         formData.append('pictureFile', this.selectedFile, this.selectedFile.name);
       }
       formData.forEach((value, key) => {
         console.log(key, value);
       });
-      
+
       this.bookService.addBook(formData)
         .pipe(finalize(() => this.isSubmitting = false))
         .subscribe({
@@ -169,8 +169,8 @@ export class AddBookComponent implements OnInit {
       this.markFormGroupTouched(this.addBookForm);
     }
   }
-  
-  
+
+
   private markFormGroupTouched(formGroup: FormGroup) {
     Object.values(formGroup.controls).forEach(control => {
       control.markAsTouched();
