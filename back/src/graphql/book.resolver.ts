@@ -48,23 +48,5 @@ export class BookResolver {
     async bids(@Parent() book: any) {
         return this.bidService.findByBookId(book.id);
     }
-    @Mutation('rateBook')
-    async rateBook(
-      @Args('bookId', { type: () => Int }) bookId: number,
-      @Args('userId', { type: () => Int }) userId: number, // will be updated later  from authentication context
-      @Args('rating', { type: () => Int }) rating: number,
-    ): Promise<Book> {
-      try {
-        return await this.bookService.rateBook(bookId, userId, rating);
-      } catch (error) {
-        console.error('Error in rateBook resolver:', error);
-        if (error instanceof BadRequestException) {
-          throw error; 
-        }
-        if (error instanceof NotFoundException) {
-          throw error; 
-        }
-        throw new InternalServerErrorException('Failed to rate the book.');
-      }
-    }
+    
 }

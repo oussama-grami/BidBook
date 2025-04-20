@@ -28,6 +28,9 @@ import {FavoritesService} from "./favorites/favorites.service";
 import { FavoritesResolver } from './graphql/favorite.resolver';
 import { BidResolver } from './graphql/bid.resolver';
 import { CommentsResolver } from './graphql/comment.resolver';
+import { UserRatingModule } from './user-rating/user-rating.module';
+import { UserRating } from './user-rating/entities/user-rating.entity';
+
 
 
 config({ path: `${process.cwd()}/Config/.env.dev` });
@@ -67,7 +70,8 @@ config({ path: `${process.cwd()}/Config/.env.dev` });
       Favorite,
       Comment,
       Bid,
-      Notification
+      Notification,
+      UserRating
     ]),
       GraphQLModule.forRoot<ApolloDriverConfig>({
         debug: true,
@@ -80,7 +84,8 @@ config({ path: `${process.cwd()}/Config/.env.dev` });
           outputAs: 'class',
         }
       }
-      )
+      ),
+      UserRatingModule
   ],
   controllers: [AppController,BooksController],
   providers: [AppService,BooksService, BookResolver, AuthService, CommentsService, BidsService,FavoritesService,FavoritesResolver,BidResolver,BidsService,  CommentsResolver  ],

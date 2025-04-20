@@ -53,7 +53,6 @@ type Bid {
   createdAt: DateTime!
   book: Book!
   bidStatus: BidStatus!
-  timestamp: DateTime
 }
 type Book {
     id: Int!
@@ -69,8 +68,6 @@ type Book {
     damagedPages: Int
     age: Int
     edition: Int
-    rating: Float
-    votes: Int
     language: Language
     editor: String
     category: Category
@@ -92,7 +89,6 @@ type Mutation {
     removeFavorite(userId: Int!, bookId: Int!): Boolean!
     addCommentToBook(bookId: Int!, userId: Int!, content: String!): Comment
     removeComment(commentId: Int!): Boolean!
-    rateBook(bookId: Int!, userId: Int!, rating: Int!): Book!
     createBid( userId: Int!,bookId: Int!, amount: Float!): Bid!
     updateBid(bookId: Int!, userId: Int!, amount: Float!): Bid!
     

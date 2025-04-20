@@ -5,6 +5,7 @@ import { Column, Entity, OneToMany } from 'typeorm';
 import { Favorite } from 'src/favorites/entities/favorite.entity';
 import { Bid } from 'src/bids/entities/bid.entity';
 import { Notification } from 'src/notifications/entities/notification.entity';
+import { UserRating } from 'src/user-rating/entities/user-rating.entity';
 @Entity('_user')
 export class User extends CommonEntity {
   @Column()
@@ -24,6 +25,9 @@ export class User extends CommonEntity {
 
   @Column()
   isMFAEnabled: boolean;
+
+  @OneToMany(() => UserRating, (rating) => rating.user)
+  ratings: UserRating[];
 
   // Relation inverse : un utilisateur peut posséder plusieurs livres
   @OneToMany(() => Book, (book) => book.owner)

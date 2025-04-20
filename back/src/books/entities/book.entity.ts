@@ -6,6 +6,7 @@ import { Category } from '../../Enums/category.enum';
 import { Language } from '../../Enums/language.enum';
 import { Favorite } from 'src/favorites/entities/favorite.entity';
 import { Bid } from 'src/bids/entities/bid.entity';
+import { UserRating } from 'src/user-rating/entities/user-rating.entity';
 
 @Entity()
 export class Book extends CommonEntity {
@@ -42,12 +43,9 @@ export class Book extends CommonEntity {
 
   @Column()
   picture: string;
-
-  @Column({ default: 0 })
-  rating: number;
-
-  @Column({ default: 0 })
-  votes: number;
+ 
+  @OneToMany(() => UserRating, (rating) => rating.book)
+  ratings: UserRating[];
 
   @Column({
     type: 'enum',

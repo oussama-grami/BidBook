@@ -29,8 +29,6 @@ export class BooksService {
       age: bookData.age,
       price: bookData.price,
       picture: picturePath, 
-      rating: 0,
-      votes: 0,
       owner: bookData.ownerId ? { id: bookData.ownerId } : undefined,
     });
   
@@ -122,27 +120,5 @@ export class BooksService {
     return `This action removes a #${id} book`;
   }
 
-  async rateBook(bookId: number, userId: number, rating: number): Promise<Book> {
-    if (rating < 1 || rating > 5) {
-      throw new BadRequestException('Rating must be an integer between 1 and 5.');
-    }
-    const book = await this.bookRepository.findOne({ where: { id: bookId } });
-
-    if (!book) {
-      throw new NotFoundException(`Book with ID ${bookId} not found.`);
-    }
-    const currentTotalRating = (book.rating || 0) * (book.votes || 0); 
-    const newVotes = (book.votes || 0) + 1;
-    const newTotalRating = currentTotalRating + rating;
-    const newAverageRating = newTotalRating / newVotes;
-    book.rating = newAverageRating;
-    book.votes = newVotes;
-
-    try {
-        return await this.bookRepository.save(book);
-    } catch (error) {
-        console.error('Error saving book rating:', error);
-        throw new InternalServerErrorException('Failed to save book rating.');
-    }
-  }
+  
 }

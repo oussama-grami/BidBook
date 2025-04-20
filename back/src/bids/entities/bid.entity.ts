@@ -9,9 +9,6 @@ export class Bid extends CommonEntity {
   @Column({ type: 'float' })
   amount: number;
 
-  @Column()
-  timestamp: Date;
-
   @Column({
     type: 'enum',
     enum: BidStatus,

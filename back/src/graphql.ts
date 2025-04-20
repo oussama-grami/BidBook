@@ -64,7 +64,6 @@ export class Bid {
     createdAt: DateTime;
     book: Book;
     bidStatus: BidStatus;
-    timestamp?: Nullable<DateTime>;
 }
 
 export class Book {
@@ -81,8 +80,6 @@ export class Book {
     damagedPages?: Nullable<number>;
     age?: Nullable<number>;
     edition?: Nullable<number>;
-    rating?: Nullable<number>;
-    votes?: Nullable<number>;
     language?: Nullable<Language>;
     editor?: Nullable<string>;
     category?: Nullable<Category>;
@@ -112,8 +109,6 @@ export abstract class IMutation {
     abstract addCommentToBook(bookId: number, userId: number, content: string): Nullable<Comment> | Promise<Nullable<Comment>>;
 
     abstract removeComment(commentId: number): boolean | Promise<boolean>;
-
-    abstract rateBook(bookId: number, userId: number, rating: number): Book | Promise<Book>;
 
     abstract createBid(userId: number, bookId: number, amount: number): Bid | Promise<Bid>;
 

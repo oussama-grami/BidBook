@@ -90,7 +90,6 @@ async createBid(userId: number, bookId: number, amount: number): Promise<Bid> {
 
   const newBid = this.bidRepository.create({
       amount,
-      timestamp: new Date(),
       bidStatus: BidStatus.PENDING,
       bidder: { id: userId },
       book: { id: bookId },
@@ -129,7 +128,6 @@ async updateBid(userId: number, bookId: number, amount: number): Promise<Bid> {
 
   const newBid = this.bidRepository.create({
       amount,
-      timestamp: new Date(),
       bidStatus: BidStatus.PENDING,
       bidder: { id: userId },
       book: { id: bookId },
