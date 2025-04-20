@@ -25,7 +25,7 @@ async function bootstrap() {
   );
 
   // Serve static assets with appropriate prefixes
-  app.useStaticAssets(join(__dirname, '..', 'public', 'uploads'), {
+  app.useStaticAssets(join(__dirname, '..', 'public'), {
     prefix: '/',
     setHeaders: (res, path) => {
       if (
