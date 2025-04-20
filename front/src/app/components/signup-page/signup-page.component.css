@@ -3,6 +3,9 @@
   font-family: 'Poppins', sans-serif;
   animation: fadeIn 0.8s ease-in-out;
   width: 100%;
+  min-height: 100vh;
+  height: auto;
+  overflow-y: auto;
 }
 
 /* Animations */
@@ -117,6 +120,29 @@
 
 .p-checkbox:not(.p-checkbox-disabled) .p-checkbox-box:hover {
   border-color: #9c7350;
+}
+
+/* Terms checkbox container styling */
+.terms-checkbox-container {
+  display: flex;
+  align-items: center; /* Changed from baseline to center */
+  margin-bottom: 20px;
+  margin-top: 10px;
+}
+
+/* Checkbox alignment improvements */
+:host ::ng-deep .terms-checkbox-container .p-checkbox {
+  margin-right: 0;
+  margin-top: 0;
+  display: flex;
+  align-items: center;
+}
+
+.terms-label {
+  margin-left: 8px;
+  font-size: 14px;
+  color: #000;
+  cursor: pointer;
 }
 
 /* Element animations */

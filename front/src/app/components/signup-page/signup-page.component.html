@@ -1,4 +1,4 @@
-<div class="signup-page" style="display: flex; min-height: 100vh">
+<div class="signup-page" style="display: flex; height: auto; overflow-y: auto">
   <!-- Left side - Signup form -->
   <div
     class="signup-container"
@@ -8,11 +8,12 @@
       justify-content: center;
       align-items: center;
       padding: 20px;
+      min-height: 100vh;
     "
   >
     <div
       class="signup-card"
-      style="width: 100%; max-width: 364px; padding: 40px 30px"
+      style="width: 100%; max-width: 364px; padding: 40px 30px; margin: 30px 0"
     >
       <h1
         class="signup-title"
@@ -39,7 +40,54 @@
       </p>
 
       <form [formGroup]="signupForm" (ngSubmit)="onSignup()">
-        <!-- Username input -->
+        <!-- Profile Image Upload -->
+        <div
+          class="profile-upload-container"
+          style="margin-bottom: 20px; text-align: center"
+        >
+          <div
+            class="profile-image-preview"
+            style="
+              width: 100px;
+              height: 100px;
+              margin: 0 auto;
+              border-radius: 50%;
+              overflow: hidden;
+              position: relative;
+              background-color: rgba(240, 238, 255, 0.8);
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              border: 2px dashed #9c7350;
+              cursor: pointer;
+            "
+            (click)="profileImageInput.click()"
+            [style.background-image]="
+              profileImagePreview ? 'url(' + profileImagePreview + ')' : 'none'
+            "
+            [style.background-size]="'cover'"
+            [style.background-position]="'center'"
+          >
+            <i
+              *ngIf="!profileImagePreview"
+              class="pi pi-user"
+              style="font-size: 2rem; color: #9c7350"
+            ></i>
+          </div>
+          <input
+            #profileImageInput
+            type="file"
+            style="display: none"
+            accept="image/*"
+            (change)="onProfileImageSelected($event)"
+            formControlName="profileImage"
+          />
+          <p style="margin-top: 10px; font-size: 12px; color: #525252">
+            Click to upload profile image (optional)
+          </p>
+        </div>
+
+        <!-- First Name input -->
         <div
           class="input-container"
           style="position: relative; margin-bottom: 20px; width: 100%"
@@ -59,8 +107,42 @@
           <input
             type="text"
             pInputText
-            formControlName="username"
-            placeholder="Username"
+            formControlName="firstName"
+            placeholder="First Name"
+            style="
+              width: 100%;
+              border-radius: 16px !important;
+              padding: 16px 16px 16px 50px !important;
+              background-color: rgba(240, 238, 255, 0.8) !important;
+              font-size: 14px;
+              border: none !important;
+              height: 52px;
+            "
+          />
+        </div>
+
+        <!-- Last Name input -->
+        <div
+          class="input-container"
+          style="position: relative; margin-bottom: 20px; width: 100%"
+        >
+          <i
+            class="pi pi-user"
+            style="
+              position: absolute;
+              left: 18px;
+              top: 50%;
+              transform: translateY(-50%);
+              color: #1c1c1c;
+              z-index: 1;
+              font-size: 1.2rem;
+            "
+          ></i>
+          <input
+            type="text"
+            pInputText
+            formControlName="lastName"
+            placeholder="Last Name"
             style="
               width: 100%;
               border-radius: 16px !important;
@@ -154,18 +236,17 @@
           ></p-message>
         </div>
 
-        <!-- Terms checkbox -->
-        <div style="display: flex; align-items: baseline; margin-bottom: 20px">
-          <div style="margin-top: 3px">
-            <p-checkbox
-              formControlName="agreeTerms"
-              [binary]="true"
-              styleClass="mr-2"
-            ></p-checkbox>
-          </div>
-          <label style="margin-left: 8px; font-size: 14px; color: #000"
-            >I agree to the terms & policy</label
-          >
+        <!-- Terms checkbox - updated styling -->
+        <div class="terms-checkbox-container">
+          <p-checkbox
+            formControlName="agreeTerms"
+            [binary]="true"
+            styleClass="mr-2"
+            inputId="agreeTerms"
+          ></p-checkbox>
+          <label for="agreeTerms" class="terms-label">
+            I agree to the terms & policy
+          </label>
         </div>
 
         <!-- Signup button with loading state -->
@@ -227,7 +308,7 @@
               margin-bottom: 20px;
             "
           >
-            <p-button
+            <!--<p-button
               type="button"
               [style]="{
                 backgroundColor: '#1877F2',
@@ -248,8 +329,7 @@
               icon="pi pi-facebook"
               (mouseenter)="facebookHovered = true"
               (mouseleave)="facebookHovered = false"
-            ></p-button>
-
+            ></p-button>-->
             <p-button
               type="button"
               [style]="{
@@ -272,13 +352,32 @@
               [outlined]="true"
               (mouseenter)="googleHovered = true"
               (mouseleave)="googleHovered = false"
+              (click)="loginWithGoogle()"
+            ></p-button>
+
+            <p-button
+              type="button"
+              [style]="{
+                backgroundColor: '#24292e',
+                color: 'white',
+                borderRadius: '10px',
+                height: '54px',
+                fontWeight: 'normal',
+                width: '100%',
+                transition: 'all 0.2s ease',
+                marginTop: '10px'
+              }"
+              styleClass="github-btn"
+              label="Sign In with GitHub"
+              icon="pi pi-github"
+              (click)="loginWithGithub()"
             ></p-button>
           </div>
 
           <a
             routerLink="/login"
             style="color: #525252; font-size: 14px; text-decoration: none"
-            >Have an account? Sign In</a
+          >Have an account? <strong>Sign In</strong></a
           >
         </div>
       </form>

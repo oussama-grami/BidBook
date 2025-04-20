@@ -1,9 +1,11 @@
 import { Routes } from '@angular/router';
 import { DataLoadingResolver } from './shared/resolvers/data-loading.resolver';
+import { tokenValidationGuard } from './shared/guards/token-validation.guard';
 
 export const routes: Routes = [
   {
     path: 'books',
+    canActivate: [tokenValidationGuard],
     children: [
       {
         path: '',
@@ -45,6 +47,7 @@ export const routes: Routes = [
   },
   {
     path: 'articles',
+    canActivate: [tokenValidationGuard],
     children: [
       {
         path: '',
@@ -112,7 +115,17 @@ export const routes: Routes = [
     data: { animation: 'fade' },
   },
   {
+    path: 'forget-password/reset',
+    loadComponent: () =>
+      import('./components/forget-password/forget-password.component').then(
+        (c) => c.ForgetPasswordComponent
+      ),
+    resolve: { pageData: DataLoadingResolver },
+    data: { animation: 'fade', resetMode: true },
+  },
+  {
     path: 'mfa-setup',
+    canActivate: [tokenValidationGuard],
     loadComponent: () =>
       import('./components/mfa-setup/mfa-setup.component').then(
         (c) => c.MfaSetupComponent
@@ -121,7 +134,26 @@ export const routes: Routes = [
     data: { animation: 'fade' },
   },
   {
+    path: 'auth/callback',
+    loadComponent: () =>
+      import('./components/auth-callback/auth-callback.component').then(
+        (c) => c.AuthCallbackComponent
+      ),
+    resolve: { pageData: DataLoadingResolver },
+    data: { animation: 'fade' },
+  },
+  {
+    path: 'auth/callback/:provider',
+    loadComponent: () =>
+      import('./components/auth-callback/auth-callback.component').then(
+        (c) => c.AuthCallbackComponent
+      ),
+    resolve: { pageData: DataLoadingResolver },
+    data: { animation: 'fade' },
+  },
+  {
     path: 'notifications',
+    canActivate: [tokenValidationGuard],
     loadComponent: () =>
       import('./components/NotificationPage/notifications-page.component').then(
         (c) => c.NotificationsPageComponent
@@ -131,6 +163,7 @@ export const routes: Routes = [
   },
   {
     path: 'payment',
+    canActivate: [tokenValidationGuard],
     loadComponent: () =>
       import('./components/payment/payment.component').then(
         (c) => c.PaymentComponent
@@ -140,6 +173,7 @@ export const routes: Routes = [
   },
   {
     path: 'chat',
+    canActivate: [tokenValidationGuard],
     loadComponent: () =>
       import('./components/chat/chat.component').then((c) => c.ChatComponent),
     resolve: { pageData: DataLoadingResolver },
@@ -147,6 +181,7 @@ export const routes: Routes = [
   },
   {
     path: 'transactions',
+    canActivate: [tokenValidationGuard],
     loadComponent: () =>
       import(
         './components/transactions-history/transactions-history.component'
