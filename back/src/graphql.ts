@@ -36,17 +36,25 @@ export enum Language {
     OTHER = "OTHER"
 }
 
+export enum BidStatus {
+    PENDING = "PENDING",
+    ACCEPTED = "ACCEPTED",
+    REJECTED = "REJECTED"
+}
+
 export class User {
     id: number;
     firstName: string;
     lastName: string;
+    imageUrl: string;
 }
 
 export class Comment {
     id: number;
     content: string;
-    user: User;
+    user?: Nullable<User>;
     createdAt: DateTime;
+    book: Book;
 }
 
 export class Bid {
@@ -54,6 +62,9 @@ export class Bid {
     amount: number;
     bidder: User;
     createdAt: DateTime;
+    book: Book;
+    bidStatus: BidStatus;
+    timestamp?: Nullable<DateTime>;
 }
 
 export class Book {
@@ -63,6 +74,7 @@ export class Book {
     picture: string;
     owner: User;
     comments?: Nullable<Comment[]>;
+    favorites?: Nullable<Favorite[]>;
     bids?: Nullable<Bid[]>;
     price?: Nullable<number>;
     totalPages?: Nullable<number>;
@@ -70,9 +82,16 @@ export class Book {
     age?: Nullable<number>;
     edition?: Nullable<number>;
     rating?: Nullable<number>;
+    votes?: Nullable<number>;
     language?: Nullable<Language>;
     editor?: Nullable<string>;
     category?: Nullable<Category>;
+}
+
+export class Favorite {
+    id: number;
+    user: User;
+    book: Book;
 }
 
 export abstract class IQuery {
@@ -81,6 +100,24 @@ export abstract class IQuery {
     abstract bookDetails(id: number): Nullable<Book> | Promise<Nullable<Book>>;
 
     abstract myBids(limit?: Nullable<number>, offset?: Nullable<number>): Book[] | Promise<Book[]>;
+
+    abstract highestBidForBook(bookId: number): Nullable<Bid> | Promise<Nullable<Bid>>;
+}
+
+export abstract class IMutation {
+    abstract addFavorite(userId: number, bookId: number): Favorite | Promise<Favorite>;
+
+    abstract removeFavorite(userId: number, bookId: number): boolean | Promise<boolean>;
+
+    abstract addCommentToBook(bookId: number, userId: number, content: string): Nullable<Comment> | Promise<Nullable<Comment>>;
+
+    abstract removeComment(commentId: number): boolean | Promise<boolean>;
+
+    abstract rateBook(bookId: number, userId: number, rating: number): Book | Promise<Book>;
+
+    abstract createBid(userId: number, bookId: number, amount: number): Bid | Promise<Bid>;
+
+    abstract updateBid(bookId: number, userId: number, amount: number): Bid | Promise<Bid>;
 }
 
 export type DateTime = any;

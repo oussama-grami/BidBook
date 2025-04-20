@@ -1,11 +1,11 @@
-import { Resolver, Query, Args, ID, ResolveField, Parent } from '@nestjs/graphql';
+import { Resolver, Query, Args, ID, ResolveField, Parent, Mutation, Int } from '@nestjs/graphql';
 import { BooksService } from '../books/books.service';
 import { AuthService } from "../auth/auth.service";
 import { CommentsService } from '../comments/comments.service';
 import{BidsService} from "../bids/bids.service";
 import {Book} from "../graphql";
-import {InternalServerErrorException} from "@nestjs/common";
-
+import {BadRequestException, InternalServerErrorException, NotFoundException} from "@nestjs/common";
+;
 @Resolver('Book')
 export class BookResolver {
     constructor(
@@ -48,5 +48,23 @@ export class BookResolver {
     async bids(@Parent() book: any) {
         return this.bidService.findByBookId(book.id);
     }
-
+    @Mutation('rateBook')
+    async rateBook(
+      @Args('bookId', { type: () => Int }) bookId: number,
+      @Args('userId', { type: () => Int }) userId: number, // will be updated later  from authentication context
+      @Args('rating', { type: () => Int }) rating: number,
+    ): Promise<Book> {
+      try {
+        return await this.bookService.rateBook(bookId, userId, rating);
+      } catch (error) {
+        console.error('Error in rateBook resolver:', error);
+        if (error instanceof BadRequestException) {
+          throw error; 
+        }
+        if (error instanceof NotFoundException) {
+          throw error; 
+        }
+        throw new InternalServerErrorException('Failed to rate the book.');
+      }
+    }
 }

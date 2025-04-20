@@ -1,4 +1,4 @@
-import {Injectable, InternalServerErrorException, NotFoundException} from '@nestjs/common';
+import {BadRequestException, Injectable, InternalServerErrorException, NotFoundException} from '@nestjs/common';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -17,26 +17,6 @@ export class BooksService {
   ) {}
    
   async create(bookData: CreateBookDto, picturePath: string) {
-    let predictedPrice: number;
-  
-    try {
-      const response = await axios.post('http://localhost:5000/predict', {
-        title: bookData.title,
-        author: bookData.author,
-        category: bookData.category,
-        language: bookData.language,
-        editor: bookData.editor,
-        edition: bookData.edition,
-        totalPages: bookData.totalPages,
-        damagedPages: bookData.damagedPages,
-        age: bookData.age,
-      });
-  
-      predictedPrice = response.data.prediction;
-    } catch (error) {
-      throw new InternalServerErrorException('Price prediction service unavailable');
-    }
-  
     const bookToSave = this.bookRepository.create({
       title: bookData.title,
       author: bookData.author,
@@ -47,7 +27,7 @@ export class BooksService {
       totalPages: bookData.totalPages,
       damagedPages: bookData.damagedPages,
       age: bookData.age,
-      price: predictedPrice,
+      price: bookData.price,
       picture: picturePath, 
       rating: 0,
       votes: 0,
@@ -76,7 +56,7 @@ export class BooksService {
   async findOne(id: number): Promise<Book> {
     const book = await this.bookRepository.findOne({
       where: { id },
-      relations: ['owner', 'comments', 'bids'],
+      relations: ['owner', 'comments', 'bids','favorites'],
     });
 
     if (!book) {
@@ -140,5 +120,29 @@ export class BooksService {
 
   remove(id: number) {
     return `This action removes a #${id} book`;
+  }
+
+  async rateBook(bookId: number, userId: number, rating: number): Promise<Book> {
+    if (rating < 1 || rating > 5) {
+      throw new BadRequestException('Rating must be an integer between 1 and 5.');
+    }
+    const book = await this.bookRepository.findOne({ where: { id: bookId } });
+
+    if (!book) {
+      throw new NotFoundException(`Book with ID ${bookId} not found.`);
+    }
+    const currentTotalRating = (book.rating || 0) * (book.votes || 0); 
+    const newVotes = (book.votes || 0) + 1;
+    const newTotalRating = currentTotalRating + rating;
+    const newAverageRating = newTotalRating / newVotes;
+    book.rating = newAverageRating;
+    book.votes = newVotes;
+
+    try {
+        return await this.bookRepository.save(book);
+    } catch (error) {
+        console.error('Error saving book rating:', error);
+        throw new InternalServerErrorException('Failed to save book rating.');
+    }
   }
 }

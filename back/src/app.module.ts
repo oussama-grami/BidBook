@@ -1,5 +1,6 @@
 
 
+
 import { Module } from '@nestjs/common';
 import {GraphQLModule} from "@nestjs/graphql";
 import { AppController } from './app.controller';
@@ -23,6 +24,11 @@ import {BookResolver} from "./graphql/book.resolver";
 import {AuthService} from "./auth/auth.service";
 import {CommentsService} from "./comments/comments.service";
 import {BidsService} from "./bids/bids.service";
+import {FavoritesService} from "./favorites/favorites.service";
+import { FavoritesResolver } from './graphql/favorite.resolver';
+import { BidResolver } from './graphql/bid.resolver';
+import { CommentsResolver } from './graphql/comment.resolver';
+
 
 config({ path: `${process.cwd()}/Config/.env.dev` });
 
@@ -77,6 +83,6 @@ config({ path: `${process.cwd()}/Config/.env.dev` });
       )
   ],
   controllers: [AppController,BooksController],
-  providers: [AppService,BooksService, BookResolver, AuthService, CommentsService, BidsService],
+  providers: [AppService,BooksService, BookResolver, AuthService, CommentsService, BidsService,FavoritesService,FavoritesResolver,BidResolver,BidsService,  CommentsResolver  ],
 })
 export class AppModule {}
