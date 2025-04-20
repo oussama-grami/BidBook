@@ -83,12 +83,22 @@ export class Book {
     language?: Nullable<Language>;
     editor?: Nullable<string>;
     category?: Nullable<Category>;
+    rating?: Nullable<UserRating[]>;
 }
 
 export class Favorite {
     id: number;
     user: User;
     book: Book;
+}
+
+export class UserRating {
+    id: number;
+    user: User;
+    book: Book;
+    rate: number;
+    createdAt: DateTime;
+    updatedAt: DateTime;
 }
 
 export abstract class IQuery {
