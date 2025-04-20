@@ -9,11 +9,13 @@ import {
   animate,
 } from '@angular/animations';
 import { RouterModule } from '@angular/router';
+import { ImagePreloadDirective } from '../../shared/directives/image-preload.directive';
+import { LoadingService } from '../../services/loading.service';
 
 @Component({
   selector: 'app-book-card',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, ImagePreloadDirective],
   template: `
     <div
       class="book-card"
@@ -27,7 +29,15 @@ import { RouterModule } from '@angular/router';
         [attr.data-label]="!isFavorite ? 'Recommended' : 'Bidden'"
         [ngClass]="{ 'ribbon-lower': !isFavorite, 'ribbon-higher': isFavorite }"
       >
-        <img [src]="book.imageUrl" [alt]="book.title" class="book-image" />
+        <!-- Using our ImagePreloadDirective to manage image loading state -->
+        <img
+          [src]="book.imageUrl"
+          [alt]="book.title"
+          class="book-image"
+          appImagePreload
+          fallback="/images/image.png"
+          (loaded)="onImageLoaded(book.id, $event)"
+        />
         <div class="overlay">
           <span class="read-more" [routerLink]="['/books', book.id]"
             >Read More</span
@@ -364,4 +374,13 @@ export class BookCardComponent {
   @Input() special: boolean = false;
   @Input() isFavorite: boolean = false;
   isHovered: boolean = false;
+
+  constructor(private loadingService: LoadingService) {}
+
+  // Handle image loading events
+  onImageLoaded(bookId: string | number, success: boolean): void {
+    if (!success) {
+      console.warn(`Failed to load image for book ID: ${bookId}`);
+    }
+  }
 }

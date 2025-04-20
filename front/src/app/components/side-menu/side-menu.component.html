@@ -13,10 +13,15 @@
   [style]="{ width: '280px' }"
 >
   <div class="drawer-header">
-    <img ngSrc="/images/att.wsQJL-JwNLzgqmR5zwZr5wmrC6zSC9itC7QZA-PZWbs.jpeg"
-         alt="Logo" width="64" height="64" [style]="{
-         'border-radius': '12px'
-         }"/>
+    <img
+      ngSrc="/images/att.wsQJL-JwNLzgqmR5zwZr5wmrC6zSC9itC7QZA-PZWbs.jpeg"
+      alt="Logo"
+      width="64"
+      height="64"
+      [style]="{
+        'border-radius': '12px'
+      }"
+    />
     <span class="logo-text font-bold">BidBooks</span>
   </div>
 
@@ -48,7 +53,7 @@
             class="nav-item"
             [routerLink]="child.route"
             routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true  }"
+            [routerLinkActiveOptions]="{ exact: true }"
           >
             <div class="content">
               <i [class]="child.icon"></i>
@@ -101,13 +106,13 @@
     </div>
 
     <!-- Profile section only for authenticated users -->
-    <div class="profile" >
+    <div class="profile">
       <div class="profile-info">
         <img
           class="profile-picture"
           width="40"
           height="40"
-          [ngSrc]="'/images/person.png'"
+          [ngSrc]="getImageUrl(userProfile.picture)"
           alt="Profile Picture"
         />
         <div class="profile-details">
