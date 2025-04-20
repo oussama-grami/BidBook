@@ -1,8 +1,5 @@
-
-
-
-import { Module } from '@nestjs/common';
-import {GraphQLModule} from "@nestjs/graphql";
+import { GraphQLModule } from '@nestjs/graphql';
+import {Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { config } from 'dotenv';
@@ -10,7 +7,6 @@ import { GlobalModule } from './Common/global.module';
 import { AuthModule } from './auth/auth.module';
 import { Book } from './books/entities/book.entity';
 import { User } from './auth/entities/user.entity';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { Favorite } from './favorites/entities/favorite.entity';
 import { Bid } from './bids/entities/bid.entity';
 import { Comment } from './comments/entities/comment.entity';
@@ -18,33 +14,34 @@ import { Notification } from './notifications/entities/notification.entity';
 import { ConfigModule, ConfigService } from '@nestjs/config'; // Ajout de ConfigService
 import { BooksService } from './books/books.service';
 import { BooksController } from './books/books.controller';
-import {ApolloDriver, ApolloDriverConfig} from "@nestjs/apollo";
-import {join} from "path";
-import {BookResolver} from "./graphql/book.resolver";
-import {AuthService} from "./auth/auth.service";
-import {CommentsService} from "./comments/comments.service";
-import {BidsService} from "./bids/bids.service";
-import {FavoritesService} from "./favorites/favorites.service";
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { BookResolver } from './graphql/book.resolver';
+import { AuthService } from './auth/auth.service';
+import { CommentsService } from './comments/comments.service';
+import { BidsService } from './bids/bids.service';
+import { FavoritesService } from './favorites/favorites.service';
 import { FavoritesResolver } from './graphql/favorite.resolver';
 import { BidResolver } from './graphql/bid.resolver';
 import { CommentsResolver } from './graphql/comment.resolver';
 import { UserRatingModule } from './user-rating/user-rating.module';
 import { UserRating } from './user-rating/entities/user-rating.entity';
-
-
+import { ArticleModule } from './article/article.module';
+import { join } from 'path';
 
 config({ path: `${process.cwd()}/Config/.env.dev` });
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ // Configuration de ConfigModule
+    ConfigModule.forRoot({
+      // Configuration de ConfigModule
       isGlobal: true,
       envFilePath: [
         `${process.cwd()}/Config/.env`,
         `${process.cwd()}/Config/.env.${process.env.NODE_ENV}`,
       ],
     }),
-    TypeOrmModule.forRootAsync({ // Configuration de TypeOrmModule
+    TypeOrmModule.forRootAsync({
+      // Configuration de TypeOrmModule
       inject: [ConfigService],
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => {
@@ -63,7 +60,11 @@ config({ path: `${process.cwd()}/Config/.env.dev` });
     }),
     GlobalModule,
     AuthModule,
-
+    ArticleModule,
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public', 'uploads'),
+      serveRoot: '/public/uploads',
+    }),
     TypeOrmModule.forFeature([
       User,
       Book,
@@ -71,23 +72,34 @@ config({ path: `${process.cwd()}/Config/.env.dev` });
       Comment,
       Bid,
       Notification,
-      UserRating
+      UserRating,
     ]),
-      GraphQLModule.forRoot<ApolloDriverConfig>({
-        debug: true,
-        driver: ApolloDriver,
-        playground: true,
-        introspection: true,
-        typePaths: ['./**/*.graphql'],
-        definitions: {
-          path: join(process.cwd(), 'src/graphql.ts'),
-          outputAs: 'class',
-        }
-      }
-      ),
-      UserRatingModule
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      debug: true,
+      driver: ApolloDriver,
+      playground: true,
+      introspection: true,
+      typePaths: ['./**/*.graphql'],
+      definitions: {
+        path: join(process.cwd(), 'src/graphql.ts'),
+        outputAs: 'class',
+      },
+    }),
+    UserRatingModule,
   ],
-  controllers: [AppController,BooksController],
-  providers: [AppService,BooksService, BookResolver, AuthService, CommentsService, BidsService,FavoritesService,FavoritesResolver,BidResolver,BidsService,  CommentsResolver  ],
+  controllers: [AppController, BooksController],
+  providers: [
+    AppService,
+    BooksService,
+    BookResolver,
+    AuthService,
+    CommentsService,
+    BidsService,
+    FavoritesService,
+    FavoritesResolver,
+    BidResolver,
+    BidsService,
+    CommentsResolver,
+  ],
 })
 export class AppModule {}

@@ -5,12 +5,9 @@
   </div>
 
   <div class="article-content">
-    <div class="article-metadata">
-      <span class="article-date">{{ Date() | date : 'dd.MM.yyyy' }}</span>
-    </div>
 
     <div class="article-text">
-      <p>{{ article.description }}</p>
+      <p>{{ article.content }}</p>
     </div>
 
     <div class="article-tags">
@@ -22,10 +19,10 @@
     <div class="article-footer">
       <div class="article-author">
         <span class="by-text">By</span>
-        <span class="author-name">{{ article.author }}</span>
+        <span class="author-name">{{  article.author.firstName+" "+ article.author.lastName   }}</span>
       </div>
       <div class="blog-creation-date">
-        <span>Blog created on {{ article.date }}</span>
+        <span>Blog created on {{ article.createdAt | date:'dd MMM yyyy' }}</span>
       </div>
     </div>
   </div>

@@ -1,6 +1,8 @@
 import {Component, Input} from '@angular/core';
 import {DatePipe} from '@angular/common';
 import {Article} from '../articlesPage/articleCard.component';
+import {ArticleService} from '../../services/article.service';
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
   selector: 'app-blog',
@@ -11,17 +13,22 @@ import {Article} from '../articlesPage/articleCard.component';
   styleUrl: './blog.component.css'
 })
 export class BlogComponent {
-  @Input()
-  article: Article = {
-    id: '1',
-    title: 'The Timeless Appeal of Fiction Books',
-    description: 'Fiction books have the power to transport readers to new worlds, introduce' +
-      ' them to unforgettable characters, and evoke deep emotions. Whether through epic adventures, heartfelt dramas, or mind-bending mysteries, fiction allows us to experience stories beyond our own reality. From classic novels to modern bestsellers, these books continue to captivate and inspire generations of readers.',
-    category: 'Fiction',
-    author: 'Hiba Chabbouh',
-    date: '01.03.2025',
-    imageUrl: ''
-  };
+  article!: Article;
+  constructor(private articleService: ArticleService,
+  private route:ActivatedRoute) {
+  }
+  ngOnInit() {
+    const articleId = Number(this.route.snapshot.paramMap.get('id'));
 
-  protected readonly Date = Date;
+    this.articleService.getArticleById(articleId).subscribe({
+      next: (article) => {
+        console.log('Article récupéré :', article);
+        this.article = article; // suppose que tu as une variable article dans ton composant
+      },
+      error: (err) => {
+        console.error('Erreur lors de la récupération de l’article :', err);
+      }
+    });
+  }
+
 }

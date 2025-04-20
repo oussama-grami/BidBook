@@ -6,6 +6,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { join } from 'path';
 import { MailService } from './Emailing/mail.service';
+import { RedisCacheModule } from './cache/redis-cache.module';
 
 config({ path: `${process.cwd()}/Config/.env` });
 
@@ -70,14 +71,7 @@ config({ path: `${process.cwd()}/Config/.env` });
           from: '"No Reply" <noreply@booksproject.com>',
         },
         template: {
-          dir: join(
-            process.cwd(),
-            'dist',
-            'src',
-            'Common',
-            'Emailing',
-            'templates',
-          ),
+          dir: join(__dirname, 'Emailing', 'templates'),
           adapter: new HandlebarsAdapter(),
           options: {
             strict: true,
@@ -85,8 +79,9 @@ config({ path: `${process.cwd()}/Config/.env` });
         },
       }),
     }),
+    RedisCacheModule,
   ],
-  exports: [TypeOrmModule, ConfigModule, MailService],
+  exports: [TypeOrmModule, ConfigModule, MailService, RedisCacheModule],
   providers: [MailService],
 })
 export class GlobalModule {}

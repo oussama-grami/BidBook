@@ -217,7 +217,7 @@
           icon="pi pi-times"
           [style]="{ width: '100%' }"
           (click)="disableMfa()"
-          [disabled]="!password || isLoading"
+          [disabled]="password == '' || isLoading"
           styleClass="p-button-danger mfa-button"
         >
           <p-progressSpinner
