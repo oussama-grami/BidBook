@@ -1,11 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import {
-  CategoryListComponent,
-  BookCategory,
-} from '../booksPage/category-bar.component';
+import {Component, OnInit} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {CategoryListComponent,} from '../booksPage/category-bar.component';
 import {Article, ArticleCardComponent} from './articleCard.component';
 import {RouterLink} from '@angular/router';
+import {ArticleService} from '../../services/article.service';
+import {CategoryEnum} from '../../enums/category.enum';
 
 
 @Component({
@@ -117,85 +116,23 @@ import {RouterLink} from '@angular/router';
   ],
 })
 export class DashboardComponent implements OnInit {
-  selectedCategory: BookCategory = 'All';
+  selectedCategory: CategoryEnum = CategoryEnum.All;
   searchTerm = '';
 
-  allArticles: Article[] = [
-    {
-      id: '1',
-      date: '04.04.2025',
-      title: 'The Timeless Appeal of Fiction Books',
-      category: 'Fiction',
-      description:
-        'Fiction books have the power to transport readers to new worlds, introduce them to unforgettable characters, and evoke deep emotions.',
-      author: 'Hiba Chabbouh',
-      imageUrl:
-        'https://cdn.builder.io/api/v1/image/assets/TEMP/65b631fa4140af2d36a9f1925933b44cb4b5e3ff',
-    },
-    {
-      id: '2',
-      date: '04.04.2025',
-      title: 'The Timeless Appeal of Fiction Books',
-      category: 'Fiction',
-      description:
-        'Fiction books have the power to transport readers to new worlds, introduce them to unforgettable characters, and evoke deep emotions.',
-      author: 'Hiba Chabbouh',
-      imageUrl:
-        'https://cdn.builder.io/api/v1/image/assets/TEMP/65b631fa4140af2d36a9f1925933b44cb4b5e3ff',
-    },
-    {
-      id: '3',
-      date: '04.04.2025',
-      title: 'The Timeless Appeal of Fiction Books',
-      category: 'Fiction',
-      description:
-        'Fiction books have the power to transport readers to new worlds, introduce them to unforgettable characters, and evoke deep emotions.',
-      author: 'Hiba Chabbouh',
-      imageUrl:
-        'https://cdn.builder.io/api/v1/image/assets/TEMP/65b631fa4140af2d36a9f1925933b44cb4b5e3ff',
-    },
-    {
-      id: '4',
-      date: '04.04.2025',
-      title: 'The Timeless Appeal of Fiction Books',
-      category: 'Fiction',
-      description:
-        'Fiction books have the power to transport readers to new worlds, introduce them to unforgettable characters, and evoke deep emotions.',
-      author: 'Hiba Chabbouh',
-      imageUrl:
-        'https://cdn.builder.io/api/v1/image/assets/TEMP/65b631fa4140af2d36a9f1925933b44cb4b5e3ff',
-    },
-    {
-      id: '5',
-      date: '04.04.2025',
-      title: 'The Timeless Appeal of Fiction Books',
-      category: 'Fiction',
-      description:
-        'Fiction books have the power to transport readers to new worlds, introduce them to unforgettable characters, and evoke deep emotions.',
-      author: 'Hiba Chabbouh',
-      imageUrl:
-        'https://cdn.builder.io/api/v1/image/assets/TEMP/65b631fa4140af2d36a9f1925933b44cb4b5e3ff',
-    },
-    {
-      id: '6',
-      date: '04.04.2025',
-      title: 'The Timeless Appeal of Fiction Books',
-      category: 'Fiction',
-      description:
-        'Fiction books have the power to transport readers to new worlds, introduce them to unforgettable characters, and evoke deep emotions.',
-      author: 'Hiba Chabbouh',
-      imageUrl:
-        'https://cdn.builder.io/api/v1/image/assets/TEMP/65b631fa4140af2d36a9f1925933b44cb4b5e3ff',
-    },
-  ];
+  allArticles: Article[] = [];
+  constructor(private articleService: ArticleService) {
+
+  }
 
   filteredArticles: Article[] = [];
 
   ngOnInit() {
-    this.filteredArticles = [...this.allArticles];
+    this.articleService.getAllArticles().subscribe((articles: Article[]) => {this.allArticles = articles;
+      this.applyFilters();
+    console.log(articles)})
   }
 
-  onCategoryChange(category: BookCategory) {
+  onCategoryChange(category: CategoryEnum) {
     this.selectedCategory = category;
     this.applyFilters();
   }
@@ -209,7 +146,7 @@ export class DashboardComponent implements OnInit {
     let results = [...this.allArticles];
 
     // Apply category filter
-    if (this.selectedCategory !== 'All') {
+    if (this.selectedCategory !== CategoryEnum.All && this.selectedCategory !== null) {
       results = results.filter(
         (article) => article.category === this.selectedCategory
       );
@@ -221,8 +158,9 @@ export class DashboardComponent implements OnInit {
       results = results.filter(
         (article) =>
           article.title.toLowerCase().includes(searchLower) ||
-          article.description.toLowerCase().includes(searchLower) ||
-          article.author.toLowerCase().includes(searchLower)
+          article.content.toLowerCase().includes(searchLower)
+          || article.author.lastName.toLowerCase().includes(searchLower) ||
+          article.author.firstName.toLowerCase().includes(searchLower)
       );
     }
 

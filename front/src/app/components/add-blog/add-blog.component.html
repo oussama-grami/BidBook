@@ -2,6 +2,9 @@
 <div class="add-article-container">
   <div class="form-container">
     <h1 class="form-title">ADD AN ARTICLE</h1>
+    <div *ngIf="message" [ngClass]="{'success-message': messageType === 'success', 'error-message': messageType === 'error'}" class="notification">
+      {{ message }}
+    </div>
 
     <form [formGroup]="articleForm" (ngSubmit)="submitArticle()">
       <div class="form-group">
@@ -19,7 +22,7 @@
 
       <div class="form-group">
         <label for="picture">Picture</label>
-        <input
+        <input (change)="onFileSelected($event)"
           type="file"
           id="picture"
           formControlName="picture"
@@ -48,15 +51,15 @@
       </div>
 
       <div class="form-group">
-        <label for="text">Text</label>
+        <label for="content">Text</label>
         <textarea
-          id="text"
-          formControlName="text"
+          id="content"
+          formControlName="content"
           class="form-control textarea"
           placeholder="Write something"
-          [ngClass]="{ 'is-invalid': submitted && f['text'].errors }"></textarea>
-        <div *ngIf="submitted && f['text'].errors" class="error-message">
-          <div *ngIf="f['text'].errors?.['required']">Text is required</div>
+          [ngClass]="{ 'is-invalid': submitted && f['content'].errors }"></textarea>
+        <div *ngIf="submitted && f['content'].errors" class="error-message">
+          <div *ngIf="f['content'].errors?.['required']">Text is required</div>
         </div>
       </div>
 

@@ -25,6 +25,7 @@ import { AuthInitializationService } from './shared/services/auth-initialization
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
+    provideHttpClient(),
     provideClientHydration(),
     provideAnimations(),
     MessageService,

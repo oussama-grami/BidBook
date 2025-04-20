@@ -1,4 +1,6 @@
 import { CommonEntity } from '../../Common/Common.entity';
+import { Column, Entity, OneToMany } from 'typeorm';
+import { Article } from '../../article/entities/article.entity';
 import { Column, Entity } from 'typeorm';
 import { Role } from '../../Enums/roles.enum';
 
@@ -27,6 +29,8 @@ export class User extends CommonEntity {
 
   @Column({ default: false })
   isMFAEnabled: boolean;
+  @OneToMany(() => Article, (article) => article.author)
+  articles: Article[];
 
   @Column({ nullable: true, type: 'varchar' })
   mfaSecret: string | null;
