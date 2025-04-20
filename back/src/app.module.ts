@@ -1,15 +1,93 @@
+
+
+
 import { Module } from '@nestjs/common';
+import {GraphQLModule} from "@nestjs/graphql";
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { config } from 'dotenv';
 import { GlobalModule } from './Common/global.module';
 import { AuthModule } from './auth/auth.module';
+import { Book } from './books/entities/book.entity';
+import { User } from './auth/entities/user.entity';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Favorite } from './favorites/entities/favorite.entity';
+import { Bid } from './bids/entities/bid.entity';
+import { Comment } from './comments/entities/comment.entity';
+import { Notification } from './notifications/entities/notification.entity';
+import { ConfigModule, ConfigService } from '@nestjs/config'; // Ajout de ConfigService
+import { BooksService } from './books/books.service';
+import { BooksController } from './books/books.controller';
+import {ApolloDriver, ApolloDriverConfig} from "@nestjs/apollo";
+import {join} from "path";
+import {BookResolver} from "./graphql/book.resolver";
+import {AuthService} from "./auth/auth.service";
+import {CommentsService} from "./comments/comments.service";
+import {BidsService} from "./bids/bids.service";
+import {FavoritesService} from "./favorites/favorites.service";
+import { FavoritesResolver } from './graphql/favorite.resolver';
+import { BidResolver } from './graphql/bid.resolver';
+import { CommentsResolver } from './graphql/comment.resolver';
+import { UserRatingModule } from './user-rating/user-rating.module';
+import { UserRating } from './user-rating/entities/user-rating.entity';
 
-config({ path: `${process.cwd()}/Config/.env` });
+
+
+config({ path: `${process.cwd()}/Config/.env.dev` });
 
 @Module({
-  imports: [GlobalModule, AuthModule],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    ConfigModule.forRoot({ // Configuration de ConfigModule
+      isGlobal: true,
+      envFilePath: [
+        `${process.cwd()}/Config/.env`,
+        `${process.cwd()}/Config/.env.${process.env.NODE_ENV}`,
+      ],
+    }),
+    TypeOrmModule.forRootAsync({ // Configuration de TypeOrmModule
+      inject: [ConfigService],
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => {
+        return {
+          type: 'mysql',
+          host: configService.get('DB_HOST'),
+          port: configService.get<number>('DB_PORT'),
+          username: configService.get<string>('DB_USER'),
+          password: configService.get<string>('DB_PASS'),
+          database: configService.get<string>('DB_NAME'),
+          autoLoadEntities: true,
+          synchronize: configService.get<string>('NODE_ENV') === 'dev',
+          logging: true,
+        };
+      },
+    }),
+    GlobalModule,
+    AuthModule,
+
+    TypeOrmModule.forFeature([
+      User,
+      Book,
+      Favorite,
+      Comment,
+      Bid,
+      Notification,
+      UserRating
+    ]),
+      GraphQLModule.forRoot<ApolloDriverConfig>({
+        debug: true,
+        driver: ApolloDriver,
+        playground: true,
+        introspection: true,
+        typePaths: ['./**/*.graphql'],
+        definitions: {
+          path: join(process.cwd(), 'src/graphql.ts'),
+          outputAs: 'class',
+        }
+      }
+      ),
+      UserRatingModule
+  ],
+  controllers: [AppController,BooksController],
+  providers: [AppService,BooksService, BookResolver, AuthService, CommentsService, BidsService,FavoritesService,FavoritesResolver,BidResolver,BidsService,  CommentsResolver  ],
 })
 export class AppModule {}

@@ -1,0 +1,101 @@
+<div class="book-update-container">
+  <div class="content-container">
+    <h1 class="title">Update Book</h1>
+
+    <div *ngIf="loading" class="loading-indicator">
+      <div class="spinner"></div>
+      <p>Loading book details...</p>
+    </div>
+
+    <div *ngIf="errorMessage" class="alert alert-danger">
+      {{ errorMessage }}
+    </div>
+
+    <div *ngIf="successMessage" class="alert alert-success">
+      {{ successMessage }}
+    </div>
+
+    <form [formGroup]="bookForm" *ngIf="!loading || bookForm.value">
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="title">Title</label>
+          <input type="text" id="title" formControlName="title">
+        </div>
+
+        <div class="form-group">
+          <label for="author">Author</label>
+          <input type="text" id="author" formControlName="author">
+        </div>
+
+        <div class="form-group">
+          <label for="category">Category</label>
+          <select id="category" formControlName="category">
+            <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="language">Language</label>
+          <select id="language" formControlName="language">
+            <option *ngFor="let lang of languages" [value]="lang">{{ lang }}</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="editor">Editor</label>
+          <input type="text" id="editor" formControlName="editor">
+        </div>
+
+        <div class="form-group">
+          <label for="edition">Edition</label>
+          <input type="text" id="edition" formControlName="edition">
+        </div>
+
+        <div class="form-group">
+          <label for="totalPages">Total Pages</label>
+          <input type="number" id="totalPages" formControlName="totalPages">
+        </div>
+
+        <div class="form-group">
+          <label for="damagedPages">Damaged Pages</label>
+          <input type="number" id="damagedPages" formControlName="damagedPages">
+        </div>
+
+        <div class="form-group">
+          <label for="age">Age</label>
+          <input type="number" id="age" formControlName="age">
+        </div>
+
+        <div class="form-group">
+          <label for="ownerId">Owner ID</label>
+          <input type="number" id="ownerId" formControlName="ownerId">
+        </div>
+
+        <div class="form-group">
+          <label for="pictureFile">Book Image</label>
+          <input type="file" class="file-input" id="pictureFile" (change)="onFileSelected($event)" accept="image/png, image/jpeg">
+        </div>
+      </div>
+
+      <div class="preview-container" *ngIf="imagePreview">
+        <img [src]="imagePreview" alt="Book cover">
+      </div>
+
+      <div class="button-group">
+        <button type="button" class="cancel-btn" routerLink="/books">Cancel</button>
+        <button type="button" class="update-btn" [disabled]="loading || predictingPrice" (click)="onSubmit()">
+          {{ predictingPrice ? 'Predicting Price...' : 'Update Book' }}
+        </button>
+      </div>
+    </form>
+
+    <div *ngIf="showPriceConfirmation && predictedPrice !== null" class="price-confirmation">
+      <h3>Predicted Price: {{ predictedPrice | number:'1.2-2' }}</h3>
+      <p>Do you want to confirm the update with this price?</p>
+      <div class="button-group">
+        <button type="button" class="confirm-btn" (click)="confirmUpdate()">Yes, Update</button>
+        <button type="button" class="refuse-btn" (click)="refuseUpdate()">No, Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>

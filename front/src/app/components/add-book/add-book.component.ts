@@ -1,3 +1,4 @@
+// add-book.component.ts
 import { Component, OnInit } from '@angular/core';
 import { NgIf, CommonModule } from '@angular/common';
 import {
@@ -9,11 +10,20 @@ import {
 import { Router } from '@angular/router';
 import { ImageModule } from 'primeng/image';
 import { ButtonModule } from 'primeng/button';
+import { BookService } from '../services/book.service';
+import { HttpClientModule } from '@angular/common/http';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-add-book',
   templateUrl: './add-book.component.html',
-  imports: [CommonModule, ReactiveFormsModule, ImageModule, ButtonModule],
+  imports: [
+    CommonModule, 
+    ReactiveFormsModule, 
+    ImageModule, 
+    ButtonModule,
+    HttpClientModule
+  ],
   styleUrls: ['./add-book.component.css'],
   standalone: true,
 })
@@ -25,8 +35,14 @@ export class AddBookComponent implements OnInit {
   showPriceResult = false;
   priceAccepted = false;
   previewImage: string | null = null;
+  isSubmitting = false;
+  submitError: string | null = null;
 
-  constructor(private fb: FormBuilder, private router: Router) {}
+  constructor(
+    private fb: FormBuilder, 
+    private router: Router,
+    private bookService: BookService
+  ) {}
 
   ngOnInit() {
     this.initForm();
@@ -36,10 +52,13 @@ export class AddBookComponent implements OnInit {
     this.addBookForm = this.fb.group({
       title: ['', Validators.required],
       author: ['', Validators.required],
-      category: ['', Validators.required],
-      numberOfPages: ['', [Validators.required, Validators.min(1)]],
-      age: ['', Validators.required],
+      editor: ['', Validators.required],
       edition: ['', Validators.required],
+      category: ['', Validators.required],
+      language: ['', Validators.required],
+      numberOfPages: ['', [Validators.required, Validators.min(1)]],
+      damagedPages: ['', [Validators.min(0)]],
+      age: ['', Validators.required],
       price: [
         { value: '', disabled: true },
         [Validators.required, Validators.min(0)],
@@ -60,26 +79,48 @@ export class AddBookComponent implements OnInit {
     }
   }
 
-  async predictPrice() {
+  predictPrice() {
+    if (this.addBookForm.invalid) {
+      this.markFormGroupTouched(this.addBookForm);
+      return;
+    }
+
     this.isPredicting = true;
     this.showPriceResult = false;
 
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      this.predictedPrice = Math.floor(Math.random() * 50) + 20;
-      this.showPriceResult = true;
-      this.addBookForm.get('price')?.setValue(this.predictedPrice);
-    } catch (error) {
-      console.error('Error predicting price:', error);
-    } finally {
-      this.isPredicting = false;
-    }
+    // Map form fields to match backend DTO
+    const bookData = {
+      title: this.addBookForm.get('title')?.value,
+      author: this.addBookForm.get('author')?.value,
+      category: this.addBookForm.get('category')?.value,
+      language: this.addBookForm.get('language')?.value,
+      editor: this.addBookForm.get('editor')?.value,
+      edition: Number(this.addBookForm.get('edition')?.value),
+      totalPages: Number(this.addBookForm.get('numberOfPages')?.value),
+      damagedPages: Number(this.addBookForm.get('damagedPages')?.value),
+      age: Number(this.addBookForm.get('age')?.value),
+    };
+
+    this.bookService.predictBookPrice(bookData)
+    .pipe(finalize(() => this.isPredicting = false))
+    .subscribe({
+      next: (response: any) => {
+        this.predictedPrice = response.predictedPrice;
+        this.showPriceResult = true;
+        this.addBookForm.get('price')?.setValue(this.predictedPrice);
+      },
+      error: (error: any) => {
+        console.error('Error predicting price:', error);
+        this.showPriceResult = false; 
+        
+      }
+    });
   }
 
   onAcceptPrice() {
     this.showPriceResult = false;
     this.priceAccepted = true;
-    this.addBookForm.get('price')?.disable();
+    this.addBookForm.get('price')?.enable();
   }
 
   onRefusePrice() {
@@ -88,18 +129,54 @@ export class AddBookComponent implements OnInit {
 
   onSubmit() {
     if (this.addBookForm.valid && this.priceAccepted) {
+      this.isSubmitting = true;
+      this.submitError = null;
+      
       const formData = new FormData();
-
-      Object.keys(this.addBookForm.value).forEach((key) => {
-        formData.append(key, this.addBookForm.getRawValue()[key]);
-      });
-
+      
+      // Map form field names to match the backend DTO
+      formData.append('title', this.addBookForm.get('title')?.value);
+      formData.append('author', this.addBookForm.get('author')?.value);
+      formData.append('category', this.addBookForm.get('category')?.value);
+      formData.append('language', this.addBookForm.get('language')?.value);
+      formData.append('editor', this.addBookForm.get('editor')?.value);
+      formData.append('edition', this.addBookForm.get('edition')?.value);
+      formData.append('totalPages', this.addBookForm.get('numberOfPages')?.value);
+      formData.append('damagedPages', this.addBookForm.get('damagedPages')?.value);
+      formData.append('age', this.addBookForm.get('age')?.value);
+      formData.append('price', this.addBookForm.get('price')?.value);
+      
       if (this.selectedFile) {
-        formData.append('picture', this.selectedFile, this.selectedFile.name);
+        formData.append('pictureFile', this.selectedFile, this.selectedFile.name);
       }
-
-      console.log('Form submitted', this.addBookForm.getRawValue());
-      console.log('Selected file:', this.selectedFile);
+      formData.forEach((value, key) => {
+        console.log(key, value);
+      });
+      
+      this.bookService.addBook(formData)
+        .pipe(finalize(() => this.isSubmitting = false))
+        .subscribe({
+          next: (response: any) => {
+            console.log('Book added successfully', response);
+            this.router.navigate(['/books']); // Navigate to book list or appropriate page
+          },
+          error: (error: any) => {
+            console.error('Error adding book:', error);
+            this.submitError = error.message || 'Failed to add book. Please try again.';
+          }
+        });
+    } else {
+      this.markFormGroupTouched(this.addBookForm);
     }
+  }
+  
+  
+  private markFormGroupTouched(formGroup: FormGroup) {
+    Object.values(formGroup.controls).forEach(control => {
+      control.markAsTouched();
+      if (control instanceof FormGroup) {
+        this.markFormGroupTouched(control);
+      }
+    });
   }
 }

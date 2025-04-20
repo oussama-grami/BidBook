@@ -1,0 +1,105 @@
+scalar DateTime
+enum Category {
+    FICTION
+    NON_FICTION
+    SCIENCE
+    HISTORY
+    BIOGRAPHY
+    ROMANCE
+    OTHER
+    ADVENTURE
+    FANTASY
+    POETRY
+    ART
+    NOVEL
+    THRILLER
+    PHILOSOPHY
+    RELIGION
+    TECHNOLOGY
+}
+
+enum Language {
+    ENGLISH
+    GERMAN
+    FRENCH
+    ITALIAN
+    SPANISH
+    OTHER
+}
+enum BidStatus {
+    PENDING
+    ACCEPTED
+    REJECTED
+}
+type User {
+    id: Int!
+    firstName: String!
+    lastName: String!
+    imageUrl: String!
+}
+
+type Comment {
+    id: Int!
+    content: String!
+    user: User
+    createdAt: DateTime!
+    book: Book!
+}
+
+type Bid {
+    id: Int!
+    amount: Float!
+    bidder: User!
+    createdAt: DateTime!
+    book: Book!
+    bidStatus: BidStatus!
+}
+type Book {
+    id: Int!
+    title: String!
+    author: String!
+    picture: String!
+    owner: User!
+    comments: [Comment!]
+    favorites: [Favorite!]
+    bids: [Bid!]
+    price: Float
+    totalPages: Int
+    damagedPages: Int
+    age: Int
+    edition: Int
+    language: Language
+    editor: String
+    category: Category
+    rating: [UserRating!]
+}
+type Favorite {
+    id: Int!
+    user: User!
+    book: Book!
+}
+
+type UserRating {
+    id: Int!
+    user: User!
+    book: Book!
+    rate: Float!
+    createdAt: DateTime!
+    updatedAt: DateTime!
+}
+
+type Query {
+    viewBooks(limit: Int, offset: Int): [Book!]!
+    bookDetails(id: Int!): Book
+    myBids(limit: Int, offset: Int): [Book!]!
+    highestBidForBook(bookId: Int!): Bid
+}
+type Mutation {
+    addFavorite(userId: Int!, bookId: Int!): Favorite!
+    removeFavorite(userId: Int!, bookId: Int!): Boolean!
+    addCommentToBook(bookId: Int!, userId: Int!, content: String!): Comment
+    removeComment(commentId: Int!): Boolean!
+    createBid( userId: Int!,bookId: Int!, amount: Float!): Bid!
+    updateBid(bookId: Int!, userId: Int!, amount: Float!): Bid!
+
+}
