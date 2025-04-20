@@ -1,11 +1,9 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToOne, JoinColumn } from 'typeorm';
 import { Bid } from 'src/bid/entities/bid.entity';
+import { CommonEntity } from 'src/Common/Common.entity';
 
 @Entity()
-export class Transaction {
-    @PrimaryGeneratedColumn('uuid')
-    id: string;
-
+export class Transaction extends CommonEntity {
     @Column()
     currency: string;
 
@@ -24,7 +22,7 @@ export class Transaction {
     @CreateDateColumn()
     timestamp: Date;
 
-    @OneToOne(() => Bid, (bid) => bid.transaction, { cascade: true })
+    @OneToOne(() => Bid)
     @JoinColumn()
     bid: Bid;
 }

@@ -1,5 +1,5 @@
 export enum BidStatus {
     PENDING = 'pending',
-    WON = 'lost',
-    LOST = 'won'
+    WON = 'won',
+    LOST = 'lost'
   }

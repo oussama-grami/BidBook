@@ -19,7 +19,7 @@ export class Conversation extends CommonEntity {
   messages: Message[];
 
   @OneToOne(() => Bid, (bid) => bid.conversation) 
-  @JoinColumn()
+  @JoinColumn({ name: 'bid_id' })
   bid: Bid;
 
   @ManyToOne(() => User, { nullable: false })

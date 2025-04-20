@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToOne, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, CreateDateColumn, OneToOne, ManyToOne, JoinColumn } from 'typeorm';
 import { Conversation } from 'src/conversation/entities/conversation.entity';
 import { User } from 'src/auth/entities/user.entity';
 import { Transaction } from 'src/transaction/entities/transaction.entity';
@@ -21,10 +21,11 @@ export class Bid extends CommonEntity {
     @CreateDateColumn()
     timestamp: Date;
 
-    @OneToOne(() => Transaction, (transaction) => transaction.bid)
+    @OneToOne(() => Transaction, transaction => transaction.bid)
     transaction: Transaction;
 
     @ManyToOne(() => Book, (book) => book.bids, { onDelete: 'CASCADE' })
+    @JoinColumn({ name: 'book_id' })
     book: Book;
 
     @Column({

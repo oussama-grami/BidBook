@@ -42,7 +42,7 @@ export class BidService {
    * @param status The new status (must be a valid BidStatus value)
    * @returns The updated bid
    */
-  async updateBidStatus(id: string, status: BidStatus) {
+  async updateBidStatus(id: number, status: BidStatus) {
     const bid = await this.bidRepository.findOne({ 
       where: { id },
       relations: ['conversation', 'bidder']
