@@ -94,7 +94,7 @@ export class BookService {
 
     return this.apollo
       .query<{ bookDetails: Book }>({
-        query: gql` // Define the GraphQL query directly here
+        query: gql`
           query BookDetailsQuery($id: Int!) {
             bookDetails(id: $id) {
               id

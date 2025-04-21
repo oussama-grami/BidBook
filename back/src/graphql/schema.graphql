@@ -79,12 +79,6 @@ type Favorite {
     user: User!
     book: Book!
 }
-type UserRating {
-    id: Int!
-    user: User!
-    book: Book!
-    rate: Float!
-}
 
 type UserRating {
     id: Int!
@@ -101,6 +95,7 @@ type Query {
     myBids(limit: Int, offset: Int): [Book!]!
     highestBidForBook(bookId: Int!): Bid
     userBookRating(userId: Int!, bookId: Int!): UserRating
+    book(id: Int!): Book
 }
 type Mutation {
     addFavorite(userId: Int!, bookId: Int!): Favorite!
