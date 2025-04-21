@@ -84,6 +84,7 @@ export class Book {
     editor?: Nullable<string>;
     category?: Nullable<Category>;
     rating?: Nullable<UserRating[]>;
+    createdAt: DateTime;
 }
 
 export class Favorite {

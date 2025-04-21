@@ -20,9 +20,11 @@ import { CredentialsInterceptor } from './shared/interceptors/credentials.interc
 import { AuthInterceptor } from './shared/interceptors/auth.interceptor';
 import { TokenValidationInterceptor } from './shared/interceptors/token-validation.interceptor';
 import { AuthInitializationService } from './shared/services/auth-initialization.service';
+import {provideApollo} from '../apollo.config';
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    provideApollo,
     provideRouter(routes),
     provideHttpClient(),
     provideClientHydration(),
