@@ -9,6 +9,5 @@ import { UserRating } from './entities/user-rating.entity';
   controllers: [UserRatingController],
   providers: [UserRatingService],
   exports: [UserRatingService],
-  exports:[UserRatingService]
 })
 export class UserRatingModule {}

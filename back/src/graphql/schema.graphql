@@ -72,7 +72,6 @@ type Book {
     editor: String
     category: Category
     rating: [UserRating!]
-    rating: [UserRating!]
 }
 type Favorite {
     id: Int!

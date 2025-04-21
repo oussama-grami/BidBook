@@ -94,7 +94,7 @@ config({ path: `${process.cwd()}/Config/.env.dev` });
     BidsModule,
     NotificationsModule,
   ],
-  controllers: [AppController,BooksController],
-  providers: [AppService,BooksService, BookResolver, AuthService, CommentsService, BidsService,FavoritesService,FavoritesResolver,BidResolver,BidsService,  CommentsResolver,RatingsResolver  ],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}
