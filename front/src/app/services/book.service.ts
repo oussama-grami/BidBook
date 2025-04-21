@@ -45,25 +45,18 @@ export interface Book {
 })
 export class BookService {
   private apiUrl = 'http://localhost:3000';
-  constructor(private apollo: Apollo, private  http: HttpClient) {}
+  constructor(private apollo: Apollo, private http: HttpClient) {}
+
   predictBookPrice(bookData: any): Observable<any> {
-
     return this.http.post<any>(`${this.apiUrl}/books/predict`, bookData);
-
   }
 
-
-
   addBook(formData: FormData): Observable<any> {
-
     return this.http.post<any>(`${this.apiUrl}/books/add`, formData);
-
   }
 
   updateBook(id: number, formData: FormData): Observable<any> {
-
     return this.http.patch<any>(`${this.apiUrl}/update/${id}`, formData);
-
   }
 
   viewBooks(limit?: number, offset?: number): Observable<Book[]> {
@@ -97,6 +90,69 @@ export class BookService {
     .pipe(map((response) => response.data.viewBooks));
   }
 
+  getBookDetails(bookId: number): Observable<Book> {
+
+    return this.apollo
+      .query<{ bookDetails: Book }>({
+        query: gql` // Define the GraphQL query directly here
+          query BookDetailsQuery($id: Int!) {
+            bookDetails(id: $id) {
+              id
+              title
+              author
+              picture
+              price
+              totalPages
+              damagedPages
+              age
+              edition
+              language
+              editor
+              category
+              createdAt
+              owner {
+                firstName
+                lastName
+              }
+              bids {
+                amount
+              }
+              rating {
+                rate
+                user {
+                    id
+                }
+              }
+              comments {
+                id
+                content
+                createdAt
+                user {
+                  id
+                  firstName
+                  lastName
+                  imageUrl
+                }
+              }
+              favorites {
+                id
+                user {
+                    id
+                }
+              }
+            }
+          }
+        `,
+        variables: { // Pass the variable like in viewBooks
+          id: bookId, // Map the bookId parameter to the $id variable
+        },
+        fetchPolicy: 'network-only' // Example fetch policy
+      })
+      .pipe(
+        // Map the response to extract the bookDetails data, like extracting viewBooks
+        map((response) => response.data.bookDetails)
+      ); // Added closing parenthesis and semicolon
+  }
 
   getBook(id: number): Observable<Book> {
     return this.apollo
