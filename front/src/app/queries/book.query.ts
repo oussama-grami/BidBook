@@ -16,7 +16,10 @@ export const VIEW_BOOKS_QUERY = gql`
         id
       }
       category
-
+      createdAt
+      comments {
+        id
+      }
 
     }
   }

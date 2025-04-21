@@ -40,7 +40,22 @@ export class BooksService {
       const books = await this.bookRepository.find({
         take: limit,
         skip: offset,
-        relations: ['owner'],
+        relations: ['owner', 'comments', 'bids', 'favorites', 'ratings'],
+        select: [
+          'id',
+          'title',
+          'author',
+          'picture',
+          'editor',
+          'category',
+          'totalPages',
+          'damagedPages',
+          'age',
+          'edition',
+          'price',
+          'language',
+          'createdAt',
+        ],
       });
       console.log(`Found ${books?.length || 0} books`);
       return books || [];

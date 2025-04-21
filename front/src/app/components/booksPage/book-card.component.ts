@@ -29,10 +29,9 @@ import { LoadingService } from '../../services/loading.service';
         [attr.data-label]="!isFavorite ? 'Recommended' : 'Bidden'"
         [ngClass]="{ 'ribbon-lower': !isFavorite, 'ribbon-higher': isFavorite }"
       >
-        <!-- Using our ImagePreloadDirective to manage image loading state -->
         <img
-          [src]="book.imageUrl"
-          [alt]="book.title"
+          [src]="book.picture"
+          alt="{{ book.title }}"
           class="book-image"
           appImagePreload
           fallback="/images/image.png"
@@ -40,7 +39,7 @@ import { LoadingService } from '../../services/loading.service';
         />
         <div class="overlay">
           <span class="read-more" [routerLink]="['/books', book.id]"
-            >Read More</span
+          >Read More</span
           >
         </div>
       </div>
@@ -55,24 +54,26 @@ import { LoadingService } from '../../services/loading.service';
               <span *ngFor="let star of [1, 2, 3, 4, 5]" class="star">
                 <i
                   class="pi"
-                  [class.pi-star-fill]="star <= book.rating"
-                  [class.pi-star]="star > book.rating"
+                  [class.pi-star-fill]="star <= getAverageRating()"
+                  [class.pi-star]="star > getAverageRating()"
                 ></i>
               </span>
             </div>
-            <span class="rating-count">{{ book.rating }}/5</span>
+            <span class="rating-count">{{ getAverageRating() }}/5</span>
           </div>
           <div class="meta-details">
             <div class="meta-stats">
               <span class="comments">
-                <i class="pi pi-comments"></i>
-                {{ book.comments }}
-              </span>
+  <i class="pi pi-comments"></i>
+                {{ book.comments ? book.comments.length : 0 }}
+</span>
               <span class="likes">
                 <i class="pi pi-heart-fill"></i>
-                {{ book.likes }}
+                {{ book.favorites ? book.favorites.length : 0 }}
               </span>
-              <span class="days-ago">{{ book.daysAgo }} days ago</span>
+              <span class="days-ago">
+  {{ book.createdAt | date:'mediumDate' }}
+</span>
             </div>
             <button class="bid-button" [routerLink]="['/books', book.id]">
               Bid
@@ -377,10 +378,18 @@ export class BookCardComponent {
 
   constructor(private loadingService: LoadingService) {}
 
-  // Handle image loading events
+  getAverageRating(): number {
+    if (!this.book.rating || this.book.rating.length === 0) {
+      return 0;
+    }
+    const sum = this.book.rating.reduce((acc, curr) => acc + curr.rate, 0);
+    return sum / this.book.rating.length;
+  }
+
   onImageLoaded(bookId: string | number, success: boolean): void {
     if (!success) {
       console.warn(`Failed to load image for book ID: ${bookId}`);
     }
   }
 }
+

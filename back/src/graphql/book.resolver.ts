@@ -34,6 +34,23 @@ export class BookResolver {
         return this.bookService.findOne(id);
     }
 
+    @Query('book')
+    async getBook(@Args('id', { type: () => Int }) id: number): Promise<Book | null> {
+        try {
+            const book = await this.bookService.findOne(id);
+            if (!book) {
+                throw new NotFoundException(`Book with ID ${id} not found`);
+            }
+            return book;
+        } catch (error) {
+            console.error(`Error fetching book with ID ${id}:`, error);
+            if (error instanceof NotFoundException) {
+                throw error;
+            }
+            throw new InternalServerErrorException(`Failed to fetch book with ID ${id}`);
+        }
+    }
+
     @ResolveField('owner', () => 'User')
     async owner(@Parent() book: any) {
         return this.userService.findOne(book.ownerId);

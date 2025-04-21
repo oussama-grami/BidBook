@@ -84,6 +84,7 @@ export class Book {
     editor?: Nullable<string>;
     category?: Nullable<Category>;
     rating?: Nullable<UserRating[]>;
+    createdAt: DateTime;
 }
 
 export class Favorite {
@@ -109,6 +110,8 @@ export abstract class IQuery {
     abstract myBids(limit?: Nullable<number>, offset?: Nullable<number>): Book[] | Promise<Book[]>;
 
     abstract highestBidForBook(bookId: number): Nullable<Bid> | Promise<Nullable<Bid>>;
+
+    abstract book(id: number): Nullable<Book> | Promise<Nullable<Book>>;
 }
 
 export abstract class IMutation {

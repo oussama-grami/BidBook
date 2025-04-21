@@ -72,6 +72,7 @@ type Book {
     editor: String
     category: Category
     rating: [UserRating!]
+    createdAt: DateTime!
 }
 type Favorite {
     id: Int!
@@ -93,6 +94,7 @@ type Query {
     bookDetails(id: Int!): Book
     myBids(limit: Int, offset: Int): [Book!]!
     highestBidForBook(bookId: Int!): Bid
+    book(id: Int!): Book
 }
 type Mutation {
     addFavorite(userId: Int!, bookId: Int!): Favorite!
