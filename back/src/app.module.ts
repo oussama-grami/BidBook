@@ -78,6 +78,7 @@ config({ path: `${process.cwd()}/Config/.env.dev` });
       playground: true,
       introspection: true,
       typePaths: ['./**/*.graphql'],
+      path: '/graphql',
       definitions: {
         path: join(process.cwd(), 'src/graphql.ts'),
         outputAs: 'class',
