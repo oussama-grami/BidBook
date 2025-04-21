@@ -83,12 +83,20 @@ export class Book {
     language?: Nullable<Language>;
     editor?: Nullable<string>;
     category?: Nullable<Category>;
+    rating?: Nullable<UserRating[]>;
 }
 
 export class Favorite {
     id: number;
     user: User;
     book: Book;
+}
+
+export class UserRating {
+    id: number;
+    user: User;
+    book: Book;
+    rate: number;
 }
 
 export abstract class IQuery {
@@ -99,6 +107,8 @@ export abstract class IQuery {
     abstract myBids(limit?: Nullable<number>, offset?: Nullable<number>): Book[] | Promise<Book[]>;
 
     abstract highestBidForBook(bookId: number): Nullable<Bid> | Promise<Nullable<Bid>>;
+
+    abstract userBookRating(userId: number, bookId: number): Nullable<UserRating> | Promise<Nullable<UserRating>>;
 }
 
 export abstract class IMutation {
@@ -113,6 +123,10 @@ export abstract class IMutation {
     abstract createBid(userId: number, bookId: number, amount: number): Bid | Promise<Bid>;
 
     abstract updateBid(bookId: number, userId: number, amount: number): Bid | Promise<Bid>;
+
+    abstract addRate(userId: number, bookId: number, rate: number): UserRating | Promise<UserRating>;
+
+    abstract updateRate(userId: number, bookId: number, rate: number): UserRating | Promise<UserRating>;
 }
 
 export type DateTime = any;

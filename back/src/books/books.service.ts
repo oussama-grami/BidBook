@@ -54,7 +54,7 @@ export class BooksService {
   async findOne(id: number): Promise<Book> {
     const book = await this.bookRepository.findOne({
       where: { id },
-      relations: ['owner', 'comments', 'bids','favorites'],
+      relations: ['owner', 'comments', 'bids','favorites','rating'],
     });
 
     if (!book) {

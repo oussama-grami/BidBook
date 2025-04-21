@@ -30,6 +30,7 @@ import { BidResolver } from './graphql/bid.resolver';
 import { CommentsResolver } from './graphql/comment.resolver';
 import { UserRatingModule } from './user-rating/user-rating.module';
 import { UserRating } from './user-rating/entities/user-rating.entity';
+import { RatingsResolver } from './graphql/user-rating.resolver';
 
 
 
@@ -88,6 +89,6 @@ config({ path: `${process.cwd()}/Config/.env.dev` });
       UserRatingModule
   ],
   controllers: [AppController,BooksController],
-  providers: [AppService,BooksService, BookResolver, AuthService, CommentsService, BidsService,FavoritesService,FavoritesResolver,BidResolver,BidsService,  CommentsResolver  ],
+  providers: [AppService,BooksService, BookResolver, AuthService, CommentsService, BidsService,FavoritesService,FavoritesResolver,BidResolver,BidsService,  CommentsResolver,RatingsResolver  ],
 })
 export class AppModule {}

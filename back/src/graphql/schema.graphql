@@ -71,11 +71,18 @@ type Book {
     language: Language
     editor: String
     category: Category
+    rating: [UserRating!]
 }
 type Favorite {
     id: Int!
     user: User!
     book: Book!
+}
+type UserRating {
+    id: Int!
+    user: User!
+    book: Book!
+    rate: Float!
 }
 
  type Query {
@@ -83,6 +90,7 @@ type Favorite {
     bookDetails(id: Int!): Book
     myBids(limit: Int, offset: Int): [Book!]!
     highestBidForBook(bookId: Int!): Bid
+    userBookRating(userId: Int!, bookId: Int!): UserRating
 }
 type Mutation {
     addFavorite(userId: Int!, bookId: Int!): Favorite!
@@ -91,5 +99,7 @@ type Mutation {
     removeComment(commentId: Int!): Boolean!
     createBid( userId: Int!,bookId: Int!, amount: Float!): Bid!
     updateBid(bookId: Int!, userId: Int!, amount: Float!): Bid!
+    addRate(userId: Int!, bookId: Int!, rate: Float!): UserRating!
+    updateRate(userId: Int!, bookId: Int!, rate: Float!): UserRating!
     
 }
