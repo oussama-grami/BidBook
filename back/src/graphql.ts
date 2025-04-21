@@ -97,6 +97,8 @@ export class UserRating {
     user: User;
     book: Book;
     rate: number;
+    createdAt: DateTime;
+    updatedAt: DateTime;
 }
 
 export abstract class IQuery {

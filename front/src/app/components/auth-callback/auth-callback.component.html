@@ -1,0 +1,28 @@
+<div class="auth-callback-container">
+  <!-- Loading spinner state -->
+  <div *ngIf="loading" class="spinner-container">
+    <p-progressSpinner
+      [style]="{ width: '50px', height: '50px' }"
+      styleClass="custom-spinner"
+      strokeWidth="4"
+    >
+    </p-progressSpinner>
+    <h2>Completing Login</h2>
+    <p>Please wait while we complete your authentication...</p>
+  </div>
+
+  <!-- Error state -->
+  <div *ngIf="error!=null" class="error-container">
+    <div class="error-icon">
+      <i class="pi pi-exclamation-circle"></i>
+    </div>
+    <h2>Authentication Failed</h2>
+    <p-message severity="error" [text]="error" styleClass="w-full"></p-message>
+    <div class="action-buttons">
+      <button class="retry-button" (click)="tryAgain()">
+        <i class="pi pi-refresh"></i>
+        Try Again
+      </button>
+    </div>
+  </div>
+</div>

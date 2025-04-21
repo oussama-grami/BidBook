@@ -1,30 +1,30 @@
 scalar DateTime
- enum Category {
-FICTION
-NON_FICTION
-SCIENCE
-HISTORY
-BIOGRAPHY
-ROMANCE
-OTHER
-ADVENTURE
-FANTASY
-POETRY
-ART
-NOVEL
-THRILLER
-PHILOSOPHY
-RELIGION
-TECHNOLOGY
+enum Category {
+    FICTION
+    NON_FICTION
+    SCIENCE
+    HISTORY
+    BIOGRAPHY
+    ROMANCE
+    OTHER
+    ADVENTURE
+    FANTASY
+    POETRY
+    ART
+    NOVEL
+    THRILLER
+    PHILOSOPHY
+    RELIGION
+    TECHNOLOGY
 }
 
 enum Language {
-ENGLISH
-GERMAN
-FRENCH
-ITALIAN
-SPANISH
-OTHER
+    ENGLISH
+    GERMAN
+    FRENCH
+    ITALIAN
+    SPANISH
+    OTHER
 }
 enum BidStatus {
     PENDING
@@ -39,20 +39,20 @@ type User {
 }
 
 type Comment {
-id: Int!
-content: String!
-user: User
-createdAt: DateTime!
-book: Book!
+    id: Int!
+    content: String!
+    user: User
+    createdAt: DateTime!
+    book: Book!
 }
 
 type Bid {
-  id: Int!
-  amount: Float!
-  bidder: User!
-  createdAt: DateTime!
-  book: Book!
-  bidStatus: BidStatus!
+    id: Int!
+    amount: Float!
+    bidder: User!
+    createdAt: DateTime!
+    book: Book!
+    bidStatus: BidStatus!
 }
 type Book {
     id: Int!
@@ -72,6 +72,7 @@ type Book {
     editor: String
     category: Category
     rating: [UserRating!]
+    rating: [UserRating!]
 }
 type Favorite {
     id: Int!
@@ -85,7 +86,16 @@ type UserRating {
     rate: Float!
 }
 
- type Query {
+type UserRating {
+    id: Int!
+    user: User!
+    book: Book!
+    rate: Float!
+    createdAt: DateTime!
+    updatedAt: DateTime!
+}
+
+type Query {
     viewBooks(limit: Int, offset: Int): [Book!]!
     bookDetails(id: Int!): Book
     myBids(limit: Int, offset: Int): [Book!]!
@@ -102,4 +112,5 @@ type Mutation {
     addRate(userId: Int!, bookId: Int!, rate: Float!): UserRating!
     updateRate(userId: Int!, bookId: Int!, rate: Float!): UserRating!
     
+
 }

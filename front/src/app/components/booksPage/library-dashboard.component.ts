@@ -1,23 +1,10 @@
-import {
-  Component,
-  Input,
-  input,
-  signal,
-  Signal,
-  WritableSignal,
-} from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { BookCardComponent } from './book-card.component';
-import { CategoryListComponent } from './category-bar.component';
-import {
-  trigger,
-  transition,
-  style,
-  animate,
-  stagger,
-  query,
-} from '@angular/animations';
-import { ActivatedRoute } from '@angular/router';
+import {Component, Input, signal, WritableSignal,} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {BookCardComponent} from './book-card.component';
+import {CategoryListComponent} from './category-bar.component';
+import {animate, query, stagger, style, transition, trigger,} from '@angular/animations';
+import {ActivatedRoute} from '@angular/router';
+import {CategoryEnum} from '../../enums/category.enum';
 
 export interface Book {
   id: string;
@@ -27,16 +14,9 @@ export interface Book {
   comments: number;
   likes?: number; // Adding likes property
   daysAgo: number;
-  category?: BookCategory;
+  category?: CategoryEnum;
 }
 
-export type BookCategory =
-  | 'Fiction'
-  | 'Romance'
-  | 'Thriller'
-  | 'Fantasy'
-  | 'Biography'
-  | 'All';
 @Component({
   selector: 'app-book-catalog',
   standalone: true,
@@ -333,15 +313,8 @@ export type BookCategory =
   ],
 })
 export class BookCatalogComponent {
-  categories: BookCategory[] = [
-    'Fiction',
-    'Romance',
-    'Thriller',
-    'Fantasy',
-    'Biography',
-    'All',
-  ];
-  selectedCategory: BookCategory = 'All';
+  categories: CategoryEnum[] = []
+  selectedCategory: CategoryEnum = CategoryEnum.All;
   isFavorite: WritableSignal<boolean> = signal(true);
   searchTerm = '';
   filteredRecommendedBooks: Book[] = [];
@@ -358,7 +331,7 @@ export class BookCatalogComponent {
       rating: 4,
       comments: 97,
       likes: 124,
-      category: 'Fiction',
+      category: CategoryEnum.FICTION,
       daysAgo: 20,
     },
     {
@@ -367,7 +340,7 @@ export class BookCatalogComponent {
       imageUrl:
         'https://cdn.builder.io/api/v1/image/assets/TEMP/ecdb6bbc8f17b31efa69a312a172d604f72a9214',
       rating: 4,
-      category: 'Romance',
+      category:CategoryEnum.SCIENCE,
       comments: 97,
       likes: 85,
       daysAgo: 20,
@@ -378,7 +351,7 @@ export class BookCatalogComponent {
       imageUrl:
         'https://cdn.builder.io/api/v1/image/assets/TEMP/ecdb6bbc8f17b31efa69a312a172d604f72a9214',
       rating: 4,
-      category: 'Thriller',
+      category: CategoryEnum.TECHNOLOGY,
       comments: 97,
       likes: 210,
       daysAgo: 20,
@@ -394,7 +367,7 @@ export class BookCatalogComponent {
       rating: 4,
       comments: 97,
       likes: 56,
-      category: 'Fantasy',
+      category: CategoryEnum.TRAVEL,
       daysAgo: 20,
     },
     {
@@ -405,7 +378,7 @@ export class BookCatalogComponent {
       rating: 4,
       comments: 97,
       likes: 142,
-      category: 'Biography',
+      category: CategoryEnum.TECHNOLOGY,
       daysAgo: 20,
     },
     {
@@ -416,7 +389,7 @@ export class BookCatalogComponent {
       rating: 4,
       comments: 97,
       likes: 78,
-      category: 'Fiction',
+      category: CategoryEnum.LIFESTYLE,
       daysAgo: 20,
     },
   ];
@@ -431,7 +404,7 @@ export class BookCatalogComponent {
     this.filteredExploreBooks = [...this.exploreBooks];
   }
 
-  onCategoryChange(category: BookCategory): void {
+  onCategoryChange(category: CategoryEnum): void {
     this.selectedCategory = category;
     this.applyFilters();
   }

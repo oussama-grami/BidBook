@@ -1,0 +1,423 @@
+<div class="signup-page" style="display: flex; height: auto; overflow-y: auto">
+  <!-- Left side - Signup form -->
+  <div
+    class="signup-container"
+    style="
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      min-height: 100vh;
+    "
+  >
+    <div
+      class="signup-card"
+      style="width: 100%; max-width: 364px; padding: 40px 30px; margin: 30px 0"
+    >
+      <h1
+        class="signup-title"
+        style="
+          font-size: 24px;
+          font-weight: 700;
+          text-align: center;
+          margin-bottom: 8px;
+          color: #000000;
+        "
+      >
+        SIGNUP
+      </h1>
+      <p
+        class="signup-subtitle"
+        style="
+          font-size: 14px;
+          color: #525252;
+          text-align: center;
+          margin-bottom: 30px;
+        "
+      >
+        Get Started Now !
+      </p>
+
+      <form [formGroup]="signupForm" (ngSubmit)="onSignup()">
+        <!-- Profile Image Upload -->
+        <div
+          class="profile-upload-container"
+          style="margin-bottom: 20px; text-align: center"
+        >
+          <div
+            class="profile-image-preview"
+            style="
+              width: 100px;
+              height: 100px;
+              margin: 0 auto;
+              border-radius: 50%;
+              overflow: hidden;
+              position: relative;
+              background-color: rgba(240, 238, 255, 0.8);
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              border: 2px dashed #9c7350;
+              cursor: pointer;
+            "
+            (click)="profileImageInput.click()"
+            [style.background-image]="
+              profileImagePreview ? 'url(' + profileImagePreview + ')' : 'none'
+            "
+            [style.background-size]="'cover'"
+            [style.background-position]="'center'"
+          >
+            <i
+              *ngIf="!profileImagePreview"
+              class="pi pi-user"
+              style="font-size: 2rem; color: #9c7350"
+            ></i>
+          </div>
+          <input
+            #profileImageInput
+            type="file"
+            style="display: none"
+            accept="image/*"
+            (change)="onProfileImageSelected($event)"
+            formControlName="profileImage"
+          />
+          <p style="margin-top: 10px; font-size: 12px; color: #525252">
+            Click to upload profile image (optional)
+          </p>
+        </div>
+
+        <!-- First Name input -->
+        <div
+          class="input-container"
+          style="position: relative; margin-bottom: 20px; width: 100%"
+        >
+          <i
+            class="pi pi-user"
+            style="
+              position: absolute;
+              left: 18px;
+              top: 50%;
+              transform: translateY(-50%);
+              color: #1c1c1c;
+              z-index: 1;
+              font-size: 1.2rem;
+            "
+          ></i>
+          <input
+            type="text"
+            pInputText
+            formControlName="firstName"
+            placeholder="First Name"
+            style="
+              width: 100%;
+              border-radius: 16px !important;
+              padding: 16px 16px 16px 50px !important;
+              background-color: rgba(240, 238, 255, 0.8) !important;
+              font-size: 14px;
+              border: none !important;
+              height: 52px;
+            "
+          />
+        </div>
+
+        <!-- Last Name input -->
+        <div
+          class="input-container"
+          style="position: relative; margin-bottom: 20px; width: 100%"
+        >
+          <i
+            class="pi pi-user"
+            style="
+              position: absolute;
+              left: 18px;
+              top: 50%;
+              transform: translateY(-50%);
+              color: #1c1c1c;
+              z-index: 1;
+              font-size: 1.2rem;
+            "
+          ></i>
+          <input
+            type="text"
+            pInputText
+            formControlName="lastName"
+            placeholder="Last Name"
+            style="
+              width: 100%;
+              border-radius: 16px !important;
+              padding: 16px 16px 16px 50px !important;
+              background-color: rgba(240, 238, 255, 0.8) !important;
+              font-size: 14px;
+              border: none !important;
+              height: 52px;
+            "
+          />
+        </div>
+
+        <!-- Email input -->
+        <div
+          class="input-container"
+          style="position: relative; margin-bottom: 20px; width: 100%"
+        >
+          <i
+            class="pi pi-envelope"
+            style="
+              position: absolute;
+              left: 18px;
+              top: 50%;
+              transform: translateY(-50%);
+              color: #1c1c1c;
+              z-index: 1;
+              font-size: 1.2rem;
+            "
+          ></i>
+          <input
+            type="email"
+            pInputText
+            formControlName="email"
+            placeholder="Email"
+            style="
+              width: 100%;
+              border-radius: 16px !important;
+              padding: 16px 16px 16px 50px !important;
+              background-color: rgba(240, 238, 255, 0.8) !important;
+              font-size: 14px;
+              border: none !important;
+              height: 52px;
+            "
+          />
+        </div>
+
+        <!-- Password input -->
+        <div
+          class="input-container"
+          style="position: relative; margin-bottom: 20px; width: 100%"
+        >
+          <i
+            class="pi pi-lock"
+            style="
+              position: absolute;
+              left: 18px;
+              top: 50%;
+              transform: translateY(-50%);
+              color: #1c1c1c;
+              z-index: 1;
+              font-size: 1.2rem;
+            "
+          ></i>
+          <input
+            type="password"
+            pInputText
+            formControlName="password"
+            placeholder="Password"
+            style="
+              width: 100%;
+              border-radius: 16px !important;
+              padding: 16px 16px 16px 50px !important;
+              background-color: rgba(240, 238, 255, 0.8) !important;
+              font-size: 14px;
+              border: none !important;
+              height: 52px;
+            "
+          />
+        </div>
+
+        <!-- Error message area -->
+        <div
+          *ngIf="errorMessage"
+          class="error-container"
+          style="margin-bottom: 15px; text-align: center"
+        >
+          <p-message
+            severity="error"
+            [text]="errorMessage"
+            styleClass="w-full"
+          ></p-message>
+        </div>
+
+        <!-- Terms checkbox - updated styling -->
+        <div class="terms-checkbox-container">
+          <p-checkbox
+            formControlName="agreeTerms"
+            [binary]="true"
+            styleClass="mr-2"
+            inputId="agreeTerms"
+          ></p-checkbox>
+          <label for="agreeTerms" class="terms-label">
+            I agree to the terms & policy
+          </label>
+        </div>
+
+        <!-- Signup button with loading state -->
+        <p-button
+          type="submit"
+          label="{{ isLoading ? 'Signing up...' : 'SIGNUP' }}"
+          [disabled]="signupForm.invalid || isLoading"
+          [style]="{
+            width: '100%',
+            marginBottom: '25px',
+            backgroundColor:
+              signupForm.invalid || isLoading
+                ? 'rgba(156, 115, 80, 0.7)'
+                : '#9c7350',
+            borderColor:
+              signupForm.invalid || isLoading
+                ? 'rgba(156, 115, 80, 0.7)'
+                : '#9c7350',
+            color: '#ffffff',
+            borderRadius: '20px',
+            height: '57px',
+            fontSize: '16px',
+            fontWeight: '600',
+            opacity: signupForm.invalid || isLoading ? '0.8' : '1'
+          }"
+          styleClass="p-button-rounded"
+        >
+          <p-progressSpinner
+            *ngIf="isLoading"
+            [style]="{ width: '20px', height: '20px' }"
+            styleClass="custom-spinner"
+            strokeWidth="4"
+          >
+          </p-progressSpinner>
+        </p-button>
+
+        <div class="social-login" style="text-align: center">
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              margin-bottom: 15px;
+            "
+          >
+            <div style="flex: 1; height: 1px; background-color: #e0e0e0"></div>
+            <p style="color: #666; font-size: 14px; margin: 0 10px">
+              SIGNUP with Others
+            </p>
+            <div style="flex: 1; height: 1px; background-color: #e0e0e0"></div>
+          </div>
+
+          <div
+            class="social-buttons"
+            style="
+              display: flex;
+              flex-direction: column;
+              gap: 25px;
+              margin-bottom: 20px;
+            "
+          >
+            <!--<p-button
+              type="button"
+              [style]="{
+                backgroundColor: '#1877F2',
+                borderColor: '#1877F2',
+                color: 'white',
+                borderRadius: '10px',
+                height: '54px',
+                fontWeight: 'normal',
+                width: '100%',
+                transition: 'all 0.2s ease',
+                boxShadow: facebookHovered
+                  ? '0 4px 8px rgba(0, 0, 0, 0.2)'
+                  : 'none',
+                transform: facebookHovered ? 'translateY(-2px)' : 'none'
+              }"
+              styleClass="facebook-btn"
+              label="Sign In with Facebook"
+              icon="pi pi-facebook"
+              (mouseenter)="facebookHovered = true"
+              (mouseleave)="facebookHovered = false"
+            ></p-button>-->
+            <p-button
+              type="button"
+              [style]="{
+                backgroundColor: 'white',
+                color: 'rgba(0, 0, 0, 0.54)',
+                border: googleHovered ? '1px solid #ddd' : '1px solid #e0e0e0',
+                borderRadius: '10px',
+                height: '54px',
+                fontWeight: 'normal',
+                width: '100%',
+                transition: 'all 0.2s ease',
+                boxShadow: googleHovered
+                  ? '0 6px 10px rgba(0, 0, 0, 0.15)'
+                  : 'none',
+                transform: googleHovered ? 'translateY(-2px)' : 'none'
+              }"
+              styleClass="google-btn"
+              label="Sign In with Google"
+              icon="pi pi-google"
+              [outlined]="true"
+              (mouseenter)="googleHovered = true"
+              (mouseleave)="googleHovered = false"
+              (click)="loginWithGoogle()"
+            ></p-button>
+
+            <p-button
+              type="button"
+              [style]="{
+                backgroundColor: '#24292e',
+                color: 'white',
+                borderRadius: '10px',
+                height: '54px',
+                fontWeight: 'normal',
+                width: '100%',
+                transition: 'all 0.2s ease',
+                marginTop: '10px'
+              }"
+              styleClass="github-btn"
+              label="Sign In with GitHub"
+              icon="pi pi-github"
+              (click)="loginWithGithub()"
+            ></p-button>
+          </div>
+
+          <a
+            routerLink="/login"
+            style="color: #525252; font-size: 14px; text-decoration: none"
+          >Have an account? <strong>Sign In</strong></a
+          >
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Right side - Image -->
+  <div
+    class="image-container"
+    style="
+      flex: 1.2;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #f9f8f7;
+      overflow: hidden;
+    "
+  >
+    <div
+      class="illustration"
+      style="
+        position: absolute;
+        z-index: 1;
+        width: 700px;
+        height: 700px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      "
+    >
+      <img
+        priority="1"
+        ngSrc="/images/Sign%20up-pana.png"
+        alt="Sign up illustration"
+        style="width: 100%; height: 100%; object-fit: contain"
+        onerror="this.src='https://storyset.com/illustration/sign-up/pana'; this.onerror=null;"
+        height="2000"
+        width="2000"
+      />
+    </div>
+  </div>
+</div>
