@@ -55,6 +55,16 @@ export const routes: Routes = [
     ],
   },
   {
+    path: 'my-bids',
+    canActivate: [tokenValidationGuard],
+    loadComponent: () =>
+      import('./components/bidsPage/bid-dashboard.component').then(
+        (c) => c.ViewBidsPageComponent
+      ),
+    resolve: { pageData: DataLoadingResolver },
+    data: { animation: 'slideLeft' },
+  },
+  {
     path: 'articles',
     canActivate: [tokenValidationGuard],
     children: [
@@ -110,7 +120,7 @@ export const routes: Routes = [
     loadComponent: () =>
       import(
         './components/email-verification/email-verification.component'
-      ).then((c) => c.EmailVerificationComponent),
+        ).then((c) => c.EmailVerificationComponent),
     resolve: { pageData: DataLoadingResolver },
     data: { animation: 'fade' },
   },
@@ -194,7 +204,7 @@ export const routes: Routes = [
     loadComponent: () =>
       import(
         './components/transactions-history/transactions-history.component'
-      ).then((c) => c.TransactionsHistoryComponent),
+        ).then((c) => c.TransactionsHistoryComponent),
     resolve: { pageData: DataLoadingResolver },
     data: { animation: 'fade' },
   },

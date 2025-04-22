@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateBidDto } from './dto/create-bid.dto';
 import { UpdateBidDto } from './dto/update-bid.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Bid } from './entities/bid.entity'; // Assuming your Bid entity is here
+import { Bid } from './entities/bid.entity';
 import { Repository } from 'typeorm';
 import {Book} from "../books/entities/book.entity";
 import { BidStatus } from 'src/Enums/bidstatus.enum';
@@ -13,7 +13,9 @@ export class BidsService {
   constructor(
       @InjectRepository(Bid)
       private readonly bidRepository: Repository<Bid>,
-      private readonly bookService: BooksService, 
+      private readonly bookService: BooksService,
+        @InjectRepository(Book)
+        private readonly bookRepository: Repository<Book>,
   ) {}
 
   create(createBidDto: CreateBidDto) {
@@ -42,17 +44,17 @@ export class BidsService {
       relations: ['bidder'],
     });
   }
-  async findBooksBidByUser(userId: number, { limit = 10, offset = 0 }): Promise<Book[]> {
-    const bids = await this.bidRepository.find({
-      where: { bidder: { id: userId } },
-      relations: ['book'],
-      take: limit,
-      skip: offset,
-    });
-    // Extract the unique books from the bids
-    const books = bids.map(bid => bid.book);
-    return [...new Set(books)]; // Use Set to get unique books
-  }
+    async findBidsByUser(userId: number, { limit = 10, offset = 0 }): Promise<Bid[]> {
+        return await this.bidRepository.find({
+            where: {
+                bidder: { id: userId },
+            },
+            relations: ['book', 'bidder'],
+            take: limit,
+            skip: offset,
+            order: { createdAt: 'DESC' },
+        });
+    }
   async findHighestBidForBook(bookId: number): Promise<Bid | null> {
     return this.bidRepository.findOne({
         where: { book: { id: bookId } },

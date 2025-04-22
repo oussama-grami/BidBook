@@ -95,6 +95,6 @@ config({ path: `${process.cwd()}/Config/.env.dev` });
     NotificationsModule,
   ],
   controllers: [AppController],
-  providers: [AppService, BookResolver,BidResolver, CommentsResolver, RatingsResolver],
+  providers: [AppService, BookResolver, RatingsResolver, FavoritesResolver, BidResolver, CommentsResolver],
 })
 export class AppModule {}

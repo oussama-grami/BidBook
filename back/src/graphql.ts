@@ -107,7 +107,7 @@ export abstract class IQuery {
 
     abstract bookDetails(id: number): Nullable<Book> | Promise<Nullable<Book>>;
 
-    abstract myBids(limit?: Nullable<number>, offset?: Nullable<number>): Book[] | Promise<Book[]>;
+    abstract myBids(limit?: Nullable<number>, offset?: Nullable<number>): Bid[] | Promise<Bid[]>;
 
     abstract highestBidForBook(bookId: number): Nullable<Bid> | Promise<Nullable<Bid>>;
 

@@ -92,7 +92,7 @@ type UserRating {
 type Query {
     viewBooks(limit: Int, offset: Int): [Book!]!
     bookDetails(id: Int!): Book
-    myBids(limit: Int, offset: Int): [Book!]!
+    myBids(limit: Int, offset: Int): [Bid!]!
     highestBidForBook(bookId: Int!): Bid
     userBookRating(userId: Int!, bookId: Int!): UserRating
     book(id: Int!): Book

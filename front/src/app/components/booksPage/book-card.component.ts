@@ -379,11 +379,11 @@ export class BookCardComponent {
   constructor(private loadingService: LoadingService) {}
 
   getAverageRating(): number {
-    if (!this.book.rating || this.book.rating.length === 0) {
+    if (!this.book.ratings || this.book.ratings.length === 0) {
       return 0;
     }
-    const sum = this.book.rating.reduce((acc, curr) => acc + curr.rate, 0);
-    return sum / this.book.rating.length;
+    const sum = this.book.ratings.reduce((acc, curr) => acc + curr.rate, 0);
+    return sum / this.book.ratings.length;
   }
 
   onImageLoaded(bookId: string | number, success: boolean): void {

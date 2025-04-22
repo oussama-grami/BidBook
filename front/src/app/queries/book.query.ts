@@ -71,3 +71,25 @@ export const GET_BOOK_DETAILS_WITH_FAVORITE_CHECK_QUERY = gql`
     }
   }
 `;
+
+export const MY_BIDS_QUERY = gql`
+  query myBids($limit: Int, $offset: Int) {
+    myBids(limit: $limit, offset: $offset) {
+      id
+      amount
+      bidStatus
+      createdAt
+      book {
+        id
+        title
+        picture
+      }
+      bidder {
+        id
+        firstName
+        lastName
+        imageUrl
+      }
+    }
+  }
+`;

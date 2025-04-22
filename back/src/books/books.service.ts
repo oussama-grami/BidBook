@@ -2,7 +2,7 @@ import {BadRequestException, Injectable, InternalServerErrorException, NotFoundE
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import {In, Repository} from 'typeorm';
 import axios from 'axios';
 import { Book } from './entities/book.entity';
 import * as fs from 'fs/promises';
@@ -55,7 +55,6 @@ export class BooksService {
           'price',
           'language',
           'createdAt',
-
         ],
       });
       console.log(`Found ${books?.length || 0} books`);
@@ -67,11 +66,39 @@ export class BooksService {
   }
 
   async findOne(id: number): Promise<Book> {
-    const book = await this.bookRepository.findOneBy({ id }); // Simplified query
+    const book = await this.bookRepository.findOne({
+      where: { id },
+      relations: ['owner', 'comments', 'bids','favorites','ratings'],
+    });
+
     if (!book) {
       throw new NotFoundException(`Book with ID ${id} not found`);
     }
+
     return book;
+  }
+  async findManyByIds(ids: number[]): Promise<Book[]> {
+    return await this.bookRepository.find({
+      where: {
+        id: In(ids),
+      },
+      relations: ['owner', 'comments', 'bids', 'favorites', 'ratings'],
+      select: [
+        'id',
+        'title',
+        'author',
+        'picture',
+        'editor',
+        'category',
+        'totalPages',
+        'damagedPages',
+        'age',
+        'edition',
+        'price',
+        'language',
+        'createdAt',
+      ],
+    });
   }
 
   async update(
