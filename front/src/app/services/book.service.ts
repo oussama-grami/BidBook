@@ -45,7 +45,9 @@ export interface Book {
 })
 export class BookService {
   private apiUrl = 'http://localhost:3000';
-  constructor(private apollo: Apollo, private http: HttpClient) {}
+  constructor(private apollo: Apollo, private http: HttpClient) {
+    console.log('BookService initialized');
+  }
 
   predictBookPrice(bookData: any): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/books/predict`, bookData);
@@ -91,7 +93,6 @@ export class BookService {
   }
 
   getBookDetails(bookId: number): Observable<Book> {
-
     return this.apollo
       .query<{ bookDetails: Book }>({
         query: gql`
@@ -117,7 +118,7 @@ export class BookService {
               bids {
                 amount
               }
-              rating {
+              ratings {
                 rate
                 user {
                     id

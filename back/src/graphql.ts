@@ -47,6 +47,7 @@ export class User {
     firstName: string;
     lastName: string;
     imageUrl: string;
+    ratings?: Nullable<UserRating[]>;
 }
 
 export class Comment {
@@ -83,7 +84,7 @@ export class Book {
     language?: Nullable<Language>;
     editor?: Nullable<string>;
     category?: Nullable<Category>;
-    rating?: Nullable<UserRating[]>;
+    ratings?: Nullable<UserRating[]>;
     createdAt: DateTime;
 }
 
@@ -95,7 +96,7 @@ export class Favorite {
 
 export class UserRating {
     id: number;
-    user: User;
+    user?: Nullable<User>;
     book: Book;
     rate: number;
     createdAt: DateTime;
@@ -112,6 +113,8 @@ export abstract class IQuery {
     abstract highestBidForBook(bookId: number): Nullable<Bid> | Promise<Nullable<Bid>>;
 
     abstract userBookRating(userId: number, bookId: number): Nullable<UserRating> | Promise<Nullable<UserRating>>;
+
+    abstract book(id: number): Nullable<Book> | Promise<Nullable<Book>>;
 }
 
 export abstract class IMutation {

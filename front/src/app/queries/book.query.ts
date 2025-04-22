@@ -26,7 +26,7 @@ export const VIEW_BOOKS_QUERY = gql`
 `;
 
 export const GET_BOOK_DETAILS_WITH_FAVORITE_CHECK_QUERY = gql`
-  query BookDetailsQuery($id: Int!) {
+  query bookDetails($id: Int!) {
     bookDetails(id: $id) {
       id
       title
@@ -48,7 +48,7 @@ export const GET_BOOK_DETAILS_WITH_FAVORITE_CHECK_QUERY = gql`
       bids {
         amount
       }
-      rating {
+      ratings {
         rate
         user {
            id
