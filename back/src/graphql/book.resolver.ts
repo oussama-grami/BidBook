@@ -53,6 +53,8 @@ export class BookResolver {
 
     @ResolveField('owner', () => 'User')
     async owner(@Parent() book: any) {
+        console.log('Book object in owner resolver:', book);
+        console.log('book.ownerId:', book.ownerId);
         return this.userService.findOne(book.ownerId);
     }
 

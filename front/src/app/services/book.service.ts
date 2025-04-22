@@ -70,7 +70,7 @@ export class BookService {
             id
             title
             picture
-            rating {
+            ratings {
               rate
             }
             favorites {
@@ -111,10 +111,7 @@ export class BookService {
               editor
               category
               createdAt
-              owner {
-                firstName
-                lastName
-              }
+
               bids {
                 amount
               }
@@ -187,7 +184,7 @@ export class BookService {
             age
             edition
             editor
-            rating {
+            ratings {
               rate
               user {
                 id

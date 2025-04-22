@@ -75,7 +75,7 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
   edition: string | undefined;
   language: string | undefined;
   editor: string | undefined;
-  owner: { firstName: string; lastName: string } | undefined;
+  owner: { id: number; firstName: string; lastName: string; imageUrl: string } | undefined;
 
   userRating: number = 0;
   isFavorite: boolean = false;
@@ -93,14 +93,14 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
   userBidPrice: number = 0;
   bidError: string = '';
   showBidInput: boolean = false;
-  
+
   isLoadingBookDetails: boolean = true;
   error: any = null;
-  
+
   bookId: number | null = null;
   currentUserId: number = 1;
   math = Math;
-  
+
   private querySubscription?: Subscription;
 
   constructor(
@@ -131,11 +131,11 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
             this.coverImage = book.picture || '/images/placeholder.png';
             this.price = book.price || 0;
             this.pages = book.totalPages || 0;
-            this.age = book.age; 
+            this.age = book.age;
             this.edition = 'ed';
             this.language = book.language || undefined;
             this.editor = book.editor || undefined;
-            this.owner = book.owner; 
+            this.owner = book.owner;
 
             this.likes = book.favorites?.length || 0;
             if (book.bids && book.bids.length > 0) {
@@ -180,18 +180,18 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
   setUserRating(rating: number): void {
     this.userRating = rating;
   }
-  
+
   submitUserRating(): void {
     if (this.userRating > 0 && this.bookId !== null) {
       // Service Call
     }
   }
-  
+
   toggleFavorite(): void {
     if (this.bookId === null) return;
     this.isFavorite = !this.isFavorite;
   }
-  
+
   submitComment(): void {
     if (!this.userComment.trim() || this.bookId === null) return;
     const newComment = {
@@ -209,7 +209,7 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
     this.resetDisplayedComments();
     this.userComment = '';
   }
-  
+
   loadMoreComments(): void {
     if (this.isLoadingComments || !this.comments) return;
     const startIndex = this.displayedComments.length;
@@ -225,7 +225,7 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
       }, 300);
     }
   }
-  
+
   resetDisplayedComments(): void {
     if (this.comments) {
       this.displayedComments = this.comments.slice(0, this.commentsPerPage);
@@ -237,11 +237,11 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
       this.showLoadMoreButton = false;
     }
   }
-  
+
   updateLoadMoreButtonVisibility(): void {
     this.showLoadMoreButton = (this.comments?.length || 0) > this.displayedComments.length;
   }
-  
+
   submitBid(): void {
     if (!this.showBidInput) {
       this.showBidInput = true;

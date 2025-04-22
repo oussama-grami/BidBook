@@ -6,7 +6,7 @@ export const VIEW_BOOKS_QUERY = gql`
       id
       title
       picture
-      rating {
+      ratings {
         rate
       }
       favorites {
@@ -41,10 +41,7 @@ export const GET_BOOK_DETAILS_WITH_FAVORITE_CHECK_QUERY = gql`
       editor
       category
       createdAt
-      owner {
-        firstName
-        lastName
-      }
+
       bids {
         amount
       }

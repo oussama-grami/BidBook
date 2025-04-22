@@ -55,6 +55,7 @@ export class BooksService {
           'price',
           'language',
           'createdAt',
+
         ],
       });
       console.log(`Found ${books?.length || 0} books`);
@@ -66,15 +67,10 @@ export class BooksService {
   }
 
   async findOne(id: number): Promise<Book> {
-    const book = await this.bookRepository.findOne({
-      where: { id },
-      relations: ['owner', 'comments', 'bids','favorites','rating'],
-    });
-
+    const book = await this.bookRepository.findOneBy({ id }); // Simplified query
     if (!book) {
       throw new NotFoundException(`Book with ID ${id} not found`);
     }
-
     return book;
   }
 

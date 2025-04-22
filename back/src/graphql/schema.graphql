@@ -71,7 +71,7 @@ type Book {
     language: Language
     editor: String
     category: Category
-    rating: [UserRating!]
+    ratings: [UserRating!]
     createdAt: DateTime!
 }
 type Favorite {

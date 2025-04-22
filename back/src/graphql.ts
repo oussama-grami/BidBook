@@ -47,7 +47,6 @@ export class User {
     firstName: string;
     lastName: string;
     imageUrl: string;
-    ratings?: Nullable<UserRating[]>;
 }
 
 export class Comment {
@@ -96,7 +95,7 @@ export class Favorite {
 
 export class UserRating {
     id: number;
-    user?: Nullable<User>;
+    user: User;
     book: Book;
     rate: number;
     createdAt: DateTime;
