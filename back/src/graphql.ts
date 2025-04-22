@@ -112,6 +112,8 @@ export abstract class IQuery {
     abstract highestBidForBook(bookId: number): Nullable<Bid> | Promise<Nullable<Bid>>;
 
     abstract userBookRating(userId: number, bookId: number): Nullable<UserRating> | Promise<Nullable<UserRating>>;
+
+    abstract book(id: number): Nullable<Book> | Promise<Nullable<Book>>;
 }
 
 export abstract class IMutation {
