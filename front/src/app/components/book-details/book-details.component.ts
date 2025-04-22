@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NgForOf, NgIf, DatePipe, CommonModule } from '@angular/common';
 import {
   animate,
@@ -10,14 +10,10 @@ import {
 import { BackArrowComponent } from '../navigation/back-arrow.component';
 import { ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-
-interface Comment {
-  id: number;
-  userImage: string;
-  userName: string;
-  text: string;
-  date: Date;
-}
+import { BookService, Book } from '../../services/book.service';
+import { Apollo } from 'apollo-angular';
+import { HttpLink } from 'apollo-angular/http';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-book-details',
@@ -36,10 +32,7 @@ interface Comment {
     trigger('fadeInOut', [
       transition(':enter', [
         style({ opacity: 0, transform: 'translateY(20px)' }),
-        animate(
-          '0.5s ease-out',
-          style({ opacity: 1, transform: 'translateY(0)' })
-        ),
+        animate('0.5s ease-out', style({ opacity: 1, transform: 'translateY(0)' })),
       ]),
     ]),
     trigger('scaleHeart', [
@@ -49,225 +42,218 @@ interface Comment {
       ]),
     ]),
     trigger('starRating', [
-      state(
-        'inactive',
-        style({
-          transform: 'scale(1)',
-          opacity: '0.5',
-        })
-      ),
-      state(
-        'active',
-        style({
-          transform: 'scale(1.2)',
-          opacity: '1',
-        })
-      ),
+      state('inactive', style({ transform: 'scale(1)', opacity: '0.5' })),
+      state('active', style({ transform: 'scale(1.2)', opacity: '1' })),
       transition('inactive => active', animate('200ms ease-in')),
       transition('active => inactive', animate('200ms ease-out')),
     ]),
     trigger('backButton', [
-      state(
-        'normal',
-        style({
-          transform: 'scale(1) rotate(0deg)',
-        })
-      ),
-      state(
-        'hovered',
-        style({
-          transform: 'scale(1.1) rotate(-10deg)',
-        })
-      ),
+      state('normal', style({ transform: 'scale(1) rotate(0deg)' })),
+      state('hovered', style({ transform: 'scale(1.1) rotate(-10deg)' })),
       transition('normal <=> hovered', animate('200ms ease-in-out')),
     ]),
   ],
+  providers: [
+    Apollo,
+    HttpLink,
+    BookService,
+  ],
 })
-export class BookDetailsComponent {
-  @Input() title: string = 'hello';
-  @Input() author: string = 'Mohamed Aziz';
-  @Input() genre: string = 'Comedy';
-  @Input() rating: number = 4;
-  @Input() votes: number = 5200;
-  @Input() pages: number = 145;
-  @Input() coverImage: string = '/images/Book1.png';
-  @Input() likes: number = 128; // Added likes property
-  @Input() description: string =
-    'This is a description of the book. It provides an overview of the content and themes covered in the book. The book is a thrilling adventure that takes the reader on a journey through time and space, exploring the depths of human emotion and experience. It is a must-read for anyone who loves a good story.';
+export class BookDetailsComponent implements OnInit, OnDestroy {
+  title: string = '';
+  author: string = '';
+  genre: string = '';
+  rating: number = 0;
+  votes: number = 0;
+  pages: number = 0;
+  coverImage: string = '';
+  likes: number = 0;
+  description: string = '';
+  price: number = 0;
+  lastBidPrice: number = 0;
+  age: number | undefined;
+  edition: string | undefined;
+  language: string | undefined;
+  editor: string | undefined;
+  owner: { id: number; firstName: string; lastName: string; imageUrl: string } | undefined;
+
   userRating: number = 0;
   isFavorite: boolean = false;
   starStates: string[] = Array(5).fill('inactive');
 
-  // Properties for comments and bidding
   userComment: string = '';
-  comments: Comment[] = [];
-  displayedComments: Comment[] = [];
+  comments: { id: number; content: string; createdAt: string; user: { id: number; firstName: string; lastName: string; imageUrl: string }; }[] = [];
+  displayedComments: any[] = [];
   commentsPerPage: number = 3;
   currentPage: number = 1;
   isLoadingComments: boolean = false;
   showLoadMoreButton: boolean = false;
-  commentsLoaded: boolean = false; // Track if comments have been loaded
-  lastBidPrice: number = 25; // Starting bid price in dinars
+  commentsLoaded: boolean = false;
+
   userBidPrice: number = 0;
   bidError: string = '';
-  showBidInput: boolean = false; // New property to track bid input visibility
+  showBidInput: boolean = false;
 
-  constructor(private route: ActivatedRoute) {
-    this.route.params.subscribe((params) => {
-      const bookId = params['id'];
-      console.log('Book Id from route:', bookId);
-      // Comments are not loaded initially, user must click to load them
+  isLoadingBookDetails: boolean = true;
+  error: any = null;
+
+  bookId: number | null = null;
+  currentUserId: number = 1;
+  math = Math;
+
+  private querySubscription?: Subscription;
+
+  constructor(
+    private route: ActivatedRoute,
+    private bookService: BookService
+  ) {
+    this.route.params.subscribe(params => {
+      const id = +params['id'];
+      if (id && !isNaN(id)) {
+        this.bookId = id;
+      } else {
+        this.isLoadingBookDetails = false;
+        this.error = 'Invalid book ID.';
+      }
     });
+  }
+
+  ngOnInit(): void {
+    if (this.bookId !== null && !this.error) {
+      this.isLoadingBookDetails = true;
+      this.error = null;
+      this.querySubscription = this.bookService.getBookDetails(Number(this.bookId)).subscribe({
+        next: (book) => {
+          if (book) {
+            this.title = book.title || '';
+            this.author = book.author || '';
+            this.genre = book.category || '';
+            this.coverImage = book.picture || '/images/placeholder.png';
+            this.price = book.price || 0;
+            this.pages = book.totalPages || 0;
+            this.age = book.age;
+            this.edition = 'ed';
+            this.language = book.language || undefined;
+            this.editor = book.editor || undefined;
+            this.owner = book.owner;
+
+            this.likes = book.favorites?.length || 0;
+            if (book.bids && book.bids.length > 0) {
+              const highestBid = Math.max(...book.bids.map(bid => bid.amount));
+              this.lastBidPrice = highestBid;
+            } else {
+              this.lastBidPrice = this.price;
+            }
+            if (book.ratings && book.ratings.length > 0) {
+              const totalRate = book.ratings.reduce((sum, r) => sum + r.rate, 0);
+              this.rating = totalRate / book.ratings.length;
+              this.votes = book.ratings.length;
+            } else {
+              this.rating = 0;
+              this.votes = 0;
+            }
+            this.starStates = Array(5).fill('inactive').map((_, index) =>
+              index < Math.round(this.rating) ? 'active' : 'inactive'
+            );
+
+            const currentUserId = this.currentUserId;
+            this.isFavorite = book.favorites?.some(fav => fav.user?.id === currentUserId) || false;
+          } else {
+            this.error = 'Book not found.';
+          }
+          this.isLoadingBookDetails = false;
+        },
+        error: (err) => {
+          this.error = 'Failed to load book details.';
+          this.isLoadingBookDetails = false;
+        },
+      });
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.querySubscription) {
+      this.querySubscription.unsubscribe();
+    }
   }
 
   setUserRating(rating: number): void {
     this.userRating = rating;
-    this.starStates = this.starStates.map((_, index) =>
-      index < rating ? 'active' : 'inactive'
-    );
+  }
+
+  submitUserRating(): void {
+    if (this.userRating > 0 && this.bookId !== null) {
+      // Service Call
+    }
   }
 
   toggleFavorite(): void {
+    if (this.bookId === null) return;
     this.isFavorite = !this.isFavorite;
   }
 
-  // Comment methods
   submitComment(): void {
-    if (!this.userComment.trim()) return;
-
-    // If this is the first comment and comments haven't been loaded yet
-    if (!this.commentsLoaded) {
-      this.commentsLoaded = true;
-    }
-
-    const newComment: Comment = {
-      id: this.comments.length + 1,
-      userImage: '/images/person.png', // Default user image
-      userName: 'Current User', // This would come from auth service in real app
-      text: this.userComment,
-      date: new Date(),
+    if (!this.userComment.trim() || this.bookId === null) return;
+    const newComment = {
+      id: Date.now(),
+      user: {
+        id: this.currentUserId,
+        firstName: 'Current',
+        lastName: 'User',
+        imageUrl: '/images/person.png'
+      },
+      content: this.userComment.trim(),
+      createdAt: new Date().toISOString(),
     };
-
     this.comments.unshift(newComment);
     this.resetDisplayedComments();
     this.userComment = '';
   }
 
-  // New method to fetch comments when user requests them
-  fetchComments(): void {
-    // Don't fetch if already loading or already loaded
-    if (this.isLoadingComments) return;
-
-    this.isLoadingComments = true;
-
-    // Simulate fetching comments from an API
-    setTimeout(() => {
-      this.comments = [
-        {
-          id: 3,
-          userImage: '/images/person.png',
-          userName: 'Jane Smith',
-          text: 'This book changed my perspective on so many things! Highly recommend.',
-          date: new Date(2025, 3, 10),
-        },
-        {
-          id: 2,
-          userImage: '/images/person.png',
-          userName: 'John Doe',
-          text: 'Great read! I loved the character development.',
-          date: new Date(2025, 3, 5),
-        },
-        {
-          id: 1,
-          userImage: '/images/person.png',
-          userName: 'Mark Johnson',
-          text: 'The plot was intriguing but the ending was a bit rushed.',
-          date: new Date(2025, 2, 28),
-        },
-        // Add more mock comments to demonstrate pagination
-        {
-          id: 4,
-          userImage: '/images/person.png',
-          userName: 'Alice Williams',
-          text: "I couldn't put it down! Read it in one sitting.",
-          date: new Date(2025, 2, 20),
-        },
-        {
-          id: 5,
-          userImage: '/images/person.png',
-          userName: 'Robert Brown',
-          text: 'The author really knows how to create compelling characters.',
-          date: new Date(2025, 2, 15),
-        },
-      ];
-
-      this.resetDisplayedComments();
-      this.isLoadingComments = false;
-      this.commentsLoaded = true;
-      this.updateLoadMoreButtonVisibility();
-    }, 1000);
-  }
-
-  // This method is kept for backward compatibility but isn't called on initialization
-  loadInitialComments(): void {
-    this.fetchComments();
-  }
-
   loadMoreComments(): void {
-    if (this.isLoadingComments) return;
-
-    this.isLoadingComments = true;
-
-    // Simulate API call with delay
-    setTimeout(() => {
-      const startIndex = this.displayedComments.length;
-      const endIndex = Math.min(
-        startIndex + this.commentsPerPage,
-        this.comments.length
-      );
-
-      if (startIndex < this.comments.length) {
+    if (this.isLoadingComments || !this.comments) return;
+    const startIndex = this.displayedComments.length;
+    const endIndex = Math.min(startIndex + this.commentsPerPage, this.comments.length);
+    if (startIndex < this.comments.length) {
+      this.isLoadingComments = true;
+      setTimeout(() => {
         const newComments = this.comments.slice(startIndex, endIndex);
         this.displayedComments = [...this.displayedComments, ...newComments];
         this.currentPage++;
-      }
-
-      this.isLoadingComments = false;
-      this.updateLoadMoreButtonVisibility();
-    }, 800);
+        this.isLoadingComments = false;
+        this.updateLoadMoreButtonVisibility();
+      }, 300);
+    }
   }
 
   resetDisplayedComments(): void {
-    this.displayedComments = this.comments.slice(0, this.commentsPerPage);
-    this.currentPage = 1;
-    this.updateLoadMoreButtonVisibility();
+    if (this.comments) {
+      this.displayedComments = this.comments.slice(0, this.commentsPerPage);
+      this.currentPage = 1;
+      this.updateLoadMoreButtonVisibility();
+    } else {
+      this.displayedComments = [];
+      this.currentPage = 1;
+      this.showLoadMoreButton = false;
+    }
   }
 
   updateLoadMoreButtonVisibility(): void {
-    this.showLoadMoreButton =
-      this.displayedComments.length < this.comments.length;
+    this.showLoadMoreButton = (this.comments?.length || 0) > this.displayedComments.length;
   }
 
-  // Method for bidding
   submitBid(): void {
-    // If bid input isn't shown yet, just show it
     if (!this.showBidInput) {
       this.showBidInput = true;
       return;
     }
-
-    // Otherwise, process the bid submission
-    if (!this.userBidPrice || this.userBidPrice <= this.lastBidPrice) {
-      this.bidError = `Your bid must be higher than the current bid of ${this.lastBidPrice}D`;
+    if (!this.userBidPrice || this.bookId === null || this.userBidPrice <= this.lastBidPrice) {
+      this.bidError = !this.bookId ? 'Book ID is missing.' : `Your bid must be higher than the current bid of ${this.lastBidPrice}D`;
       return;
     }
-
     this.bidError = '';
     this.lastBidPrice = this.userBidPrice;
     this.userBidPrice = 0;
-    this.showBidInput = false; // Hide the bid form after successful submission
-
-    // In a real app, you would save this bid to your backend
-    console.log(`New bid placed: ${this.lastBidPrice}D`);
+    this.showBidInput = false;
   }
 }

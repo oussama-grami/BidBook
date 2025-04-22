@@ -1,7 +1,26 @@
 <div class="book-details-container">
   <app-back-arrow></app-back-arrow>
 
-  <div class="book-details" [@fadeInOut]>
+  <div *ngIf="isLoadingBookDetails && !error" class="loading-container">
+      <p>Loading book details...</p>
+       <div class="comment-skeletons">
+            <div class="skeleton-comment" *ngFor="let i of [].constructor(3)">
+              <div class="skeleton-avatar"></div>
+              <div class="skeleton-content">
+                <div class="skeleton-line-short"></div>
+                <div class="skeleton-line-long"></div>
+              </div>
+            </div>
+          </div>
+  </div>
+
+   <div *ngIf="error" class="error-container">
+       <p>Error: {{ error }}</p>
+       <button (click)="ngOnInit()" *ngIf="bookId !== null && !isLoadingBookDetails">Retry</button>
+   </div>
+
+
+  <div class="book-details" [@fadeInOut] *ngIf="!isLoadingBookDetails && !error">
     <div class="book-cover">
       <img [src]="coverImage" alt="Book Cover" class="cover-image" />
     </div>
@@ -15,31 +34,35 @@
 
       <div class="rating-section">
         <div class="rating" [@fadeInOut]>
-          <span *ngFor="let star of [].constructor(5); let i = index">
+           <span *ngFor="let star of [].constructor(5); let i = index">
             <img
-              [@starRating]="starStates[i]"
-              [src]="
-                i < rating ? '/images/star-filed.png' : '/images/star-empty.png'
-              "
-              [alt]="i < rating ? 'Filled Star' : 'Empty Star'"
+               [src]="
+                 i < math.round(rating) ? '/images/star-filed.png' : '/images/star-empty.png'
+               "
+               [alt]="i < math.round(rating) ? 'Filled Star' : 'Empty Star'"
             />
           </span>
-          <span class="votes">{{ votes }} votes</span>
+           <span class="votes">{{ votes }} votes</span>
         </div>
       </div>
 
       <div class="details-section" [@fadeInOut]>
-        <div class="price">PRICE: <span class="price-value">20D</span></div>
+           <div class="price">PRICE: <span class="price-value">{{ price }}D</span></div>
         <div class="pages">
-          Number of pages: <span class="page-count">{{ pages }}</span>
+           Number of pages: <span class="page-count">{{ pages }}</span>
         </div>
         <div class="last-bid">
-          Current Bid: <span class="bid-value">{{ lastBidPrice }}D</span>
+           Current Bid: <span class="bid-value">{{ lastBidPrice }}D</span>
         </div>
+           <div class="age" *ngIf="age !== undefined">Age: <span class="age-value">{{ age }} years</span></div>
+           <div class="edition" *ngIf="edition">{{ edition }}</div>
+           <div class="language" *ngIf="language">{{ language }}</div>
+           <div class="editor" *ngIf="editor">{{ editor }}</div>
+           <div class="owner" *ngIf="owner?.firstName">Owner: <span class="owner-value">{{ owner?.firstName }} {{ owner?.lastName }}</span></div>
       </div>
 
-      <div class="description-section" [@fadeInOut]>
-        <p class="description">{{ description }}</p>
+       <div class="description-section" [@fadeInOut]>
+        <p class="description">{{ description || 'No description available.' }}</p>
       </div>
 
       <div class="interaction-section">
@@ -52,9 +75,9 @@
             {{ isFavorite ? "❤️" : "🤍" }}
           </span>
           <div class="stats-container">
-            <span class="stat-item"> {{ likes }} likes </span>
+             <span class="stat-item"> {{ likes }} likes </span>
             <span class="stat-item">
-              <i class="pi pi-comments"></i> {{ comments.length }} comments
+              <i class="pi pi-comments"></i> {{ comments?.length || 0 }} comments
             </span>
           </div>
         </div>
@@ -65,7 +88,7 @@
             <span
               *ngFor="let star of [].constructor(5); let i = index"
               (click)="setUserRating(i + 1)"
-              [@starRating]="starStates[i]"
+              [class.active]="i < userRating"
             >
               <img
                 [src]="
@@ -77,9 +100,9 @@
               />
             </span>
           </div>
+           <button *ngIf="userRating > 0" (click)="submitUserRating()" class="submit-rating-btn">Submit Rating</button>
         </div>
 
-        <!-- Updated comment section with submit button -->
         <div class="comment-section" [@fadeInOut]>
           <textarea
             class="comment"
@@ -91,84 +114,44 @@
           </button>
         </div>
 
-        <!-- New bid section with conditional display -->
         <div class="bid-section" [@fadeInOut]>
           <h3 *ngIf="showBidInput">Place your bid</h3>
 
-          <!-- Bid input group - only shown after clicking the Place Bid button -->
           <div *ngIf="showBidInput" class="bid-input-group" [@fadeInOut]>
             <input
               type="number"
               class="bid-input"
               placeholder="Enter your bid in dinars"
               [(ngModel)]="userBidPrice"
-              min="{{ lastBidPrice + 1 }}"
+              [min]="lastBidPrice + 1"
             />
             <span class="currency">D</span>
           </div>
 
-          <!-- Show error message only when input is visible -->
           <div *ngIf="showBidInput && bidError" class="bid-error">
             {{ bidError }}
           </div>
 
-          <!-- Button text changes based on whether form is visible -->
           <button class="bid-btn" (click)="submitBid()">
             {{ showBidInput ? "Submit Bid" : "Place Bid" }}
           </button>
         </div>
       </div>
 
-      <!-- New comments display section -->
       <div class="comments-container" [@fadeInOut]>
-        <h3 class="comments-title">Comments ({{ comments.length }})</h3>
+           <h3 class="comments-title">Comments ({{ comments?.length || 0 }})</h3>
 
         <div class="comments-list">
-          <!-- Show when no comments are loaded yet -->
-          <div
-            *ngIf="!commentsLoaded && !isLoadingComments"
+           <div
+            *ngIf="commentsLoaded && (comments?.length || 0) === 0 && !isLoadingComments && !isLoadingBookDetails && !error"
             class="no-comments-container"
-          >
-            <p class="no-comments-msg">No comments loaded yet</p>
-            <button class="load-more-btn" (click)="fetchComments()">
-              Load Comments
-            </button>
-          </div>
+           >
+             <p class="no-comments-msg">
+               No comments yet. Be the first to comment!
+             </p>
+           </div>
 
-          <!-- Comments list when loaded -->
-          <div
-            *ngFor="let comment of displayedComments"
-            class="comment-item"
-            [@fadeInOut]
-          >
-            <div class="comment-header">
-              <div class="user-info">
-                <img [src]="comment.userImage" alt="User" class="user-avatar" />
-                <div class="user-details">
-                  <span class="user-name">{{ comment.userName }}</span>
-                  <span class="comment-date">{{
-                    comment.date | date : "mediumDate"
-                  }}</span>
-                </div>
-              </div>
-            </div>
-            <div class="comment-text">{{ comment.text }}</div>
-          </div>
-
-          <!-- Show when comments are loaded but there are none -->
-          <div
-            *ngIf="
-              commentsLoaded && comments.length === 0 && !isLoadingComments
-            "
-            class="no-comments-container"
-          >
-            <p class="no-comments-msg">
-              No comments yet. Be the first to comment!
-            </p>
-          </div>
-
-          <!-- Skeleton loader for comments -->
-          <div *ngIf="isLoadingComments" class="comment-skeletons">
+           <div *ngIf="isLoadingComments" class="comment-skeletons">
             <div class="skeleton-comment" *ngFor="let i of [].constructor(3)">
               <div class="skeleton-avatar"></div>
               <div class="skeleton-content">
@@ -178,14 +161,32 @@
             </div>
           </div>
 
-          <!-- Load more comments button -->
-          <button
-            *ngIf="showLoadMoreButton && !isLoadingComments"
-            class="load-more-btn"
-            (click)="loadMoreComments()"
+          <div
+            *ngFor="let comment of displayedComments"
+            class="comment-item"
+            [@fadeInOut]
           >
-            Load More Comments
-          </button>
+            <div class="comment-header">
+              <div class="user-info">
+                 <img [src]="comment.user?.imageUrl || '/images/person.png'" alt="User" class="user-avatar" />
+                <div class="user-details">
+                   <span class="user-name">{{ comment.user?.firstName }} {{ comment.user?.lastName }}</span>
+                   <span class="comment-date">{{
+                     comment.createdAt | date : "mediumDate"
+                   }}</span>
+                </div>
+              </div>
+            </div>
+             <div class="comment-text">{{ comment.content }}</div>
+          </div>
+
+           <button
+             *ngIf="showLoadMoreButton && !isLoadingComments && commentsLoaded"
+             class="load-more-btn"
+             (click)="loadMoreComments()"
+           >
+             Load More Comments
+           </button>
         </div>
       </div>
     </div>
