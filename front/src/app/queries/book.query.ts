@@ -6,7 +6,7 @@ export const VIEW_BOOKS_QUERY = gql`
       id
       title
       picture
-      rating {
+      ratings {
         rate
       }
       favorites {
@@ -48,7 +48,7 @@ export const GET_BOOK_DETAILS_WITH_FAVORITE_CHECK_QUERY = gql`
       bids {
         amount
       }
-      rating {
+      ratings {
         rate
         user {
            id
@@ -70,6 +70,28 @@ export const GET_BOOK_DETAILS_WITH_FAVORITE_CHECK_QUERY = gql`
         user {
            id
         }
+      }
+    }
+  }
+`;
+
+export const MY_BIDS_QUERY = gql`
+  query myBids($limit: Int, $offset: Int) {
+    myBids(limit: $limit, offset: $offset) {
+      id
+      amount
+      bidStatus
+      createdAt
+      book {
+        id
+        title
+        picture
+      }
+      bidder {
+        id
+        firstName
+        lastName
+        imageUrl
       }
     }
   }

@@ -5,7 +5,7 @@ import {InputIcon} from 'primeng/inputicon';
 import {Subject} from 'rxjs';
 import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
 import {animate, group, query, state, style, transition, trigger,} from '@angular/animations';
-import {CategoryEnum} from '../../enums/category.enum';
+import {BidStatus} from '../../enums/status.enum';
 
 export interface Book {
   id: string;
@@ -16,11 +16,11 @@ export interface Book {
   daysAgo: number;
 }
 @Component({
-  selector: 'app-category-list',
+  selector: 'app-bid-status-list',
   standalone: true,
   imports: [CommonModule, IconField, InputIcon],
   template: `
-    <div class="search-and-categories">
+    <div class="search-and-status">
       <div class="search-container">
         <div
           class="search-wrapper"
@@ -34,7 +34,7 @@ export interface Book {
             <input
               type="text"
               pInputText
-              placeholder="Search articles..."
+              placeholder="Search books..."
               class="search-input"
               (focus)="onSearchFocus()"
               (blur)="onSearchBlur()"
@@ -45,22 +45,20 @@ export interface Book {
         </div>
       </div>
 
-      <nav class="category-nav">
-        <ul class="category-list">
+      <nav class="status-nav">
+        <ul class="status-list">
           <li
-            *ngFor="let category of categories; let i = index"
-            class="category-item"
-            [class.active]="selectedCategory === category"
-            (click)="onCategorySelect(category)"
-            [@categoryAnimation]="
-              selectedCategory === category ? 'active' : 'inactive'
-            "
+            *ngFor="let status of bidStatuses; let i = index"
+            class="status-item"
+            [class.active]="selectedStatus === status"
+            (click)="onStatusSelect(status)"
+            [@statusAnimation]="selectedStatus === status ? 'active' : 'inactive'"
             [@travelingHighlight]="{
-              value: selectedCategory === category ? 'active' : 'inactive',
+              value: selectedStatus === status ? 'active' : 'inactive',
               params: { direction: getAnimationDirection(i) }
             }"
           >
-            {{ category }}
+            {{ status }}
           </li>
         </ul>
       </nav>
@@ -103,7 +101,7 @@ export interface Book {
         animate('0.3s cubic-bezier(0.4, 0, 0.2, 1)'),
       ]),
     ]),
-    trigger('categoryAnimation', [
+    trigger('statusAnimation', [
       state(
         'inactive',
         style({
@@ -187,7 +185,7 @@ export interface Book {
   ],
   styles: [
     `
-      .search-and-categories {
+      .search-and-status {
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -247,11 +245,11 @@ export interface Book {
         opacity: 0.7;
       }
 
-      .category-nav {
+      .status-nav {
         width: 100%;
       }
 
-      .category-list {
+      .status-list {
         display: flex;
         gap: 20px;
         list-style: none;
@@ -261,7 +259,7 @@ export interface Book {
         flex-wrap: wrap;
       }
 
-      .category-item {
+      .status-item {
         color: #384f6d;
         font-family: Poppins, sans-serif;
         font-size: 14px;
@@ -277,13 +275,13 @@ export interface Book {
         will-change: transform, background-color, box-shadow;
       }
 
-      .category-item:hover {
+      .status-item:hover {
         background-color: #e5e7eb;
         transform: translateY(-2px) scale(1.02);
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
       }
 
-      .category-item.active {
+      .status-item.active {
         background-color: #50719c;
         color: white;
         border-color: transparent;
@@ -296,23 +294,23 @@ export interface Book {
           max-width: 400px;
         }
 
-        .category-list {
+        .status-list {
           gap: 12px;
         }
 
-        .category-item {
+        .status-item {
           padding: 6px 16px;
           font-size: 13px;
         }
       }
 
       @media (max-width: 480px) {
-        .search-and-categories {
+        .search-and-status {
           gap: 15px;
           padding-top: 70px;
         }
 
-        .category-list {
+        .status-list {
           gap: 8px;
           margin-top: 5px;
         }
@@ -327,7 +325,7 @@ export interface Book {
           padding: 10px 35px;
         }
 
-        .category-item {
+        .status-item {
           padding: 5px 12px;
           font-size: 12px;
         }
@@ -335,18 +333,15 @@ export interface Book {
     `,
   ],
 })
-export class CategoryListComponent implements OnInit {
-  @Input() categories: CategoryEnum[] = [
-    CategoryEnum.LIFESTYLE,
-    CategoryEnum.FOOD,
-    CategoryEnum.TECHNOLOGY,
-    CategoryEnum.TRAVEL,
-    CategoryEnum.SCIENCE,
-    CategoryEnum.FICTION,
-    CategoryEnum.All,
+export class BidStatusListComponent implements OnInit {
+  @Input() bidStatuses: BidStatus[] = [
+    BidStatus.PENDING,
+    BidStatus.ACCEPTED,
+    BidStatus.REJECTED,
+    BidStatus.ALL,
   ];
-  @Input() selectedCategory: CategoryEnum = CategoryEnum.All;
-  @Output() categorySelected = new EventEmitter<CategoryEnum>();
+  @Input() selectedStatus: BidStatus | 'ALL' = 'ALL';
+  @Output() statusSelected = new EventEmitter<BidStatus | 'ALL'>();
   @Output() searchChanged = new EventEmitter<string>();
 
   searchFocused = false;
@@ -382,8 +377,8 @@ export class CategoryListComponent implements OnInit {
     return direction;
   }
 
-  onCategorySelect(category: CategoryEnum): void {
-    this.categorySelected.emit(category);
-    this.selectedCategory = category;
+  onStatusSelect(status: BidStatus | 'ALL'): void {
+    this.statusSelected.emit(status);
+    this.selectedStatus = status;
   }
 }

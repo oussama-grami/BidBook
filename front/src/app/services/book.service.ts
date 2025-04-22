@@ -4,8 +4,24 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
 import {UserRating} from '../components/booksPage/library-dashboard.component';
+import {BidStatus} from '../enums/status.enum';
 
-// Define the Book interface to match your GraphQL schema
+
+export interface Bid {
+  id: number;
+  amount: number;
+  bidStatus: BidStatus;
+  createdAt: string;
+  book: {
+    id: number;
+    title: string;
+    picture: string;
+  };
+  bidder: {
+    id: number;
+  };
+}
+
 export interface Book {
   id: number;
   title: string;
@@ -26,7 +42,7 @@ export interface Book {
     };
   }[];
   favorites?: any[];
-  bids?: any[];
+  bids?: Bid[];
   price?: number;
   totalPages?: number;
   damagedPages?: number;
@@ -35,11 +51,10 @@ export interface Book {
   language?: string;
   editor?: string;
   category?: string;
-  rating?: UserRating[];
+  ratings?: UserRating[];
   createdAt?: string;
   likes?: number;
 }
-
 @Injectable({
   providedIn: 'root',
 })
@@ -68,7 +83,7 @@ export class BookService {
             id
             title
             picture
-            rating {
+            ratings {
               rate
             }
             favorites {
@@ -117,7 +132,7 @@ export class BookService {
               bids {
                 amount
               }
-              rating {
+              ratings {
                 rate
                 user {
                     id
@@ -186,7 +201,7 @@ export class BookService {
             age
             edition
             editor
-            rating {
+            ratings {
               rate
               user {
                 id
@@ -221,4 +236,39 @@ export class BookService {
     })
     .pipe(map((response) => response.data.book));
   }
+  myBids(limit?: number, offset?: number): Observable<Bid[]> {
+    return this.apollo
+    .query<{ myBids: Bid[] }>({
+      query: gql`
+        query myBids($limit: Int, $offset: Int) {
+          myBids(limit: $limit, offset: $offset) {
+            id
+            amount
+            createdAt
+            bidder {
+              id
+              firstName
+              lastName
+            }
+            bidStatus
+            book{
+              id
+              title
+              picture
+            }
+          }
+        }
+
+      `,
+      variables: {
+        limit: limit,
+        offset: offset,
+      },
+      fetchPolicy: 'network-only'
+    })
+    .pipe(
+      map((response) => response.data.myBids)
+    );
+  }
+
 }

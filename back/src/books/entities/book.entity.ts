@@ -1,4 +1,4 @@
-import { Comment } from './../../comments/entities/comment.entity';
+import { Comment } from '../../comments/entities/comment.entity';
 import { Entity, Column, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
 import { CommonEntity } from '../../Common/Common.entity';
 import { User } from '../../auth/entities/user.entity';

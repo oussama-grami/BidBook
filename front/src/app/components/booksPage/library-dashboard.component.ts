@@ -49,7 +49,7 @@ export interface Book {
   language?: string;
   editor?: string;
   category?: string;
-  rating?: UserRating[];
+  ratings?: UserRating[];
   createdAt?: string;
   likes?: number;
 }

@@ -19,8 +19,13 @@ export class BidResolver {
         @Args('limit') limit?: number,
         @Args('offset') offset?: number,
     ) {
-        const userId = 1;
-        return this.bidService.findBooksBidByUser(userId, { limit, offset });
+        const userId = 2 // Replace with actual user ID
+        try {
+            return await this.bidService.findBidsByUser(userId, { limit, offset });
+        } catch (error) {
+            console.error('Error fetching user bids:', error);
+            throw new InternalServerErrorException('Failed to fetch bids');
+        }
     }
 
 

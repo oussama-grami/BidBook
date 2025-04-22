@@ -71,7 +71,7 @@ type Book {
     language: Language
     editor: String
     category: Category
-    rating: [UserRating!]
+    ratings: [UserRating!]
     createdAt: DateTime!
 }
 type Favorite {
@@ -92,7 +92,7 @@ type UserRating {
 type Query {
     viewBooks(limit: Int, offset: Int): [Book!]!
     bookDetails(id: Int!): Book
-    myBids(limit: Int, offset: Int): [Book!]!
+    myBids(limit: Int, offset: Int): [Bid!]!
     highestBidForBook(bookId: Int!): Bid
     userBookRating(userId: Int!, bookId: Int!): UserRating
     book(id: Int!): Book
