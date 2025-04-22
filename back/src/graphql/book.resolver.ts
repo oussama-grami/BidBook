@@ -4,7 +4,9 @@ import { AuthService } from "../auth/auth.service";
 import { CommentsService } from '../comments/comments.service';
 import{BidsService} from "../bids/bids.service";
 import {Book} from "../graphql";
-import {BadRequestException, InternalServerErrorException, NotFoundException} from "@nestjs/common";
+import {BadRequestException, InternalServerErrorException, NotFoundException, UseGuards} from "@nestjs/common";
+import { GqlAuthGuard } from 'src/auth/guards/gql.guard';
+import { User } from 'src/Decorator/user.decorator';
 ;
 @Resolver('Book')
 export class BookResolver {

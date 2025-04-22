@@ -203,7 +203,6 @@ export class AuthController {
   async refreshToken(@Req() req, @Res({ passthrough: true }) res: Response) {
     // Get the refresh token from the cookie
     const refreshToken = req.cookies['refresh_token'];
-    console.log('Refresh token:', refreshToken);
     if (!refreshToken) {
       throw new UnauthorizedException('Refresh token not found');
     }

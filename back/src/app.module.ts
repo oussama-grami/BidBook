@@ -27,7 +27,6 @@ import { UserRatingModule } from './user-rating/user-rating.module';
 import { UserRating } from './user-rating/entities/user-rating.entity';
 import { RatingsResolver } from './graphql/user-rating.resolver';
 
-
 import { ArticleModule } from './article/article.module';
 import { join } from 'path';
 import { BooksModule } from './books/books.module';
@@ -64,7 +63,7 @@ config({ path: `${process.cwd()}/Config/.env.dev` });
           database: configService.get<string>('DB_NAME'),
           autoLoadEntities: true,
           synchronize: configService.get<string>('NODE_ENV') === 'dev',
-          logging: true,
+          logging: false,
         };
       },
     }),
@@ -86,6 +85,7 @@ config({ path: `${process.cwd()}/Config/.env.dev` });
         path: join(process.cwd(), 'src/graphql.ts'),
         outputAs: 'class',
       },
+      context: ({ req, res }) => ({ req, res }),
     }),
     UserRatingModule,
     BooksModule,
@@ -95,6 +95,13 @@ config({ path: `${process.cwd()}/Config/.env.dev` });
     NotificationsModule,
   ],
   controllers: [AppController],
-  providers: [AppService, BookResolver, RatingsResolver, FavoritesResolver, BidResolver, CommentsResolver],
+  providers: [
+    AppService,
+    BookResolver,
+    RatingsResolver,
+    FavoritesResolver,
+    BidResolver,
+    CommentsResolver,
+  ],
 })
 export class AppModule {}
