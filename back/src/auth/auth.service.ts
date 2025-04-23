@@ -90,7 +90,7 @@ export class AuthService extends GenericService<User> {
       firstName,
       lastName,
       verificationToken,
-      isEmailVerified: false,
+      isEmailVerified: true,
       isMFAEnabled: false,
       imageUrl,
     });

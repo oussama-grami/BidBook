@@ -34,6 +34,15 @@ import { BidsModule } from './bids/bids.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { ConversationModule } from './conversation/conversation.module';
+import { ChatGateway } from './chat/chat.gateway';
+import { Conversation } from './conversation/entities/conversation.entity';
+import { Message } from './conversation/entities/message.entity';
+import { RedisCacheService } from './Common/cache/redis-cache.service';
+import { JwtService } from '@nestjs/jwt';
+import { ChatService } from './chat/chat.service';
+import { JwtModule } from '@nestjs/jwt'; 
+import { ChatController } from './chat/chat.controller';
 
 config({ path: `${process.cwd()}/Config/.env.dev` });
 
@@ -65,6 +74,11 @@ config({ path: `${process.cwd()}/Config/.env.dev` });
         };
       },
     }),
+    TypeOrmModule.forFeature([User, Conversation, Message]),
+    JwtModule.register({
+      secret: process.env.JWT_SECRET, // Make sure this matches your auth configuration
+      signOptions: { expiresIn: '1d' }, // Adjust as needed
+    }),
     GlobalModule,
     AuthModule,
     ArticleModule,
@@ -90,14 +104,18 @@ config({ path: `${process.cwd()}/Config/.env.dev` });
     CommentsModule,
     BidsModule,
     NotificationsModule,
+    ConversationModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, ChatController],
   providers: [
     AppService,
     BookResolver,
     FavoritesResolver,
     BidResolver,
     CommentsResolver,
+    ChatGateway,
+    ChatService,
+    JwtService,
   ],
 })
 export class AppModule {}
