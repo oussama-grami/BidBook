@@ -37,6 +37,9 @@ import { BidsModule } from './bids/bids.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { ScheduleModule } from '@nestjs/schedule';
+import { NotificationSchedulerModule } from './notification-scheduler/notification-scheduler.module';
+
 
 
 config({ path: `${process.cwd()}/Config/.env.dev` });
@@ -51,6 +54,7 @@ config({ path: `${process.cwd()}/Config/.env.dev` });
         `${process.cwd()}/Config/.env.${process.env.NODE_ENV}`,
       ],
     }),
+    ScheduleModule.forRoot(),
     TypeOrmModule.forRootAsync({
       // Configuration de TypeOrmModule
       inject: [ConfigService],
@@ -102,6 +106,7 @@ config({ path: `${process.cwd()}/Config/.env.dev` });
     CommentsModule,
     BidsModule,
     NotificationsModule,
+    NotificationSchedulerModule,
   ],
   controllers: [AppController],
   providers: [AppService, BookResolver, RatingsResolver, FavoritesResolver, BidResolver, CommentsResolver],
