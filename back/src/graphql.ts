@@ -109,6 +109,8 @@ export abstract class ISubscription {
     abstract commentAdded(bookId: number): Comment | Promise<Comment>;
 
     abstract commentRemoved(bookId: number): number | Promise<number>;
+
+    abstract bookRatingUpdated(bookId: number): Book | Promise<Book>;
 }
 
 export abstract class IQuery {

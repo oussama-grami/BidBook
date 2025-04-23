@@ -94,6 +94,7 @@ type Subscription {
     bookFavoritesUpdated(bookId: Int!): Book!
     commentAdded(bookId: Int!): Comment!
     commentRemoved(bookId: Int!): Int!
+    bookRatingUpdated(bookId: Int!): Book!
 }
 type Query {
     viewBooks(limit: Int, offset: Int): [Book!]!

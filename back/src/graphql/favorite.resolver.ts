@@ -11,14 +11,14 @@ const BOOK_FAVORITES_UPDATED_EVENT = 'bookFavoritesUpdated';
 @Resolver('Favorite')
 export class FavoritesResolver {
   constructor(
-    private readonly favoritesService: FavoritesService,
-    private readonly booksService: BooksService,
+      private readonly favoritesService: FavoritesService,
+      private readonly booksService: BooksService,
   ) {}
 
   @Mutation('addFavorite')
   async addFavorite(
-    @Args('userId', { type: () => Int }) userId: number,
-    @Args('bookId', { type: () => Int }) bookId: number,
+      @Args('userId', { type: () => Int }) userId: number,
+      @Args('bookId', { type: () => Int }) bookId: number,
   ): Promise<Favorite> {
     try {
       const favorite = await this.favoritesService.addFavorite(userId, bookId);
@@ -45,8 +45,8 @@ export class FavoritesResolver {
 
   @Mutation('removeFavorite')
   async removeFavorite(
-    @Args('userId', { type: () => Int }) userId: number,
-    @Args('bookId', { type: () => Int }) bookId: number,
+      @Args('userId', { type: () => Int }) userId: number,
+      @Args('bookId', { type: () => Int }) bookId: number,
   ): Promise<boolean> {
     try {
       const success = await this.favoritesService.removeFavorite(userId, bookId);
@@ -82,9 +82,9 @@ export class FavoritesResolver {
     },
   })
   bookFavoritesUpdated(
-    @Args('bookId', { type: () => Int }) bookId: number,
+      @Args('bookId', { type: () => Int }) bookId: number,
   ): AsyncIterator<Book> {
     console.log(`Subscription "${BOOK_FAVORITES_UPDATED_EVENT}" established for bookId ${bookId}.`);
-     return pubSub.asyncIterableIterator(BOOK_FAVORITES_UPDATED_EVENT);
+    return pubSub.asyncIterableIterator(BOOK_FAVORITES_UPDATED_EVENT);
   }
 }
