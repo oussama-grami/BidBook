@@ -4,16 +4,9 @@ import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
 @Entity()
 export class Notification extends CommonEntity {
   @Column()
-  title: string;
-
-  @Column()
   message: string;
-
-  @Column()
-  dateTime: Date;
-
   @Column({ default: false })
-  isRead: boolean;
+  isSent: boolean;
 
   @ManyToOne(() => User, (user) => user.notifications, { onDelete: 'CASCADE' })
   @JoinColumn()

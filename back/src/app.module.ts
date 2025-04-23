@@ -38,6 +38,7 @@ import { NotificationsModule } from './notifications/notifications.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ServeStaticModule } from '@nestjs/serve-static';
 
+
 config({ path: `${process.cwd()}/Config/.env.dev` });
 
 @Module({
@@ -86,6 +87,14 @@ config({ path: `${process.cwd()}/Config/.env.dev` });
         path: join(process.cwd(), 'src/graphql.ts'),
         outputAs: 'class',
       },
+      subscriptions: {
+        'graphql-ws': {
+           path: '/graphql', 
+        },
+        'subscriptions-transport-ws': { 
+           path: '/graphql',        
+        },
+      },
     }),
     UserRatingModule,
     BooksModule,
@@ -97,4 +106,5 @@ config({ path: `${process.cwd()}/Config/.env.dev` });
   controllers: [AppController],
   providers: [AppService, BookResolver, RatingsResolver, FavoritesResolver, BidResolver, CommentsResolver],
 })
+
 export class AppModule {}

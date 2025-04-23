@@ -73,6 +73,7 @@ type Book {
     category: Category
     ratings: [UserRating!]
     createdAt: DateTime!
+    isSold: Boolean!
 }
 type Favorite {
     id: Int!
@@ -89,6 +90,9 @@ type UserRating {
     updatedAt: DateTime!
 }
 
+type Subscription {
+    bookFavoritesUpdated(bookId: Int!): Book!
+}
 type Query {
     viewBooks(limit: Int, offset: Int): [Book!]!
     bookDetails(id: Int!): Book
@@ -107,5 +111,4 @@ type Mutation {
     addRate(userId: Int!, bookId: Int!, rate: Float!): UserRating!
     updateRate(userId: Int!, bookId: Int!, rate: Float!): UserRating!
     
-
 }

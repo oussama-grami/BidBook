@@ -144,10 +144,10 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
             } else {
               this.lastBidPrice = this.price;
             }
-            if (book.rating && book.rating.length > 0) {
-              const totalRate = book.rating.reduce((sum, r) => sum + r.rate, 0);
-              this.rating = totalRate / book.rating.length;
-              this.votes = book.rating.length;
+            if (book.ratings && book.ratings.length > 0) {
+              const totalRate = book.ratings.reduce((sum, r) => sum + r.rate, 0);
+              this.rating = totalRate / book.ratings.length;
+              this.votes = book.ratings.length;
             } else {
               this.rating = 0;
               this.votes = 0;
