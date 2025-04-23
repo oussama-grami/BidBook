@@ -27,6 +27,7 @@ import { UserRatingModule } from './user-rating/user-rating.module';
 import { UserRating } from './user-rating/entities/user-rating.entity';
 import { RatingsResolver } from './graphql/user-rating.resolver';
 
+
 import { ArticleModule } from './article/article.module';
 import { join } from 'path';
 import { BooksModule } from './books/books.module';
@@ -36,6 +37,7 @@ import { BidsModule } from './bids/bids.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ServeStaticModule } from '@nestjs/serve-static';
+
 
 config({ path: `${process.cwd()}/Config/.env.dev` });
 
@@ -63,7 +65,7 @@ config({ path: `${process.cwd()}/Config/.env.dev` });
           database: configService.get<string>('DB_NAME'),
           autoLoadEntities: true,
           synchronize: configService.get<string>('NODE_ENV') === 'dev',
-          logging: false,
+          logging: true,
         };
       },
     }),
@@ -85,7 +87,14 @@ config({ path: `${process.cwd()}/Config/.env.dev` });
         path: join(process.cwd(), 'src/graphql.ts'),
         outputAs: 'class',
       },
-      context: ({ req, res }) => ({ req, res }),
+      subscriptions: {
+        'graphql-ws': {
+           path: '/graphql', 
+        },
+        'subscriptions-transport-ws': { 
+           path: '/graphql',        
+        },
+      },
     }),
     UserRatingModule,
     BooksModule,
@@ -95,13 +104,7 @@ config({ path: `${process.cwd()}/Config/.env.dev` });
     NotificationsModule,
   ],
   controllers: [AppController],
-  providers: [
-    AppService,
-    BookResolver,
-    RatingsResolver,
-    FavoritesResolver,
-    BidResolver,
-    CommentsResolver,
-  ],
+  providers: [AppService, BookResolver, RatingsResolver, FavoritesResolver, BidResolver, CommentsResolver],
 })
+
 export class AppModule {}

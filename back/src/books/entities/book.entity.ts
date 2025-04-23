@@ -55,7 +55,8 @@ export class Book extends CommonEntity {
   language: Language;
 
   
-
+  @Column({ default: false })
+  isSold: boolean;
   
 
   // Un livre appartient à un utilisateur

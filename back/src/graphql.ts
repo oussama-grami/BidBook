@@ -85,6 +85,7 @@ export class Book {
     category?: Nullable<Category>;
     ratings?: Nullable<UserRating[]>;
     createdAt: DateTime;
+    isSold: boolean;
 }
 
 export class Favorite {
@@ -100,6 +101,10 @@ export class UserRating {
     rate: number;
     createdAt: DateTime;
     updatedAt: DateTime;
+}
+
+export abstract class ISubscription {
+    abstract bookFavoritesUpdated(bookId: number): Book | Promise<Book>;
 }
 
 export abstract class IQuery {
