@@ -105,6 +105,10 @@ export class UserRating {
 
 export abstract class ISubscription {
     abstract bookFavoritesUpdated(bookId: number): Book | Promise<Book>;
+
+    abstract commentAdded(bookId: number): Comment | Promise<Comment>;
+
+    abstract commentRemoved(bookId: number): number | Promise<number>;
 }
 
 export abstract class IQuery {
