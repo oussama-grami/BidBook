@@ -12,7 +12,11 @@ import { ImageModule } from 'primeng/image';
 import { ButtonModule } from 'primeng/button';
 import { HttpClientModule } from '@angular/common/http';
 import { finalize } from 'rxjs/operators';
-import {BookService} from '../../services/book.service';
+import { BookService } from '../../services/book.service';
+import { Apollo } from 'apollo-angular';
+import { HttpLink } from 'apollo-angular/http';
+import { APOLLO_OPTIONS } from 'apollo-angular';
+import { createApollo } from '../../../apollo.config';
 
 @Component({
   selector: 'app-add-book',
@@ -22,10 +26,10 @@ import {BookService} from '../../services/book.service';
     ReactiveFormsModule,
     ImageModule,
     ButtonModule,
-    HttpClientModule
+    HttpClientModule,
   ],
   styleUrls: ['./add-book.component.css'],
-  standalone: true,
+  standalone: true
 })
 export class AddBookComponent implements OnInit {
   addBookForm!: FormGroup;
@@ -101,20 +105,20 @@ export class AddBookComponent implements OnInit {
       age: Number(this.addBookForm.get('age')?.value),
     };
 
-    this.bookService.predictBookPrice(bookData)
-    .pipe(finalize(() => this.isPredicting = false))
-    .subscribe({
-      next: (response: any) => {
-        this.predictedPrice = response.predictedPrice;
-        this.showPriceResult = true;
-        this.addBookForm.get('price')?.setValue(this.predictedPrice);
-      },
-      error: (error: any) => {
-        console.error('Error predicting price:', error);
-        this.showPriceResult = false;
-
-      }
-    });
+    this.bookService
+      .predictBookPrice(bookData)
+      .pipe(finalize(() => (this.isPredicting = false)))
+      .subscribe({
+        next: (response: any) => {
+          this.predictedPrice = response.predictedPrice;
+          this.showPriceResult = true;
+          this.addBookForm.get('price')?.setValue(this.predictedPrice);
+        },
+        error: (error: any) => {
+          console.error('Error predicting price:', error);
+          this.showPriceResult = false;
+        },
+      });
   }
 
   onAcceptPrice() {
@@ -141,20 +145,31 @@ export class AddBookComponent implements OnInit {
       formData.append('language', this.addBookForm.get('language')?.value);
       formData.append('editor', this.addBookForm.get('editor')?.value);
       formData.append('edition', this.addBookForm.get('edition')?.value);
-      formData.append('totalPages', this.addBookForm.get('numberOfPages')?.value);
-      formData.append('damagedPages', this.addBookForm.get('damagedPages')?.value);
+      formData.append(
+        'totalPages',
+        this.addBookForm.get('numberOfPages')?.value
+      );
+      formData.append(
+        'damagedPages',
+        this.addBookForm.get('damagedPages')?.value
+      );
       formData.append('age', this.addBookForm.get('age')?.value);
       formData.append('price', this.addBookForm.get('price')?.value);
 
       if (this.selectedFile) {
-        formData.append('pictureFile', this.selectedFile, this.selectedFile.name);
+        formData.append(
+          'pictureFile',
+          this.selectedFile,
+          this.selectedFile.name
+        );
       }
       formData.forEach((value, key) => {
         console.log(key, value);
       });
 
-      this.bookService.addBook(formData)
-        .pipe(finalize(() => this.isSubmitting = false))
+      this.bookService
+        .addBook(formData)
+        .pipe(finalize(() => (this.isSubmitting = false)))
         .subscribe({
           next: (response: any) => {
             console.log('Book added successfully', response);
@@ -162,17 +177,17 @@ export class AddBookComponent implements OnInit {
           },
           error: (error: any) => {
             console.error('Error adding book:', error);
-            this.submitError = error.message || 'Failed to add book. Please try again.';
-          }
+            this.submitError =
+              error.message || 'Failed to add book. Please try again.';
+          },
         });
     } else {
       this.markFormGroupTouched(this.addBookForm);
     }
   }
 
-
   private markFormGroupTouched(formGroup: FormGroup) {
-    Object.values(formGroup.controls).forEach(control => {
+    Object.values(formGroup.controls).forEach((control) => {
       control.markAsTouched();
       if (control instanceof FormGroup) {
         this.markFormGroupTouched(control);

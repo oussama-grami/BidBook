@@ -77,7 +77,7 @@
           <div class="stats-container">
              <span class="stat-item"> {{ likes }} likes </span>
             <span class="stat-item">
-              <i class="pi pi-comments"></i> {{ comments?.length || 0 }} comments
+              <i class="pi pi-comments"></i> {{ comments.length || 0 }} comments
             </span>
           </div>
         </div>
@@ -139,11 +139,11 @@
       </div>
 
       <div class="comments-container" [@fadeInOut]>
-           <h3 class="comments-title">Comments ({{ comments?.length || 0 }})</h3>
+           <h3 class="comments-title">Comments ({{ comments.length || 0 }})</h3>
 
         <div class="comments-list">
            <div
-            *ngIf="commentsLoaded && (comments?.length || 0) === 0 && !isLoadingComments && !isLoadingBookDetails && !error"
+            *ngIf="commentsLoaded && (comments.length || 0) === 0 && !isLoadingComments && !isLoadingBookDetails && !error"
             class="no-comments-container"
            >
              <p class="no-comments-msg">

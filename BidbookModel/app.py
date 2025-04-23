@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 import pandas as pd
 import numpy as np
+import os
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.compose import ColumnTransformer
@@ -11,7 +12,17 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 app = Flask(__name__)
 
 def train_model():
-    df = pd.read_csv("bidbook.csv")
+    # Get the absolute path to the CSV file
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    csv_path = os.path.join(current_dir, "bidbook.csv")
+    
+    # Try alternative file if first one is not found
+    if not os.path.exists(csv_path):
+        csv_path = os.path.join(current_dir, "bidbook1.csv")
+        
+    print(f"Loading data from: {csv_path}")
+    
+    df = pd.read_csv(csv_path)
 
     X = df.drop("price", axis=1)
     y = df["price"]

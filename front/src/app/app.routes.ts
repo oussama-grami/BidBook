@@ -208,7 +208,6 @@ export const routes: Routes = [
     resolve: { pageData: DataLoadingResolver },
     data: { animation: 'fade' },
   },
-  // Added error page routes
   {
     path: 'error',
     loadComponent: () =>
