@@ -5,7 +5,7 @@ import {map} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
 import {UserRating} from '../components/booksPage/library-dashboard.component';
 import {BidStatus} from '../enums/status.enum';
-import { ADD_COMMENT_TO_BOOK_MUTATION } from '../mutations/book.mutation';
+import { ADD_COMMENT_TO_BOOK_MUTATION, ADD_FAVORITE_MUTATION } from '../mutations/book.mutation';
 
 export interface Bid {
   id: number;
@@ -302,5 +302,15 @@ export class BookService {
       },
     });
   }
-
+  addBookToFavorites(userId: number, bookId: number) {
+    return this.apollo.mutate({
+      mutation: ADD_FAVORITE_MUTATION,
+      variables: {
+        userId: userId,
+        bookId: bookId,
+      },
+     
+    });
+  }
 }
+

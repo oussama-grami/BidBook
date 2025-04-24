@@ -16,3 +16,17 @@ export const ADD_COMMENT_TO_BOOK_MUTATION = gql`
     }
   }
 `;
+
+export const ADD_FAVORITE_MUTATION = gql`
+  mutation AddFavorite($userId: Int!, $bookId: Int!) {
+    addFavorite(userId: $userId, bookId: $bookId) {
+      id
+      user {
+        id
+      }
+      book {
+        id
+      }
+    }
+  }
+`;

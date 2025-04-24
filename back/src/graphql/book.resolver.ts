@@ -7,6 +7,7 @@ import {Book} from "../graphql";
 import {BadRequestException, InternalServerErrorException, NotFoundException, UseGuards} from "@nestjs/common";
 import { GqlAuthGuard } from 'src/auth/guards/gql.guard';
 import { User } from 'src/Decorator/user.decorator';
+import { cp } from 'fs';
 ;
 @Resolver('Book')
 export class BookResolver {
@@ -33,6 +34,7 @@ export class BookResolver {
 
     @Query('bookDetails')
     async bookDetails(@Args('id', { type: () => ID }) id: number) {
+        console.log('Fetching book details for ID:', id);
         return this.bookService.findOne(id);
     }
 
