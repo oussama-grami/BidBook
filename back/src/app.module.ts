@@ -43,6 +43,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ChatService } from './chat/chat.service';
 import { JwtModule } from '@nestjs/jwt'; 
 import { ChatController } from './chat/chat.controller';
+import { StripeModule } from './stripe/stripe.module';
 
 config({ path: `${process.cwd()}/Config/.env.dev` });
 
@@ -105,6 +106,7 @@ config({ path: `${process.cwd()}/Config/.env.dev` });
     BidsModule,
     NotificationsModule,
     ConversationModule,
+    StripeModule,
   ],
   controllers: [AppController, ChatController],
   providers: [

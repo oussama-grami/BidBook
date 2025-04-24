@@ -21,4 +21,8 @@ export class BookService {
   updateBook(id: number, formData: FormData): Observable<any> {
     return this.http.patch<any>(`${this.apiUrl}/update/${id}`, formData);
   }
+
+  markBookAsSold(bookId: number): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/books/successfulpayment/${bookId}`, {});
+}
 }

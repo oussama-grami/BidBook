@@ -74,4 +74,7 @@ export class Book extends CommonEntity {
   // Un livre peut recevoir plusieurs enchères
   @OneToMany(() => Bid, (bid) => bid.book, { cascade: true })
   bids: Bid[];
+
+  @Column({ default: false })
+  isSold: boolean;
 }

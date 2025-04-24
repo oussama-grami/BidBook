@@ -2,8 +2,9 @@ import { BidStatus } from './../../Enums/bidstatus.enum';
 import { User } from 'src/auth/entities/user.entity';
 import { Book } from 'src/books/entities/book.entity';
 import { CommonEntity } from 'src/Common/Common.entity';
-import { Entity, Column, ManyToOne, JoinColumn, OneToOne } from 'typeorm';
+import { Entity, Column, ManyToOne, JoinColumn, OneToOne, OneToMany } from 'typeorm';
 import { Conversation } from 'src/conversation/entities/conversation.entity';
+import { Transaction } from 'src/stripe/entities/transaction.entity';
 
 @Entity()
 export class Bid extends CommonEntity {
@@ -29,4 +30,7 @@ export class Bid extends CommonEntity {
   @OneToOne(() => Conversation)
   @JoinColumn()
   conversation : Conversation;
+
+  @OneToMany(() => Transaction, (transaction) => transaction.bid)
+  transactions: Transaction[];
 }

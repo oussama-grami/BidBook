@@ -1,5 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import {
   FormBuilder,
   FormGroup,
@@ -21,12 +22,8 @@ import {
   stagger,
 } from '@angular/animations';
 
-interface CartItem {
-  id: string;
-  title: string;
-  price: number;
-  imageUrl: string;
-}
+import { PaymentService, Transaction } from '../../services/payment.service';
+import { BookService } from '../../services/book.service';
 
 @Component({
   selector: 'app-payment',
@@ -98,30 +95,14 @@ interface CartItem {
     ]),
   ],
 })
+
+
 export class PaymentComponent implements OnInit {
   paymentForm!: FormGroup;
   isProcessing: boolean = false;
   activeCardType: 'visa' | 'mastercard' | null = null;
-  cartItems: CartItem[] = [
-    {
-      id: '1',
-      title: 'The Great Gatsby',
-      price: 15.99,
-      imageUrl: '/images/Book1.png',
-    },
-    {
-      id: '2',
-      title: 'To Kill a Mockingbird',
-      price: 12.99,
-      imageUrl: '/images/Book2.png',
-    },
-    {
-      id: '3',
-      title: '1984',
-      price: 10.99,
-      imageUrl: '/images/Book3.png',
-    },
-  ];
+  transaction: Transaction | null = null;
+
   subtotal: number = 0;
   tax: number = 0;
   totalAmount: number = 0;
@@ -129,7 +110,10 @@ export class PaymentComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private cdr: ChangeDetectorRef,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private paymentService: PaymentService,
+    private booksService: BookService,
+    private router: Router
   ) {
     this.initForm();
   }
@@ -166,14 +150,21 @@ export class PaymentComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.ngZone.run(() => {
-      this.calculateTotals();
-      this.cdr.detectChanges();
+    this.paymentService.transaction$.subscribe({
+        next: (transaction) => {
+            if (transaction && transaction.book) {
+                this.transaction = transaction;
+                this.calculateTotals(transaction);
+            }
+        },
+        error: (error) => {
+            console.error('Error with transaction:', error);
+        }
     });
   }
 
-  private calculateTotals(): void {
-    this.subtotal = this.cartItems.reduce((sum, item) => sum + item.price, 0);
+  private calculateTotals(transaction: Transaction): void {
+    this.subtotal = transaction.amount;
     this.tax = this.subtotal * 0.1; // 10% tax
     this.totalAmount = this.subtotal + this.tax;
   }
@@ -216,24 +207,56 @@ export class PaymentComponent implements OnInit {
 
   onSubmit(): void {
     if (this.paymentForm.invalid) {
-      Object.keys(this.paymentForm.controls).forEach((key) => {
-        const control = this.paymentForm.get(key);
-        if (control?.invalid) {
-          control.markAsTouched();
-        }
-      });
-      return;
+        Object.keys(this.paymentForm.controls).forEach((key) => {
+            const control = this.paymentForm.get(key);
+            if (control?.invalid) {
+                control.markAsTouched();
+            }
+        });
+        return;
     }
 
     this.isProcessing = true;
 
-    // Simulate payment processing
     setTimeout(() => {
-      this.ngZone.run(() => {
-        console.log('Payment processed:', this.paymentForm.value);
-        this.isProcessing = false;
-        this.cdr.detectChanges();
-      });
+        this.ngZone.run(() => {
+            try {
+                if (this.transaction?.id && this.transaction.book.id) {
+                    // Update transaction status
+                    this.paymentService.updateTransactionStatus(this.transaction.id, 'succeeded')
+                        .subscribe({
+                            next: (updatedTransaction) => {
+                                this.transaction = updatedTransaction;
+                                // Mark book as sold
+                                this.booksService.markBookAsSold(this.transaction!.book.id)
+                                    .subscribe({
+                                        next: () => {
+                                            console.log('Book marked as sold successfully');
+                                            this.router.navigate(['/books']);
+                                        },
+                                        error: (error) => {
+                                            console.error('Error marking book as sold:', error);
+                                        }
+                                    });
+                            },
+                            error: (error) => {
+                                console.error('Error updating transaction:', error);
+                                this.paymentService.updateTransactionStatus(this.transaction!.id, 'failed')
+                                    .subscribe();
+                            }
+                        });
+                }
+            } catch (error) {
+                if (this.transaction?.id) {
+                    this.paymentService.updateTransactionStatus(this.transaction.id, 'failed')
+                        .subscribe();
+                }
+                console.error('Payment processing error:', error);
+            }
+            
+            this.isProcessing = false;
+            this.cdr.detectChanges();
+        });
     }, 1500);
   }
 

@@ -241,4 +241,9 @@ export class BooksController {
   remove(@Param('id') id: string) {
     return this.booksService.remove(+id);
   }
+
+  @Patch('/successfulpayment/:id')
+  async successfulPayment(@Param('id') id: string) {
+    return this.booksService.successfulPayment(+id);
+  }
 }
