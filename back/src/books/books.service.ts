@@ -36,8 +36,9 @@ export class BooksService {
 
   async findAll(limit?: number, offset?: number): Promise<Book[]> {
     try {
-      console.log(`Finding books with limit: ${limit}, offset: ${offset}`);
+      console.log(`Finding available books with limit: ${limit}, offset: ${offset}`);
       const books = await this.bookRepository.find({
+        where: { isSold: false },
         take: limit,
         skip: offset,
         relations: ['owner', 'comments', 'bids', 'favorites', 'ratings'],
@@ -55,9 +56,10 @@ export class BooksService {
           'price',
           'language',
           'createdAt',
+          'isSold',
         ],
       });
-      console.log(`Found ${books?.length || 0} books`);
+      console.log(`Found ${books?.length || 0} available books`);
       return books || [];
     } catch (error) {
       console.error('Error in bookService.findAll:', error);
