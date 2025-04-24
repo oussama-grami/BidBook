@@ -5,7 +5,7 @@ import {map} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
 import {UserRating} from '../components/booksPage/library-dashboard.component';
 import {BidStatus} from '../enums/status.enum';
-import { ADD_COMMENT_TO_BOOK_MUTATION, ADD_FAVORITE_MUTATION } from '../mutations/book.mutation';
+import { ADD_COMMENT_TO_BOOK_MUTATION, ADD_FAVORITE_MUTATION, REMOVE_FAVORITE_MUTATION } from '../mutations/book.mutation';
 
 export interface Bid {
   id: number;
@@ -311,6 +311,17 @@ export class BookService {
       },
      
     });
+  }
+  removeFavorite(userId: number, bookId: number): Observable<boolean> {
+    return this.apollo.mutate<{ removeFavorite: boolean }>({
+      mutation: REMOVE_FAVORITE_MUTATION,
+      variables: {
+        userId,
+        bookId,
+      },
+    }).pipe(
+      map(result => result.data!.removeFavorite)
+    );
   }
 }
 

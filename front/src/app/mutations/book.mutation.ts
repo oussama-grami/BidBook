@@ -30,3 +30,8 @@ export const ADD_FAVORITE_MUTATION = gql`
     }
   }
 `;
+export const REMOVE_FAVORITE_MUTATION = gql`
+mutation RemoveFavorite($userId: Int!, $bookId: Int!) {
+  removeFavorite(userId: $userId, bookId: $bookId)
+}
+`;
