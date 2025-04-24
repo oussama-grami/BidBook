@@ -8,6 +8,8 @@ import { Subscription } from 'rxjs';
 import { Apollo } from 'apollo-angular';
 import { HttpLink } from 'apollo-angular/http';
 import { ActivatedRoute } from '@angular/router';
+import {fadeAnimation, slideAnimation, slideUpAnimation} from '../../shared/animations';
+import {animate, query, stagger, style, transition, trigger} from '@angular/animations';
 
 
 @Component({
@@ -29,7 +31,7 @@ import { ActivatedRoute } from '@angular/router';
       <div *ngIf="error">Error loading bids: {{ error }}</div>
 
       <section class="bids-section" *ngIf="!loading && !error && filteredBids.length > 0">
-        <div class="bids-grid" [@bidsAnimation]>
+        <div class="bids-grid" >
           <app-bid-card *ngFor="let bid of filteredBids" [bid]="bid"></app-bid-card>
         </div>
       </section>
@@ -40,7 +42,40 @@ import { ActivatedRoute } from '@angular/router';
     </main>
   `,
   styles: [/* ... styles ... */],
-  animations: [],
+  animations: [
+    trigger('fadeIn', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('600ms ease-out', style({ opacity: 1 })),
+      ]),
+    ]),
+    trigger('slideInRight', [
+      transition(':enter', [
+        style({ transform: 'translateX(-20px)', opacity: 0 }),
+        animate(
+          '600ms ease-out',
+          style({ transform: 'translateX(0)', opacity: 1 })
+        ),
+      ]),
+    ]),
+    trigger('booksAnimation', [
+      transition('* => *', [
+        query(
+          ':enter',
+          [
+            style({ opacity: 0, transform: 'translateY(15px)' }),
+            stagger(100, [
+              animate(
+                '500ms ease-out',
+                style({ opacity: 1, transform: 'translateY(0)' })
+              ),
+            ]),
+          ],
+          { optional: true }
+        ),
+      ]),
+    ]),
+  ],
   providers: [Apollo, HttpLink, BookService],
 })
 export class ViewBidsPageComponent implements OnInit, OnDestroy {
