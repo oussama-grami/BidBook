@@ -62,7 +62,7 @@ export interface AddCommentToBookResponse {
     content: string;
     user?: {
       firstName: string;
-      lastName: string; 
+      lastName: string;
       imageUrl: string;
     };
     createdAt: string;
@@ -252,7 +252,57 @@ export class BookService {
       })
       .pipe(map((response) => response.data.book));
   }
+  createBid(userId: number, bookId: number, amount: number): Observable<Bid | undefined> {
+    return this.apollo.mutate<{ createBid: Bid }>({
+      mutation: gql`
+        mutation CreateBid($userId: Int!, $bookId: Int!, $amount: Float!) {
+          createBid(userId: $userId, bookId: $bookId, amount: $amount) {
+            id
+            amount
+            bidder {
+              id
+            }
+            book {
+              id
+            }
+            createdAt
+            bidStatus
+          }
+        }
+      `,
+      variables: {
+        userId: userId,
+        bookId: bookId,
+        amount: amount,
+      }
+    }).pipe(map(response => response.data?.createBid));
+  }
+  updateBid(userId: number, bookId: number, amount: number): Observable<Bid | undefined> {
+    return this.apollo.mutate<{ updateBid: Bid }>({
+      mutation: gql`
+        mutation UpdateBid($userId: Int!, $bookId: Int!, $amount: Float!) {
+          updateBid(userId: $userId, bookId: $bookId, amount: $amount) {
+            id
+            amount
+            bidder {
+              id
+            }
+            book {
+              id
+            }
+            createdAt
+            bidStatus
+          }
+        }
+      `,
+      variables: {
+        userId: userId,
+        bookId: bookId,
+        amount: amount,
+      }
 
+    }).pipe(map(response => response.data?.updateBid));
+  }
   myBids(limit?: number, offset?: number): Observable<Bid[]> {
     return this.apollo
       .query<{ myBids: Bid[] }>({
@@ -309,7 +359,7 @@ export class BookService {
         userId: userId,
         bookId: bookId,
       },
-     
+
     });
   }
 }
