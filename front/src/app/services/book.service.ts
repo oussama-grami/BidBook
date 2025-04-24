@@ -1,11 +1,11 @@
 import {Injectable} from '@angular/core';
-import {Apollo, gql} from 'apollo-angular';
+import {Apollo, gql, MutationResult} from 'apollo-angular';
 import {Observable, tap} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
 import {UserRating} from '../components/booksPage/library-dashboard.component';
 import {BidStatus} from '../enums/status.enum';
-
+import { ADD_COMMENT_TO_BOOK_MUTATION } from '../mutations/book.mutation';
 
 export interface Bid {
   id: number;
@@ -40,6 +40,7 @@ export interface Book {
       firstName: string;
       lastName: string;
     };
+    createdAt: string;
   }[];
   favorites?: any[];
   bids?: Bid[];
@@ -54,6 +55,18 @@ export interface Book {
   ratings?: UserRating[];
   createdAt?: string;
   likes?: number;
+}
+export interface AddCommentToBookResponse {
+  addCommentToBook: {
+    id: number;
+    content: string;
+    user?: {
+      firstName: string;
+      lastName: string; 
+      imageUrl: string;
+    };
+    createdAt: string;
+  };
 }
 
 @Injectable({
@@ -277,6 +290,17 @@ export class BookService {
         })
       )
       ;
+  }
+
+  addCommentToBook(bookId: number, userId: number, content: string): Observable<MutationResult<AddCommentToBookResponse>> {
+    return this.apollo.mutate<AddCommentToBookResponse>({
+      mutation: ADD_COMMENT_TO_BOOK_MUTATION,
+      variables: {
+        bookId,
+        userId,
+        content,
+      },
+    });
   }
 
 }

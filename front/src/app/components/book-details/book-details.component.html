@@ -55,15 +55,12 @@
            Current Bid: <span class="bid-value">{{ lastBidPrice }}D</span>
         </div>
            <div class="age" *ngIf="age !== undefined">Age: <span class="age-value">{{ age }} years</span></div>
-           <div class="edition" *ngIf="edition">{{ edition }}</div>
-           <div class="language" *ngIf="language">{{ language }}</div>
-           <div class="editor" *ngIf="editor">{{ editor }}</div>
-           <div class="owner" *ngIf="owner?.firstName">Owner: <span class="owner-value">{{ owner?.firstName }} {{ owner?.lastName }}</span></div>
+           <div class="edition" *ngIf="edition">Edition:{{ edition }}</div>
+           <div class="language" *ngIf="language">Langauge:{{ language }}</div>
+           <div class="editor" *ngIf="editor">Editor:{{ editor }}</div>
       </div>
 
-       <div class="description-section" [@fadeInOut]>
-        <p class="description">{{ description || 'No description available.' }}</p>
-      </div>
+      
 
       <div class="interaction-section">
         <div class="favorites">
@@ -168,7 +165,7 @@
           >
             <div class="comment-header">
               <div class="user-info">
-                 <img [src]="comment.user?.imageUrl || '/images/person.png'" alt="User" class="user-avatar" />
+                 <!--img [src]="comment.user?.imageUrl || '/images/person.png'" alt="User" class="user-avatar" /-->
                 <div class="user-details">
                    <span class="user-name">{{ comment.user?.firstName }} {{ comment.user?.lastName }}</span>
                    <span class="comment-date">{{

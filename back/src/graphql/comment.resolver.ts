@@ -61,10 +61,14 @@ export class CommentsResolver {
   }
 
   @ResolveField('user', () => 'User')
-  async user(@Parent() comment: any) {
+  async user(@Parent() comment: any) { // Type 'any' laissé comme dans votre code original
     try {
-      return await this.userService.findOne(comment.userId);
+      // Ligne modifiée pour utiliser la condition where { id: comment.userId }
+      // ATTENTION : Ceci ne corrige PAS l'erreur si comment.userId est undefined/null
+      return await this.userService.findOne({ where: { id: comment.userId } }); // <-- LIGNE CHANGÉE
+
     } catch (error) {
+      // Ce bloc catch attrapera l'erreur si comment.userId est undefined/null
       console.error('Error fetching user for comment:', error);
       return null;
     }
