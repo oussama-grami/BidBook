@@ -5,7 +5,7 @@ import {map} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
 import {UserRating} from '../components/booksPage/library-dashboard.component';
 import {BidStatus} from '../enums/status.enum';
-import { ADD_COMMENT_TO_BOOK_MUTATION, ADD_FAVORITE_MUTATION, REMOVE_FAVORITE_MUTATION } from '../mutations/book.mutation';
+import { ADD_COMMENT_TO_BOOK_MUTATION, ADD_FAVORITE_MUTATION, ADD_RATE_MUTATION, REMOVE_FAVORITE_MUTATION } from '../mutations/book.mutation';
 
 export interface Bid {
   id: number;
@@ -321,6 +321,28 @@ export class BookService {
       },
     }).pipe(
       map(result => result.data!.removeFavorite)
+    );
+  }
+  addBookRating(userId: number, bookId: number, rate: number): Observable<UserRating> {
+    if (rate < 0 || rate > 5) {
+      throw new Error('La note doit être entre 0 et 5.');
+    }
+  
+    return this.apollo.mutate<{ addRate: UserRating }>({
+      mutation: ADD_RATE_MUTATION,
+      variables: {
+        userId: userId,
+        bookId: bookId,
+        rate: rate,
+      },
+    }).pipe(
+      map(result => {
+        if (result.data && result.data.addRate) {
+          return result.data.addRate;
+        } else {
+          throw new Error('Mutation returned unexpected data structure');
+        }
+      })
     );
   }
 }

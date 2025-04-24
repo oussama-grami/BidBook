@@ -35,3 +35,19 @@ mutation RemoveFavorite($userId: Int!, $bookId: Int!) {
   removeFavorite(userId: $userId, bookId: $bookId)
 }
 `;
+
+export const ADD_RATE_MUTATION = gql`
+  mutation AddBookRate($userId: Int!, $bookId: Int!, $rate: Float!) {
+    addRate(userId: $userId, bookId: $bookId, rate: $rate) {
+      id
+      rate
+      user {
+        id
+      }
+      book {
+        id
+      }
+     
+    }
+  }
+`;
