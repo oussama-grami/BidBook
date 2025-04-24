@@ -4,7 +4,6 @@ import { UpdateBidDto } from './dto/update-bid.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Bid } from './entities/bid.entity';
 import { Repository } from 'typeorm';
-import {Book} from "../books/entities/book.entity";
 import { BidStatus } from 'src/Enums/bidstatus.enum';
 import { BooksService } from 'src/books/books.service';
 
@@ -14,9 +13,11 @@ export class BidsService {
       @InjectRepository(Bid)
       private readonly bidRepository: Repository<Bid>,
       private readonly bookService: BooksService,
-        @InjectRepository(Book)
-        private readonly bookRepository: Repository<Book>,
   ) {}
+
+  getBidDate(bid: Bid): Date {
+    return bid.createdAt;
+  }
 
   create(createBidDto: CreateBidDto) {
     return 'This action adds a new bid';
@@ -44,100 +45,97 @@ export class BidsService {
       relations: ['bidder'],
     });
   }
-    async findBidsByUser(userId: number, { limit = 10, offset = 0 }): Promise<Bid[]> {
-        return await this.bidRepository.find({
-            where: {
-                bidder: { id: userId },
-            },
-            relations: ['book', 'bidder'],
-            take: limit,
-            skip: offset,
-            order: { createdAt: 'DESC' },
-        });
-    }
+
+  async findBidsByUser(userId: number, { limit = 10, offset = 0 }): Promise<Bid[]> {
+    return await this.bidRepository.find({
+      where: {
+        bidder: { id: userId },
+      },
+      relations: ['book', 'bidder'],
+      take: limit,
+      skip: offset,
+      order: { createdAt: 'DESC' },
+    });
+  }
+
   async findHighestBidForBook(bookId: number): Promise<Bid | null> {
     return this.bidRepository.findOne({
-        where: { book: { id: bookId } },
-        order: { amount: 'DESC' },
-        relations: ['book'],
+      where: { book: { id: bookId } },
+      order: { amount: 'DESC' },
+      relations: ['book'],
     });
-}
-  
-async createBid(userId: number, bookId: number, amount: number): Promise<Bid> {
-  const book = await this.bookService.findOne(bookId);
-  const now = new Date();
-  const bookCreationTime = book.createdAt;
-  const timeElapsed = now.getTime() - bookCreationTime.getTime();
-  const twentyFourHoursInMillis = 24 * 60 * 60 * 1000;
-
-  if (timeElapsed > twentyFourHoursInMillis) {
-      throw new BadRequestException('Auction for this book has ended.');
   }
 
-  const highestBid = await this.findHighestBidForBook(bookId);
+  async createBid(userId: number, bookId: number, amount: number): Promise<Bid> {
+    const book = await this.bookService.findOne(bookId);
+    if (!book) {
+      throw new BadRequestException(`Book with ID ${bookId} not found.`);
+    }
 
-  if (highestBid) {
+    const highestBid = await this.findHighestBidForBook(bookId);
+    if (highestBid) {
+      const lastBidDate = this.getBidDate(highestBid);
+      const now = new Date();
+      const timeDifference = now.getTime() - lastBidDate.getTime();
+      const hoursDifference = timeDifference / (1000 * 60 * 60);
+
+      if (hoursDifference > 24) {
+        throw new BadRequestException('Cannot place a new bid: The bidding period has ended (last bid was over 24 hours ago).');
+      }
+
       if (amount <= highestBid.amount) {
-          throw new BadRequestException(
-              `Bid amount (${amount}) must be greater than the current highest bid (${highestBid.amount}).`
-          );
+        throw new BadRequestException(
+            `Bid amount (${amount}) must be greater than the current highest bid (${highestBid.amount}).`
+        );
       }
-  } else {
+    } else {
       if (amount <= book.price) {
-          throw new BadRequestException(
-              `Your first bid (${amount}) must be greater than book's starting price (${book.price}).`
-          );
+        throw new BadRequestException(
+            `Your first bid (${amount}) must be greater than book's starting price (${book.price}).`
+        );
       }
-  }
+    }
 
-  const newBid = this.bidRepository.create({
+    const newBid = this.bidRepository.create({
       amount,
       bidStatus: BidStatus.PENDING,
       bidder: { id: userId },
       book: { id: bookId },
-  });
+      createdAt: new Date(),
+    });
 
-  return this.bidRepository.save(newBid);
-}
-
-async updateBid(userId: number, bookId: number, amount: number): Promise<Bid> {
-  const book = await this.bookService.findOne(bookId);
-  const now = new Date();
-  const bookCreationTime = book.createdAt;
-  
-  if (!bookCreationTime) {
-      throw new Error("Book creation time is not available for validation.");
-  }
-  
-  const timeElapsed = now.getTime() - bookCreationTime.getTime();
-  const twentyFourHoursInMillis = 24 * 60 * 60 * 1000;
-
-  if (timeElapsed > twentyFourHoursInMillis) {
-      throw new BadRequestException('Auction for this book has ended (more than 24 hours since creation).');
+    return this.bidRepository.save(newBid);
   }
 
-  const highestBid = await this.findHighestBidForBook(bookId);
-
-  if (!highestBid) {
+  async updateBid(userId: number, bookId: number, amount: number): Promise<Bid> {
+    const highestBid = await this.findHighestBidForBook(bookId);
+    if (!highestBid) {
       throw new BadRequestException('Cannot update bid: No bids have been placed on this book yet. Use createBid for the first bid.');
-  }
+    }
 
-  if (amount <= highestBid.amount) {
+    const lastBidDate = this.getBidDate(highestBid);
+    const now = new Date();
+    const timeDifference = now.getTime() - lastBidDate.getTime();
+    const hoursDifference = timeDifference / (1000 * 60 * 60);
+
+    if (hoursDifference > 24) {
+      throw new BadRequestException('Cannot update bid: The bidding period has ended (last bid was over 24 hours ago).');
+    }
+
+    if (amount <= highestBid.amount) {
       throw new BadRequestException(
           `Bid amount (${amount}) must be strictly greater than the current highest bid (${highestBid.amount}).`
       );
-  }
+    }
 
-  const newBid = this.bidRepository.create({
+    const newBid = this.bidRepository.create({
       amount,
       bidStatus: BidStatus.PENDING,
       bidder: { id: userId },
       book: { id: bookId },
-  });
+      createdAt: new Date(),
+    });
 
-  return this.bidRepository.save(newBid);
-}
-
-
-
+    return this.bidRepository.save(newBid);
+  }
 }
