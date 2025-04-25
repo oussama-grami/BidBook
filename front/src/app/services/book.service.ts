@@ -105,6 +105,9 @@ export class BookService {
             favorites {
               id
             }
+            comments {
+              id
+            }
             bids {
               id
             }

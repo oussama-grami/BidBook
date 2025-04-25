@@ -478,6 +478,7 @@ export class BookCardComponent {
       },
       error: (err) => {
         console.error('Error submitting bid:', err);
+        this.bidError = 'Failed to submit bid. Please try again.';
         this.isSubmittingBid = false;
       }
 
