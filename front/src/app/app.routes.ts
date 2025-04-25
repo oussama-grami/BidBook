@@ -17,6 +17,16 @@ export const routes: Routes = [
         data: { animation: 'fade', isFavorite: false },
       },
       {
+        path: 'my-books',
+        canActivate: [tokenValidationGuard],
+        loadComponent: () =>
+          import('./components/my-books/my-books-page.component').then(
+            (c) => c.MyBooksPageComponent
+          ),
+        resolve: { pageData: DataLoadingResolver },
+        data: { animation: 'slideLeft' },
+      },
+      {
         path: 'favorite',
         loadComponent: () =>
           import('./components/booksPage/library-dashboard.component').then(

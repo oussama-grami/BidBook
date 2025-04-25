@@ -55,6 +55,22 @@ export class BookResolver {
         }
     }
 
+    @Query('myBooks')
+    @UseGuards(GqlAuthGuard)
+    async myBooks(
+        @User('id') ownerId: number,
+        @Args('limit') limit?: number,
+        @Args('offset') offset?: number,
+    ): Promise<Book[]> {
+        try {
+            return await this.bookService.findMyBooks(ownerId, limit, offset);
+        } catch (error) {
+            console.error('Error in myBooks resolver:', error);
+            throw new InternalServerErrorException('Failed to fetch your books');
+        }
+    }
+
+
     @ResolveField('owner', () => 'User')
     async owner(@Parent() book: any) {
         console.log('Book object in owner resolver:', book);

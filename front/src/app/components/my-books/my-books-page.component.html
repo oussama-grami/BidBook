@@ -1,0 +1,24 @@
+<main class="catalog-container" [@fadeIn]>
+  <h1 class="my-books-title" [@slideInRight]>My Books</h1>
+  <app-category-list
+    [categories]="categories"
+    [selectedCategory]="selectedCategory"
+    (categorySelected)="onCategoryChange($event)"
+    (searchChanged)="onSearchChange($event)"
+  >
+  </app-category-list>
+
+  <div *ngIf="loading">Loading your books...</div>
+  <div *ngIf="error">Error loading your books: {{ error }}</div>
+
+  <ng-container *ngIf="!loading && !error">
+    <section class="my-books-section">
+      <div class="books-grid" [@booksAnimation]>
+        <app-book-card *ngFor="let book of filteredMyBooks" [book]="book"></app-book-card>
+      </div>
+      <div *ngIf="filteredMyBooks.length === 0 && !loading">
+        <p class="no-books-message">You haven't uploaded any books yet.</p>
+      </div>
+    </section>
+  </ng-container>
+</main>

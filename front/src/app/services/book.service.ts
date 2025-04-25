@@ -108,6 +108,9 @@ export class BookService {
             bids {
               id
             }
+            comments {
+                id
+            }
             category
             createdAt
           }
@@ -174,15 +177,15 @@ export class BookService {
           }
         }
       `,
-      variables: { // Pass the variable like in viewBooks
-        id: bookId, // Map the bookId parameter to the $id variable
+      variables: {
+        id: bookId,
       },
-      fetchPolicy: 'network-only' // Example fetch policy
+      fetchPolicy: 'network-only'
     })
     .pipe(
-      // Map the response to extract the bookDetails data, like extracting viewBooks
+
       map((response) => response.data.bookDetails)
-    ); // Added closing parenthesis and semicolon
+    );
   }
 
   getBook(id: number): Observable<Book> {
@@ -341,6 +344,44 @@ export class BookService {
       })
     )
       ;
+  }
+  getMyBooks(limit?: number, offset?: number): Observable<Book[]> {
+    return this.apollo
+    .query<{ myBooks: Book[] }>({
+      query: gql`
+        query MyBooks($limit: Int, $offset: Int) {
+          myBooks(limit: $limit, offset: $offset) {
+            id
+            title
+            picture
+            ratings {
+              rate
+            }
+            favorites {
+              id
+            }
+            bids {
+              id
+            }
+            comments {
+                id
+            }
+            category
+            createdAt
+          }
+        }
+      `,
+      variables: {
+        limit: limit,
+        offset: offset,
+      },
+    })
+    .pipe(
+      map((response) => response.data.myBooks),
+      tap((res) => {
+        console.log("myBooks response", res);
+      })
+    );
   }
 
   addCommentToBook(bookId: number, userId: number, content: string): Observable<MutationResult<AddCommentToBookResponse>> {
