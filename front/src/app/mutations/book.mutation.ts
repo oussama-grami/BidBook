@@ -2,8 +2,8 @@
 import { gql } from 'apollo-angular';
 
 export const ADD_COMMENT_TO_BOOK_MUTATION = gql`
-  mutation AddCommentToBook($bookId: Int!, $userId: Int!, $content: String!) {
-    addCommentToBook(bookId: $bookId, userId: $userId, content: $content) {
+  mutation AddCommentToBook($bookId: Int!, $content: String!) {
+    addCommentToBook(bookId: $bookId, content: $content) {
       id
       content
       user {
@@ -18,8 +18,8 @@ export const ADD_COMMENT_TO_BOOK_MUTATION = gql`
 `;
 
 export const ADD_FAVORITE_MUTATION = gql`
-  mutation AddFavorite($userId: Int!, $bookId: Int!) {
-    addFavorite(userId: $userId, bookId: $bookId) {
+  mutation AddFavorite($bookId: Int!) {
+    addFavorite( bookId: $bookId) {
       id
       user {
         id
@@ -31,14 +31,14 @@ export const ADD_FAVORITE_MUTATION = gql`
   }
 `;
 export const REMOVE_FAVORITE_MUTATION = gql`
-mutation RemoveFavorite($userId: Int!, $bookId: Int!) {
-  removeFavorite(userId: $userId, bookId: $bookId)
+mutation RemoveFavorite( $bookId: Int!) {
+  removeFavorite(bookId: $bookId)
 }
 `;
 
 export const ADD_RATE_MUTATION = gql`
-  mutation AddBookRate($userId: Int!, $bookId: Int!, $rate: Float!) {
-    addRate(userId: $userId, bookId: $bookId, rate: $rate) {
+  mutation AddBookRate( $bookId: Int!, $rate: Float!) {
+    addRate( bookId: $bookId, rate: $rate) {
       id
       rate
       user {

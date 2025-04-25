@@ -1,10 +1,11 @@
-import { Resolver, Mutation, Query, Args, Int, Subscription, ResolveField, Parent } from '@nestjs/graphql';
+import { Resolver, Mutation, Query, Args, Int, Subscription, ResolveField, Parent, Context } from '@nestjs/graphql';
 import { CommentsService } from "../comments/comments.service"
 import { Comment } from '../graphql';
-import { InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { InternalServerErrorException, NotFoundException, UseGuards } from '@nestjs/common';
 import { PubSub } from 'graphql-subscriptions';
 import { Book } from 'src/graphql';
 import { AuthService } from 'src/auth/auth.service'; // Import UserService
+import { GqlAuthGuard } from 'src/auth/guards/gql.guard';
 
 const pubSub = new PubSub();
 
@@ -14,17 +15,26 @@ export class CommentsResolver {
       private readonly commentsService: CommentsService,
       private readonly userService: AuthService,
   ) {}
+ 
+  @UseGuards(GqlAuthGuard)
+@Mutation('addCommentToBook')
+async addCommentToBook(
+    @Args('bookId', { type: () => Int }) bookId: number,
+    @Args('content') content: string,
+    @Context() context: any
+): Promise<Comment> {
+    const user = context.req.user;
 
-  @Mutation('addCommentToBook')
-  async addCommentToBook(
-      @Args('bookId', { type: () => Int }) bookId: number,
-      @Args('userId', { type: () => Int }) userId: number,
-      @Args('content') content: string,
-  ): Promise<Comment> {
+    if (!user) {
+        throw new Error('Utilisateur non authentifié');
+    }
+
+    const userId = user.id;
+
     const newComment = await this.commentsService.addCommentToBook(bookId, userId, content);
     pubSub.publish('commentAdded', { commentAdded: newComment, bookId });
     return newComment;
-  }
+}
 
   @Mutation('removeComment')
   async removeComment(

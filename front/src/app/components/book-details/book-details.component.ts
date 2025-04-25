@@ -348,7 +348,7 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
 
     this.ratingSubmissionSubscription?.unsubscribe();
 
-    this.ratingSubmissionSubscription = this.bookService.addBookRating(this.currentUserId, this.bookId, this.userRating).subscribe({
+    this.ratingSubmissionSubscription = this.bookService.addBookRating(this.bookId, this.userRating).subscribe({
       next: (response: UserRating) => {
         this.fetchBookDetails();
       },
@@ -377,7 +377,7 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
     this.favoriteActionSubscription?.unsubscribe();
 
     if (!wasFavorite) {
-      this.favoriteActionSubscription = this.bookService.addBookToFavorites(this.currentUserId, this.bookId).subscribe({
+      this.favoriteActionSubscription = this.bookService.addBookToFavorites(this.bookId).subscribe({
         next: (success) => {
           if (success) {
             this.fetchBookDetails();
@@ -394,7 +394,7 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
         }
       });
     } else {
-      this.favoriteActionSubscription = this.bookService.removeFavorite(this.currentUserId, this.bookId).subscribe({
+      this.favoriteActionSubscription = this.bookService.removeFavorite(this.bookId).subscribe({
         next: (success) => {
           if (success) {
             this.fetchBookDetails();
@@ -422,7 +422,7 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
 
     const commentContent = this.userComment.trim();
 
-    this.bookService.addCommentToBook(this.bookId, this.currentUserId, commentContent).pipe(
+    this.bookService.addCommentToBook(this.bookId, commentContent).pipe(
       map(response => {
         return response.data?.addCommentToBook;
       })

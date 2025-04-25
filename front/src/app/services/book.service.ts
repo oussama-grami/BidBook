@@ -343,38 +343,35 @@ export class BookService {
       ;
   }
 
-  addCommentToBook(bookId: number, userId: number, content: string): Observable<MutationResult<AddCommentToBookResponse>> {
+  addCommentToBook(bookId: number, content: string): Observable<MutationResult<AddCommentToBookResponse>> {
     return this.apollo.mutate<AddCommentToBookResponse>({
       mutation: ADD_COMMENT_TO_BOOK_MUTATION,
       variables: {
         bookId,
-        userId,
         content,
       },
     });
   }
-  addBookToFavorites(userId: number, bookId: number) {
+  addBookToFavorites(bookId: number) {
     return this.apollo.mutate({
       mutation: ADD_FAVORITE_MUTATION,
       variables: {
-        userId: userId,
         bookId: bookId,
       },
 
     });
   }
-  removeFavorite(userId: number, bookId: number): Observable<boolean> {
+  removeFavorite(bookId: number): Observable<boolean> {
     return this.apollo.mutate<{ removeFavorite: boolean }>({
       mutation: REMOVE_FAVORITE_MUTATION,
       variables: {
-        userId,
         bookId,
       },
     }).pipe(
       map(result => result.data!.removeFavorite)
     );
   }
-  addBookRating(userId: number, bookId: number, rate: number): Observable<UserRating> {
+  addBookRating(bookId: number, rate: number): Observable<UserRating> {
     if (rate < 0 || rate > 5) {
       throw new Error('La note doit être entre 0 et 5.');
     }
@@ -382,7 +379,6 @@ export class BookService {
     return this.apollo.mutate<{ addRate: UserRating }>({
       mutation: ADD_RATE_MUTATION,
       variables: {
-        userId: userId,
         bookId: bookId,
         rate: rate,
       },

@@ -1,9 +1,10 @@
-import { Resolver, Mutation, Args, Int, Subscription } from '@nestjs/graphql';
+import { Resolver, Mutation, Args, Int, Subscription, Context } from '@nestjs/graphql';
 import { PubSub } from 'graphql-subscriptions';
 import { FavoritesService } from "../favorites/favorites.service";
 import { BooksService } from "../books/books.service";
 import { Favorite, Book } from '../graphql';
-import { InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { InternalServerErrorException, NotFoundException, UseGuards } from '@nestjs/common';
+import { GqlAuthGuard } from 'src/auth/guards/gql.guard';
 
 const pubSub = new PubSub();
 const BOOK_FAVORITES_UPDATED_EVENT = 'bookFavoritesUpdated';
@@ -15,61 +16,82 @@ export class FavoritesResolver {
       private readonly booksService: BooksService,
   ) {}
 
-  @Mutation('addFavorite')
-  async addFavorite(
-      @Args('userId', { type: () => Int }) userId: number,
-      @Args('bookId', { type: () => Int }) bookId: number,
-  ): Promise<Favorite> {
+ // Mutation addFavorite
+@UseGuards(GqlAuthGuard)
+@Mutation('addFavorite')
+async addFavorite(
+    @Args('bookId', { type: () => Int }) bookId: number,
+    @Context() context: any
+): Promise<Favorite> {
     try {
-      const favorite = await this.favoritesService.addFavorite(userId, bookId);
-      const updatedBook = await this.booksService.findOne(bookId);
+        const user = context.req.user;
 
-      if (!updatedBook) {
-        throw new NotFoundException(`Book with ID ${bookId} not found after adding favorite.`);
-      }
+        if (!user) {
+            throw new InternalServerErrorException('Informations utilisateur non disponibles après authentification.');
+        }
 
-      console.log(`Publishing "${BOOK_FAVORITES_UPDATED_EVENT}" for bookId ${bookId} after adding favorite.`);
-      await pubSub.publish(BOOK_FAVORITES_UPDATED_EVENT, {
-        [BOOK_FAVORITES_UPDATED_EVENT]: updatedBook,
-      });
+        const userId = user.id;
 
-      return favorite;
-    } catch (error) {
-      console.error('Error in addFavorite mutation:', error);
-      if (error instanceof NotFoundException) {
-        throw error;
-      }
-      throw new InternalServerErrorException('Failed to add favorite');
-    }
-  }
-
-  @Mutation('removeFavorite')
-  async removeFavorite(
-      @Args('userId', { type: () => Int }) userId: number,
-      @Args('bookId', { type: () => Int }) bookId: number,
-  ): Promise<boolean> {
-    try {
-      const success = await this.favoritesService.removeFavorite(userId, bookId);
-
-      if (success) {
+        const favorite = await this.favoritesService.addFavorite(userId, bookId);
         const updatedBook = await this.booksService.findOne(bookId);
 
         if (!updatedBook) {
-          console.warn(`Book with ID ${bookId} not found after removing favorite. Cannot publish update.`);
-        } else {
-          console.log(`Publishing "${BOOK_FAVORITES_UPDATED_EVENT}" after removing favorite for bookId ${bookId}`);
-          await pubSub.publish(BOOK_FAVORITES_UPDATED_EVENT, {
-            [BOOK_FAVORITES_UPDATED_EVENT]: updatedBook,
-          });
+            throw new NotFoundException(`Book with ID ${bookId} not found after adding favorite.`);
         }
-      }
 
-      return success;
+        console.log(`Publishing "${BOOK_FAVORITES_UPDATED_EVENT}" for bookId ${bookId} after adding favorite.`);
+        await pubSub.publish(BOOK_FAVORITES_UPDATED_EVENT, {
+            [BOOK_FAVORITES_UPDATED_EVENT]: updatedBook,
+        });
+
+        return favorite;
     } catch (error) {
-      console.error('Error in removeFavorite mutation:', error);
-      throw new InternalServerErrorException('Failed to remove favorite');
+        console.error('Error in addFavorite mutation:', error);
+        if (error instanceof NotFoundException) {
+            throw error;
+        }
+        throw new InternalServerErrorException('Failed to add favorite');
     }
-  }
+}
+
+// Mutation removeFavorite
+@UseGuards(GqlAuthGuard)
+@Mutation('removeFavorite')
+async removeFavorite(
+    @Args('bookId', { type: () => Int }) bookId: number,
+    @Context() context: any
+): Promise<boolean> {
+        
+    try {
+        const user = context.req.user;
+
+        if (!user) {
+            throw new InternalServerErrorException('Informations utilisateur non disponibles après authentification.');
+        }
+
+        const userId = user.id;
+
+        const success = await this.favoritesService.removeFavorite(userId, bookId);
+
+        if (success) {
+            const updatedBook = await this.booksService.findOne(bookId);
+
+            if (!updatedBook) {
+                console.warn(`Book with ID ${bookId} not found after removing favorite. Cannot publish update.`);
+            } else {
+                console.log(`Publishing "${BOOK_FAVORITES_UPDATED_EVENT}" after removing favorite for bookId ${bookId}`);
+                await pubSub.publish(BOOK_FAVORITES_UPDATED_EVENT, {
+                    [BOOK_FAVORITES_UPDATED_EVENT]: updatedBook,
+                });
+            }
+        }
+
+        return success;
+    } catch (error) {
+        console.error('Error in removeFavorite mutation:', error);
+        throw new InternalServerErrorException('Failed to remove favorite');
+    }
+}
 
   @Subscription(() => Book, {
     filter: (payload, variables) => {
