@@ -5,7 +5,7 @@ import {map} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
 import {UserRating} from '../components/booksPage/library-dashboard.component';
 import {BidStatus} from '../enums/status.enum';
-import { ADD_COMMENT_TO_BOOK_MUTATION, ADD_FAVORITE_MUTATION, ADD_RATE_MUTATION, REMOVE_FAVORITE_MUTATION } from '../mutations/book.mutation';
+import { ADD_COMMENT_TO_BOOK_MUTATION, ADD_FAVORITE_MUTATION, ADD_RATE_MUTATION, REMOVE_FAVORITE_MUTATION, UPDATE_BOOK_RATE_MUTATION } from '../mutations/book.mutation';
 
 export interface Bid {
   id: number;
@@ -396,5 +396,24 @@ export class BookService {
       })
     );
   }
+  updateBookRate(userId: number, bookId: number, rate: number): Observable<UserRating> {
+    return this.apollo.mutate<UserRating>({
+      mutation: UPDATE_BOOK_RATE_MUTATION,
+      variables: {
+        userId,
+        bookId,
+        rate,
+      },
+    }).pipe(
+      map(result => {
+        if (result.data ) {
+          return result.data;
+        }
+        console.error('Mutation did not return expected data', result);
+        throw new Error('Failed to get UserRating from mutation result');
+      })
+    );
+}
+
 }
 
