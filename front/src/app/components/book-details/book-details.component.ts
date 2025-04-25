@@ -1,13 +1,18 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NgForOf, NgIf, DatePipe, CommonModule } from '@angular/common';
-import { animate, state, style, transition, trigger } from '@angular/animations';
+import {
+  animate,
+  state,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations';
 import { BackArrowComponent } from '../navigation/back-arrow.component';
 import { ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { BookService, Book } from '../../services/book.service';
+import { BookService, Book, Bid } from '../../services/book.service';
 import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-
 interface Comment {
   id: number;
   content: string;
@@ -27,11 +32,13 @@ export interface UserRating {
   rate: number;
   createdAt?: string;
   updatedAt?: string;
+
 }
 
 @Component({
   selector: 'app-book-details',
   templateUrl: './book-details.component.html',
+  styleUrls: ['./book-details.component.css'],
   standalone: true,
   imports: [
     NgForOf,
@@ -41,14 +48,15 @@ export interface UserRating {
     FormsModule,
     DatePipe,
   ],
-  styleUrls: ['./book-details.component.css'],
-  animations: [
-    trigger('fadeInOut', [
-      transition(':enter', [
-        style({ opacity: 0, transform: 'translateY(20px)' }),
-        animate('0.5s ease-out', style({ opacity: 1, transform: 'translateY(0)' })),
-      ]),
+  animations: [trigger('fadeInOut', [
+    transition(':enter', [
+      style({ opacity: 0, transform: 'translateY(20px)' }),
+      animate(
+        '0.5s ease-out',
+        style({ opacity: 1, transform: 'translateY(0)' })
+      ),
     ]),
+  ]),
     trigger('scaleHeart', [
       transition('* => *', [
         animate('0.3s', style({ transform: 'scale(1.3)' })),
@@ -56,20 +64,39 @@ export interface UserRating {
       ]),
     ]),
     trigger('starRating', [
-      state('inactive', style({ transform: 'scale(1)', opacity: '0.5' })),
-      state('active', style({ transform: 'scale(1.2)', opacity: '1' })),
+      state(
+        'inactive',
+        style({
+          transform: 'scale(1)',
+          opacity: '0.5',
+        })
+      ),
+      state(
+        'active',
+        style({
+          transform: 'scale(1.2)',
+          opacity: '1',
+        })
+      ),
       transition('inactive => active', animate('200ms ease-in')),
       transition('active => inactive', animate('200ms ease-out')),
     ]),
     trigger('backButton', [
-      state('normal', style({ transform: 'scale(1) rotate(0deg)' })),
-      state('hovered', style({ transform: 'scale(1.1) rotate(-10deg)' })),
+      state(
+        'normal',
+        style({
+          transform: 'scale(1) rotate(0deg)',
+        })
+      ),
+      state(
+        'hovered',
+        style({
+          transform: 'scale(1.1) rotate(-10deg)',
+        })
+      ),
       transition('normal <=> hovered', animate('200ms ease-in-out')),
-    ]),
-  ],
-  providers: [
-    BookService,
-  ],
+    ]),],
+  providers: [BookService],
 })
 export class BookDetailsComponent implements OnInit, OnDestroy {
   title: string = '';
@@ -106,18 +133,24 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
   bidError: string = '';
   showBidInput: boolean = false;
 
+  hasBid: boolean = false; // Track if the current user has bid
+
   isLoadingBookDetails: boolean = true;
-  error: string | null = null;
+  isSubmittingBid: boolean = false; // To disable button during submission
+  error: any = null;
 
   bookId: number | null = null;
-  currentUserId: number = 1;
+  currentUserId: number = 1; // Placeholder for current user ID
   math = Math;
-
   private querySubscription?: Subscription;
+  private bidSubscription?: Subscription;
   private favoriteActionSubscription?: Subscription;
   private ratingSubmissionSubscription?: Subscription;
 
-  constructor(private route: ActivatedRoute, private bookService: BookService) {
+  constructor(
+    private route: ActivatedRoute,
+    private bookService: BookService,
+  ) {
     this.route.params.subscribe(params => {
       const id = +params['id'];
       if (!isNaN(id)) {
@@ -125,12 +158,21 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
       } else {
         this.isLoadingBookDetails = false;
         this.error = 'Invalid book ID.';
+        console.error('Invalid book ID in route params:', params['id']);
       }
     });
   }
 
   ngOnInit(): void {
-    this.fetchBookDetails();
+    if (this.bookId !== null && !this.error) {
+      this.loadBookDetailsAndBids(this.bookId);
+    } else {
+      this.isLoadingBookDetails = false;
+      if (!this.error) {
+        this.error = 'Book ID is missing or invalid.';
+      }
+      console.error('ngOnInit aborted due to missing or invalid book ID.');
+    }
   }
 
   ngOnDestroy(): void {
@@ -144,88 +186,150 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
       this.ratingSubmissionSubscription.unsubscribe();
     }
   }
+  loadBookDetailsAndBids(bookId: number): void {
+    this.isLoadingBookDetails = true;
+    this.error = null;
+
+    this.querySubscription = this.bookService.getBookDetails(bookId).subscribe({
+      next: (book: Book) => {
+        if (book) {
+          this.title = book.title || '';
+          this.author = book.author || '';
+          this.genre = (book.category as any)?.name || book.category?.toString() || '';
+          this.coverImage = book.picture || '/images/placeholder.png';
+          this.price = book.price || 0;
+          this.pages = book.totalPages || 0;
+          this.age = book.age;
+          this.edition = book.edition?.toString() || undefined;
+          this.language = book.language?.toString() || undefined;
+          this.editor = book.editor || undefined;
+          this.owner = book.owner;
+          this.likes = book.favorites?.length || 0;
+          this.isFavorite = book.favorites?.some(fav => fav.user?.id === this.currentUserId) || false;
+          this.comments = book.comments || [];
+          this.resetDisplayedComments();
+          this.commentsLoaded = true;
+
+          // Determine the initial last bid price
+          if (book.bids && book.bids.length > 0) {
+            const sortedBids = [...book.bids].sort((a, b) => b.amount - a.amount);
+            this.lastBidPrice = sortedBids[0].amount;
+            this.hasBid = book.bids.some(bid => bid.bidder?.id === this.currentUserId);
+          } else {
+            this.lastBidPrice = this.price;
+            this.hasBid = false;
+          }
+
+          if (book.ratings && book.ratings.length > 0) {
+            const totalRate = book.ratings.reduce((sum, r) => sum + r.rate, 0);
+            this.rating = totalRate / book.ratings.length;
+            this.votes = book.ratings.length;
+          } else {
+            this.rating = 0;
+            this.votes = 0;
+          }
+
+          this.starStates = Array(5).fill('inactive').map((_, index) =>
+            index < Math.round(this.rating) ? 'active' : 'inactive'
+          );
+        } else {
+          this.error = 'Book not found.';
+          console.warn('Book details response was null or undefined.');
+        }
+        this.isLoadingBookDetails = false;
+      },
+      error: (err) => {
+        console.error('Error fetching book details:', err);
+        this.error = 'Failed to load book details. Please try again.';
+        this.isLoadingBookDetails = false;
+      },
+    });
+  }
+
+
+
 
   private fetchBookDetails(): void {
-      if (this.bookId === null || this.error) {
-          this.isLoadingBookDetails = false;
-          if (!this.error && this.bookId === null) {
-              this.error = 'Book ID is missing or invalid.';
-          }
-          return;
+    if (this.bookId === null || this.error) {
+      this.isLoadingBookDetails = false;
+      if (!this.error && this.bookId === null) {
+        this.error = 'Book ID is missing or invalid.';
       }
+      return;
+    }
 
-      this.isLoadingBookDetails = true;
-      this.error = null;
+    this.isLoadingBookDetails = true;
+    this.error = null;
 
-      this.querySubscription?.unsubscribe();
+    this.querySubscription?.unsubscribe();
 
-      this.querySubscription = this.bookService.getBookDetails(this.bookId).subscribe({
-        next: (book: Book | null | undefined) => {
-          if (book) {
-            this.title = book.title || '';
-            this.author = book.author || '';
-            this.genre = (book.category as any)?.name || book.category?.toString() || '';
-            this.coverImage = book.picture || '/images/placeholder.png';
-            this.price = book.price || 0;
-            this.pages = book.totalPages || 0;
-            this.age = book.age;
-            this.edition = book.edition?.toString() || undefined;
-            this.language = book.language?.toString() || undefined;
-            this.editor = book.editor || undefined;
-            this.owner = book.owner ? {
-              id: book.owner.id,
-              firstName: book.owner.firstName,
-              lastName: book.owner.lastName,
-              imageUrl: book.owner.imageUrl
-            } : undefined;
+    this.querySubscription = this.bookService.getBookDetails(this.bookId).subscribe({
+      next: (book: Book | null | undefined) => {
+        if (book) {
+          this.title = book.title || '';
+          this.author = book.author || '';
+          this.genre = (book.category as any)?.name || book.category?.toString() || '';
+          this.coverImage = book.picture || '/images/placeholder.png';
+          this.price = book.price || 0;
+          this.pages = book.totalPages || 0;
+          this.age = book.age;
+          this.edition = book.edition?.toString() || undefined;
+          this.language = book.language?.toString() || undefined;
+          this.editor = book.editor || undefined;
+          this.owner = book.owner ? {
+            id: book.owner.id,
+            firstName: book.owner.firstName,
+            lastName: book.owner.lastName,
+            imageUrl: book.owner.imageUrl
+          } : undefined;
 
-            this.likes = book.favorites?.length || 0;
-            this.isFavorite = book.favorites?.some(fav => fav.user?.id === this.currentUserId) || false;
+          this.likes = book.favorites?.length || 0;
+          this.isFavorite = book.favorites?.some(fav => fav.user?.id === this.currentUserId) || false;
 
-            if (book.bids && book.bids.length > 0) {
-              const sortedBids = [...book.bids].sort((a, b) => b.amount - a.amount);
-              this.lastBidPrice = sortedBids[0].amount;
-            } else {
-              this.lastBidPrice = this.price;
-            }
-
-            if (book.ratings && book.ratings.length > 0) {
-              const totalRate = book.ratings.reduce((sum, r) => sum + r.rate, 0);
-              this.rating = totalRate / book.ratings.length;
-              this.votes = book.ratings.length;
-              const userExistingRating = book.ratings.find(r => r.user?.id === this.currentUserId);
-              this.userRating = userExistingRating ? userExistingRating.rate : 0;
-            } else {
-              this.rating = 0;
-              this.votes = 0;
-              this.userRating = 0;
-            }
-
-            this.starStates = Array(5).fill('inactive').map((_, index) =>
-              index < this.userRating ? 'active' : 'inactive'
-            );
-
-            this.comments = book.comments || [];
-            this.resetDisplayedComments();
-            this.commentsLoaded = true;
-
-            this.isLoadingBookDetails = false;
+          if (book.bids && book.bids.length > 0) {
+            const sortedBids = [...book.bids].sort((a, b) => b.amount - a.amount);
+            this.lastBidPrice = sortedBids[0].amount;
           } else {
-            this.error = 'Book not found.';
-            this.isLoadingBookDetails = false;
+            this.lastBidPrice = this.price;
           }
-        },
-        error: (err) => {
-          this.error = 'Failed to load book details. Please try again.';
+
+          if (book.ratings && book.ratings.length > 0) {
+            const totalRate = book.ratings.reduce((sum, r) => sum + r.rate, 0);
+            this.rating = totalRate / book.ratings.length;
+            this.votes = book.ratings.length;
+            const userExistingRating = book.ratings.find(r => r.user?.id === this.currentUserId);
+            this.userRating = userExistingRating ? userExistingRating.rate : 0;
+          } else {
+            this.rating = 0;
+            this.votes = 0;
+            this.userRating = 0;
+          }
+
+          this.starStates = Array(5).fill('inactive').map((_, index) =>
+            index < this.userRating ? 'active' : 'inactive'
+          );
+
+          this.comments = book.comments || [];
+          this.resetDisplayedComments();
+          this.commentsLoaded = true;
+
           this.isLoadingBookDetails = false;
-        },
-      });
+        } else {
+          this.error = 'Book not found.';
+          this.isLoadingBookDetails = false;
+        }
+      },
+      error: (err) => {
+        this.error = 'Failed to load book details. Please try again.';
+        this.isLoadingBookDetails = false;
+      },
+    });
   }
 
   setUserRating(rating: number): void {
     this.userRating = rating;
     this.starStates = Array(5).fill('inactive').map((_, index) =>
-        index < this.userRating ? 'active' : 'inactive'
+      index < this.userRating ? 'active' : 'inactive'
     );
   }
 
@@ -323,20 +427,20 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
         return response.data?.addCommentToBook;
       })
     )
-    .subscribe({
-      next: (newComment: Comment | null | undefined) => {
-        if (newComment) {
-          this.comments = [newComment, ...this.comments];
-          this.resetDisplayedComments();
-          this.userComment = '';
-        } else {
-          this.error = 'Failed to add comment: Server returned no data.';
-        }
-      },
-      error: (err: any) => {
-        this.error = 'Failed to add comment. Please try again.';
-      },
-    });
+      .subscribe({
+        next: (newComment: Comment | null | undefined) => {
+          if (newComment) {
+            this.comments = [newComment, ...this.comments];
+            this.resetDisplayedComments();
+            this.userComment = '';
+          } else {
+            this.error = 'Failed to add comment: Server returned no data.';
+          }
+        },
+        error: (err: any) => {
+          this.error = 'Failed to add comment. Please try again.';
+        },
+      });
   }
 
   loadMoreComments(): void {
@@ -362,10 +466,12 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
       this.displayedComments = this.comments.slice(0, this.commentsPerPage);
       this.currentPage = 1;
       this.updateLoadMoreButtonVisibility();
+      console.log(`Reset displayed comments. Showing <span class="math-inline">\{this\.displayedComments\.length\}/</span>{this.comments.length}`);
     } else {
       this.displayedComments = [];
       this.currentPage = 1;
       this.showLoadMoreButton = false;
+      console.log('No comments to display after reset.');
     }
   }
 
@@ -377,27 +483,72 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
     if (!this.showBidInput) {
       this.showBidInput = true;
       this.bidError = '';
-      this.userBidPrice = this.lastBidPrice;
       return;
     }
 
     if (this.bookId === null) {
       this.bidError = 'Book ID is missing.';
+      console.warn('Bid validation failed:', this.bidError);
       return;
     }
 
-    const minBid = this.lastBidPrice + 0.01;
+    const minBid = this.lastBidPrice + 1;
     if (!this.userBidPrice || isNaN(this.userBidPrice) || this.userBidPrice < minBid) {
       this.bidError = `Please enter a valid bid amount greater than ${this.lastBidPrice.toFixed(2)}D.`;
+      console.warn('Bid validation failed:', this.bidError);
       return;
     }
 
     this.bidError = '';
+    this.isSubmittingBid = true;
     console.log(`Attempting to submit bid of ${this.userBidPrice} for book ${this.bookId} by user ${this.currentUserId}`);
+    const bidAmount = this.userBidPrice;
+    const bookId = this.bookId;
+    const userId = this.currentUserId; // Get the current user ID
 
-    console.log('Bid submitted (client-side only update). Remember to implement backend call.');
-    this.lastBidPrice = this.userBidPrice;
-    this.userBidPrice = 0;
-    this.showBidInput = false;
+    if (this.hasBid) {
+      this.bidSubscription = this.bookService.updateBid(userId, bookId, bidAmount).subscribe({
+        next: (updatedBid) => {
+          if (updatedBid) {
+            console.log('Bid updated successfully:', updatedBid);
+            this.lastBidPrice = updatedBid.amount;
+            this.userBidPrice = 0;
+            this.showBidInput = false;
+            this.isSubmittingBid = false;
+            this.hasBid = true;
+          } else {
+            this.bidError = 'Failed to update bid.';
+            this.isSubmittingBid = false;
+          }
+        },
+        error: (error) => {
+          console.error('Error updating bid:', error);
+          this.bidError = error.message || 'Failed to update bid. Please try again.';
+          this.isSubmittingBid = false;
+        },
+      });
+    } else {
+      this.bidSubscription = this.bookService.createBid(userId, bookId, bidAmount).subscribe({
+        next: (newBid) => {
+          if (newBid) {
+            console.log('Bid created successfully:', newBid);
+            this.lastBidPrice = newBid.amount;
+            this.userBidPrice = 0;
+            this.showBidInput = false;
+            this.isSubmittingBid = false;
+            this.hasBid = true;
+          } else {
+            this.bidError = 'Failed to create bid.';
+            this.isSubmittingBid = false;
+          }
+        },
+        error: (error) => {
+          console.error('Error creating bid:', error);
+          this.bidError = error.message || 'Failed to create bid. Please try again.';
+          this.isSubmittingBid = false;
+        },
+      });
+    }
   }
 }
+

@@ -49,7 +49,7 @@ export class BidResolver {
     return this.bidService.findHighestBidForBook(bookId);
   }
 
- @UseGuards(JwtAuthGuard)
+ @UseGuards(GqlAuthGuard)
   @Mutation('createBid')
   async createBid(
     @User('id') userId: number,
@@ -68,7 +68,7 @@ export class BidResolver {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(GqlAuthGuard)
   @Mutation('updateBid')
   async updateBid(
     @User('id') userId: number,
