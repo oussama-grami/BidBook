@@ -23,6 +23,7 @@ import {
   VerifyEmailDto,
   DisableMfaDto,
 } from './Api';
+import { UserIdService } from './userid.service';
 
 @Injectable({
   providedIn: 'root',
@@ -47,7 +48,8 @@ export class AuthService {
     private router: Router,
     private notificationService: NotificationService,
     private apiAuthService: AuthenticationService,
-    private loadingService: LoadingService
+    private loadingService: LoadingService,
+    private userIdService: UserIdService
   ) {
     // Try to load user state from localStorage on service initialization
     this.loadUserState();
@@ -98,6 +100,11 @@ export class AuthService {
       next: (user) => {
         // User is authenticated, update state
         this.authState.next(true);
+        if (user && user.id) {
+          this.userIdService.setUserId(user.id); // Set user ID on profile load
+        } else {
+          console.warn('User ID not found in profile data:', user);
+        }
       },
       error: (err) => {
         // Failed to get profile, might be auth issue
@@ -413,6 +420,11 @@ export class AuthService {
       // Update BehaviorSubjects
       this.currentUser.next(userData);
       this.authState.next(true);
+      if (userData.id) { // Assuming your UserDto has an 'id' property
+        this.userIdService.setUserId(userData.id);
+      } else {
+        console.warn('User ID not found in userData:', userData);
+      }
     }
   }
 

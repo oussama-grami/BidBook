@@ -1,26 +1,74 @@
 import { Injectable } from '@nestjs/common';
-import { CreateNotificationDto } from './dto/create-notification.dto';
-import { UpdateNotificationDto } from './dto/update-notification.dto';
+import { Subject, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Notification } from './entities/notification.entity';
+import { Repository } from 'typeorm';
+
+interface NotificationPayload {
+  userId: number;
+  type: string;
+  message: string;
+  data?: any;
+}
 
 @Injectable()
 export class NotificationsService {
-  create(createNotificationDto: CreateNotificationDto) {
-    return 'This action adds a new notification';
+  private clients: Map<number, Subject<MessageEvent>> = new Map();
+
+  constructor(
+      @InjectRepository(Notification)
+      private readonly notificationRepository: Repository<Notification>,
+  ) {}
+
+  subscribe(userId: number): Observable<MessageEvent> {
+    const subject = new Subject<MessageEvent>();
+    this.clients.set(userId, subject);
+    console.log(`User ${userId} subscribed to SSE`);
+    return subject.pipe(
+        map(payload => new MessageEvent('message', { data: JSON.stringify(payload) }))
+    );
   }
 
-  findAll() {
-    return `This action returns all notifications`;
+  async notify(payload: NotificationPayload): Promise<void> {
+    const client = this.clients.get(payload.userId);
+    if (client) {
+      client.next(
+          new MessageEvent('message', {
+            data: JSON.stringify({
+              type: payload.type,
+              message: payload.message,
+              data: payload.data,
+            }),
+          })
+      );
+      console.log(`Notification sent to user ${payload.userId}: ${payload.message}`);
+    }
+
+    // Store the notification in the database
+    await this.storeNotification(payload);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} notification`;
+  async storeNotification(payload: NotificationPayload): Promise<Notification> {
+    const notification = this.notificationRepository.create({
+      userId: payload.userId,
+      type: payload.type,
+      message: payload.message,
+      data: payload.data ? JSON.stringify(payload.data) : null,
+      read: false,
+    });
+    return this.notificationRepository.save(notification);
   }
 
-  update(id: number, updateNotificationDto: UpdateNotificationDto) {
-    return `This action updates a #${id} notification`;
+  async getUserNotifications(userId: number): Promise<Notification[]> {
+    return this.notificationRepository.find({ where: { userId }, order: { createdAt: 'DESC' } });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} notification`;
+  async markNotificationAsRead(id: number): Promise<void> {
+    await this.notificationRepository.update(id, { read: true });
+  }
+  async deleteNotification(id: number): Promise<void> {
+    await this.notificationRepository.delete(id);
+    console.log(`Notification ${id} deleted from the database.`);
   }
 }

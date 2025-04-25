@@ -1,34 +1,33 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {Controller, Sse, Param, UseGuards, Req, Get, Patch, Delete} from '@nestjs/common';
+import { Observable, interval, map } from 'rxjs';
 import { NotificationsService } from './notifications.service';
-import { CreateNotificationDto } from './dto/create-notification.dto';
-import { UpdateNotificationDto } from './dto/update-notification.dto';
+import { User } from 'src/Decorator/user.decorator';
+import { Request } from 'express';
+import {JwtAuthGuard} from "../auth/guards/jwt-auth.guard";
 
 @Controller('notifications')
+@UseGuards(JwtAuthGuard)
 export class NotificationsController {
   constructor(private readonly notificationsService: NotificationsService) {}
 
-  @Post()
-  create(@Body() createNotificationDto: CreateNotificationDto) {
-    return this.notificationsService.create(createNotificationDto);
+  @Sse('sse')
+  async sse(@User('id') userId: number, @Req() req: Request): Promise<Observable<MessageEvent>> {
+    return this.notificationsService.subscribe(userId);
   }
 
-  @Get()
-  findAll() {
-    return this.notificationsService.findAll();
+  @Get('user')
+  async getUserNotifications(@User('id') userId: number) {
+    return this.notificationsService.getUserNotifications(userId);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.notificationsService.findOne(+id);
+  @Patch(':notificationId/read')
+  async markNotificationAsRead(@Param('notificationId') notificationId: string) {
+    await this.notificationsService.markNotificationAsRead(parseInt(notificationId, 10));
+    return { message: 'Notification marked as read' };
   }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateNotificationDto: UpdateNotificationDto) {
-    return this.notificationsService.update(+id, updateNotificationDto);
-  }
-
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.notificationsService.remove(+id);
+  async deleteNotification(@Param('id') id: string) {
+    await this.notificationsService.deleteNotification(parseInt(id, 10));
+    return { message: `Notification ${id} deleted successfully` };
   }
 }

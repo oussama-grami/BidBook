@@ -1,11 +1,36 @@
-import { Injectable } from '@angular/core';
 import { MessageService } from 'primeng/api';
+import { Injectable, NgZone, OnDestroy } from '@angular/core';
+import { Observable, Subject, Subscription } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { UserIdService } from './userid.service';
+
+export interface SSENotification {
+  id: number;
+  type: string;
+  message: string;
+  data?: any;
+}
+
+export interface StoredNotification {
+  original: SSENotification;
+  id: number;
+  userId: number;
+  type: string;
+  message: string;
+  data?: any;
+  read: boolean;
+  createdAt: string;
+}
 
 @Injectable({
   providedIn: 'root',
 })
-export class NotificationService {
-  constructor(private messageService: MessageService) {}
+export class NotificationService implements OnDestroy {
+  private sseSource: EventSource | null = null;
+  private notificationsSubject = new Subject<SSENotification>();
+  notifications$: Observable<SSENotification> = this.notificationsSubject.asObservable();
+  private subscriptions: Subscription[] = [];
+  constructor(private messageService: MessageService,private ngZone: NgZone, private http: HttpClient, private userIdService: UserIdService) {}
 
   showSuccess(message: string, title: string = 'Success') {
     this.messageService.add({
@@ -41,5 +66,56 @@ export class NotificationService {
 
   clear() {
     this.messageService.clear();
+  }
+  connect(): void {
+    const userId = this.userIdService.getUserId();// Implement this method
+    if (userId && !this.sseSource) {
+      this.sseSource = new EventSource(`http://localhost:3000/notifications/sse`);
+
+      this.sseSource.onmessage = (event) => {
+        this.ngZone.run(() => {
+          try {
+            const payload = JSON.parse(event.data);
+            this.notificationsSubject.next(payload);
+          } catch (error) {
+            console.error('Error parsing SSE event:', error, event.data);
+          }
+        });
+      };
+
+      this.sseSource.onerror = (error) => {
+        console.error('SSE error:', error);
+        this.disconnect();
+      };
+    }
+  }
+
+  disconnect(): void {
+    if (this.sseSource) {
+      this.sseSource.close();
+      this.sseSource = null;
+      console.log('SSE disconnected');
+    }
+  }
+
+  getUserNotifications(): Observable<StoredNotification[]> {
+    const userId = this.userIdService.getUserId();
+    console.log('NotificationService - User ID:', userId);
+    if (userId) {
+      return this.http.get<StoredNotification[]>(`http://localhost:3000/notifications/user`);
+    }
+    return new Observable<StoredNotification[]>();
+  }
+
+  markAsRead(notificationId: number): Observable<void> {
+    return this.http.patch<void>(`http://localhost:3000/notifications/${notificationId}/read`, {});
+  }
+  deleteNotification(notificationId: number): Observable<void> {
+    return this.http.delete<void>(`http://localhost:3000/notifications/${notificationId}`);
+  }
+
+  ngOnDestroy(): void {
+    this.disconnect();
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 }
