@@ -13,7 +13,6 @@ import { FormsModule } from '@angular/forms';
 import { BookService, Book, Bid } from '../../services/book.service';
 import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-
 interface Comment {
   id: number;
   content: string;
@@ -22,6 +21,18 @@ interface Comment {
     lastName: string;
   };
   createdAt: string;
+}
+
+export interface UserRating {
+  id: number;
+  user?: {
+    id: number;
+  };
+  book?: number;
+  rate: number;
+  createdAt?: string;
+  updatedAt?: string;
+
 }
 
 @Component({
@@ -121,6 +132,7 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
   userBidPrice: number = 0;
   bidError: string = '';
   showBidInput: boolean = false;
+
   hasBid: boolean = false; // Track if the current user has bid
 
   isLoadingBookDetails: boolean = true;
@@ -130,9 +142,10 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
   bookId: number | null = null;
   currentUserId: number = 1; // Placeholder for current user ID
   math = Math;
-
   private querySubscription?: Subscription;
   private bidSubscription?: Subscription;
+  private favoriteActionSubscription?: Subscription;
+  private ratingSubmissionSubscription?: Subscription;
 
   constructor(
     private route: ActivatedRoute,
@@ -166,11 +179,13 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
     if (this.querySubscription) {
       this.querySubscription.unsubscribe();
     }
-    if (this.bidSubscription) {
-      this.bidSubscription.unsubscribe();
+    if (this.favoriteActionSubscription) {
+      this.favoriteActionSubscription.unsubscribe();
+    }
+    if (this.ratingSubmissionSubscription) {
+      this.ratingSubmissionSubscription.unsubscribe();
     }
   }
-
   loadBookDetailsAndBids(bookId: number): void {
     this.isLoadingBookDetails = true;
     this.error = null;
@@ -231,141 +246,238 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
+
+
+
+  private fetchBookDetails(): void {
+    if (this.bookId === null || this.error) {
+      this.isLoadingBookDetails = false;
+      if (!this.error && this.bookId === null) {
+        this.error = 'Book ID is missing or invalid.';
+      }
+      return;
+    }
+
+    this.isLoadingBookDetails = true;
+    this.error = null;
+
+    this.querySubscription?.unsubscribe();
+
+    this.querySubscription = this.bookService.getBookDetails(this.bookId).subscribe({
+      next: (book: Book | null | undefined) => {
+        if (book) {
+          this.title = book.title || '';
+          this.author = book.author || '';
+          this.genre = (book.category as any)?.name || book.category?.toString() || '';
+          this.coverImage = book.picture || '/images/placeholder.png';
+          this.price = book.price || 0;
+          this.pages = book.totalPages || 0;
+          this.age = book.age;
+          this.edition = book.edition?.toString() || undefined;
+          this.language = book.language?.toString() || undefined;
+          this.editor = book.editor || undefined;
+          this.owner = book.owner ? {
+            id: book.owner.id,
+            firstName: book.owner.firstName,
+            lastName: book.owner.lastName,
+            imageUrl: book.owner.imageUrl
+          } : undefined;
+
+          this.likes = book.favorites?.length || 0;
+          this.isFavorite = book.favorites?.some(fav => fav.user?.id === this.currentUserId) || false;
+
+          if (book.bids && book.bids.length > 0) {
+            const sortedBids = [...book.bids].sort((a, b) => b.amount - a.amount);
+            this.lastBidPrice = sortedBids[0].amount;
+          } else {
+            this.lastBidPrice = this.price;
+          }
+
+          if (book.ratings && book.ratings.length > 0) {
+            const totalRate = book.ratings.reduce((sum, r) => sum + r.rate, 0);
+            this.rating = totalRate / book.ratings.length;
+            this.votes = book.ratings.length;
+            const userExistingRating = book.ratings.find(r => r.user?.id === this.currentUserId);
+            this.userRating = userExistingRating ? userExistingRating.rate : 0;
+          } else {
+            this.rating = 0;
+            this.votes = 0;
+            this.userRating = 0;
+          }
+
+          this.starStates = Array(5).fill('inactive').map((_, index) =>
+            index < this.userRating ? 'active' : 'inactive'
+          );
+
+          this.comments = book.comments || [];
+          this.resetDisplayedComments();
+          this.commentsLoaded = true;
+
+          this.isLoadingBookDetails = false;
+        } else {
+          this.error = 'Book not found.';
+          this.isLoadingBookDetails = false;
+        }
+      },
+      error: (err) => {
+        this.error = 'Failed to load book details. Please try again.';
+        this.isLoadingBookDetails = false;
+      },
+    });
+  }
+
   setUserRating(rating: number): void {
     this.userRating = rating;
+    this.starStates = Array(5).fill('inactive').map((_, index) =>
+      index < this.userRating ? 'active' : 'inactive'
+    );
   }
 
   submitUserRating(): void {
-    if (this.userRating > 0 && this.bookId !== null) {
-      console.log(`Submitting rating ${this.userRating} for book ${this.bookId} by user ${this.currentUserId}`);
-      // TODO: Call service to submit rating
+    if (this.userRating <= 0 || this.userRating > 5) {
+      this.error = 'Please select a rating between 1 and 5.';
+      return;
+    }
+
+    if (this.bookId === null) {
+      this.error = 'Cannot submit rating: Book ID is missing.';
+      return;
+    }
+
+    this.error = null;
+
+    this.ratingSubmissionSubscription?.unsubscribe();
+
+    this.ratingSubmissionSubscription = this.bookService.addBookRating(this.currentUserId, this.bookId, this.userRating).subscribe({
+      next: (response: UserRating) => {
+        this.fetchBookDetails();
+      },
+      error: (err: any) => {
+        this.error = 'Failed to submit rating. Please try again.';
+      }
+    });
+  }
+
+  toggleFavorite(): void {
+    if (this.bookId === null) {
+      this.error = 'Cannot favorite/unfavorite, book ID is missing.';
+      return;
+    }
+
+    this.error = null;
+    const wasFavorite = this.isFavorite;
+
+    this.isFavorite = !this.isFavorite;
+    if (this.isFavorite) {
+      this.likes++;
     } else {
-      console.warn('Rating not set or book ID is missing.');
+      if (this.likes > 0) this.likes--;
+    }
+
+    this.favoriteActionSubscription?.unsubscribe();
+
+    if (!wasFavorite) {
+      this.favoriteActionSubscription = this.bookService.addBookToFavorites(this.currentUserId, this.bookId).subscribe({
+        next: (success) => {
+          if (success) {
+            this.fetchBookDetails();
+          } else {
+            this.isFavorite = false;
+            if (this.likes > 0) this.likes--;
+            this.error = 'Failed to add to favorites.';
+          }
+        },
+        error: (error: any) => {
+          this.isFavorite = true;
+          if (this.likes > 0) this.likes--;
+          this.error = 'Failed to add to favorites. Please try again.';
+        }
+      });
+    } else {
+      this.favoriteActionSubscription = this.bookService.removeFavorite(this.currentUserId, this.bookId).subscribe({
+        next: (success) => {
+          if (success) {
+            this.fetchBookDetails();
+          } else {
+            this.isFavorite = true;
+            this.likes++;
+            this.error = 'Failed to remove from favorites.';
+          }
+        },
+        error: (error: any) => {
+          this.isFavorite = true;
+          this.likes++;
+          this.error = 'Failed to remove from favorites. Please try again.';
+        }
+      });
     }
   }
 
- toggleFavorite(): void {
-  if (this.bookId === null) {
-    this.error = 'Cannot favorite/unfavorite, book ID is missing.';
-    return;
+  submitComment(): void {
+    if (!this.userComment.trim() || this.bookId === null) {
+      this.error = 'Comment cannot be empty.';
+      return;
+    }
+    this.error = null;
+
+    const commentContent = this.userComment.trim();
+
+    this.bookService.addCommentToBook(this.bookId, this.currentUserId, commentContent).pipe(
+      map(response => {
+        return response.data?.addCommentToBook;
+      })
+    )
+      .subscribe({
+        next: (newComment: Comment | null | undefined) => {
+          if (newComment) {
+            this.comments = [newComment, ...this.comments];
+            this.resetDisplayedComments();
+            this.userComment = '';
+          } else {
+            this.error = 'Failed to add comment: Server returned no data.';
+          }
+        },
+        error: (err: any) => {
+          this.error = 'Failed to add comment. Please try again.';
+        },
+      });
   }
 
-  this.error = null;
-  const wasFavorite = this.isFavorite;
-  this.isFavorite = !this.isFavorite;
-
-  if (this.isFavorite) {
-    this.likes++;
-  } else {
-    this.likes--;
-  }
-
-  if (!wasFavorite) {
-    console.log(`Attempting to add favorite for book ${this.bookId} by user ${this.currentUserId}`);
-
-
-
-     this.bookService.addBookToFavorites(this.currentUserId, this.bookId).subscribe({
-      next: (response) => {
-        console.log('Favorite added successfully', response);
-      },
-      error: (error) => {
-        console.error('Error adding favorite:', error);
-        this.isFavorite = false;
-        this.likes--;
-        this.error = 'Failed to add to favorites. Please try again.';
-      }
-    });
-
-  } else {
-    this.isFavorite = true;
-    this.likes++;
-    this.error = 'Remove favorite functionality is currently not available.';
-  }
-}
-
-
-
-
-  submitComment(): void {
-    if (!this.userComment.trim() || this.bookId === null) {
-      console.warn('Comment is empty or book ID is missing.');
-      this.error = 'Comment cannot be empty.'; // Affichez cette erreur à l'utilisateur dans le template
-      return;
-    }
-    this.error = null; // Clear previous errors
-
-    const commentContent = this.userComment.trim();
-    console.log(`Attempting to submit comment for book ${this.bookId} by user ${this.currentUserId}: "${commentContent}"`);
-
-    this.bookService.addCommentToBook(this.bookId, this.currentUserId, commentContent).pipe(
-      map(response => {
-          // Assurez-vous que la structure de réponse correspond à { data: { addCommentToBook: ... } }
-        return response.data?.addCommentToBook;
-      })
-    )
-    .subscribe({
-      next: (newComment) => {
-          // Vérifiez que newComment est bien l'objet commentaire complet avec user, createdAt, etc.
-          // comme le backend est censé le retourner.
-        if (newComment) {
-          console.log('Comment added successfully:', newComment);
-          // Correction de l'erreur "object is not extensible"
-          this.comments = [newComment, ...this.comments]; // Crée un nouveau tableau immutable
-
-          this.resetDisplayedComments(); // Met à jour les commentaires affichés
-          this.userComment = ''; // Efface le champ
-        } else {
-          console.error('Comment mutation returned no data.');
-          this.error = 'Failed to add comment: Server returned no data.'; // Affichez à l'utilisateur
-        }
-      },
-      error: (error) => {
-        console.error('Error adding comment:', error);
-        this.error = 'Failed to add comment. Please try again.'; // Affichez à l'utilisateur
-      },
-    });
-  }
-
-  loadMoreComments(): void {
-    // Ajouter une vérification pour bookId ici aussi pour plus de robustesse
+  loadMoreComments(): void {
     if (this.bookId === null || this.isLoadingComments || !this.comments || this.displayedComments.length === this.comments.length) {
-      console.log('Cannot load more comments, all displayed, loading, or book ID missing.');
-      return;
-    }
+      return;
+    }
 
-    const startIndex = this.displayedComments.length;
-    const endIndex = Math.min(startIndex + this.commentsPerPage, this.comments.length);
+    const startIndex = this.displayedComments.length;
+    const endIndex = Math.min(startIndex + this.commentsPerPage, this.comments.length);
 
-    this.isLoadingComments = true;
-    // Utiliser setTimeout pour simuler un chargement asynchrone, si c'est l'intention
-    setTimeout(() => {
-      const newComments = this.comments.slice(startIndex, endIndex);
-      this.displayedComments = [...this.displayedComments, ...newComments];
-      this.currentPage++;
-      this.isLoadingComments = false;
-      this.updateLoadMoreButtonVisibility();
-      console.log(`Loaded more comments. Displayed: ${this.displayedComments.length}/${this.comments.length}`);
-    }, 300); // Délai de 300ms
-  }
+    this.isLoadingComments = true;
+    setTimeout(() => {
+      const newComments = this.comments.slice(startIndex, endIndex);
+      this.displayedComments = [...this.displayedComments, ...newComments];
+      this.currentPage++;
+      this.isLoadingComments = false;
+      this.updateLoadMoreButtonVisibility();
+    }, 300);
+  }
 
- resetDisplayedComments(): void {
- if (this.comments) {
-this.displayedComments = this.comments.slice(0, this.commentsPerPage);
-this.currentPage = 1;
-this.updateLoadMoreButtonVisibility();
- console.log(`Reset displayed comments. Showing ${this.displayedComments.length}/${this.comments.length}`);
-} else {
- this.displayedComments = [];
-this.currentPage = 1;
- this.showLoadMoreButton = false;
- console.log('No comments to display after reset.');
- }
- }
+  resetDisplayedComments(): void {
+    if (this.comments && this.comments.length > 0) {
+      this.displayedComments = this.comments.slice(0, this.commentsPerPage);
+      this.currentPage = 1;
+      this.updateLoadMoreButtonVisibility();
+      console.log(`Reset displayed comments. Showing <span class="math-inline">\{this\.displayedComments\.length\}/</span>{this.comments.length}`);
+    } else {
+      this.displayedComments = [];
+      this.currentPage = 1;
+      this.showLoadMoreButton = false;
+      console.log('No comments to display after reset.');
+    }
+  }
 
-  updateLoadMoreButtonVisibility(): void {
-    this.showLoadMoreButton = (this.comments?.length || 0) > this.displayedComments.length;
-  }
+  updateLoadMoreButtonVisibility(): void {
+    this.showLoadMoreButton = (this.comments?.length || 0) > this.displayedComments.length;
+  }
 
   submitBid(): void {
     if (!this.showBidInput) {

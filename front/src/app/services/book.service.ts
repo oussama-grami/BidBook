@@ -5,7 +5,7 @@ import {map} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
 import {UserRating} from '../components/booksPage/library-dashboard.component';
 import {BidStatus} from '../enums/status.enum';
-import { ADD_COMMENT_TO_BOOK_MUTATION, ADD_FAVORITE_MUTATION } from '../mutations/book.mutation';
+import { ADD_COMMENT_TO_BOOK_MUTATION, ADD_FAVORITE_MUTATION, ADD_RATE_MUTATION, REMOVE_FAVORITE_MUTATION } from '../mutations/book.mutation';
 
 export interface Bid {
   id: number;
@@ -92,8 +92,8 @@ export class BookService {
 
   viewBooks(limit?: number, offset?: number): Observable<Book[]> {
     return this.apollo
-      .query<{ viewBooks: Book[] }>({
-        query: gql`
+    .query<{ viewBooks: Book[] }>({
+      query: gql`
         query ViewBooks($limit: Int, $offset: Int) {
           viewBooks(limit: $limit, offset: $offset) {
             id
@@ -105,9 +105,6 @@ export class BookService {
             favorites {
               id
             }
-            comments {
-              id
-            }
             bids {
               id
             }
@@ -116,82 +113,82 @@ export class BookService {
           }
         }
       `,
-        variables: {
-          limit: limit,
-          offset: offset,
-        },
+      variables: {
+        limit: limit,
+        offset: offset,
+      },
+    })
+    .pipe(map((response) => response.data.viewBooks),
+      tap((res) => {
+        console.log("viewBooks response", res);
       })
-      .pipe(map((response) => response.data.viewBooks),
-        tap((res) => {
-          console.log("viewBooks response", res);
-        })
-      );
+    );
   }
 
   getBookDetails(bookId: number): Observable<Book> {
     return this.apollo
-      .query<{ bookDetails: Book }>({
-        query: gql`
-          query BookDetailsQuery($id: Int!) {
-            bookDetails(id: $id) {
-              id
-              title
-              author
-              picture
-              price
-              totalPages
-              damagedPages
-              age
-              edition
-              language
-              editor
-              category
-              createdAt
+    .query<{ bookDetails: Book }>({
+      query: gql`
+        query BookDetailsQuery($id: Int!) {
+          bookDetails(id: $id) {
+            id
+            title
+            author
+            picture
+            price
+            totalPages
+            damagedPages
+            age
+            edition
+            language
+            editor
+            category
+            createdAt
 
-              bids {
-                amount
-              }
-              ratings {
-                rate
-                user {
-                    id
-                }
-              }
-              comments {
+            bids {
+              amount
+            }
+            ratings {
+              rate
+              user {
                 id
-                content
-                createdAt
-                user {
-                  id
-                  firstName
-                  lastName
-                  imageUrl
-                }
               }
-              favorites {
+            }
+            comments {
+              id
+              content
+              createdAt
+              user {
                 id
-                user {
-                    id
-                }
+                firstName
+                lastName
+                imageUrl
+              }
+            }
+            favorites {
+              id
+              user {
+                id
               }
             }
           }
-        `,
-        variables: { // Pass the variable like in viewBooks
-          id: bookId, // Map the bookId parameter to the $id variable
-        },
-        fetchPolicy: 'network-only' // Example fetch policy
-      })
-      .pipe(
-        // Map the response to extract the bookDetails data, like extracting viewBooks
-        map((response) => response.data.bookDetails)
-      ); // Added closing parenthesis and semicolon
+        }
+      `,
+      variables: { // Pass the variable like in viewBooks
+        id: bookId, // Map the bookId parameter to the $id variable
+      },
+      fetchPolicy: 'network-only' // Example fetch policy
+    })
+    .pipe(
+      // Map the response to extract the bookDetails data, like extracting viewBooks
+      map((response) => response.data.bookDetails)
+    ); // Added closing parenthesis and semicolon
   }
 
   getBook(id: number): Observable<Book> {
     return this.apollo
-      .query<{ book: Book }>({
-        query: gql`
+    .query<{ book: Book }>({
+      query: gql`
         query GetBook($id: Int!) {
           book(id: $id) {
             id
@@ -249,11 +246,11 @@ export class BookService {
           }
         }
       `,
-        variables: {
-          id: id,
-        },
-      })
-      .pipe(map((response) => response.data.book));
+      variables: {
+        id: id,
+      },
+    })
+    .pipe(map((response) => response.data.book));
   }
   createBid(userId: number, bookId: number, amount: number): Observable<Bid | undefined> {
     return this.apollo.mutate<{ createBid: Bid }>({
@@ -306,10 +303,11 @@ export class BookService {
 
     }).pipe(map(response => response.data?.updateBid));
   }
+
   myBids(limit?: number, offset?: number): Observable<Bid[]> {
     return this.apollo
-      .query<{ myBids: Bid[] }>({
-        query: gql`
+    .query<{ myBids: Bid[] }>({
+      query: gql`
         query myBids($limit: Int, $offset: Int) {
           myBids(limit: $limit, offset: $offset) {
             id
@@ -330,18 +328,18 @@ export class BookService {
         }
 
       `,
-        variables: {
-          limit: limit,
-          offset: offset,
-        },
-        fetchPolicy: 'network-only'
+      variables: {
+        limit: limit,
+        offset: offset,
+      },
+      fetchPolicy: 'network-only'
+    })
+    .pipe(
+      map((response) => response.data.myBids),
+      tap((res) => {
+        console.log("myBids response", res);
       })
-      .pipe(
-        map((response) => response.data.myBids),
-        tap((res) => {
-          console.log("myBids response", res);
-        })
-      )
+    )
       ;
   }
 
@@ -365,5 +363,37 @@ export class BookService {
 
     });
   }
-}
+  removeFavorite(userId: number, bookId: number): Observable<boolean> {
+    return this.apollo.mutate<{ removeFavorite: boolean }>({
+      mutation: REMOVE_FAVORITE_MUTATION,
+      variables: {
+        userId,
+        bookId,
+      },
+    }).pipe(
+      map(result => result.data!.removeFavorite)
+    );
+  }
+  addBookRating(userId: number, bookId: number, rate: number): Observable<UserRating> {
+    if (rate < 0 || rate > 5) {
+      throw new Error('La note doit être entre 0 et 5.');
+    }
 
+    return this.apollo.mutate<{ addRate: UserRating }>({
+      mutation: ADD_RATE_MUTATION,
+      variables: {
+        userId: userId,
+        bookId: bookId,
+        rate: rate,
+      },
+    }).pipe(
+      map(result => {
+        if (result.data && result.data.addRate) {
+          return result.data.addRate;
+        } else {
+          throw new Error('Mutation returned unexpected data structure');
+        }
+      })
+    );
+  }
+}

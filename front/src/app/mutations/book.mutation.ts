@@ -8,8 +8,8 @@ export const ADD_COMMENT_TO_BOOK_MUTATION = gql`
       content
       user {
         id
-        firstName 
-        lastName 
+        firstName
+        lastName
         imageUrl
       }
       createdAt
@@ -27,6 +27,27 @@ export const ADD_FAVORITE_MUTATION = gql`
       book {
         id
       }
+    }
+  }
+`;
+export const REMOVE_FAVORITE_MUTATION = gql`
+  mutation RemoveFavorite($userId: Int!, $bookId: Int!) {
+    removeFavorite(userId: $userId, bookId: $bookId)
+  }
+`;
+
+export const ADD_RATE_MUTATION = gql`
+  mutation AddBookRate($userId: Int!, $bookId: Int!, $rate: Float!) {
+    addRate(userId: $userId, bookId: $bookId, rate: $rate) {
+      id
+      rate
+      user {
+        id
+      }
+      book {
+        id
+      }
+
     }
   }
 `;
