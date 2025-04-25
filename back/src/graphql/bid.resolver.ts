@@ -8,6 +8,7 @@ import {
   Int,
   Mutation,
   Float,
+  Context,
 } from '@nestjs/graphql';
 import { BooksService } from '../books/books.service';
 import { AuthService } from '../auth/auth.service';
@@ -49,32 +50,58 @@ export class BidResolver {
     return this.bidService.findHighestBidForBook(bookId);
   }
 
- @UseGuards(GqlAuthGuard)
+  @UseGuards(GqlAuthGuard)
   @Mutation('createBid')
   async createBid(
-    @User('id') userId: number,
-    @Args('bookId', { type: () => Int }) bookId: number,
-    @Args('amount', { type: () => Float }) amount: number,
+      @Args('bookId', { type: () => Int }) bookId: number,
+      @Args('amount', { type: () => Float }) amount: number,
+      @Context() context: any
   ): Promise<Bid> {
-    try {
-      console.log('Creating bid with:', userId);
-      return await this.bidService.createBid(userId, bookId, amount);
-    } catch (error) {
-      console.error(
-        `Error in createBid mutation (userId: ${userId}, bookId: ${bookId}, amount: ${amount}):`,
-        error,
-      );
-      throw new InternalServerErrorException('Failed to create bid');
-    }
+    console.log('Creating bid with bookId:', bookId, 'and amount:', amount);
+      try {
+          const user = context.req.user;
+  
+          if (!user) {
+              throw new InternalServerErrorException('Informations utilisateur non disponibles après authentification.');
+          }
+  
+          const userId = user.id;
+  
+          console.log('Creating bid with authenticated user ID (from context):', userId);
+          return await this.bidService.createBid(userId, bookId, amount);
+      } catch (error) {
+          console.error(
+              `Error in createBid mutation`,
+              error,
+          );
+          throw new InternalServerErrorException('Failed to create bid');
+      }
   }
-
+  
   @UseGuards(GqlAuthGuard)
   @Mutation('updateBid')
   async updateBid(
-    @User('id') userId: number,
-    @Args('bookId', { type: () => Int }) bookId: number,
-    @Args('amount', { type: () => Float }) amount: number,
+      @Args('bookId', { type: () => Int }) bookId: number,
+      @Args('amount', { type: () => Float }) amount: number,
+      @Context() context: any
   ): Promise<Bid> {
-    return this.bidService.updateBid(userId, bookId, amount);
+      try {
+          const user = context.req.user;
+  
+          if (!user) {
+              throw new InternalServerErrorException('Informations utilisateur non disponibles après authentification.');
+          }
+  
+          const userId = user.id;
+  
+          console.log('Updating bid with authenticated user ID (from context):', userId);
+          return this.bidService.updateBid(userId, bookId, amount);
+      } catch (error) {
+          console.error(
+              `Error in updateBid mutation `,
+              error,
+          );
+          throw new InternalServerErrorException('Failed to update bid');
+      }
   }
 }

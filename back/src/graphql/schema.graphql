@@ -109,8 +109,8 @@ type Mutation {
     removeFavorite(bookId: Int!): Boolean!
     addCommentToBook(bookId: Int!, content: String!): Comment
     removeComment(commentId: Int!): Boolean!
-    createBid( userId: Int!,bookId: Int!, amount: Float!): Bid!
-    updateBid(bookId: Int!, userId: Int!, amount: Float!): Bid!
+    createBid(bookId: Int!, amount: Float!): Bid!
+    updateBid(bookId: Int!, amount: Float!): Bid!
     addRate(bookId: Int!, rate: Float!): UserRating!
     updateRate(userId: Int!, bookId: Int!, rate: Float!): UserRating!
     

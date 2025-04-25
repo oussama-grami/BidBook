@@ -507,7 +507,7 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
     const userId = this.currentUserId; // Get the current user ID
 
     if (this.hasBid) {
-      this.bidSubscription = this.bookService.updateBid(userId, bookId, bidAmount).subscribe({
+      this.bidSubscription = this.bookService.updateBid( bookId, bidAmount).subscribe({
         next: (updatedBid) => {
           if (updatedBid) {
             console.log('Bid updated successfully:', updatedBid);
@@ -528,7 +528,7 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
         },
       });
     } else {
-      this.bidSubscription = this.bookService.createBid(userId, bookId, bidAmount).subscribe({
+      this.bidSubscription = this.bookService.createBid(bookId, bidAmount).subscribe({
         next: (newBid) => {
           if (newBid) {
             console.log('Bid created successfully:', newBid);

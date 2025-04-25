@@ -252,11 +252,11 @@ export class BookService {
       })
       .pipe(map((response) => response.data.book));
   }
-  createBid(userId: number, bookId: number, amount: number): Observable<Bid | undefined> {
+  createBid(bookId: number, amount: number): Observable<Bid | undefined> {
     return this.apollo.mutate<{ createBid: Bid }>({
       mutation: gql`
-        mutation CreateBid($userId: Int!, $bookId: Int!, $amount: Float!) {
-          createBid(userId: $userId, bookId: $bookId, amount: $amount) {
+        mutation CreateBid($bookId: Int!, $amount: Float!) {
+          createBid(bookId: $bookId, amount: $amount) {
             id
             amount
             bidder {
@@ -271,17 +271,16 @@ export class BookService {
         }
       `,
       variables: {
-        userId: userId,
         bookId: bookId,
         amount: amount,
       }
     }).pipe(map(response => response.data?.createBid));
   }
-  updateBid(userId: number, bookId: number, amount: number): Observable<Bid | undefined> {
+  updateBid( bookId: number, amount: number): Observable<Bid | undefined> {
     return this.apollo.mutate<{ updateBid: Bid }>({
       mutation: gql`
-        mutation UpdateBid($userId: Int!, $bookId: Int!, $amount: Float!) {
-          updateBid(userId: $userId, bookId: $bookId, amount: $amount) {
+        mutation UpdateBid($bookId: Int!, $amount: Float!) {
+          updateBid( bookId: $bookId, amount: $amount) {
             id
             amount
             bidder {
@@ -296,7 +295,6 @@ export class BookService {
         }
       `,
       variables: {
-        userId: userId,
         bookId: bookId,
         amount: amount,
       }
