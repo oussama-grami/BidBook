@@ -12,7 +12,8 @@ import { RouterModule } from '@angular/router';
 import { ImagePreloadDirective } from '../../shared/directives/image-preload.directive';
 import { LoadingService } from '../../services/loading.service';
 import { FormsModule } from '@angular/forms'; // Import FormsModule
-import { BookService } from '../../services/book.service'; // Import BookService
+import { BookService } from '../../services/book.service';
+import {UserIdService} from '../../services/userid.service'; // Import BookService
 
 @Component({
   selector: 'app-book-card',
@@ -437,10 +438,12 @@ export class BookCardComponent {
   bidAmount: number | null = null;
   bidError: string = '';
   isSubmittingBid: boolean = false;
-  currentUserId: number = 1;
+  currentUserId: number | null = 1 ;
 
-  constructor(private loadingService: LoadingService, private bookService: BookService) {}
-
+  constructor(private loadingService: LoadingService, private bookService: BookService, private userIdService: UserIdService) {}
+  ngOnInit(): void {
+    this.currentUserId = this.userIdService.getUserId();
+  }
   getAverageRating(): number {
     if (!this.book.ratings || this.book.ratings.length === 0) {
       return 0;
@@ -468,6 +471,7 @@ export class BookCardComponent {
     }
     this.bidError = '';
     this.isSubmittingBid = true;
+
 
     this.bookService.createBid(this.book.id, this.bidAmount).subscribe({
       next: (bid) => {

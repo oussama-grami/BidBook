@@ -442,11 +442,20 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
       return;
     }
 
+
     if (this.bookId === null) {
       this.bidError = 'Book ID is missing.';
       console.warn('Bid validation failed:', this.bidError);
       return;
     }
+
+    // Check if the current user is the owner of the book
+    if (this.owner?.id === this.currentUserId) {
+      this.bidError = 'You cannot bid on your own book.';
+      console.warn('Bid validation failed:', this.bidError);
+      return;
+    }
+
 
     const minBid = this.lastBidPrice + 0.01;
     if (!this.userBidPrice || isNaN(this.userBidPrice) || this.userBidPrice < minBid) {

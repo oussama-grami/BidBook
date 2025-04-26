@@ -70,9 +70,14 @@ export class BidsService {
   }
 
   async createBid(userId: number, bookId: number, amount: number): Promise<Bid> {
-    const book = await this.bookService.findOne(bookId);
+    const book = await this.bookService.findOne(bookId); // Load owner
     if (!book) {
       throw new BadRequestException(`Book with ID ${bookId} not found.`);
+    }
+
+    // Prevent bidding on own book
+    if (book.owner.id === userId) {
+      throw new BadRequestException('You cannot bid on your own book.');
     }
 
     const highestBid = await this.findHighestBidForBook(bookId);
@@ -83,18 +88,20 @@ export class BidsService {
       const hoursDifference = timeDifference / (1000 * 60 * 60);
 
       if (hoursDifference > 24) {
-        throw new BadRequestException('Cannot place a new bid: The bidding period has ended (last bid was over 24 hours ago).');
+        throw new BadRequestException(
+            'Cannot place a new bid: The bidding period has ended (last bid was over 24 hours ago).',
+        );
       }
 
       if (amount <= highestBid.amount) {
         throw new BadRequestException(
-            `Bid amount (${amount}) must be greater than the current highest bid (${highestBid.amount}).`
+            `Bid amount (${amount}) must be greater than the current highest bid (${highestBid.amount}).`,
         );
       }
     } else {
       if (amount <= book.price) {
         throw new BadRequestException(
-            `Your first bid (${amount}) must be greater than book's starting price (${book.price}).`
+            `Your first bid (${amount}) must be greater than book's starting price (${book.price}).`,
         );
       }
     }
@@ -109,23 +116,33 @@ export class BidsService {
 
     const savedBid = await this.bidRepository.save(newBid);
 
-    // Send notification to the book owner (if the bidder is not the owner)
-    if (book.owner.id !== userId) {
-      this.notificationsService.notify({
-        userId: book.owner.id,
-        type: NotificationType.BID_PLACED_ON_YOUR_BOOK,
-        message: `A new bid of $${amount} was placed on your book "${book.title}" by user ${userId}.`,
-        data: { bookId: book.id, bidAmount: amount, bidderId: userId },
-      });
-    }
+    // Send notification to the book owner (if the bidder is not the owner - already checked above)
+    this.notificationsService.notify({
+      userId: book.owner.id,
+      type: NotificationType.BID_PLACED_ON_YOUR_BOOK,
+      message: `A new bid of $${amount} was placed on your book "${book.title}" by user ${userId}.`,
+      data: { bookId: book.id, bidAmount: amount, bidderId: userId },
+    });
 
     return savedBid;
   }
 
   async updateBid(userId: number, bookId: number, amount: number): Promise<Bid> {
+    const book = await this.bookService.findOne(bookId); // Load owner
+    if (!book) {
+      throw new BadRequestException(`Book with ID ${bookId} not found.`);
+    }
+
+    // Prevent bidding on own book
+    if (book.owner.id === userId) {
+      throw new BadRequestException('You cannot update a bid on your own book.');
+    }
+
     const highestBid = await this.findHighestBidForBook(bookId);
     if (!highestBid) {
-      throw new BadRequestException('Cannot update bid: No bids have been placed on this book yet. Use createBid for the first bid.');
+      throw new BadRequestException(
+          'Cannot update bid: No bids have been placed on this book yet. Use createBid for the first bid.',
+      );
     }
 
     const lastBidDate = this.getBidDate(highestBid);
@@ -134,12 +151,14 @@ export class BidsService {
     const hoursDifference = timeDifference / (1000 * 60 * 60);
 
     if (hoursDifference > 24) {
-      throw new BadRequestException('Cannot update bid: The bidding period has ended (last bid was over 24 hours ago).');
+      throw new BadRequestException(
+          'Cannot update bid: The bidding period has ended (last bid was over 24 hours ago).',
+      );
     }
 
     if (amount <= highestBid.amount) {
       throw new BadRequestException(
-          `Bid amount (${amount}) must be strictly greater than the current highest bid (${highestBid.amount}).`
+          `Bid amount (${amount}) must be strictly greater than the current highest bid (${highestBid.amount}).`,
       );
     }
 
@@ -154,8 +173,7 @@ export class BidsService {
     const savedBid = await this.bidRepository.save(newBid);
 
     // Send notification to the book owner (if the bidder is not the owner)
-    if (highestBid.bidder.id !== userId) { // Assuming the highest bidder is the one updating
-      const book = await this.bookService.findOne(bookId); // Need to fetch the book again for owner info
+    if (highestBid.bidder.id !== userId) {
       this.notificationsService.notify({
         userId: book.owner.id,
         type: NotificationType.BID_PLACED_ON_YOUR_BOOK, // You might want a different type for updates
