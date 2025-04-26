@@ -434,11 +434,10 @@ export class BookService {
       })
     );
   }
-  updateBookRate(userId: number, bookId: number, rate: number): Observable<UserRating> {
+  updateBookRate(bookId: number, rate: number): Observable<UserRating> {
     return this.apollo.mutate<UserRating>({
       mutation: UPDATE_BOOK_RATE_MUTATION,
       variables: {
-        userId,
         bookId,
         rate,
       },

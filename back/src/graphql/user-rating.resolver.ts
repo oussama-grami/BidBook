@@ -55,30 +55,47 @@ async addRate(
     }
 }
 
-  @Mutation('updateRate')
-  async updateRate(
-      @Args('userId', { type: () => Int }) userId: number,
-      @Args('bookId', { type: () => Int }) bookId: number,
-      @Args('rate', { type: () => Float }) rate: number,
-  ): Promise<UserRating> {
+@UseGuards(GqlAuthGuard)
+@Mutation('updateRate')
+async updateRate(
+    @Args('bookId', { type: () => Int }) bookId: number,
+    @Args('rate', { type: () => Float }) rate: number,
+    @Context() context: any
+): Promise<UserRating> {
     try {
-      if (rate < 0 || rate > 5) {
-        throw new Error('Rate must be between 0 and 5.');
-      }
-      const updatedUserRating = await this.ratingsService.updateRate(userId, bookId, rate);
-      const updatedBook = await this.booksService.findOne(bookId);
-      if (updatedBook) {
-        pubSub.publish(BOOK_RATING_UPDATED_EVENT, { bookRatingUpdated: updatedBook });
-      }
-      return updatedUserRating;
+        const user = context.req.user;
+
+        if (!user) {
+             throw new InternalServerErrorException('Informations utilisateur non disponibles après authentification.');
+        }
+
+        const userId = user.id;
+
+        if (rate < 0 || rate > 5) {
+            throw new Error('Rate must be between 0 and 5.');
+        }
+
+        const updatedUserRating = await this.ratingsService.updateRate(userId, bookId, rate);
+
+        const updatedBook = await this.booksService.findOne(bookId);
+        if (updatedBook) {
+            pubSub.publish(BOOK_RATING_UPDATED_EVENT, { bookRatingUpdated: updatedBook });
+        }
+
+        return updatedUserRating;
     } catch (error) {
-      console.error('Error in updateRate mutation:', error);
-      if (error instanceof NotFoundException) {
-        throw error;
-      }
-      throw new InternalServerErrorException('Failed to update rating.');
+        console.error('Error in updateRate mutation:', error);
+
+        if (error.message === 'Rate must be between 0 and 5.') {
+             throw error;
+        }
+         if (error instanceof NotFoundException) {
+             throw error;
+         }
+
+        throw new InternalServerErrorException('Failed to update rating.');
     }
-  }
+}
 
   @Query('userBookRating')
   async userBookRating(

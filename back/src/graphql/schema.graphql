@@ -113,6 +113,6 @@ type Mutation {
     createBid(bookId: Int!, amount: Float!): Bid!
     updateBid(bookId: Int!, amount: Float!): Bid!
     addRate(bookId: Int!, rate: Float!): UserRating!
-    updateRate(userId: Int!, bookId: Int!, rate: Float!): UserRating!
+    updateRate(bookId: Int!, rate: Float!): UserRating!
     
 }

@@ -53,8 +53,8 @@ export const ADD_RATE_MUTATION = gql`
   }
 `;
 export const UPDATE_BOOK_RATE_MUTATION = gql`
-  mutation UpdateBookRate($userId: Int!, $bookId: Int!, $rate: Float!) {
-    updateRate(userId: $userId, bookId: $bookId, rate: $rate) {
+  mutation UpdateBookRate( $bookId: Int!, $rate: Float!) {
+    updateRate( bookId: $bookId, rate: $rate) {
       id
       user {
         id
@@ -69,5 +69,4 @@ export const UPDATE_BOOK_RATE_MUTATION = gql`
     }
   }
 `;
-
 
