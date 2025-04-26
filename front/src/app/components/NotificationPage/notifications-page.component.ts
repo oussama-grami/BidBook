@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NotificationElementComponent } from './notification-element/notification-element.component';
 import { NgForOf, NgIf } from '@angular/common';
-import { NotificationService, SSENotification, StoredNotification } from '../../services/notification.service'; // Adjust the import path
+import { NotificationService, SSENotification, StoredNotification, NotificationType } from '../../services/notification.service'; // Import the enum
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -30,7 +30,13 @@ export class NotificationsPageComponent implements OnInit, OnDestroy {
       this.originalStoredNotifications = [...notifications];
       this.storedNotifications = notifications.map((n) => ({
         title: this.getTitleByType(n.type),
-        time: new Date(n.createdAt).toLocaleTimeString([], { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
+        time: new Date(n.createdAt).toLocaleTimeString([], {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+        }),
         message: n.message,
         id: n.id,
       }));
@@ -38,7 +44,8 @@ export class NotificationsPageComponent implements OnInit, OnDestroy {
   }
 
   subscribeToRealTimeNotifications(): void {
-    this.sseSubscription = this.notificationService.notifications$.subscribe((notification) => {
+    this.sseSubscription = this.notificationService.notifications$.subscribe((notification: SSENotification) => {
+      console.log('Received notification:', notification);
       this.realTimeNotifications.unshift({
         title: this.getTitleByType(notification.type),
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
@@ -57,9 +64,7 @@ export class NotificationsPageComponent implements OnInit, OnDestroy {
           next: () => {
             this.storedNotifications.splice(index, 1);
             this.originalStoredNotifications.splice(
-              this.originalStoredNotifications.findIndex(
-                (n) => n.id === notificationToRemove.id
-              ),
+              this.originalStoredNotifications.findIndex((n) => n.id === notificationToRemove.id),
               1
             );
             this.notificationService.showSuccess('Notification deleted');
@@ -71,11 +76,9 @@ export class NotificationsPageComponent implements OnInit, OnDestroy {
         });
       } else {
         console.warn('Notification ID is missing, cannot delete from backend.');
-        this.storedNotifications.splice(index, 1); // Still remove from UI
+        this.storedNotifications.splice(index, 1);
         this.originalStoredNotifications.splice(
-          this.originalStoredNotifications.findIndex(
-            (n) => n.id === notificationToRemove.id
-          ),
+          this.originalStoredNotifications.findIndex((n) => n.id === notificationToRemove.id),
           1
         );
       }
@@ -84,10 +87,12 @@ export class NotificationsPageComponent implements OnInit, OnDestroy {
 
   getTitleByType(type: string): string {
     switch (type) {
-      case 'BID_PLACED_ON_YOUR_BOOK':
+      case NotificationType.BID_PLACED_ON_YOUR_BOOK:
         return 'New Bid!';
-      case 'AUCTION_WON':
+      case NotificationType.AUCTION_WON:
         return 'Auction Won!';
+      case NotificationType.AUCTION_LOST:
+        return 'Auction Lost!';
       default:
         return 'Notification';
     }

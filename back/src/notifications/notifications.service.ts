@@ -1,13 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { Subject, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Notification } from './entities/notification.entity';
 import { Repository } from 'typeorm';
+import { NotificationType } from "../Enums/notification-type.enum";
+
 
 interface NotificationPayload {
   userId: number;
-  type: string;
+  type: NotificationType;
   message: string;
   data?: any;
 }
@@ -25,27 +26,16 @@ export class NotificationsService {
     const subject = new Subject<MessageEvent>();
     this.clients.set(userId, subject);
     console.log(`User ${userId} subscribed to SSE`);
-    return subject.pipe(
-        map(payload => new MessageEvent('message', { data: JSON.stringify(payload) }))
-    );
+    return subject.asObservable();
   }
 
   async notify(payload: NotificationPayload): Promise<void> {
     const client = this.clients.get(payload.userId);
     if (client) {
-      client.next(
-          new MessageEvent('message', {
-            data: JSON.stringify({
-              type: payload.type,
-              message: payload.message,
-              data: payload.data,
-            }),
-          })
-      );
+      const messageEvent = new MessageEvent('message', { data: payload });
+      client.next(messageEvent);
       console.log(`Notification sent to user ${payload.userId}: ${payload.message}`);
     }
-
-    // Store the notification in the database
     await this.storeNotification(payload);
   }
 

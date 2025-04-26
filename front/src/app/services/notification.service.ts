@@ -3,6 +3,7 @@ import { Injectable, NgZone, OnDestroy } from '@angular/core';
 import { Observable, Subject, Subscription } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { UserIdService } from './userid.service';
+import { EventSourcePolyfill } from 'event-source-polyfill';
 
 export interface SSENotification {
   id: number;
@@ -22,6 +23,12 @@ export interface StoredNotification {
   createdAt: string;
 }
 
+export const NotificationType = {
+  BID_PLACED_ON_YOUR_BOOK: 'BID_PLACED_ON_YOUR_BOOK',
+  AUCTION_WON: 'AUCTION_WON',
+  AUCTION_LOST: 'AUCTION_LOST',
+};
+
 @Injectable({
   providedIn: 'root',
 })
@@ -30,7 +37,7 @@ export class NotificationService implements OnDestroy {
   private notificationsSubject = new Subject<SSENotification>();
   notifications$: Observable<SSENotification> = this.notificationsSubject.asObservable();
   private subscriptions: Subscription[] = [];
-  constructor(private messageService: MessageService,private ngZone: NgZone, private http: HttpClient, private userIdService: UserIdService) {}
+  constructor(private messageService: MessageService, private ngZone: NgZone, private http: HttpClient, private userIdService: UserIdService) {}
 
   showSuccess(message: string, title: string = 'Success') {
     this.messageService.add({
@@ -68,9 +75,16 @@ export class NotificationService implements OnDestroy {
     this.messageService.clear();
   }
   connect(): void {
-    const userId = this.userIdService.getUserId();// Implement this method
+    const userId = this.userIdService.getUserId();
+
     if (userId && !this.sseSource) {
-      this.sseSource = new EventSource(`http://localhost:3000/notifications/sse`);
+      const sseUrl = `http://localhost:3000/notifications/sse`;
+
+      console.log('Connecting to SSE URL:', sseUrl);
+      this.sseSource = new EventSourcePolyfill(sseUrl, {
+        withCredentials: true,
+      });
+
       this.sseSource.onmessage = (event) => {
         this.ngZone.run(() => {
           try {
@@ -88,7 +102,6 @@ export class NotificationService implements OnDestroy {
       };
     }
   }
-
   disconnect(): void {
     if (this.sseSource) {
       this.sseSource.close();
