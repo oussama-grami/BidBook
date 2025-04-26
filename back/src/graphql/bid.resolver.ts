@@ -51,6 +51,7 @@ export class BidResolver {
   }
 
   @UseGuards(GqlAuthGuard)
+
   @Mutation('createBid')
   async createBid(
       @Args('bookId', { type: () => Int }) bookId: number,
@@ -77,7 +78,7 @@ export class BidResolver {
           throw new InternalServerErrorException('Failed to create bid');
       }
   }
-  
+
   @UseGuards(GqlAuthGuard)
   @Mutation('updateBid')
   async updateBid(

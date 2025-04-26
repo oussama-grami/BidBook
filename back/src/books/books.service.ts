@@ -79,6 +79,39 @@ export class BooksService {
 
     return book;
   }
+
+  async findMyBooks(ownerId: number, limit?: number, offset?: number): Promise<Book[]> {
+    try {
+      console.log(`Finding books for owner ID: ${ownerId} with limit: ${limit}, offset: ${offset}`);
+      const books = await this.bookRepository.find({
+        where: { owner: { id: ownerId } },
+        take: limit,
+        skip: offset,
+        relations: ['owner', 'comments', 'bids', 'favorites', 'ratings'],
+        select: [
+          'id',
+          'title',
+          'author',
+          'picture',
+          'editor',
+          'category',
+          'totalPages',
+          'damagedPages',
+          'age',
+          'edition',
+          'price',
+          'language',
+          'createdAt',
+          'isSold',
+        ],
+      });
+      console.log(`Found ${books?.length || 0} books for owner ID: ${ownerId}`);
+      return books || [];
+    } catch (error) {
+      console.error('Error in bookService.findMyBooks:', error);
+      return [];
+    }
+  }
   async findManyByIds(ids: number[]): Promise<Book[]> {
     return await this.bookRepository.find({
       where: {

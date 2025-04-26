@@ -6,6 +6,8 @@ import { Bid } from './entities/bid.entity';
 import { Repository } from 'typeorm';
 import { BidStatus } from 'src/Enums/bidstatus.enum';
 import { BooksService } from 'src/books/books.service';
+import {NotificationsService} from "../notifications/notifications.service";
+import {NotificationType} from "../Enums/notification-type.enum";
 
 @Injectable()
 export class BidsService {
@@ -13,6 +15,7 @@ export class BidsService {
       @InjectRepository(Bid)
       private readonly bidRepository: Repository<Bid>,
       private readonly bookService: BooksService,
+      private readonly notificationsService: NotificationsService,
   ) {}
 
   getBidDate(bid: Bid): Date {
@@ -104,7 +107,19 @@ export class BidsService {
       createdAt: new Date(),
     });
 
-    return this.bidRepository.save(newBid);
+    const savedBid = await this.bidRepository.save(newBid);
+
+    // Send notification to the book owner (if the bidder is not the owner)
+    if (book.owner.id !== userId) {
+      this.notificationsService.notify({
+        userId: book.owner.id,
+        type: NotificationType.BID_PLACED_ON_YOUR_BOOK,
+        message: `A new bid of $${amount} was placed on your book "${book.title}" by user ${userId}.`,
+        data: { bookId: book.id, bidAmount: amount, bidderId: userId },
+      });
+    }
+
+    return savedBid;
   }
 
   async updateBid(userId: number, bookId: number, amount: number): Promise<Bid> {
@@ -136,6 +151,19 @@ export class BidsService {
       createdAt: new Date(),
     });
 
-    return this.bidRepository.save(newBid);
+    const savedBid = await this.bidRepository.save(newBid);
+
+    // Send notification to the book owner (if the bidder is not the owner)
+    if (highestBid.bidder.id !== userId) { // Assuming the highest bidder is the one updating
+      const book = await this.bookService.findOne(bookId); // Need to fetch the book again for owner info
+      this.notificationsService.notify({
+        userId: book.owner.id,
+        type: NotificationType.BID_PLACED_ON_YOUR_BOOK, // You might want a different type for updates
+        message: `A bid on your book "${book.title}" was updated to $${amount} by user ${userId}.`,
+        data: { bookId: book.id, bidAmount: amount, bidderId: userId },
+      });
+    }
+
+    return savedBid;
   }
 }

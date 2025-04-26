@@ -103,6 +103,7 @@ type Query {
     highestBidForBook(bookId: Int!): Bid
     userBookRating(userId: Int!, bookId: Int!): UserRating
     book(id: Int!): Book
+    myBooks(limit: Int, offset: Int): [Book!]!
 }
 type Mutation {
     addFavorite( bookId: Int!): Favorite!

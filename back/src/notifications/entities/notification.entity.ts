@@ -1,14 +1,25 @@
-import { User } from 'src/auth/entities/user.entity';
-import { CommonEntity } from 'src/Common/Common.entity';
-import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
+
 @Entity()
-export class Notification extends CommonEntity {
+export class Notification {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column()
+  userId: number;
+
+  @Column()
+  type: string;
+
   @Column()
   message: string;
-  @Column({ default: false })
-  isSent: boolean;
 
-  @ManyToOne(() => User, (user) => user.notifications, { onDelete: 'CASCADE' })
-  @JoinColumn()
-  recipient: User;
+  @Column({ type: 'json', nullable: true })
+  data: any;
+
+  @Column({ default: false })
+  read: boolean;
+
+  @CreateDateColumn()
+  createdAt: Date;
 }

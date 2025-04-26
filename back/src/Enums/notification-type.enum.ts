@@ -1,0 +1,5 @@
+export enum NotificationType {
+    BID_PLACED_ON_YOUR_BOOK = 'BID_PLACED_ON_YOUR_BOOK',
+    AUCTION_WON = 'AUCTION_WON',
+    AUCTION_LOST = 'AUCTION_LOST',
+}

@@ -6,6 +6,7 @@ import { MessagesModule } from 'primeng/messages';
   imports: [MessagesModule],
   templateUrl: './notification-element.component.html',
   styleUrls: ['./notification-element.component.css'],
+  standalone: true
 })
 export class NotificationElementComponent {
   @Input() notification!: { title: string; time: string; message: string };

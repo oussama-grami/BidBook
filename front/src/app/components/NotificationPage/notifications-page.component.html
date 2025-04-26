@@ -1,9 +1,21 @@
 <div class="notifications-container">
   <div class="notifications-list gap-5 flex-column flex">
+    <h2 *ngIf="realTimeNotifications.length > 0">Real-time Notifications</h2>
     <app-notification-element
-      *ngFor="let notification of notifications; let i = index"
+      *ngFor="let notification of realTimeNotifications; let i = index"
       [notification]="notification"
-      (close)="removeNotification(i)"
+      (close)="removeNotification(i, true)"
     ></app-notification-element>
+
+    <h2 *ngIf="storedNotifications.length > 0">Past Notifications</h2>
+    <app-notification-element
+      *ngFor="let notification of storedNotifications; let i = index"
+      [notification]="notification"
+      (close)="removeNotification(i, false)"
+    ></app-notification-element>
+
+    <div class="no-notifications" *ngIf="realTimeNotifications.length === 0 && storedNotifications.length === 0">
+      No notifications yet.
+    </div>
   </div>
 </div>

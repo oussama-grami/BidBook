@@ -68,7 +68,7 @@ export class User extends CommonEntity {
   favorites: Favorite[];
 
   // Relation inverse : un utilisateur peut recevoir plusieurs notifications
-  @OneToMany(() => Notification, (notification) => notification.recipient, { cascade: true })
+  @OneToMany(() => Notification, (notification) => notification.userId, { cascade: true })
   notifications: Notification[];
 
   // Relation inverse : un utilisateur peut placer plusieurs enchères

@@ -13,6 +13,8 @@ import { FormsModule } from '@angular/forms';
 import { BookService, Book, Bid } from '../../services/book.service';
 import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
+import {UserIdService} from '../../services/userid.service';
+
 interface Comment {
   id: number;
   content: string;
@@ -140,7 +142,7 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
   error: any = null;
 
   bookId: number | null = null;
-  currentUserId: number = 1; // Placeholder for current user ID
+  currentUserId: number | null = null; // Placeholder for current user ID
   math = Math;
   private querySubscription?: Subscription;
   private bidSubscription?: Subscription;
@@ -150,6 +152,7 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private bookService: BookService,
+    private userIdService: UserIdService
   ) {
     this.route.params.subscribe(params => {
       const id = +params['id'];
@@ -164,6 +167,7 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.currentUserId = this.userIdService.getUserId();
     if (this.bookId !== null && !this.error) {
       this.loadBookDetailsAndBids(this.bookId);
     } else {
@@ -349,6 +353,7 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
     this.ratingSubmissionSubscription?.unsubscribe();
 
     this.ratingSubmissionSubscription = this.bookService.addBookRating(this.bookId, this.userRating).subscribe({
+
       next: (response: UserRating) => {
         this.fetchBookDetails();
       },
@@ -423,6 +428,7 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
     const commentContent = this.userComment.trim();
 
     this.bookService.addCommentToBook(this.bookId, commentContent).pipe(
+
       map(response => {
         return response.data?.addCommentToBook;
       })
@@ -492,7 +498,7 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const minBid = this.lastBidPrice + 1;
+    const minBid = this.lastBidPrice + 0.01;
     if (!this.userBidPrice || isNaN(this.userBidPrice) || this.userBidPrice < minBid) {
       this.bidError = `Please enter a valid bid amount greater than ${this.lastBidPrice.toFixed(2)}D.`;
       console.warn('Bid validation failed:', this.bidError);
@@ -504,9 +510,10 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
     console.log(`Attempting to submit bid of ${this.userBidPrice} for book ${this.bookId} by user ${this.currentUserId}`);
     const bidAmount = this.userBidPrice;
     const bookId = this.bookId;
-    const userId = this.currentUserId; // Get the current user ID
+    const userId = this.currentUserId;
 
     if (this.hasBid) {
+
       this.bidSubscription = this.bookService.updateBid( bookId, bidAmount).subscribe({
         next: (updatedBid) => {
           if (updatedBid) {

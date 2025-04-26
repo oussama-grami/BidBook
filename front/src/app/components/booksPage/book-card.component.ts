@@ -11,11 +11,13 @@ import {
 import { RouterModule } from '@angular/router';
 import { ImagePreloadDirective } from '../../shared/directives/image-preload.directive';
 import { LoadingService } from '../../services/loading.service';
+import { FormsModule } from '@angular/forms'; // Import FormsModule
+import { BookService } from '../../services/book.service'; // Import BookService
 
 @Component({
   selector: 'app-book-card',
   standalone: true,
-  imports: [CommonModule, RouterModule, ImagePreloadDirective],
+  imports: [CommonModule, RouterModule, ImagePreloadDirective, FormsModule], // Add FormsModule
   template: `
     <div
       class="book-card"
@@ -38,9 +40,7 @@ import { LoadingService } from '../../services/loading.service';
           (loaded)="onImageLoaded(book.id, $event)"
         />
         <div class="overlay">
-          <span class="read-more" [routerLink]="['/books', book.id]"
-          >Read More</span
-          >
+          <span class="read-more" [routerLink]="['/books', book.id]">Read More</span>
         </div>
       </div>
       <div class="book-info">
@@ -64,290 +64,347 @@ import { LoadingService } from '../../services/loading.service';
           <div class="meta-details">
             <div class="meta-stats">
               <span class="comments">
-  <i class="pi pi-comments"></i>
+                <i class="pi pi-comments"></i>
                 {{ book.comments ? book.comments.length : 0 }}
-</span>
+              </span>
               <span class="likes">
                 <i class="pi pi-heart-fill"></i>
                 {{ book.favorites ? book.favorites.length : 0 }}
               </span>
               <span class="days-ago">
-  {{ book.createdAt | date:'mediumDate' }}
-</span>
+                {{ book.createdAt | date:'mediumDate' }}
+              </span>
             </div>
-            <button class="bid-button" [routerLink]="['/books', book.id]">
+            <button class="bid-button" (click)="openBidInput()" *ngIf="!showBidInput">
               Bid
             </button>
+            <div *ngIf="showBidInput" class="bid-input-container">
+              <input type="number" [(ngModel)]="bidAmount" placeholder="Your Bid">
+              <button (click)="submitBid()" [disabled]="isSubmittingBid">
+                {{ isSubmittingBid ? 'Bidding...' : 'Place Bid' }}
+              </button>
+              <button (click)="closeBidInput()">Cancel</button>
+              <div *ngIf="bidError" class="error-message">{{ bidError }}</div>
+            </div>
           </div>
         </div>
       </div>
     </div>
   `,
-  styles: [
-    `
-      .book-card {
-        background: white;
-        border-radius: 20px;
-        overflow: hidden;
-        cursor: pointer;
-        position: relative;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        transition: all 0.3s ease;
-      }
+  styles: [`
+    .book-card {
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      cursor: pointer;
+      position: relative;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.3s ease;
+    }
 
-      .book-card.special {
-        background: linear-gradient(145deg, #ffffff, #fff5e6);
-        border: 2px solid rgba(156, 115, 80, 0.1);
-        box-shadow: 0 10px 25px rgba(156, 115, 80, 0.2);
-      }
+    .book-card.special {
+      background: linear-gradient(145deg, #ffffff, #fff5e6);
+      border: 2px solid rgba(156, 115, 80, 0.1);
+      box-shadow: 0 10px 25px rgba(156, 115, 80, 0.2);
+    }
 
-      .book-card.special .book-title {
-        color: #9c7350;
-        font-weight: 700;
-      }
+    .book-card.special .book-title {
+      color: #9c7350;
+      font-weight: 700;
+    }
 
-      .book-card.special::before {
-        content: '⭐';
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        font-size: 20px;
-        opacity: 0.8;
-        z-index: 2;
-      }
+    .book-card.special::before {
+      content: '⭐';
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 20px;
+      opacity: 0.8;
+      z-index: 2;
+    }
 
-      .book-card.special .book-image-container::after {
-        content: attr(data-label);
-        position: absolute;
-        left: -35px;
-        background: linear-gradient(90deg, #9c7350, #50719c);
-        color: white;
-        padding: 5px 40px;
-        transform: rotate(-45deg);
-        font-size: 12px;
-        font-weight: 600;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-      }
+    .book-card.special .book-image-container::after {
+      content: attr(data-label);
+      position: absolute;
+      left: -35px;
+      background: linear-gradient(90deg, #9c7350, #50719c);
+      color: white;
+      padding: 5px 40px;
+      transform: rotate(-45deg);
+      font-size: 12px;
+      font-weight: 600;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
 
-      .book-image-container.ribbon-lower::after {
-        top: 30px;
-      }
+    .book-image-container.ribbon-lower::after {
+      top: 30px;
+    }
 
-      .book-image-container.ribbon-higher::after {
-        top: 18px;
-      }
+    .book-image-container.ribbon-higher::after {
+      top: 18px;
+    }
 
-      .book-card.special:hover {
-        transform: translateY(-10px) scale(1.03);
-        box-shadow: 0 15px 30px rgba(156, 115, 80, 0.25);
-      }
+    .book-card.special:hover {
+      transform: translateY(-10px) scale(1.03);
+      box-shadow: 0 15px 30px rgba(156, 115, 80, 0.25);
+    }
 
-      .book-card.special .read-more {
-        background: linear-gradient(90deg, #9c7350, #50719c);
-        border: none;
-        font-weight: 600;
-      }
+    .book-card.special .read-more {
+      background: linear-gradient(90deg, #9c7350, #50719c);
+      border: none;
+      font-weight: 600;
+    }
 
-      .book-image-container {
-        position: relative;
-        padding-top: 140%;
-        overflow: hidden;
-      }
+    .book-image-container {
+      position: relative;
+      padding-top: 140%;
+      overflow: hidden;
+    }
 
-      .book-image {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.5s ease;
-      }
+    .book-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
 
-      .overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.4);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-      }
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
 
-      .book-card:hover .overlay {
-        opacity: 1;
-      }
+    .book-card:hover .overlay {
+      opacity: 1;
+    }
 
-      .read-more {
-        color: white;
-        font-size: 16px;
-        font-weight: 600;
-        padding: 12px 24px;
-        border: 2px solid white;
-        border-radius: 25px;
-        transform: translateY(20px);
-        transition: all 0.3s ease;
-        cursor: pointer;
-        text-decoration: none;
-      }
+    .read-more {
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      padding: 12px 24px;
+      border: 2px solid white;
+      border-radius: 25px;
+      transform: translateY(20px);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      text-decoration: none;
+    }
 
-      .book-card:hover .read-more {
-        transform: translateY(0);
-      }
+    .book-card:hover .read-more {
+      transform: translateY(0);
+    }
 
+    .book-info {
+      padding: 20px;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .book-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #2d3748;
+      margin: 0 0 15px;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .category-badge {
+      display: inline-block;
+      background-color: #9c7350;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      width: fit-content;
+    }
+
+    .book-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .rating {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .stars {
+      display: flex;
+      gap: 2px;
+    }
+
+    .star {
+      color: #fbbf24;
+      font-size: 14px;
+    }
+
+    .rating-count {
+      color: #64748b;
+      font-size: 14px;
+    }
+
+    .meta-details {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #64748b;
+      font-size: 13px;
+    }
+
+    .meta-stats {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .comments,
+    .likes {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .comments i,
+    .likes i {
+      font-size: 14px;
+    }
+
+    .likes i {
+      color: #9c7350;
+    }
+
+    .days-ago {
+      color: #94a3b8;
+      display: block;
+      font-size: 12px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .bid-button {
+      font-family: 'Poppins', sans-serif;
+      background-color: #50719c;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      padding: 6px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .bid-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(80, 113, 156, 0.3);
+      background-color: #445e82;
+    }
+
+    .bid-input-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .bid-input-container input[type="number"] {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 12px;
+    }
+
+    .bid-input-container button {
+      font-family: 'Poppins', sans-serif;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      padding: 6px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .bid-input-container button:hover {
+      background-color: #45a049;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+    }
+
+    .bid-input-container button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+    }
+
+    .error-message {
+      color: red;
+      font-size: 11px;
+    }
+
+    @media (max-width: 640px) {
       .book-info {
-        padding: 20px;
-        flex-grow: 1;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
+        padding: 15px;
       }
 
       .book-title {
-        font-size: 18px;
-        font-weight: 600;
-        color: #2d3748;
-        margin: 0 0 15px;
-        line-height: 1.4;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-      }
-
-      .category-badge {
-        display: inline-block;
-        background-color: #9c7350;
-        color: white;
-        padding: 4px 8px;
-        border-radius: 12px;
-        font-size: 12px;
-        font-weight: 600;
-        margin-bottom: 10px;
-        width: fit-content;
+        font-size: 16px;
+        margin-bottom: 12px;
       }
 
       .book-meta {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-      }
-
-      .rating {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-
-      .stars {
-        display: flex;
-        gap: 2px;
+        gap: 8px;
       }
 
       .star {
-        color: #fbbf24;
-        font-size: 14px;
-      }
-
-      .rating-count {
-        color: #64748b;
-        font-size: 14px;
-      }
-
-      .meta-details {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        color: #64748b;
-        font-size: 13px;
-      }
-
-      .meta-stats {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 10px;
-      }
-
-      .comments,
-      .likes {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-      }
-
-      .comments i,
-      .likes i {
-        font-size: 14px;
-      }
-
-      .likes i {
-        color: #9c7350;
-      }
-
-      .days-ago {
-        color: #94a3b8;
-        display: block;
         font-size: 12px;
-        align-items: center;
-        justify-content: center;
+      }
+
+      .rating-count,
+      .meta-details {
+        font-size: 12px;
       }
 
       .bid-button {
-        font-family: 'Poppins', sans-serif;
-        background-color: #50719c;
-        color: white;
-        border: none;
-        border-radius: 20px;
-        padding: 6px 16px;
-        font-size: 12px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
+        padding: 4px 12px;
+        font-size: 11px;
       }
 
-      .bid-button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(80, 113, 156, 0.3);
-        background-color: #445e82;
+      .bid-input-container input[type="number"],
+      .bid-input-container button {
+        font-size: 11px;
+        padding: 6px 12px;
       }
-
-      @media (max-width: 640px) {
-        .book-info {
-          padding: 15px;
-        }
-
-        .book-title {
-          font-size: 16px;
-          margin-bottom: 12px;
-        }
-
-        .book-meta {
-          gap: 8px;
-        }
-
-        .star {
-          font-size: 12px;
-        }
-
-        .rating-count,
-        .meta-details {
-          font-size: 12px;
-        }
-
-        .bid-button {
-          padding: 4px 12px;
-          font-size: 11px;
-        }
-      }
-    `,
-  ],
+    }
+  `],
   animations: [
     trigger('cardHover', [
       state(
@@ -376,7 +433,13 @@ export class BookCardComponent {
   @Input() isFavorite: boolean = false;
   isHovered: boolean = false;
 
-  constructor(private loadingService: LoadingService) {}
+  showBidInput: boolean = false;
+  bidAmount: number | null = null;
+  bidError: string = '';
+  isSubmittingBid: boolean = false;
+  currentUserId: number = 1;
+
+  constructor(private loadingService: LoadingService, private bookService: BookService) {}
 
   getAverageRating(): number {
     if (!this.book.ratings || this.book.ratings.length === 0) {
@@ -391,5 +454,40 @@ export class BookCardComponent {
       console.warn(`Failed to load image for book ID: ${bookId}`);
     }
   }
-}
 
+  openBidInput(): void {
+    this.showBidInput = true;
+    this.bidAmount = null;
+    this.bidError = '';
+  }
+
+  submitBid(): void {
+    if (this.bidAmount === null || this.bidAmount <= 0) {
+      this.bidError = 'Please enter a valid bid amount.';
+      return;
+    }
+    this.bidError = '';
+    this.isSubmittingBid = true;
+
+    this.bookService.createBid(this.currentUserId, this.book.id, this.bidAmount).subscribe({
+      next: (bid) => {
+
+        console.log('Bid submitted successfully:', bid);
+        this.showBidInput = false;
+        this.isSubmittingBid = false;
+      },
+      error: (err) => {
+        console.error('Error submitting bid:', err);
+        this.bidError = 'Failed to submit bid. Please try again.';
+        this.isSubmittingBid = false;
+      }
+
+    });
+  }
+
+  closeBidInput(): void {
+    this.showBidInput = false;
+    this.bidAmount = null;
+    this.bidError = '';
+  }
+}

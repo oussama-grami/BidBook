@@ -9,17 +9,17 @@ import { Notification } from 'src/notifications/entities/notification.entity';
 @Injectable()
 export class NotificationSchedulerService {
   constructor(
-    @InjectRepository(Book)
-    private readonly bookRepository: Repository<Book>,
+      @InjectRepository(Book)
+      private readonly bookRepository: Repository<Book>,
 
-    @InjectRepository(Bid)
-    private readonly bidRepository: Repository<Bid>,
+      @InjectRepository(Bid)
+      private readonly bidRepository: Repository<Bid>,
 
-    @InjectRepository(Notification)
-    private readonly notificationRepository: Repository<Notification>,
+      @InjectRepository(Notification)
+      private readonly notificationRepository: Repository<Notification>,
   ) {}
 
-  @Cron('0 * * * *')  
+  @Cron('0 * * * *')
   async handleCron() {
     const now = new Date();
     const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
@@ -27,35 +27,37 @@ export class NotificationSchedulerService {
     const books = await this.bookRepository.find();
 
     for (const book of books) {
-      const bid = await this.bidRepository.findOne({
+      const highestBid = await this.bidRepository.findOne({
         where: { book: { id: book.id } },
         order: { createdAt: 'DESC' },
         relations: ['bidder'],
       });
-     
-      if (bid?.bidder && bid.createdAt > twentyFourHoursAgo) {
+
+      if (highestBid?.bidder && highestBid.createdAt > twentyFourHoursAgo) {
         const message = `Congratulations! You have won the auction for the book "${book.title}"`;
+        const userId = highestBid.bidder.id;
 
         await this.notificationRepository.manager.transaction(async transactionalEntityManager => {
+          // Check if a similar notification has already been sent (without 'isSent' check)
           const notificationExists = await transactionalEntityManager.findOne(Notification, {
             where: {
-              recipient: { id: bid.bidder.id },
+              userId: userId,
               message: message,
-              isSent: true,
             }
           });
-          
+
           if (!notificationExists) {
             const notification = this.notificationRepository.create({
-              recipient: { id: bid.bidder.id },
+              userId: userId,
               message,
-              isSent: true,
+              type: 'AUCTION_WON',
+              read: false,
+
             });
             await transactionalEntityManager.save(Notification, notification);
-            console.log('Hiba');
-            console.log(`Notification sent to user ${bid.bidder.id} for the book "${book.title}"`);
+            console.log(`Notification sent to user ${userId} for the book "${book.title}"`);
           } else {
-            console.log(`Notification already sent to user ${bid.bidder.id} for the book "${book.title}"`);
+            console.log(`Notification already exists for user ${userId} and book "${book.title}"`);
           }
         });
       }

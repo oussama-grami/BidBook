@@ -8,8 +8,8 @@ export const ADD_COMMENT_TO_BOOK_MUTATION = gql`
       content
       user {
         id
-        firstName 
-        lastName 
+        firstName
+        lastName
         imageUrl
       }
       createdAt
@@ -39,6 +39,7 @@ mutation RemoveFavorite( $bookId: Int!) {
 export const ADD_RATE_MUTATION = gql`
   mutation AddBookRate( $bookId: Int!, $rate: Float!) {
     addRate( bookId: $bookId, rate: $rate) {
+
       id
       rate
       user {
@@ -47,7 +48,7 @@ export const ADD_RATE_MUTATION = gql`
       book {
         id
       }
-     
+
     }
   }
 `;
@@ -59,9 +60,14 @@ export const UPDATE_BOOK_RATE_MUTATION = gql`
         id
       }
       book
+      {
+        id
+      }
       rate
       createdAt
       updatedAt
     }
   }
 `;
+
+
