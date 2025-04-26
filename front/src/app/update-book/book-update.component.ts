@@ -118,7 +118,7 @@ export class BookUpdateComponent implements OnInit {
           age: book.age,
           ownerId: book.ownerId,
         });
-
+        this.bookForm.get('ownerId')?.disable();
         if (book.picture) {
           this.imagePreview = book.picture.startsWith('http')
             ? book.picture

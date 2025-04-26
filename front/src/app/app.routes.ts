@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { DataLoadingResolver } from './shared/resolvers/data-loading.resolver';
 import { tokenValidationGuard } from './shared/guards/token-validation.guard';
+import {OwnerGuard} from './shared/guards/owner.guard';
 
 export const routes: Routes = [
   {
@@ -59,7 +60,7 @@ export const routes: Routes = [
           import('./update-book/book-update.component').then(
             (c) => c.BookUpdateComponent
           ),
-        /*canActivate: [RouteLoadingGuard],*/
+        canActivate: [OwnerGuard],
         data: { animation: 'slideLeft' },
       },
     ],

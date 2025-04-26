@@ -130,21 +130,21 @@ export abstract class IQuery {
 }
 
 export abstract class IMutation {
-    abstract addFavorite(userId: number, bookId: number): Favorite | Promise<Favorite>;
+    abstract addFavorite(bookId: number): Favorite | Promise<Favorite>;
 
-    abstract removeFavorite(userId: number, bookId: number): boolean | Promise<boolean>;
+    abstract removeFavorite(bookId: number): boolean | Promise<boolean>;
 
-    abstract addCommentToBook(bookId: number, userId: number, content: string): Nullable<Comment> | Promise<Nullable<Comment>>;
+    abstract addCommentToBook(bookId: number, content: string): Nullable<Comment> | Promise<Nullable<Comment>>;
 
     abstract removeComment(commentId: number): boolean | Promise<boolean>;
 
-    abstract createBid(userId: number, bookId: number, amount: number): Bid | Promise<Bid>;
+    abstract createBid(bookId: number, amount: number): Bid | Promise<Bid>;
 
-    abstract updateBid(bookId: number, userId: number, amount: number): Bid | Promise<Bid>;
+    abstract updateBid(bookId: number, amount: number): Bid | Promise<Bid>;
 
-    abstract addRate(userId: number, bookId: number, rate: number): UserRating | Promise<UserRating>;
+    abstract addRate(bookId: number, rate: number): UserRating | Promise<UserRating>;
 
-    abstract updateRate(userId: number, bookId: number, rate: number): UserRating | Promise<UserRating>;
+    abstract updateRate(bookId: number, rate: number): UserRating | Promise<UserRating>;
 }
 
 export type DateTime = any;

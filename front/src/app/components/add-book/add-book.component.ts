@@ -17,6 +17,7 @@ import { Apollo } from 'apollo-angular';
 import { HttpLink } from 'apollo-angular/http';
 import { APOLLO_OPTIONS } from 'apollo-angular';
 import { createApollo } from '../../../apollo.config';
+import {UserIdService} from '../../services/userid.service';
 
 @Component({
   selector: 'app-add-book',
@@ -45,7 +46,8 @@ export class AddBookComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private bookService: BookService
+    private bookService: BookService,
+    private userIdService: UserIdService
   ) {}
 
   ngOnInit() {
@@ -135,6 +137,13 @@ export class AddBookComponent implements OnInit {
     if (this.addBookForm.valid && this.priceAccepted) {
       this.isSubmitting = true;
       this.submitError = null;
+      const userId = this.userIdService.getUserId();
+      if (!userId) {
+        console.error('User ID not available. Cannot submit book.');
+        this.submitError = 'User authentication error. Please log in again.';
+        this.isSubmitting = false;
+        return;
+      }
 
       const formData = new FormData();
 
@@ -145,6 +154,7 @@ export class AddBookComponent implements OnInit {
       formData.append('language', this.addBookForm.get('language')?.value);
       formData.append('editor', this.addBookForm.get('editor')?.value);
       formData.append('edition', this.addBookForm.get('edition')?.value);
+      formData.append('ownerId', userId.toString());
       formData.append(
         'totalPages',
         this.addBookForm.get('numberOfPages')?.value

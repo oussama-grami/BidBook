@@ -38,7 +38,6 @@ export class NotificationSchedulerService {
         const userId = highestBid.bidder.id;
 
         await this.notificationRepository.manager.transaction(async transactionalEntityManager => {
-          // Check if a similar notification has already been sent (without 'isSent' check)
           const notificationExists = await transactionalEntityManager.findOne(Notification, {
             where: {
               userId: userId,

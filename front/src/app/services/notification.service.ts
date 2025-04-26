@@ -71,7 +71,6 @@ export class NotificationService implements OnDestroy {
     const userId = this.userIdService.getUserId();// Implement this method
     if (userId && !this.sseSource) {
       this.sseSource = new EventSource(`http://localhost:3000/notifications/sse`);
-
       this.sseSource.onmessage = (event) => {
         this.ngZone.run(() => {
           try {
