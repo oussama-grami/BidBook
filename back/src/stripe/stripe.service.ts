@@ -46,11 +46,9 @@ export class StripeService {
       transaction: {
         id: transaction.id,
         amount: transaction.bid.amount,
-        book: {
-          id: book.id,
-          title: book.title,
-          imageUrl: book.picture,
-        },
+        bookid: book.id,
+        title: book.title,
+        imageUrl: book.picture,
       }
       
     };

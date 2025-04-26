@@ -23,6 +23,9 @@ export class BookService {
   }
 
   markBookAsSold(bookId: number): Observable<any> {
+    if (!bookId) {
+        throw new Error('Book ID is required');
+    }
     return this.http.patch(`${this.apiUrl}/books/successfulpayment/${bookId}`, {});
-}
+  }
 }

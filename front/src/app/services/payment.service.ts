@@ -2,19 +2,12 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 
-
-export interface Book {
-    id: number;
-    title: string;
-    price: number;
-    imageUrl: string;
-}
-
 export interface Transaction{
     id: number;
     amount: number;
-    book: Book;
-
+    bookid: number;
+    title: string;
+    imageUrl: string;
 }
 
 @Injectable({

@@ -8,16 +8,16 @@
           <div class="flex align-items-center mb-3 pb-3 border-bottom-1 surface-border" *ngIf="transaction">
             <div class="book-image mr-3">
               <p-image
-                [src]="transaction.book.imageUrl || 'default-image-path.jpg'"
-                [alt]="transaction.book.title"
+                [src]="'/images/Book1.png'"
+                [alt]="transaction.title"
                 [preview]="true"
                 imageClass="book-img"
               >
               </p-image>
             </div>
             <div class="flex-1">
-              <span class="block font-medium mb-2">{{ transaction.book.title }}</span>
-              <span class="text-primary">${{ transaction.amount  }}</span>
+              <span class="block font-medium mb-2">{{ transaction.title }}</span>
+              <span class="text-primary">${{ transaction.amount}}</span>
             </div>
           </div>
         </div>

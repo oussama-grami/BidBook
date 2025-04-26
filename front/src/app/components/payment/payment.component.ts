@@ -150,11 +150,14 @@ export class PaymentComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log('Initializing PaymentComponent');
     this.paymentService.transaction$.subscribe({
         next: (transaction) => {
-            if (transaction && transaction.book) {
+            console.log('Received transaction:', transaction);
+            if (transaction) {
                 this.transaction = transaction;
                 this.calculateTotals(transaction);
+                console.log('Updated transaction state:', this.transaction);
             }
         },
         error: (error) => {
@@ -206,6 +209,18 @@ export class PaymentComponent implements OnInit {
   }
 
   onSubmit(): void {
+    if (!this.transaction) {
+    console.error('Transaction or Book not loaded yet.');
+    return;
+    }
+
+    console.log('Current transaction:', this.transaction);
+
+    if (!this.transaction.bookid) {
+      console.error('Book ID is missing from transaction');
+      return;
+    }
+
     if (this.paymentForm.invalid) {
         Object.keys(this.paymentForm.controls).forEach((key) => {
             const control = this.paymentForm.get(key);
@@ -221,14 +236,12 @@ export class PaymentComponent implements OnInit {
     setTimeout(() => {
         this.ngZone.run(() => {
             try {
-                if (this.transaction?.id && this.transaction.book.id) {
+                if (this.transaction?.id && this.transaction.bookid) {
                     // Update transaction status
                     this.paymentService.updateTransactionStatus(this.transaction.id, 'succeeded')
                         .subscribe({
                             next: (updatedTransaction) => {
-                                this.transaction = updatedTransaction;
-                                // Mark book as sold
-                                this.booksService.markBookAsSold(this.transaction!.book.id)
+                              this.booksService.markBookAsSold(this.transaction!.bookid)
                                     .subscribe({
                                         next: () => {
                                             console.log('Book marked as sold successfully');
@@ -238,6 +251,7 @@ export class PaymentComponent implements OnInit {
                                             console.error('Error marking book as sold:', error);
                                         }
                                     });
+                                this.transaction = updatedTransaction;                                
                             },
                             error: (error) => {
                                 console.error('Error updating transaction:', error);
