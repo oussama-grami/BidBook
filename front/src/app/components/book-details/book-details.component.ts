@@ -135,14 +135,14 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
   bidError: string = '';
   showBidInput: boolean = false;
 
-  hasBid: boolean = false; // Track if the current user has bid
-
+  hasBid: boolean = false;
+  hasRated: boolean = false;
   isLoadingBookDetails: boolean = true;
-  isSubmittingBid: boolean = false; // To disable button during submission
+  isSubmittingBid: boolean = false;
   error: any = null;
 
   bookId: number | null = null;
-  currentUserId: number | null = null; // Placeholder for current user ID
+  currentUserId: number | null = null;
   math = Math;
   private querySubscription?: Subscription;
   private bidSubscription?: Subscription;
@@ -343,22 +343,26 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (this.bookId === null) {
-      this.error = 'Cannot submit rating: Book ID is missing.';
+    if (this.bookId === null || this.currentUserId === null) {
+      this.error = 'Cannot submit rating: Book or User ID is missing.';
       return;
     }
 
     this.error = null;
-
     this.ratingSubmissionSubscription?.unsubscribe();
 
-    this.ratingSubmissionSubscription = this.bookService.addBookRating(this.bookId, this.userRating).subscribe({
+    const ratingAction = this.hasRated
+      ? this.bookService.updateBookRate(this.bookId, this.userRating)
+      : this.bookService.addBookRating(this.bookId, this.userRating);
 
+    this.ratingSubmissionSubscription = ratingAction.subscribe({
       next: (response: UserRating) => {
         this.fetchBookDetails();
+        this.hasRated = true;
       },
       error: (err: any) => {
-        this.error = 'Failed to submit rating. Please try again.';
+        this.error = 'Failed to submit/update rating. Please try again.';
+        console.error('Error submitting/updating rating:', err);
       }
     });
   }

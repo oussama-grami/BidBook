@@ -29,6 +29,7 @@ export class UserRatingService {
         user: { id: userId },
         book: { id: bookId },
       },
+      relations: ['user', 'book'],
     });
     if (! existingRating) {
       throw new NotFoundException(`Rating for user ${userId} and book ${bookId} not found.`);
@@ -43,6 +44,7 @@ export class UserRatingService {
          user: { id: userId }, 
          book: { id: bookId }, 
        },
+      relations: ['user', 'book'],
     });
   }
 
