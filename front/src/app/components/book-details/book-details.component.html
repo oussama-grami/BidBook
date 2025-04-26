@@ -60,7 +60,7 @@
            <div class="editor" *ngIf="editor">Editor:{{ editor }}</div>
       </div>
 
-      
+
 
       <div class="interaction-section">
         <div class="favorites">
@@ -97,7 +97,9 @@
               />
             </span>
           </div>
-           <button *ngIf="userRating > 0" (click)="submitUserRating()" class="submit-rating-btn">Submit Rating</button>
+          <button *ngIf="userRating > 0 && !hasRated" (click)="submitUserRating()" class="submit-rating-btn">Submit Rating</button>
+          <button *ngIf="hasRated" (click)="submitUserRating()" class="submit-rating-btn">Update Rating</button>
+          <button *ngIf="hasRated" (click)="deleteUserRating()" class="delete-rating-btn">Delete My Rating</button>
         </div>
 
         <div class="comment-section" [@fadeInOut]>

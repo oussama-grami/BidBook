@@ -69,4 +69,8 @@ export const UPDATE_BOOK_RATE_MUTATION = gql`
     }
   }
 `;
-
+export const DELETE_BOOK_RATING_MUTATION = gql`
+  mutation DeleteBookRate($bookId: Int!) {
+    deleteRate(bookId: $bookId)
+  }
+`;

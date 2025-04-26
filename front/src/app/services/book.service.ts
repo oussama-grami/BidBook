@@ -5,7 +5,14 @@ import {map} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
 import {UserRating} from '../components/booksPage/library-dashboard.component';
 import {BidStatus} from '../enums/status.enum';
-import { ADD_COMMENT_TO_BOOK_MUTATION, ADD_FAVORITE_MUTATION, ADD_RATE_MUTATION, REMOVE_FAVORITE_MUTATION, UPDATE_BOOK_RATE_MUTATION } from '../mutations/book.mutation';
+import {
+  ADD_COMMENT_TO_BOOK_MUTATION,
+  ADD_FAVORITE_MUTATION,
+  ADD_RATE_MUTATION,
+  DELETE_BOOK_RATING_MUTATION,
+  REMOVE_FAVORITE_MUTATION,
+  UPDATE_BOOK_RATE_MUTATION
+} from '../mutations/book.mutation';
 
 export interface Bid {
   id: number;
@@ -451,6 +458,16 @@ export class BookService {
       })
     );
 }
+  deleteBookRating(bookId: number): Observable<boolean> {
+    return this.apollo.mutate<{ deleteRate: boolean }>({
+      mutation: DELETE_BOOK_RATING_MUTATION,
+      variables: {
+        bookId,
+      },
+    }).pipe(
+      map(result => result.data?.deleteRate || false)
+    );
+  }
 
 }
 

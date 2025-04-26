@@ -148,6 +148,7 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
   private bidSubscription?: Subscription;
   private favoriteActionSubscription?: Subscription;
   private ratingSubmissionSubscription?: Subscription;
+  private deleteRatingSubscription?: Subscription;
 
   constructor(
     private route: ActivatedRoute,
@@ -169,7 +170,7 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.currentUserId = this.userIdService.getUserId();
     if (this.bookId !== null && !this.error) {
-      this.loadBookDetailsAndBids(this.bookId);
+      this.fetchBookDetails();
     } else {
       this.isLoadingBookDetails = false;
       if (!this.error) {
@@ -190,68 +191,6 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
       this.ratingSubmissionSubscription.unsubscribe();
     }
   }
-  loadBookDetailsAndBids(bookId: number): void {
-    this.isLoadingBookDetails = true;
-    this.error = null;
-
-    this.querySubscription = this.bookService.getBookDetails(bookId).subscribe({
-      next: (book: Book) => {
-        if (book) {
-          this.title = book.title || '';
-          this.author = book.author || '';
-          this.genre = (book.category as any)?.name || book.category?.toString() || '';
-          this.coverImage = book.picture || '/images/placeholder.png';
-          this.price = book.price || 0;
-          this.pages = book.totalPages || 0;
-          this.age = book.age;
-          this.edition = book.edition?.toString() || undefined;
-          this.language = book.language?.toString() || undefined;
-          this.editor = book.editor || undefined;
-          this.owner = book.owner;
-          this.likes = book.favorites?.length || 0;
-          this.isFavorite = book.favorites?.some(fav => fav.user?.id === this.currentUserId) || false;
-          this.comments = book.comments || [];
-          this.resetDisplayedComments();
-          this.commentsLoaded = true;
-
-          // Determine the initial last bid price
-          if (book.bids && book.bids.length > 0) {
-            const sortedBids = [...book.bids].sort((a, b) => b.amount - a.amount);
-            this.lastBidPrice = sortedBids[0].amount;
-            this.hasBid = book.bids.some(bid => bid.bidder?.id === this.currentUserId);
-          } else {
-            this.lastBidPrice = this.price;
-            this.hasBid = false;
-          }
-
-          if (book.ratings && book.ratings.length > 0) {
-            const totalRate = book.ratings.reduce((sum, r) => sum + r.rate, 0);
-            this.rating = totalRate / book.ratings.length;
-            this.votes = book.ratings.length;
-          } else {
-            this.rating = 0;
-            this.votes = 0;
-          }
-
-          this.starStates = Array(5).fill('inactive').map((_, index) =>
-            index < Math.round(this.rating) ? 'active' : 'inactive'
-          );
-        } else {
-          this.error = 'Book not found.';
-          console.warn('Book details response was null or undefined.');
-        }
-        this.isLoadingBookDetails = false;
-      },
-      error: (err) => {
-        console.error('Error fetching book details:', err);
-        this.error = 'Failed to load book details. Please try again.';
-        this.isLoadingBookDetails = false;
-      },
-    });
-  }
-
-
-
 
   private fetchBookDetails(): void {
     if (this.bookId === null || this.error) {
@@ -302,11 +241,18 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
             this.rating = totalRate / book.ratings.length;
             this.votes = book.ratings.length;
             const userExistingRating = book.ratings.find(r => r.user?.id === this.currentUserId);
-            this.userRating = userExistingRating ? userExistingRating.rate : 0;
+            if (userExistingRating) {
+              this.userRating = userExistingRating.rate;
+              this.hasRated = true; // Set hasRated to true if the user has a rating
+            } else {
+              this.userRating = 0;
+              this.hasRated = false;
+            }
           } else {
             this.rating = 0;
             this.votes = 0;
             this.userRating = 0;
+            this.hasRated = false;
           }
 
           this.starStates = Array(5).fill('inactive').map((_, index) =>
@@ -560,6 +506,36 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
         },
       });
     }
+  }
+  deleteUserRating(): void {
+    if (this.bookId === null) {
+      this.error = 'Cannot delete rating: Book ID is missing.';
+      return;
+    }
+    if (!this.hasRated) {
+      this.error = 'You haven\'t rated this book yet.';
+      return;
+    }
+
+    this.error = null;
+    this.deleteRatingSubscription?.unsubscribe();
+
+    this.deleteRatingSubscription = this.bookService.deleteBookRating(this.bookId).subscribe({
+      next: (success) => {
+        if (success) {
+          this.userRating = 0;
+          this.hasRated = false;
+          this.starStates = Array(5).fill('inactive');
+          this.fetchBookDetails(); // Reload to update average rating
+        } else {
+          this.error = 'Failed to delete your rating. Please try again.';
+        }
+      },
+      error: (err) => {
+        console.error('Error deleting rating:', err);
+        this.error = 'Failed to delete your rating. Please try again.';
+      }
+    });
   }
 }
 

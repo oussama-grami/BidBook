@@ -97,6 +97,36 @@ async updateRate(
     }
 }
 
+    @UseGuards(GqlAuthGuard)
+    @Mutation('deleteRate')
+    async deleteRate(
+        @Args('bookId', { type: () => Int }) bookId: number,
+        @Context() context: any,
+    ): Promise<boolean> {
+        try {
+            const user = context.req.user;
+            if (!user) {
+                throw new InternalServerErrorException('User information not available after authentication.');
+            }
+            const userId = user.id;
+
+            const deleted = await this.ratingsService.deleteRate(userId, bookId);
+
+            if (deleted) {
+                const updatedBook = await this.booksService.findOne(bookId);
+                if (updatedBook) {
+                    pubSub.publish(BOOK_RATING_UPDATED_EVENT, { bookRatingUpdated: updatedBook });
+                }
+                return true;
+            } else {
+                return false;
+            }
+        } catch (error) {
+            console.error('Error in deleteRate mutation:', error);
+            return false;
+        }
+    }
+
   @Query('userBookRating')
   async userBookRating(
       @Args('userId', { type: () => Int }) userId: number,

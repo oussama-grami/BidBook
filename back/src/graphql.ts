@@ -145,6 +145,8 @@ export abstract class IMutation {
     abstract addRate(bookId: number, rate: number): UserRating | Promise<UserRating>;
 
     abstract updateRate(bookId: number, rate: number): UserRating | Promise<UserRating>;
+
+    abstract deleteRate(bookId: number): boolean | Promise<boolean>;
 }
 
 export type DateTime = any;

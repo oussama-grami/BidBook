@@ -47,6 +47,13 @@ export class UserRatingService {
       relations: ['user', 'book'],
     });
   }
+  async deleteRate(userId: number, bookId: number): Promise<boolean> {
+    const result = await this.userRatingRepository.delete({
+      user: { id: userId },
+      book: { id: bookId },
+    });
+    return (result?.affected ?? 0) > 0;
+  }
 
  
   create(createUserRatingDto: CreateUserRatingDto) {

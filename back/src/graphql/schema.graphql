@@ -114,5 +114,6 @@ type Mutation {
     updateBid(bookId: Int!, amount: Float!): Bid!
     addRate(bookId: Int!, rate: Float!): UserRating!
     updateRate(bookId: Int!, rate: Float!): UserRating!
+    deleteRate(bookId: Int!): Boolean!
     
 }
