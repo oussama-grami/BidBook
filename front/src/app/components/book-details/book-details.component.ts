@@ -486,7 +486,7 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
         if (newComment) {
           console.log('Comment added successfully:', newComment);
           this.userComment = ''; // Clear the input field
-          
+          this.CommentCount++;
           this.displayedComments.unshift(newComment); 
           
         
