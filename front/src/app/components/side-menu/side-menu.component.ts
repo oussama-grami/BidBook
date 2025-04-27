@@ -105,7 +105,6 @@ export class SideMenuComponent implements OnInit, OnDestroy {
       icon: 'pi pi-bell',
       label: 'Notifications',
       route: '/notifications',
-      badge: 2,
     },
     {
       icon: 'pi pi-comments',

@@ -51,6 +51,7 @@ export class NotificationsPageComponent implements OnInit, OnDestroy {
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
         message: notification.message,
       });
+      console.log(this.realTimeNotifications);
     });
   }
 
