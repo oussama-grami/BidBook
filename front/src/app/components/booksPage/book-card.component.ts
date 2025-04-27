@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Book } from './library-dashboard.component';
+import { Book } from './library-dashboard.component'; // Make sure this path is correct
 import {
   trigger,
   state,
@@ -11,14 +11,14 @@ import {
 import { RouterModule } from '@angular/router';
 import { ImagePreloadDirective } from '../../shared/directives/image-preload.directive';
 import { LoadingService } from '../../services/loading.service';
-import { FormsModule } from '@angular/forms'; // Import FormsModule
+import { FormsModule } from '@angular/forms';
 import { BookService } from '../../services/book.service';
-import {UserIdService} from '../../services/userid.service'; // Import BookService
+import { UserIdService } from '../../services/userid.service';
 
 @Component({
   selector: 'app-book-card',
   standalone: true,
-  imports: [CommonModule, RouterModule, ImagePreloadDirective, FormsModule], // Add FormsModule
+  imports: [CommonModule, RouterModule, ImagePreloadDirective, FormsModule],
   template: `
     <div
       class="book-card"
@@ -33,8 +33,7 @@ import {UserIdService} from '../../services/userid.service'; // Import BookServi
         [ngClass]="{ 'ribbon-lower': !isFavorite, 'ribbon-higher': isFavorite }"
       >
         <img
-          [src]="book.picture"
-          alt="{{ book.title }}"
+          [src]="getImageUrl()"  alt="{{ book.title }}"
           class="book-image"
           appImagePreload
           fallback="/images/image.png"
@@ -438,18 +437,30 @@ export class BookCardComponent {
   bidAmount: number | null = null;
   bidError: string = '';
   isSubmittingBid: boolean = false;
-  currentUserId: number | null = 1 ;
+  currentUserId: number | null = 1;
 
-  constructor(private loadingService: LoadingService, private bookService: BookService, private userIdService: UserIdService) {}
+  constructor(
+    private loadingService: LoadingService,
+    private bookService: BookService,
+    private userIdService: UserIdService
+  ) {}
   ngOnInit(): void {
     this.currentUserId = this.userIdService.getUserId();
   }
+
   getAverageRating(): number {
     if (!this.book.ratings || this.book.ratings.length === 0) {
       return 0;
     }
     const sum = this.book.ratings.reduce((acc, curr) => acc + curr.rate, 0);
     return sum / this.book.ratings.length;
+  }
+
+  getImageUrl(): string {
+    // Construct the URL to access the image.
+    //  The 'public' part of the path is removed because NestJS serves
+    //  the 'public' directory as static assets.
+    return `/upload/book/${this.book.picture.split('/').pop()}`;
   }
 
   onImageLoaded(bookId: string | number, success: boolean): void {
@@ -472,10 +483,8 @@ export class BookCardComponent {
     this.bidError = '';
     this.isSubmittingBid = true;
 
-
     this.bookService.createBid(this.book.id, this.bidAmount).subscribe({
       next: (bid) => {
-
         console.log('Bid submitted successfully:', bid);
         this.showBidInput = false;
         this.isSubmittingBid = false;
@@ -484,8 +493,7 @@ export class BookCardComponent {
         console.error('Error submitting bid:', err);
         this.bidError = 'Failed to submit bid. Please try again.';
         this.isSubmittingBid = false;
-      }
-
+      },
     });
   }
 

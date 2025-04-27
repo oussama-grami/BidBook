@@ -127,6 +127,10 @@ export abstract class IQuery {
     abstract book(id: number): Nullable<Book> | Promise<Nullable<Book>>;
 
     abstract myBooks(limit?: Nullable<number>, offset?: Nullable<number>): Book[] | Promise<Book[]>;
+
+    abstract GetBookCommentsPaginated(bookId: number, limit?: Nullable<number>, offset?: Nullable<number>): Comment[] | Promise<Comment[]>;
+
+    abstract CommentCount(bookId: number): number | Promise<number>;
 }
 
 export abstract class IMutation {

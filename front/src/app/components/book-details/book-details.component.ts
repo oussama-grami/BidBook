@@ -174,7 +174,8 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.currentUserId = this.userIdService.getUserId();
     if (this.bookId !== null && !this.error) {
-      this.fetchBookDetails();
+      this.loadBookDetailsAndBids(this.bookId);
+      this.fetchCommentsPaginated(this.currentPage, this.commentsPerPage); // Fetch the first page of comments
     } else {
       this.isLoadingBookDetails = false;
       if (!this.error) {
@@ -182,6 +183,16 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
       }
       console.error('ngOnInit aborted due to missing or invalid book ID.');
     }
+    if (this.bookId !== null) {
+      this.commentCountSubscription = this.bookService.getCommentCountForBook(this.bookId)
+        .subscribe(
+          (count) => {
+            this.CommentCount = count;
+            console.log(`Nombre de commentaires reçu pour livre ${this.bookId}: ${this.CommentCount}`);
+          }
+        );
+    }
+
   }
 
   ngOnDestroy(): void {
@@ -193,6 +204,12 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
     }
     if (this.ratingSubmissionSubscription) {
       this.ratingSubmissionSubscription.unsubscribe();
+    }
+    if (this.bidSubscription) {
+      this.bidSubscription.unsubscribe();
+    }
+    if (this.paginatedCommentsSubscription) {
+      this.paginatedCommentsSubscription.unsubscribe();
     }
   }
 
@@ -268,8 +285,8 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
-   // This method is now used to refetch details after actions like rating/favoriting
-   // It should also *not* load all comments, as comments are paginated separately.
+  // This method is now used to refetch details after actions like rating/favoriting
+  // It should also *not* load all comments, as comments are paginated separately.
   private fetchBookDetails(): void {
     if (this.bookId === null || this.error) {
       this.isLoadingBookDetails = false;
@@ -423,7 +440,7 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
           }
         },
         error: (error: any) => {
-           // Revert state on error (based on original code logic)
+          // Revert state on error (based on original code logic)
           this.isFavorite = true;
           if (this.likes > 0) this.likes--; // This seems incorrect for error, but keeping original logic
           this.error = 'Failed to add to favorites. Please try again.';
@@ -464,25 +481,25 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
         return response.data?.addCommentToBook;
       })
     )
-    .subscribe({
-      next: (newComment: Comment | null | undefined) => {
-        if (newComment) {
-          console.log('Comment added successfully:', newComment);
-          this.userComment = ''; // Clear the input field
-          this.CommentCount++;
-          this.displayedComments.unshift(newComment);
+      .subscribe({
+        next: (newComment: Comment | null | undefined) => {
+          if (newComment) {
+            console.log('Comment added successfully:', newComment);
+            this.userComment = ''; // Clear the input field
+            this.CommentCount++;
+            this.displayedComments.unshift(newComment);
 
 
 
-        } else {
-          this.error = 'Failed to add comment: Server returned no data.';
-        }
-      },
-      error: (err: any) => {
-        console.error('Error adding comment:', err);
-        this.error = 'Failed to add comment. Please try again.';
-      },
-    });
+          } else {
+            this.error = 'Failed to add comment: Server returned no data.';
+          }
+        },
+        error: (err: any) => {
+          console.error('Error adding comment:', err);
+          this.error = 'Failed to add comment. Please try again.';
+        },
+      });
   }
 
   // Method to fetch a specific page of comments from the backend
@@ -554,12 +571,12 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
 
   // Method to reset the displayed comments and fetch the first page
   resetCommentsDisplay(): void {
-     console.log('Resetting comments display and fetching first page...');
-     this.displayedComments = []; // Clear existing comments
-     this.currentPage = 1; // Reset to the first page
-     this.commentsLoaded = false; // Indicate comments are being reloaded
-     this.showLoadMoreButton = false; // Hide load more button until first page is fetched
-     this.fetchCommentsPaginated(this.currentPage, this.commentsPerPage); // Fetch the first page
+    console.log('Resetting comments display and fetching first page...');
+    this.displayedComments = []; // Clear existing comments
+    this.currentPage = 1; // Reset to the first page
+    this.commentsLoaded = false; // Indicate comments are being reloaded
+    this.showLoadMoreButton = false; // Hide load more button until first page is fetched
+    this.fetchCommentsPaginated(this.currentPage, this.commentsPerPage); // Fetch the first page
   }
 
   submitBid(): void {
@@ -636,7 +653,7 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.error('Error creating bid:', error);
-           // Handle GraphQL errors or network errors
+          // Handle GraphQL errors or network errors
           this.bidError = error.message || 'Failed to create bid. Please try again.';
           this.isSubmittingBid = false;
         },
