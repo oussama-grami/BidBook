@@ -1,11 +1,14 @@
+
+
 import {Injectable} from '@angular/core';
-import {Apollo, gql, MutationResult} from 'apollo-angular';
+import {Apollo, gql, MutationResult, QueryRef} from 'apollo-angular';
 import {Observable, tap} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
 import {UserRating} from '../components/booksPage/library-dashboard.component';
 import {BidStatus} from '../enums/status.enum';
 import { ADD_COMMENT_TO_BOOK_MUTATION, ADD_FAVORITE_MUTATION, ADD_RATE_MUTATION, REMOVE_FAVORITE_MUTATION, UPDATE_BOOK_RATE_MUTATION } from '../mutations/book.mutation';
+import { GET_BOOK_COMMENTS_PAGINATED, GET_COMMENT_COUNT } from '../queries/book.query';
 
 export interface Bid {
   id: number;
@@ -68,6 +71,30 @@ export interface AddCommentToBookResponse {
     createdAt: string;
   };
 }
+interface User {
+  id: number;
+  firstName: string;
+  lastName: string;
+  imageUrl: string;
+}
+
+interface Comment {
+  id: number;
+  content: string; 
+  user: User;
+  createdAt: string;
+}
+
+interface GetBookCommentsResponseData {
+  GetBookCommentsPaginated: Comment[];
+}
+interface CommentCountQueryResponse {
+  CommentCount: number; 
+}
+interface CommentCountQueryVariables {
+  bookId: number;
+}
+
 
 @Injectable({
   providedIn: 'root',
@@ -147,7 +174,6 @@ export class BookService {
             editor
             category
             createdAt
-
             bids {
               amount
             }
@@ -448,6 +474,42 @@ export class BookService {
         }
         console.error('Mutation did not return expected data', result);
         throw new Error('Failed to get UserRating from mutation result');
+      })
+    );
+}
+
+getBookCommentsPaginated(
+  bookId: number,
+  limit?: number,
+  offset?: number
+): Observable<Comment[]> {
+  return this.apollo
+    .watchQuery<GetBookCommentsResponseData>({
+      query: GET_BOOK_COMMENTS_PAGINATED,
+      variables: {
+        bookId: bookId,
+        limit: limit,
+        offset: offset,
+      },
+    })
+    .valueChanges.pipe(
+      map(result => result.data.GetBookCommentsPaginated)
+    );
+}
+
+getCommentCountForBook(bookId: number): Observable<number> {
+  return this.apollo
+    .watchQuery<CommentCountQueryResponse, CommentCountQueryVariables>({
+      query: GET_COMMENT_COUNT,
+      variables: { bookId },
+    })
+    .valueChanges.pipe(
+      map(result => {
+        if (result.errors) {
+          console.error('GraphQL Errors:', result.errors);
+          throw new Error('Error fetching comment count from GraphQL');
+        }
+        return result.data.CommentCount;
       })
     );
 }

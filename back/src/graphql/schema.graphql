@@ -104,6 +104,9 @@ type Query {
     userBookRating(userId: Int!, bookId: Int!): UserRating
     book(id: Int!): Book
     myBooks(limit: Int, offset: Int): [Book!]!
+    GetBookCommentsPaginated(bookId: Int!, limit: Int, offset: Int): [Comment!]!
+    CommentCount(bookId: Int!): Int!
+
 }
 type Mutation {
     addFavorite( bookId: Int!): Favorite!

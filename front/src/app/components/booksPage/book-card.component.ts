@@ -469,7 +469,7 @@ export class BookCardComponent {
     this.bidError = '';
     this.isSubmittingBid = true;
 
-    this.bookService.createBid(this.currentUserId, this.book.id, this.bidAmount).subscribe({
+    this.bookService.createBid(this.book.id, this.bidAmount).subscribe({
       next: (bid) => {
 
         console.log('Bid submitted successfully:', bid);

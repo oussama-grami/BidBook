@@ -93,3 +93,24 @@ export const MY_BIDS_QUERY = gql`
     }
   }
 `;
+
+export const GET_BOOK_COMMENTS_PAGINATED = gql`
+  query GetBookCommentsPaginated($bookId: Int!, $limit: Int, $offset: Int) {
+    GetBookCommentsPaginated(bookId: $bookId, limit: $limit, offset: $offset) {
+      id
+      content 
+      user { 
+        id
+        firstName
+        lastName
+        imageUrl
+      }
+      createdAt
+    }
+  }
+`;
+export const GET_COMMENT_COUNT = gql`
+  query GetCommentCount($bookId: Int!) {
+    CommentCount(bookId: $bookId)
+  }
+`;
