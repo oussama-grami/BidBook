@@ -111,6 +111,7 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
   likes: number = 0;
   description: string = '';
   price: number = 0;
+  CommentCount:number=0;
   lastBidPrice: number = 0;
   age: number | undefined;
   edition: string | undefined;
@@ -149,17 +150,20 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
   private favoriteActionSubscription?: Subscription;
   private ratingSubmissionSubscription?: Subscription;
   private deleteRatingSubscription?: Subscription;
-
+  private paginatedCommentsSubscription?: Subscription; // Subscription for paginated comments fetch
+  private commentCountSubscription?: Subscription;
   constructor(
     private route: ActivatedRoute,
     private bookService: BookService,
     private userIdService: UserIdService
   ) {
+    // Subscribe to route params to get the book ID
     this.route.params.subscribe(params => {
-      const id = +params['id'];
+      const id = +params['id']; // Convert param to number
       if (!isNaN(id)) {
         this.bookId = id;
       } else {
+        // Handle invalid book ID in route
         this.isLoadingBookDetails = false;
         this.error = 'Invalid book ID.';
         console.error('Invalid book ID in route params:', params['id']);
@@ -192,6 +196,80 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
+  // Loads main book details (excluding comments now)
+  loadBookDetailsAndBids(bookId: number): void {
+    this.isLoadingBookDetails = true;
+    this.error = null; // Clear previous errors
+
+    // Unsubscribe from any previous book details query
+    this.querySubscription?.unsubscribe();
+
+    this.querySubscription = this.bookService.getBookDetails(bookId).subscribe({
+      next: (book: Book) => {
+        if (book) {
+          // Assign book details properties
+          this.title = book.title || '';
+          this.author = book.author || '';
+          this.genre = (book.category as any)?.name || book.category?.toString() || '';
+          this.coverImage = book.picture || '/images/placeholder.png';
+          this.price = book.price || 0;
+          this.pages = book.totalPages || 0;
+          this.age = book.age;
+          this.edition = book.edition?.toString() || undefined;
+          this.language = book.language?.toString() || undefined;
+          this.editor = book.editor || undefined;
+          this.owner = book.owner;
+          this.likes = book.favorites?.length || 0;
+          this.isFavorite = book.favorites?.some(fav => fav.user?.id === this.currentUserId) || false;
+
+          // Comments are now handled by fetchCommentsPaginated, so remove this line:
+          // this.comments = book.comments || [];
+          // And remove the client-side reset:
+          // this.resetDisplayedComments();
+          // this.commentsLoaded = true; // This will be set after the first page of comments loads
+
+          // Determine the initial last bid price
+          if (book.bids && book.bids.length > 0) {
+            const sortedBids = [...book.bids].sort((a, b) => b.amount - a.amount);
+            this.lastBidPrice = sortedBids[0].amount;
+            this.hasBid = book.bids.some(bid => bid.bidder?.id === this.currentUserId);
+          } else {
+            this.lastBidPrice = this.price;
+            this.hasBid = false;
+          }
+
+          // Calculate and set ratings
+          if (book.ratings && book.ratings.length > 0) {
+            const totalRate = book.ratings.reduce((sum, r) => sum + r.rate, 0);
+            this.rating = totalRate / book.ratings.length;
+            this.votes = book.ratings.length;
+          } else {
+            this.rating = 0;
+            this.votes = 0;
+          }
+
+          // Update star states based on average rating
+          this.starStates = Array(5).fill('inactive').map((_, index) =>
+            index < Math.round(this.rating) ? 'active' : 'inactive'
+          );
+        } else {
+          // Handle case where book is not found
+          this.error = 'Book not found.';
+          console.warn('Book details response was null or undefined.');
+        }
+        this.isLoadingBookDetails = false; // Loading complete
+      },
+      error: (err) => {
+        // Handle errors during book details fetch
+        console.error('Error fetching book details:', err);
+        this.error = 'Failed to load book details. Please try again.';
+        this.isLoadingBookDetails = false;
+      },
+    });
+  }
+
+   // This method is now used to refetch details after actions like rating/favoriting
+   // It should also *not* load all comments, as comments are paginated separately.
   private fetchBookDetails(): void {
     if (this.bookId === null || this.error) {
       this.isLoadingBookDetails = false;
@@ -252,16 +330,17 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
             this.rating = 0;
             this.votes = 0;
             this.userRating = 0;
-            this.hasRated = false;
           }
 
           this.starStates = Array(5).fill('inactive').map((_, index) =>
             index < this.userRating ? 'active' : 'inactive'
           );
 
-          this.comments = book.comments || [];
-          this.resetDisplayedComments();
-          this.commentsLoaded = true;
+          // Comments are handled by server-side pagination, remove these:
+          // this.comments = book.comments || [];
+          // this.resetDisplayedComments();
+          // this.commentsLoaded = true;
+
 
           this.isLoadingBookDetails = false;
         } else {
@@ -295,6 +374,7 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
     }
 
     this.error = null;
+
     this.ratingSubmissionSubscription?.unsubscribe();
 
     const ratingAction = this.hasRated
@@ -304,7 +384,6 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
     this.ratingSubmissionSubscription = ratingAction.subscribe({
       next: (response: UserRating) => {
         this.fetchBookDetails();
-        this.hasRated = true;
       },
       error: (err: any) => {
         this.error = 'Failed to submit/update rating. Please try again.';
@@ -337,14 +416,16 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
           if (success) {
             this.fetchBookDetails();
           } else {
+            // Revert state on failure (based on original code logic)
             this.isFavorite = false;
             if (this.likes > 0) this.likes--;
             this.error = 'Failed to add to favorites.';
           }
         },
         error: (error: any) => {
+           // Revert state on error (based on original code logic)
           this.isFavorite = true;
-          if (this.likes > 0) this.likes--;
+          if (this.likes > 0) this.likes--; // This seems incorrect for error, but keeping original logic
           this.error = 'Failed to add to favorites. Please try again.';
         }
       });
@@ -383,56 +464,102 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
         return response.data?.addCommentToBook;
       })
     )
-      .subscribe({
-        next: (newComment: Comment | null | undefined) => {
-          if (newComment) {
-            this.comments = [newComment, ...this.comments];
-            this.resetDisplayedComments();
-            this.userComment = '';
-          } else {
-            this.error = 'Failed to add comment: Server returned no data.';
-          }
-        },
-        error: (err: any) => {
-          this.error = 'Failed to add comment. Please try again.';
-        },
-      });
+    .subscribe({
+      next: (newComment: Comment | null | undefined) => {
+        if (newComment) {
+          console.log('Comment added successfully:', newComment);
+          this.userComment = ''; // Clear the input field
+          this.CommentCount++;
+          this.displayedComments.unshift(newComment);
+
+
+
+        } else {
+          this.error = 'Failed to add comment: Server returned no data.';
+        }
+      },
+      error: (err: any) => {
+        console.error('Error adding comment:', err);
+        this.error = 'Failed to add comment. Please try again.';
+      },
+    });
   }
 
-  loadMoreComments(): void {
-    if (this.bookId === null || this.isLoadingComments || !this.comments || this.displayedComments.length === this.comments.length) {
+  // Method to fetch a specific page of comments from the backend
+  fetchCommentsPaginated(page: number, pageSize: number): void {
+    if (this.bookId === null) {
+      console.error('Cannot fetch paginated comments: Book ID is missing.');
+      // Optionally set an error property here
       return;
     }
 
-    const startIndex = this.displayedComments.length;
-    const endIndex = Math.min(startIndex + this.commentsPerPage, this.comments.length);
-
-    this.isLoadingComments = true;
-    setTimeout(() => {
-      const newComments = this.comments.slice(startIndex, endIndex);
-      this.displayedComments = [...this.displayedComments, ...newComments];
-      this.currentPage++;
-      this.isLoadingComments = false;
-      this.updateLoadMoreButtonVisibility();
-    }, 300);
-  }
-
-  resetDisplayedComments(): void {
-    if (this.comments && this.comments.length > 0) {
-      this.displayedComments = this.comments.slice(0, this.commentsPerPage);
-      this.currentPage = 1;
-      this.updateLoadMoreButtonVisibility();
-      console.log(`Reset displayed comments. Showing <span class="math-inline">\{this\.displayedComments\.length\}/</span>{this.comments.length}`);
-    } else {
-      this.displayedComments = [];
-      this.currentPage = 1;
-      this.showLoadMoreButton = false;
-      console.log('No comments to display after reset.');
+    if (this.isLoadingComments) {
+      console.warn('Already loading comments. Ignoring request.');
+      return;
     }
+
+    this.isLoadingComments = true; // Set loading state
+    // this.error = null; // Keep previous errors unless they are comment-specific
+
+    // Calculate the offset for the requested page
+    const offset = (page - 1) * pageSize;
+    const limit = pageSize;
+
+    console.log(`Attempting to fetch comments for book ID ${this.bookId}, page ${page}, limit ${limit}, offset ${offset}`);
+
+    // Unsubscribe from any ongoing paginated comments fetch to avoid race conditions
+    this.paginatedCommentsSubscription?.unsubscribe();
+
+    // Call the service method to get paginated comments
+    this.paginatedCommentsSubscription = this.bookService.getBookCommentsPaginated(this.bookId, limit, offset).subscribe({
+      next: (comments: Comment[]) => {
+        console.log(`Successfully fetched ${comments.length} paginated comments for page ${page}.`);
+
+        // Append the fetched comments to the displayed list
+        this.displayedComments = [...this.displayedComments, ...comments];
+
+        this.isLoadingComments = false; // Loading complete
+        this.commentsLoaded = true; // Mark comments as loaded after the first fetch
+
+        // Determine if there are potentially more comments to load
+        // If the number of comments returned is less than the requested page size,
+        // it's likely the last page.
+        this.showLoadMoreButton = comments.length === pageSize;
+
+        console.log('Fetched Paginated Comments Data:', comments);
+        console.log('Current displayed comments count:', this.displayedComments.length);
+        console.log('Show Load More Button:', this.showLoadMoreButton);
+      },
+      error: (err) => {
+        console.error('Error fetching paginated comments:', err);
+        // Handle the error, e.g., display an error message to the user
+        this.error = 'Failed to load comments. Please try again.';
+        this.isLoadingComments = false; // Loading complete
+        this.commentsLoaded = true; // Still mark as loaded even on error for initial state
+      },
+    });
   }
 
-  updateLoadMoreButtonVisibility(): void {
-    this.showLoadMoreButton = (this.comments?.length || 0) > this.displayedComments.length;
+  // Method to load the next page of comments
+  loadMoreComments(): void {
+    // Only load more if not already loading and if the button is shown (indicating more pages)
+    if (this.isLoadingComments || !this.showLoadMoreButton || this.bookId === null) {
+      console.log('Load more comments aborted: isLoadingComments:', this.isLoadingComments, 'showLoadMoreButton:', this.showLoadMoreButton);
+      return;
+    }
+
+    this.currentPage++; // Increment the page number
+    this.fetchCommentsPaginated(this.currentPage, this.commentsPerPage); // Fetch the next page
+  }
+
+  // Method to reset the displayed comments and fetch the first page
+  resetCommentsDisplay(): void {
+     console.log('Resetting comments display and fetching first page...');
+     this.displayedComments = []; // Clear existing comments
+     this.currentPage = 1; // Reset to the first page
+     this.commentsLoaded = false; // Indicate comments are being reloaded
+     this.showLoadMoreButton = false; // Hide load more button until first page is fetched
+     this.fetchCommentsPaginated(this.currentPage, this.commentsPerPage); // Fetch the first page
   }
 
   submitBid(): void {
@@ -441,7 +568,6 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
       this.bidError = '';
       return;
     }
-
 
     if (this.bookId === null) {
       this.bidError = 'Book ID is missing.';
@@ -510,6 +636,7 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.error('Error creating bid:', error);
+           // Handle GraphQL errors or network errors
           this.bidError = error.message || 'Failed to create bid. Please try again.';
           this.isSubmittingBid = false;
         },

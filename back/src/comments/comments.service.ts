@@ -46,13 +46,29 @@ async removeComment(commentId: number): Promise<boolean> {
     });
   }
 
-  async findCommentsByBook(bookId: number): Promise<Comment[]> {
-    return await this.commentRepository.find({
-      where: { book: { id: bookId } },
-      relations: ['user'],
-      order: { createdAt: 'DESC' },
-    });
-  }
+ 
+  async countByBookId(bookId: number): Promise<number> {
+           return this.commentRepository.count({ where: { book: { id: bookId } } });
+    }
+      async findCommentsByBook(bookId: number, limit?: number, offset?: number): Promise<Comment[]> {
+        const queryBuilder = this.commentRepository.createQueryBuilder('comment'); 
+   
+        queryBuilder
+          .leftJoinAndSelect('comment.user', 'user') 
+          .where('comment.book.id = :bookId', { bookId }) 
+          .orderBy('comment.createdAt', 'DESC') 
+          .addOrderBy('comment.id', 'ASC'); 
+   
+        if (limit !== undefined) {
+          queryBuilder.take(limit);
+        }
+        if (offset !== undefined) {
+          queryBuilder.skip(offset);
+        }
+        return queryBuilder.getMany();
+      }
+  
+
   create(createCommentDto: CreateCommentDto) {
     return 'This action adds a new comment';
   }

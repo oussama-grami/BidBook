@@ -1,11 +1,10 @@
 import { Resolver, Mutation, Query, Args, Int, Subscription, ResolveField, Parent, Context } from '@nestjs/graphql';
 import { CommentsService } from "../comments/comments.service"
 import { Comment } from '../graphql';
-import { InternalServerErrorException, NotFoundException, UseGuards } from '@nestjs/common';
+import {UseGuards } from '@nestjs/common';
 import { PubSub } from 'graphql-subscriptions';
-import { Book } from 'src/graphql';
-import { AuthService } from 'src/auth/auth.service'; // Import UserService
-import { GqlAuthGuard } from 'src/auth/guards/gql.guard';
+import { AuthService } from '../auth/auth.service'; 
+import { GqlAuthGuard } from '../auth/guards/gql.guard';
 
 const pubSub = new PubSub();
 
@@ -16,6 +15,33 @@ export class CommentsResolver {
       private readonly userService: AuthService,
   ) {}
  
+@Query('CommentCount')
+async commentCount(
+  @Args('bookId', { type: () => Int }) bookId: number,
+): Promise<number> {
+  if (bookId === null || bookId === undefined) {
+    throw new Error("L'ID du livre est requis pour compter les commentaires.");
+  }
+
+  try {
+    const count = await this.commentsService.countByBookId(bookId);
+    return count;
+  } catch (error) {
+    console.error(`Erreur lors de la résolution de CommentCount pour bookId ${bookId}:`, error);
+    throw new Error(`Impossible de récupérer le nombre de commentaires pour le livre ID ${bookId}.`);
+  }
+}
+@Query('GetBookCommentsPaginated')
+async getBookCommentsPaginated(
+  @Args('bookId') bookId: number,
+  @Args('limit', { nullable: true }) limit?: number,
+  @Args('offset', { nullable: true }) offset?: number,
+): Promise<any[]> {
+  console.log(`Resolver received: bookId=${bookId}, limit=${limit}, offset=${offset}`);
+  const comments = await this.commentsService.findCommentsByBook(bookId, limit, offset);
+  return comments;
+}
+
   @UseGuards(GqlAuthGuard)
 @Mutation('addCommentToBook')
 async addCommentToBook(
@@ -71,14 +97,13 @@ async addCommentToBook(
   }
 
   @ResolveField('user', () => 'User')
-  async user(@Parent() comment: any) { // Type 'any' laissé comme dans votre code original
+  async user(@Parent() comment: any) { 
     try {
-      // Ligne modifiée pour utiliser la condition where { id: comment.userId }
-      // ATTENTION : Ceci ne corrige PAS l'erreur si comment.userId est undefined/null
-      return await this.userService.findOne({ where: { id: comment.userId } }); // <-- LIGNE CHANGÉE
+    
+      return await this.userService.findOne({ where: { id: comment.userId } }); 
 
     } catch (error) {
-      // Ce bloc catch attrapera l'erreur si comment.userId est undefined/null
+      
       console.error('Error fetching user for comment:', error);
       return null;
     }

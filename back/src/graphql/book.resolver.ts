@@ -37,7 +37,7 @@ export class BookResolver {
         console.log('Fetching book details for ID:', id);
         return this.bookService.findOne(id);
     }
-
+     
     @Query('book')
     async getBook(@Args('id', { type: () => Int }) id: number): Promise<Book | null> {
         try {
