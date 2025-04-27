@@ -260,10 +260,19 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
             const totalRate = book.ratings.reduce((sum, r) => sum + r.rate, 0);
             this.rating = totalRate / book.ratings.length;
             this.votes = book.ratings.length;
+            const userExistingRating = book.ratings.find(r => r.user?.id === this.currentUserId);
+            if (userExistingRating) {
+              this.userRating = userExistingRating.rate;
+              this.hasRated = true; // Set hasRated to true if the user has a rating
+            } else {
+              this.userRating = 0;
+              this.hasRated = false;
+            }
           } else {
             this.rating = 0;
             this.votes = 0;
           }
+
 
           // Update star states based on average rating
           this.starStates = Array(5).fill('inactive').map((_, index) =>
