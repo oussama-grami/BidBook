@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { BookCardComponent} from '../booksPage/book-card.component';
 import { CategoryListComponent } from '../booksPage/category-bar.component';
 import { animate, query, stagger, style, transition, trigger } from '@angular/animations';
 import { CategoryEnum } from '../../enums/category.enum';
@@ -8,11 +7,12 @@ import { BookService } from '../../services/book.service';
 import { Subscription } from 'rxjs';
 import { UserIdService } from '../../services/userid.service';
 import { Book } from '../../services/book.service';
+import { MyBookCardComponent } from './my-book-card.component';
 
 @Component({
   selector: 'app-my-books-page',
   standalone: true,
-  imports: [CommonModule, BookCardComponent, CategoryListComponent],
+  imports: [CommonModule, MyBookCardComponent, CategoryListComponent], // Use BookCardComponent in imports
   templateUrl: './my-books-page.component.html',
   styleUrls: ['./my-books-page.component.css'],
   animations: [
@@ -80,7 +80,7 @@ export class MyBooksPageComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly bookService: BookService,
-    private readonly userIdService: UserIdService
+    private readonly userIdService: UserIdService,
   ) {}
 
   ngOnInit() {

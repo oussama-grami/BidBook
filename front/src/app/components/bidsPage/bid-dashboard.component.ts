@@ -7,8 +7,6 @@ import { Bid, BookService } from '../../services/book.service';
 import { Subscription } from 'rxjs';
 import { Apollo } from 'apollo-angular';
 import { HttpLink } from 'apollo-angular/http';
-import { ActivatedRoute } from '@angular/router';
-import {fadeAnimation, slideAnimation, slideUpAnimation} from '../../shared/animations';
 import {animate, query, stagger, style, transition, trigger} from '@angular/animations';
 
 
@@ -90,7 +88,6 @@ export class ViewBidsPageComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly bookService: BookService,
-    private readonly ActivatedRoute: ActivatedRoute
   ) {}
 
   ngOnInit(): void {

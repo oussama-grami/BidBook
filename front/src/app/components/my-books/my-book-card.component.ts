@@ -1,6 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Book } from './library-dashboard.component';
+import { Router } from '@angular/router';
+import { Book } from '../../services/book.service';
 import {
   trigger,
   state,
@@ -77,17 +78,9 @@ import { Subscription } from 'rxjs';
                 {{ book.createdAt | date:'mediumDate' }}
               </span>
             </div>
-            <button class="bid-button" (click)="openBidInput()" *ngIf="!showBidInput">
-              Bid
+            <button class="edit-button" (click)="goToEditPage(book.id)">
+              Edit
             </button>
-            <div *ngIf="showBidInput" class="bid-input-container">
-              <input type="number" [(ngModel)]="bidAmount" placeholder="Your Bid">
-              <button (click)="submitBid()" [disabled]="isSubmittingBid">
-                {{ isSubmittingBid ? 'Bidding...' : 'Place Bid' }}
-              </button>
-              <button (click)="closeBidInput()">Cancel</button>
-              <div *ngIf="bidError" class="error-message">{{ bidError }}</div>
-            </div>
           </div>
         </div>
       </div>
@@ -308,7 +301,7 @@ import { Subscription } from 'rxjs';
       justify-content: center;
     }
 
-    .bid-button {
+    .edit-button {
       font-family: 'Poppins', sans-serif;
       background-color: #50719c;
       color: white;
@@ -321,56 +314,14 @@ import { Subscription } from 'rxjs';
       transition: all 0.3s ease;
     }
 
-    .bid-button:hover {
+    .edit-button:hover {
       transform: translateY(-2px);
       box-shadow: 0 4px 8px rgba(80, 113, 156, 0.3);
       background-color: #445e82;
     }
 
-    .bid-input-container {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-top: 8px;
-    }
 
-    .bid-input-container input[type="number"] {
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      font-size: 12px;
-    }
 
-    .bid-input-container button {
-      font-family: 'Poppins', sans-serif;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 20px;
-      padding: 6px 16px;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .bid-input-container button:hover {
-      background-color: #45a049;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
-    }
-
-    .bid-input-container button:disabled {
-      background-color: #ccc;
-      cursor: not-allowed;
-      box-shadow: none;
-      transform: none;
-    }
-
-    .error-message {
-      color: red;
-      font-size: 11px;
-    }
 
     @media (max-width: 640px) {
       .book-info {
@@ -395,7 +346,7 @@ import { Subscription } from 'rxjs';
         font-size: 12px;
       }
 
-      .bid-button {
+      .edit-button {
         padding: 4px 12px;
         font-size: 11px;
       }
@@ -429,47 +380,36 @@ import { Subscription } from 'rxjs';
     ]),
   ],
 })
-
-export class BookCardComponent implements OnInit {
+export class MyBookCardComponent implements OnInit, OnDestroy {
   @Input() book!: Book;
   @Input() special: boolean = false;
   @Input() isFavorite: boolean = false;
   isHovered: boolean = false;
-
-  showBidInput: boolean = false;
-  bidAmount: number | null = null;
-  bidError: string = '';
-  isSubmittingBid: boolean = false;
   commentCount: number = 0;
   favoriteCount: number = 0;
   private commentCountSubscription?: Subscription;
   private favoriteCountSubscription?: Subscription;
   constructor(
-    private loadingService: LoadingService, // Injected, though not used in this snippet
-    private bookService: BookService
+    private loadingService: LoadingService,
+    private bookService: BookService,
+    private router: Router
   ) {}
 
-  // Lifecycle hook called after input properties are set
   ngOnInit(): void {
-    // Fetch the comment count when the component initializes
     this.getCommentCount();
     this.getFavoriteCount();
   }
 
-  // Lifecycle hook called just before the component is destroyed
   ngOnDestroy(): void {
-    // Unsubscribe to prevent memory leaks
     if (this.commentCountSubscription) {
       this.commentCountSubscription.unsubscribe();
     }
     if (this.favoriteCountSubscription) {
       this.favoriteCountSubscription.unsubscribe();
     }
-
   }
 
   getAverageRating(): number {
-    // Ensure book and ratings array exist and are not empty
     if (!this.book || !this.book.ratings || this.book.ratings.length === 0) {
       return 0;
     }
@@ -481,68 +421,32 @@ export class BookCardComponent implements OnInit {
     if (!success) {
       console.warn(`Failed to load image for book ID: ${bookId}`);
     }
-    // You might want to hide a spinner or handle UI here
-  }
-
-  openBidInput(): void {
-    this.showBidInput = true;
-    this.bidAmount = null; // Reset bid amount
-    this.bidError = ''; // Clear any previous errors
-  }
-
-  submitBid(): void {
-    // Basic validation
-    if (this.bidAmount === null || this.bidAmount <= 0) {
-      this.bidError = 'Please enter a valid bid amount.';
-      return;
-    }
-
-    // Clear previous error and indicate submission in progress
-    this.bidError = '';
-    this.isSubmittingBid = true;
-
-    // Call the service method to create the bid
-    // Assuming createBid returns an Observable<Bid>
-    this.bookService.createBid(this.book.id, this.bidAmount).subscribe({
-      next: (bid) => {
-        console.log('Bid submitted successfully:', bid);
-        this.showBidInput = false; // Close bid input on success
-        this.isSubmittingBid = false;
-        // Optional: Add logic to update UI, show confirmation message, etc.
-      },
-      error: (err) => {
-        console.error('Error submitting bid:', err);
-        this.bidError = 'Failed to submit bid. Please try again.'; // Display user-friendly error
-        this.isSubmittingBid = false; // Stop submitting state
-        // Optional: Handle specific error types (e.g., insufficient funds)
-      }
-    });
-  }
-
-  closeBidInput(): void {
-    this.showBidInput = false;
-    this.bidAmount = null;
-    this.bidError = '';
   }
 
   getCommentCount(): void {
     this.commentCountSubscription = this.bookService.getCommentCountForBook(this.book.id)
-        .subscribe(
-          (count) => {
-            this.commentCount = count;
-            console.log(`Number of comments for the book ${this.book.id}: ${this.commentCount}`);
-          }
-        );
+      .subscribe(
+        (count) => {
+          this.commentCount = count;
+          console.log(`Number of comments for the book ${this.book.id}: ${this.commentCount}`);
+        }
+      );
 
   }
   getFavoriteCount(): void {
 
     this.favoriteCountSubscription = this.bookService.getFavoriteCount(this.book.id)
-    .subscribe(
-      (count) => {
-        this.favoriteCount= count;
-        console.log(`Number of likes for the book${this.book.id}: ${this.favoriteCount}`);
-      }
-    );
+      .subscribe(
+        (count) => {
+          this.favoriteCount= count;
+          console.log(`Number of likes for the book${this.book.id}: ${this.favoriteCount}`);
+        }
+      );
+  }
+
+  // New method to handle redirection to the edit page
+  goToEditPage(bookId: number): void {
+    this.router.navigate(['/books/update', bookId]);
   }
 }
+
