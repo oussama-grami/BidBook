@@ -49,14 +49,14 @@ async addCommentToBook(
     @Args('content') content: string,
     @Context() context: any
 ): Promise<Comment> {
+  console.log('addCommentToBook called with:', { bookId, content })
     const user = context.req.user;
-
     if (!user) {
         throw new Error('Utilisateur non authentifié');
     }
 
     const userId = user.id;
-
+    console.log('User ID:', userId);
     const newComment = await this.commentsService.addCommentToBook(bookId, userId, content);
     pubSub.publish('commentAdded', { commentAdded: newComment, bookId });
     return newComment;

@@ -12,10 +12,11 @@ export class CommentsService {
       private readonly commentRepository: Repository<Comment>,
   ) {}
   async addCommentToBook(bookId: number, userId: number, content: string): Promise<Comment> {
+    console.log('Adding comment Hiba:', { bookId, userId, content });
     if (!content || content.trim().length === 0) {
         throw new BadRequestException('Comment content cannot be empty.');
     }
-
+    
     const newComment = this.commentRepository.create({
         content: content,
         user:  { id: userId }  , 

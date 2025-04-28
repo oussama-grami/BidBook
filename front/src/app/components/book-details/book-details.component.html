@@ -138,7 +138,7 @@
       </div>
 
       <div class="comments-container" [@fadeInOut]>
-           <h3 class="comments-title">Comments ({{ displayedComments.length || 0 }})</h3>
+           <h3 class="comments-title">Comments ({{CommentCount }})</h3>
 
         <div class="comments-list">
            <div
@@ -167,7 +167,6 @@
           >
             <div class="comment-header">
               <div class="user-info">
-                 <!--img [src]="comment.user?.imageUrl || '/images/person.png'" alt="User" class="user-avatar" /-->
                 <div class="user-details">
                    <span class="user-name">{{ comment.user?.firstName }} {{ comment.user?.lastName }}</span>
                    <span class="comment-date">{{

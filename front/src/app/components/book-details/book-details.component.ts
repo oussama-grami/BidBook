@@ -21,6 +21,7 @@ interface Comment {
   user?: {
     firstName: string;
     lastName: string;
+    imageUrl: string;
   };
   createdAt: string;
 }
@@ -489,7 +490,7 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
             this.CommentCount++;
             this.displayedComments.unshift(newComment);
 
-
+             
 
           } else {
             this.error = 'Failed to add comment: Server returned no data.';
@@ -531,7 +532,7 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
     this.paginatedCommentsSubscription = this.bookService.getBookCommentsPaginated(this.bookId, limit, offset).subscribe({
       next: (comments: Comment[]) => {
         console.log(`Successfully fetched ${comments.length} paginated comments for page ${page}.`);
-
+         console.log(comments[0].user?.imageUrl)  ;       
         // Append the fetched comments to the displayed list
         this.displayedComments = [...this.displayedComments, ...comments];
 
