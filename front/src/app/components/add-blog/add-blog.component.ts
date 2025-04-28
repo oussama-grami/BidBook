@@ -4,6 +4,7 @@ import {NgClass, NgForOf, NgIf} from '@angular/common';
 import {CategoryEnum} from '../../enums/category.enum';
 import {ArticleService} from '../../services/article.service';
 import {HttpClientModule, provideHttpClient} from '@angular/common/http';
+import {AuthService} from '../../services/auth.service';
 
 @Component({
   selector: 'app-add-blog',
@@ -22,13 +23,14 @@ export class AddBlogComponent {
   categories: string[] = [CategoryEnum.FICTION, CategoryEnum.SCIENCE, CategoryEnum.TECHNOLOGY,CategoryEnum.TRAVEL, CategoryEnum.FOOD, CategoryEnum.LIFESTYLE,CategoryEnum.All];
   submitted = false;
   successMessage = '';
-  authorId = 1;
+  authorId = 0;
   selectedFile: File | null = null;
   message = '';
   messageType: 'success' | 'error' | '' = '';
 
 
-  constructor(private fb: FormBuilder, private articleService: ArticleService) {
+  constructor(private fb: FormBuilder, private articleService: ArticleService,
+              private authService: AuthService,) {
     this.articleForm = this.fb.group({
       title: ['', Validators.required],
       picture: ['', Validators.required],
@@ -36,7 +38,11 @@ export class AddBlogComponent {
       content: ['', Validators.required]
     });
   }
-
+  ngOnInit() {
+    this.authService.getProfile().subscribe(data => {
+      this.authorId = data.id;
+    })
+  }
   get f() {
     return this.articleForm.controls;
   }
@@ -69,7 +75,6 @@ export class AddBlogComponent {
               this.message = 'Article ajouté avec succès !';
               this.messageType = 'success';
 
-// Après un petit délai, cache la notification
               setTimeout(() => {
                 this.message = '';
                 this.messageType = '';

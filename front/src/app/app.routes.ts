@@ -77,6 +77,15 @@ export const routes: Routes = [
         data: { animation: 'slideLeft' },
       },
       {
+        path: 'update/:id',
+        loadComponent: () =>
+          import('./components/update-blog/update-blog.component').then(
+            (c) => c.UpdateArticleComponent
+          ),
+        resolve: { pageData: DataLoadingResolver },
+        data: { animation: 'slideLeft' },
+      },
+      {
         path: ':id',
         loadComponent: () =>
           import('./components/blog/blog.component').then(
