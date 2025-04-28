@@ -72,10 +72,10 @@ export class BookResolver {
 
 
     @ResolveField('owner', () => 'User')
-    async owner(@Parent() book: any) {
+    async owner(@Parent() book: Book) {
         console.log('Book object in owner resolver:', book);
-        console.log('book.ownerId:', book.ownerId);
-        return this.userService.findOne(book.ownerId);
+        console.log('book.ownerId:', book.owner.id);
+        return this.userService.findOne({ where: { id: book.owner.id } });
     }
 
     @ResolveField('comments', () => '[Comment]')

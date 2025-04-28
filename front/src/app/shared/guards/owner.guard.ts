@@ -18,9 +18,11 @@ export class OwnerGuard implements CanActivate {
   canActivate(
     route: ActivatedRouteSnapshot
   ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+    console.log('OwnerGuard: Route params:', route.params);
     const bookId = +route.params['id'];
+    console.log('OwnerGuard: bookId:', bookId);
     const userId = this.userIdService.getUserId();
-
+    console.log('OwnerGuard: userId:', userId);
     if (!userId) {
       console.log('OwnerGuard: User ID not found, redirecting to /login');
       return this.router.parseUrl('/login');
