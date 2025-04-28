@@ -20,12 +20,20 @@ import { MenubarModule } from 'primeng/menubar';
 import { ButtonModule } from 'primeng/button';
 import { Toast } from 'primeng/toast';
 import { SideMenuComponent } from './components/side-menu/side-menu.component';
-import { ElegantLoadingComponent } from './shared/components/elegant-loading/elegant-loading.component';
-import { LoadingService } from './services/loading.service';
-import { fadeAnimation, slideAnimation, fadeScaleAnimation, pulseAnimation } from './shared/animations';
-import { routeAnimations } from './shared/route-animations';
+import {
+  fadeAnimation,
+  slideAnimation,
+  fadeScaleAnimation,
+  pulseAnimation,
+  zoomAnimation,
+  rotateAnimation,
+  slideUpAnimation,
+  routeTransitionAnimations,
+} from './shared/animations';
 import { AuthService } from './services/auth.service';
 import { first } from 'rxjs/operators';
+import { LoadingComponent } from './components/loading/loading.component';
+import { LoadingService } from './services/loading.service';
 
 @Component({
   selector: 'app-root',
@@ -37,11 +45,20 @@ import { first } from 'rxjs/operators';
     ButtonModule,
     Toast,
     SideMenuComponent,
-    ElegantLoadingComponent,
+    LoadingComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
-  animations: [fadeAnimation, slideAnimation, fadeScaleAnimation, pulseAnimation, routeAnimations],
+  animations: [
+    fadeAnimation,
+    slideAnimation,
+    fadeScaleAnimation,
+    pulseAnimation,
+    zoomAnimation,
+    rotateAnimation,
+    slideUpAnimation,
+    routeTransitionAnimations,
+  ],
 })
 export class AppComponent implements OnInit {
   title = 'E-Books';
@@ -50,26 +67,34 @@ export class AppComponent implements OnInit {
   isSmallScreen: boolean = false;
   private applicationRef = inject(ApplicationRef);
   private ngZone = inject(NgZone);
+  isLoading = false;
 
   constructor(
     private router: Router,
-    public loadingService: LoadingService,
-    private authService: AuthService
+    private authService: AuthService,
+    private loadingService: LoadingService
   ) {
     // Run router events outside Angular zone to avoid stability issues
     this.ngZone.runOutsideAngular(() => {
       this.router.events.subscribe((event: Event) => {
         if (event instanceof NavigationStart) {
-          this.ngZone.run(() => this.loadingService.show());
+          // Navigation started
+          this.ngZone.run(() => {
+            // Using loadingService instead of directly setting isLoading
+            // loadingService will handle this internally
+          });
         } else if (
           event instanceof NavigationEnd ||
           event instanceof NavigationCancel ||
           event instanceof NavigationError
         ) {
-          // Small delay to ensure view is ready
-          setTimeout(() => {
-            this.ngZone.run(() => this.loadingService.hide());
-          }, 100);
+          // Navigation ended
+          this.ngZone.run(() => {
+            // Let loadingService handle the end of navigation
+            setTimeout(() => {
+              // Small delay for smoother transitions
+            }, 300);
+          });
         }
       });
     });
@@ -79,7 +104,6 @@ export class AppComponent implements OnInit {
       .pipe(first((isStable) => isStable))
       .subscribe(() => {
         console.log('Application is now stable');
-        this.loadingService.hide();
       });
   }
 
@@ -119,6 +143,25 @@ export class AppComponent implements OnInit {
 
   getRouteAnimationState(outlet: RouterOutlet) {
     if (!outlet.isActivated) return '';
-    return outlet.activatedRoute.snapshot.data?.['animation'] || 'slideLeft';
+
+    // Get the animation type from the route data
+    const animation = outlet.activatedRoute.snapshot.data?.['animation'];
+
+    // Map the animation string to the appropriate animation trigger
+    switch (animation) {
+      case 'fade':
+        return 'fadeAnimation';
+      case 'slideLeft':
+        return 'slideAnimation';
+      case 'slideUp':
+        return 'slideUpAnimation';
+      case 'zoom':
+        return 'zoomAnimation';
+      case 'rotate':
+        return 'rotateAnimation';
+      default:
+        // Default to fade animation if none specified
+        return 'fadeAnimation';
+    }
   }
 }

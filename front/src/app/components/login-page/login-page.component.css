@@ -1,0 +1,352 @@
+/* Login page styling */
+.login-page {
+  font-family: 'Poppins', sans-serif;
+  display: flex;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  animation: fadeIn 0.8s ease-in-out;
+  width: 100%;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromLeft {
+  from {
+    transform: translateX(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    transform: translateX(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromTop {
+  from {
+    transform: translateY(-30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Form input styling */
+.p-inputtext {
+  box-shadow: none !important;
+  width: 100%;
+  border-radius: 16px !important;
+  padding: 16px 16px 16px 50px !important;
+  background-color: rgba(240, 238, 255, 0.8) !important;
+  font-size: 14px;
+  border: none !important;
+  height: 52px;
+}
+
+.p-inputtext:focus {
+  box-shadow: none !important;
+  border-color: transparent !important;
+}
+
+.p-inputtext:hover {
+  border-color: transparent !important;
+}
+
+/* Invalid input styling - thin border like signup page */
+.p-inputtext.ng-invalid.ng-touched {
+  border: 1px solid #ff5757 !important;
+}
+
+/* Button styling */
+.p-button {
+  transition: all 0.3s ease;
+}
+
+.p-button:enabled:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.p-button:enabled:active {
+  transform: translateY(0);
+}
+
+/* Left side - Login form */
+.login-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  animation: slideInFromLeft 0.8s ease-in-out;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 364px;
+  padding: 40px 30px;
+}
+
+.login-title {
+  font-size: 24px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 8px;
+  color: #000000;
+  animation: slideInFromTop 0.6s ease-in-out 0.2s both;
+}
+
+.login-subtitle {
+  font-size: 14px;
+  color: #525252;
+  text-align: center;
+  margin-bottom: 30px;
+  animation: slideInFromTop 0.6s ease-in-out 0.3s both;
+}
+
+/* Input container styling */
+.input-container {
+  position: relative;
+  margin-bottom: 20px;
+  width: 100%;
+  animation: slideInFromTop 0.6s ease-in-out 0.4s both;
+}
+
+.input-container:nth-child(2) {
+  animation: slideInFromTop 0.6s ease-in-out 0.5s both;
+}
+
+.input-container i {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #1c1c1c;
+  z-index: 1;
+  font-size: 1.2rem;
+}
+
+/* Login button animation */
+form p-button {
+  display: block;
+  animation: scaleIn 0.6s ease-in-out 0.6s both;
+}
+
+/* Social login section */
+.social-login {
+  text-align: center;
+  animation: fadeIn 0.8s ease-in-out 0.7s both;
+}
+
+/* Divider styling */
+.social-login .divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 15px;
+}
+
+.social-login .divider .line {
+  flex: 1;
+  height: 1px;
+  background-color: #e0e0e0;
+}
+
+.social-login .divider p {
+  color: #666;
+  font-size: 14px;
+  margin: 0 10px;
+}
+
+/* Social buttons */
+.social-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  margin-bottom: 20px;
+}
+
+.social-buttons .p-button {
+  border-radius: 10px !important;
+  height: 54px;
+  font-weight: normal;
+  width: 100%;
+}
+
+/* Social buttons animation */
+.social-buttons p-button:first-child {
+  animation: slideInFromLeft 0.6s ease-in-out 0.8s both;
+}
+
+.social-buttons p-button:last-child {
+  animation: slideInFromLeft 0.6s ease-in-out 0.9s both;
+}
+
+/* Facebook button */
+.facebook-btn:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* Google button */
+.google-btn:hover {
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15) !important;
+  transform: translateY(-2px) !important;
+  border: 1px solid #ddd !important;
+}
+
+/* Icon styling */
+.p-button .p-button-icon {
+  font-size: 1.2rem !important;
+  margin-right: 0.5rem !important;
+}
+
+.forgot-password {
+  color: #525252;
+  font-size: 14px;
+  text-decoration: none;
+  animation: fadeIn 0.8s ease-in-out 1s both;
+}
+
+.forgot-password:hover {
+  text-decoration: underline;
+}
+
+/* Right side - Image */
+.image-container {
+  flex: 1.2;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa;
+  width: auto;
+  overflow: hidden;
+  animation: slideInFromRight 0.8s ease-in-out;
+}
+
+.illustration {
+  position: absolute;
+  z-index: 1;
+  width: 740px;
+  height: 740px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: scaleIn 1.2s ease-in-out 0.3s both;
+}
+
+.illustration img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Responsive design adjustments */
+@media (max-width: 1200px) {
+  .illustration {
+    width: 600px;
+    height: 600px;
+  }
+}
+
+@media (max-width: 991px) {
+  .image-container {
+    display: none !important;
+  }
+
+  .login-container {
+    flex: 1;
+  }
+}
+
+@media (max-width: 576px) {
+  .login-card {
+    padding: 20px 15px !important;
+  }
+}
+
+/* Add to existing CSS */
+
+.error-message {
+  margin-bottom: 15px;
+}
+
+.otp-info {
+  margin-top: 15px;
+  text-align: center;
+}
+
+.otp-help-text {
+  font-size: 14px;
+  color: #64748b;
+  line-height: 1.5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.otp-help-text i {
+  color: #9c7350;
+  font-size: 16px;
+}
+
+/* Custom spinner styles */
+:host ::ng-deep .custom-spinner .p-progress-spinner-circle {
+  stroke: #ffffff;
+}
+
+/* Remember me container alignment fix */
+.remember-me-container {
+  display: flex;
+  align-items: center; /* Changed from baseline to center */
+  margin-bottom: 15px;
+  margin-top: 10px;
+}
+
+.remember-me-label {
+  margin-left: 8px;
+  font-size: 14px;
+  color: #525252;
+  cursor: pointer;
+}
+
+/* Improve alignment of checkbox */
+:host ::ng-deep .remember-me-container .p-checkbox {
+  margin-right: 0;
+  margin-top: 0;
+  display: flex;
+  align-items: center;
+}
