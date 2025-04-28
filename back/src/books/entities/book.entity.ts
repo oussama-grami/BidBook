@@ -47,6 +47,10 @@ export class Book extends CommonEntity {
   @OneToMany(() => UserRating, (rating) => rating.book)
   ratings: UserRating[];
 
+  // New attribute for bidding status
+  @Column({ default: true })
+  isBiddingOpen: boolean;
+
   @Column({
     type: 'enum',
     enum: Language,

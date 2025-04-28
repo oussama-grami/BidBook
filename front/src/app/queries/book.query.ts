@@ -68,6 +68,7 @@ export const GET_BOOK_DETAILS_WITH_FAVORITE_CHECK_QUERY = gql`
            id
         }
       }
+      isBiddingOpen
     }
   }
 `;
@@ -98,8 +99,8 @@ export const GET_BOOK_COMMENTS_PAGINATED = gql`
   query GetBookCommentsPaginated($bookId: Int!, $limit: Int, $offset: Int) {
     GetBookCommentsPaginated(bookId: $bookId, limit: $limit, offset: $offset) {
       id
-      content 
-      user { 
+      content
+      user {
         id
         firstName
         lastName

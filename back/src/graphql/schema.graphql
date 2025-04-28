@@ -74,6 +74,7 @@ type Book {
     ratings: [UserRating!]
     createdAt: DateTime!
     isSold: Boolean!
+    isBiddingOpen: Boolean! # Added the new field
 }
 type Favorite {
     id: Int!

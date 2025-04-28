@@ -132,11 +132,11 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
   isLoadingComments: boolean = false;
   showLoadMoreButton: boolean = false;
   commentsLoaded: boolean = false;
-
+  bids: Bid[] = [];
   userBidPrice: number = 0;
   bidError: string = '';
   showBidInput: boolean = false;
-
+  isBiddingAllowed: boolean=true;
   hasBid: boolean = false;
   hasRated: boolean = false;
   isLoadingBookDetails: boolean = true;
@@ -239,14 +239,15 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
           this.owner = book.owner;
           this.likes = book.favorites?.length || 0;
           this.isFavorite = book.favorites?.some(fav => fav.user?.id === this.currentUserId) || false;
-
+          this.bids = book.bids || [];
           // Comments are now handled by fetchCommentsPaginated, so remove this line:
           // this.comments = book.comments || [];
           // And remove the client-side reset:
           // this.resetDisplayedComments();
           // this.commentsLoaded = true; // This will be set after the first page of comments loads
-
+          this.isBiddingAllowed= book.isBiddingOpen!;
           // Determine the initial last bid price
+
           if (book.bids && book.bids.length > 0) {
             const sortedBids = [...book.bids].sort((a, b) => b.amount - a.amount);
             this.lastBidPrice = sortedBids[0].amount;
@@ -261,10 +262,19 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
             const totalRate = book.ratings.reduce((sum, r) => sum + r.rate, 0);
             this.rating = totalRate / book.ratings.length;
             this.votes = book.ratings.length;
+            const userExistingRating = book.ratings.find(r => r.user?.id === this.currentUserId);
+            if (userExistingRating) {
+              this.userRating = userExistingRating.rate;
+              this.hasRated = true; // Set hasRated to true if the user has a rating
+            } else {
+              this.userRating = 0;
+              this.hasRated = false;
+            }
           } else {
             this.rating = 0;
             this.votes = 0;
           }
+
 
           // Update star states based on average rating
           this.starStates = Array(5).fill('inactive').map((_, index) =>

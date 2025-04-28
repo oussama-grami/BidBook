@@ -57,6 +57,7 @@ export class BooksService {
           'language',
           'createdAt',
           'isSold',
+          'isBiddingOpen'
         ],
       });
       console.log(`Found ${books?.length || 0} available books`);
@@ -75,6 +76,10 @@ export class BooksService {
 
     if (!book) {
       throw new NotFoundException(`Book with ID ${id} not found`);
+    }
+    if(book.bids.length==0)
+    {
+      book.isBiddingOpen=true;
     }
 
     return book;

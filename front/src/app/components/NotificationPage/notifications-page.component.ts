@@ -51,6 +51,7 @@ export class NotificationsPageComponent implements OnInit, OnDestroy {
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
         message: notification.message,
       });
+      console.log(this.realTimeNotifications);
     });
   }
 
@@ -93,6 +94,8 @@ export class NotificationsPageComponent implements OnInit, OnDestroy {
         return 'Auction Won!';
       case NotificationType.AUCTION_LOST:
         return 'Auction Lost!';
+      case NotificationType.AUCTION_ENDED_OWNER:
+        return 'Auction Ended!';
       default:
         return 'Notification';
     }
