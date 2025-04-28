@@ -94,6 +94,8 @@ export class NotificationsPageComponent implements OnInit, OnDestroy {
         return 'Auction Won!';
       case NotificationType.AUCTION_LOST:
         return 'Auction Lost!';
+      case NotificationType.AUCTION_ENDED_OWNER:
+        return 'Auction Ended!';
       default:
         return 'Notification';
     }
