@@ -38,9 +38,9 @@ export class StripeController {
     return this.stripeService.create(createStripeDto);
   }
 
-  @Get()
-  findAll() {
-    return this.stripeService.findAll();
+  @Get('allTransactions/:id')
+  findAll(@Param('id') id: number) {
+    return this.stripeService.findAll(+id);
   }
 
   @Get(':id')

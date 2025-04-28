@@ -68,6 +68,10 @@ export class StripeService {
     }
 
     transaction.status = status;
+    if (status === 'succeeded') {
+        transaction.completionDate = new Date();
+    }
+
     return this.transactionRepository.save(transaction);
   }
   
@@ -76,9 +80,51 @@ export class StripeService {
     return 'This action adds a new stripe';
   }  
 
-  findAll() {
-    return `This action returns all stripe`;
+  async findAll(userId: number): Promise<{ transactions: any[] }> {
+    const transactions = await this.transactionRepository.find({
+      where: [
+        {
+          status: 'succeeded',
+          bid: {
+            bidder: {
+              id: userId
+            }
+          }
+        },
+        {
+          status: 'succeeded',
+          bid: {
+            book: {
+              owner: {
+                id: userId
+              }
+            }
+          }
+        }
+      ],
+      relations: ['bid', 'bid.book', 'bid.bidder', 'bid.book.owner']
+    });
+  
+    if (!transactions || transactions.length === 0) {
+      console.log("no transactions found for this user!");
+    } else {
+      console.log(transactions.length, "transactions found for this user!");
+    }
+  
+    return {
+      transactions: transactions.map(transaction => ({
+        transaction: {
+          id: transaction.id,
+          buyerId: transaction.bid.bidder.id,
+          amount: transaction.bid.amount,
+          seller: transaction.bid.book.owner.firstName + ' ' + transaction.bid.book.owner.lastName,
+          buyer: transaction.bid.bidder.firstName + ' ' + transaction.bid.bidder.lastName,
+          completionDate: transaction.completionDate,
+        }
+      }))
+    };
   }
+  
 
   findOne(id: number) {
     return `This action returns a #${id} stripe`;

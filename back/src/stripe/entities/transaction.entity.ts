@@ -29,5 +29,7 @@ export class Transaction extends CommonEntity {
   })
   @JoinColumn()
   bid: Bid;
+
+  @Column({ type: 'timestamp', nullable: true })
+  completionDate: Date;
 }
-  
