@@ -106,6 +106,7 @@ type Query {
     myBooks(limit: Int, offset: Int): [Book!]!
     GetBookCommentsPaginated(bookId: Int!, limit: Int, offset: Int): [Comment!]!
     CommentCount(bookId: Int!): Int!
+    FavoriteCount(bookId: Int!): Int!
 
 }
 type Mutation {

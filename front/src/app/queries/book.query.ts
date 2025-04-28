@@ -114,3 +114,10 @@ export const GET_COMMENT_COUNT = gql`
     CommentCount(bookId: $bookId)
   }
 `;
+
+export const GET_FAVORITE_COUNT = gql`
+query FavoriteCount($bookId: Int!) {
+  FavoriteCount(bookId: $bookId)
+}
+`;
+

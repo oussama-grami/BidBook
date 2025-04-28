@@ -1,6 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Book } from './library-dashboard.component'; // Make sure this path is correct
+import { Book } from './library-dashboard.component';
 import {
   trigger,
   state,
@@ -14,11 +14,13 @@ import { LoadingService } from '../../services/loading.service';
 import { FormsModule } from '@angular/forms';
 import { BookService } from '../../services/book.service';
 import { UserIdService } from '../../services/userid.service';
+import { Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-book-card',
   standalone: true,
-  imports: [CommonModule, RouterModule, ImagePreloadDirective, FormsModule],
+  imports: [CommonModule, RouterModule, ImagePreloadDirective, FormsModule], // Add FormsModule
   template: `
     <div
       class="book-card"
@@ -33,7 +35,8 @@ import { UserIdService } from '../../services/userid.service';
         [ngClass]="{ 'ribbon-lower': !isFavorite, 'ribbon-higher': isFavorite }"
       >
         <img
-          [src]="getImageUrl()"  alt="{{ book.title }}"
+          [src]="book.picture"
+          alt="{{ book.title }}"
           class="book-image"
           appImagePreload
           fallback="/images/image.png"
@@ -65,11 +68,11 @@ import { UserIdService } from '../../services/userid.service';
             <div class="meta-stats">
               <span class="comments">
                 <i class="pi pi-comments"></i>
-                {{ book.comments ? book.comments.length : 0 }}
+                {{commentCount }}
               </span>
               <span class="likes">
                 <i class="pi pi-heart-fill"></i>
-                {{ book.favorites ? book.favorites.length : 0 }}
+                {{ favoriteCount }}
               </span>
               <span class="days-ago">
                 {{ book.createdAt | date:'mediumDate' }}
@@ -427,7 +430,8 @@ import { UserIdService } from '../../services/userid.service';
     ]),
   ],
 })
-export class BookCardComponent {
+
+export class BookCardComponent implements OnInit { 
   @Input() book!: Book;
   @Input() special: boolean = false;
   @Input() isFavorite: boolean = false;
@@ -437,63 +441,83 @@ export class BookCardComponent {
   bidAmount: number | null = null;
   bidError: string = '';
   isSubmittingBid: boolean = false;
-  currentUserId: number | null = 1;
-
+  currentUserId: number = 1; 
+  commentCount: number = 0; 
+  favoriteCount: number = 0; 
+  private commentCountSubscription?: Subscription;
+  private favoriteCountSubscription?: Subscription; 
   constructor(
-    private loadingService: LoadingService,
-    private bookService: BookService,
-    private userIdService: UserIdService
+    private loadingService: LoadingService, // Injected, though not used in this snippet
+    private bookService: BookService
   ) {}
+
+  // Lifecycle hook called after input properties are set
   ngOnInit(): void {
-    this.currentUserId = this.userIdService.getUserId();
+    // Fetch the comment count when the component initializes
+    this.getCommentCount();
+    this.getFavoriteCount(); 
+  }
+
+  // Lifecycle hook called just before the component is destroyed
+  ngOnDestroy(): void {
+    // Unsubscribe to prevent memory leaks
+    if (this.commentCountSubscription) {
+      this.commentCountSubscription.unsubscribe();
+    }
+    if (this.favoriteCountSubscription) {
+      this.favoriteCountSubscription.unsubscribe();
+    }
+
   }
 
   getAverageRating(): number {
-    if (!this.book.ratings || this.book.ratings.length === 0) {
+    // Ensure book and ratings array exist and are not empty
+    if (!this.book || !this.book.ratings || this.book.ratings.length === 0) {
       return 0;
     }
     const sum = this.book.ratings.reduce((acc, curr) => acc + curr.rate, 0);
     return sum / this.book.ratings.length;
   }
 
-  getImageUrl(): string {
-    // Construct the URL to access the image.
-    //  The 'public' part of the path is removed because NestJS serves
-    //  the 'public' directory as static assets.
-    return `/upload/book/${this.book.picture.split('/').pop()}`;
-  }
-
   onImageLoaded(bookId: string | number, success: boolean): void {
     if (!success) {
       console.warn(`Failed to load image for book ID: ${bookId}`);
     }
+    // You might want to hide a spinner or handle UI here
   }
 
   openBidInput(): void {
     this.showBidInput = true;
-    this.bidAmount = null;
-    this.bidError = '';
+    this.bidAmount = null; // Reset bid amount
+    this.bidError = ''; // Clear any previous errors
   }
 
   submitBid(): void {
+    // Basic validation
     if (this.bidAmount === null || this.bidAmount <= 0) {
       this.bidError = 'Please enter a valid bid amount.';
       return;
     }
+
+    // Clear previous error and indicate submission in progress
     this.bidError = '';
     this.isSubmittingBid = true;
 
+    // Call the service method to create the bid
+    // Assuming createBid returns an Observable<Bid>
     this.bookService.createBid(this.book.id, this.bidAmount).subscribe({
       next: (bid) => {
         console.log('Bid submitted successfully:', bid);
-        this.showBidInput = false;
+        this.showBidInput = false; // Close bid input on success
         this.isSubmittingBid = false;
+        // Optional: Add logic to update UI, show confirmation message, etc.
       },
       error: (err) => {
         console.error('Error submitting bid:', err);
-        this.bidError = 'Failed to submit bid. Please try again.';
-        this.isSubmittingBid = false;
-      },
+        this.bidError = 'Failed to submit bid. Please try again.'; // Display user-friendly error
+        this.isSubmittingBid = false; // Stop submitting state
+        // Optional: Handle specific error types (e.g., insufficient funds)
+      }
     });
   }
 
@@ -501,5 +525,26 @@ export class BookCardComponent {
     this.showBidInput = false;
     this.bidAmount = null;
     this.bidError = '';
+  }
+
+  getCommentCount(): void {
+    this.commentCountSubscription = this.bookService.getCommentCountForBook(this.book.id)
+        .subscribe(
+          (count) => {
+            this.commentCount = count;
+            console.log(`Number of comments for the book ${this.book.id}: ${this.commentCount}`);
+          }
+        );
+   
+  }
+  getFavoriteCount(): void {
+   
+    this.favoriteCountSubscription = this.bookService.getFavoriteCount(this.book.id)
+    .subscribe(
+      (count) => {
+        this.favoriteCount= count;
+        console.log(`Number of likes for the book${this.book.id}: ${this.favoriteCount}`);
+      }
+    );
   }
 }

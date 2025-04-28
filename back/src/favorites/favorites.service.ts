@@ -23,15 +23,12 @@ async removeFavorite(userId: number, bookId: number): Promise<boolean> {
   return result.affected !== null && result.affected !== undefined && result.affected > 0;
 }
 async getFavoriteCountForBook(bookId: number): Promise<number> {
-  // Compte le nombre d'enregistrements Favorite où le book ID correspond
   return await this.favoriteRepository.count({
     where: {
       book: { id: bookId },
     },
   });
 }
-
-
 
 
   create(createFavoriteDto: CreateFavoriteDto) {

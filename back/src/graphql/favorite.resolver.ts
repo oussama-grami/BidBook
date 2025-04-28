@@ -1,4 +1,4 @@
-import { Resolver, Mutation, Args, Int, Subscription, Context } from '@nestjs/graphql';
+import { Resolver, Mutation, Args, Int, Subscription, Context, Query } from '@nestjs/graphql';
 import { PubSub } from 'graphql-subscriptions';
 import { FavoritesService } from "../favorites/favorites.service";
 import { BooksService } from "../books/books.service";
@@ -52,6 +52,23 @@ async addFavorite(
         }
         throw new InternalServerErrorException('Failed to add favorite');
     }
+}
+
+@Query('FavoriteCount')
+async FavoriteCount(
+  @Args('bookId', { type: () => Int }) bookId: number,
+): Promise<number> {
+  if (bookId === null || bookId === undefined) {
+    throw new Error("L'ID du livre est requis pour compter les favoris.");
+  }
+
+  try {
+    const count = await this.favoritesService.getFavoriteCountForBook(bookId);
+    return count;
+  } catch (error) {
+    console.error(`Erreur lors de la résolution de FavoriteCount pour bookId ${bookId}:`, error);
+    throw new Error(`Impossible de récupérer le nombre de favoris pour le livre ID ${bookId}.`);
+  }
 }
 
 // Mutation removeFavorite

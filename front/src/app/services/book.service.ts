@@ -8,7 +8,7 @@ import {HttpClient} from '@angular/common/http';
 import {UserRating} from '../components/booksPage/library-dashboard.component';
 import {BidStatus} from '../enums/status.enum';
 import { DELETE_BOOK_RATING_MUTATION,ADD_COMMENT_TO_BOOK_MUTATION, ADD_FAVORITE_MUTATION, ADD_RATE_MUTATION, REMOVE_FAVORITE_MUTATION, UPDATE_BOOK_RATE_MUTATION } from '../mutations/book.mutation';
-import { GET_BOOK_COMMENTS_PAGINATED, GET_COMMENT_COUNT } from '../queries/book.query';
+import { GET_BOOK_COMMENTS_PAGINATED, GET_COMMENT_COUNT, GET_FAVORITE_COUNT } from '../queries/book.query';
 export interface Bid {
   id: number;
   amount: number;
@@ -94,6 +94,9 @@ interface CommentCountQueryVariables {
   bookId: number;
 }
 
+interface FavoriteCountQueryResponse {
+  FavoriteCount: number;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -134,9 +137,7 @@ export class BookService {
             bids {
               id
             }
-            comments {
-                id
-            }
+            
             category
             createdAt
           }
@@ -522,7 +523,24 @@ getCommentCountForBook(bookId: number): Observable<number> {
       })
     );
 }
-
+getFavoriteCount(bookId: number): Observable<number> {
+  return this.apollo
+    .query<FavoriteCountQueryResponse>({
+      query: GET_FAVORITE_COUNT,
+      variables: {
+        bookId: bookId,
+      },
+    })
+    .pipe(
+      map(result => {
+        if (result.data && result.data.FavoriteCount !== undefined) {
+          return result.data.FavoriteCount;
+        } else {
+          throw new Error('Données de FavoriteCount invalides.');
+        }
+      })
+      
+    );
 }
 
-
+}
