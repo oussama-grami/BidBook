@@ -131,11 +131,11 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
   isLoadingComments: boolean = false;
   showLoadMoreButton: boolean = false;
   commentsLoaded: boolean = false;
-
+  bids: Bid[] = [];
   userBidPrice: number = 0;
   bidError: string = '';
   showBidInput: boolean = false;
-
+  isBiddingAllowed: boolean=true;
   hasBid: boolean = false;
   hasRated: boolean = false;
   isLoadingBookDetails: boolean = true;
@@ -238,14 +238,15 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
           this.owner = book.owner;
           this.likes = book.favorites?.length || 0;
           this.isFavorite = book.favorites?.some(fav => fav.user?.id === this.currentUserId) || false;
-
+          this.bids = book.bids || [];
           // Comments are now handled by fetchCommentsPaginated, so remove this line:
           // this.comments = book.comments || [];
           // And remove the client-side reset:
           // this.resetDisplayedComments();
           // this.commentsLoaded = true; // This will be set after the first page of comments loads
-
+          this.isBiddingAllowed= book.isBiddingOpen!;
           // Determine the initial last bid price
+
           if (book.bids && book.bids.length > 0) {
             const sortedBids = [...book.bids].sort((a, b) => b.amount - a.amount);
             this.lastBidPrice = sortedBids[0].amount;

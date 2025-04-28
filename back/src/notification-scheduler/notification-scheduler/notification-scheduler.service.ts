@@ -20,12 +20,13 @@ export class NotificationSchedulerService {
       private readonly notificationsService: NotificationsService,
   ) {}
 
-  @Cron('0 * * * *')
+  @Cron('* * * * *')
   async handleCron() {
+    console.log('Running notification scheduler every minute');
     const now = new Date();
     const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
 
-    const books = await this.bookRepository.find();
+    const books = await this.bookRepository.find(); // Only check open books
 
     for (const book of books) {
       const highestBid = await this.bidRepository.findOne({
@@ -34,11 +35,12 @@ export class NotificationSchedulerService {
         relations: ['bidder'],
       });
 
-      if (highestBid?.bidder && highestBid.createdAt > twentyFourHoursAgo) {
+      if (highestBid?.bidder && highestBid.createdAt < twentyFourHoursAgo) { // Check if there *is* a highest bid, and it's old
         const message = `Congratulations! You have won the auction for the book "${book.title}"`;
         const userId = highestBid.bidder.id;
-
-        await this.notificationsService.notify({
+        book.isBiddingOpen = false;
+        await this.bookRepository.save(book);
+        await this.notificationsService.notify({ // Await here
           userId: userId,
           type: NotificationType.AUCTION_WON,
           message: message,
@@ -46,6 +48,7 @@ export class NotificationSchedulerService {
         });
         console.log(`Notification sent to user ${userId} for the book "${book.title}"`);
       }
+      //  Else do nothing.  Bidding remains open.
     }
   }
 }

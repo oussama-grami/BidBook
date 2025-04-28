@@ -86,6 +86,7 @@ export class Book {
     ratings?: Nullable<UserRating[]>;
     createdAt: DateTime;
     isSold: boolean;
+    isBiddingOpen: boolean;
 }
 
 export class Favorite {

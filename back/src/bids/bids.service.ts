@@ -8,6 +8,7 @@ import { BidStatus } from 'src/Enums/bidstatus.enum';
 import { BooksService } from 'src/books/books.service';
 import {NotificationsService} from "../notifications/notifications.service";
 import {NotificationType} from "../Enums/notification-type.enum";
+import {Book} from "../graphql";
 
 @Injectable()
 export class BidsService {
@@ -16,6 +17,8 @@ export class BidsService {
       private readonly bidRepository: Repository<Bid>,
       private readonly bookService: BooksService,
       private readonly notificationsService: NotificationsService,
+      @InjectRepository(Book)
+      private readonly bookRepository: Repository<Book>,
   ) {}
 
   getBidDate(bid: Bid): Date {
@@ -88,6 +91,8 @@ export class BidsService {
       const hoursDifference = timeDifference / (1000 * 60 * 60);
 
       if (hoursDifference > 24) {
+        book.isBiddingOpen = false;
+        await this.bookRepository.save(book);
         throw new BadRequestException(
             'Cannot place a new bid: The bidding period has ended (last bid was over 24 hours ago).',
         );
@@ -151,6 +156,8 @@ export class BidsService {
     const hoursDifference = timeDifference / (1000 * 60 * 60);
 
     if (hoursDifference > 24) {
+        book.isBiddingOpen = false;
+      await this.bookRepository.save(book);
       throw new BadRequestException(
           'Cannot update bid: The bidding period has ended (last bid was over 24 hours ago).',
       );

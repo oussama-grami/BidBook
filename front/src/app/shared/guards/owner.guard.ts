@@ -22,21 +22,26 @@ export class OwnerGuard implements CanActivate {
     const userId = this.userIdService.getUserId();
 
     if (!userId) {
-
+      console.log('OwnerGuard: User ID not found, redirecting to /login');
       return this.router.parseUrl('/login');
     }
 
     return this.bookService.getBook(bookId).pipe(
       map((book) => {
+        console.log('OwnerGuard: Fetched book:', book);
+        console.log('OwnerGuard: Current User ID:', userId);
+        console.log('OwnerGuard: Book Owner ID:', book?.owner?.id);
+
         if (book && book.owner?.id === +userId) {
+          console.log('OwnerGuard: User is the owner, allowing access');
           return true;
         } else {
-
+          console.log('OwnerGuard: User is NOT the owner, redirecting to /books/' + bookId);
           return this.router.parseUrl(`/books/${bookId}`);
         }
       }),
-      catchError(() => {
-
+      catchError((error) => {
+        console.error('OwnerGuard: Error fetching book:', error);
         return of(this.router.parseUrl('/books'));
       })
     );

@@ -114,9 +114,9 @@
         </div>
 
         <div class="bid-section" [@fadeInOut]>
-          <h3 *ngIf="showBidInput">Place your bid</h3>
+          <h3 *ngIf="showBidInput && isBiddingAllowed">Place your bid</h3>
 
-          <div *ngIf="showBidInput" class="bid-input-group" [@fadeInOut]>
+          <div *ngIf="showBidInput && isBiddingAllowed" class="bid-input-group" [@fadeInOut]>
             <input
               type="number"
               class="bid-input"
@@ -127,15 +127,27 @@
             <span class="currency">D</span>
           </div>
 
-          <div *ngIf="showBidInput && bidError" class="bid-error">
+          <div *ngIf="showBidInput && bidError && isBiddingAllowed" class="bid-error">
             {{ bidError }}
           </div>
 
-          <button class="bid-btn" (click)="submitBid()">
+          <button
+            class="bid-btn"
+            (click)="submitBid()"
+            [disabled]="!isBiddingAllowed"
+          >
             {{ showBidInput ? "Submit Bid" : "Place Bid" }}
           </button>
+
+          <div *ngIf="!isBiddingAllowed">
+            <div *ngIf="(bids ?? []).length > 0" class="bid-ended-message">
+              Bidding for this book has ended.
+            </div>
+            <div *ngIf="(bids ?? []).length === 0" class="bid-initiated-message">
+              Bidding can be initiated by placing the first bid.
+            </div>
+          </div>
         </div>
-      </div>
 
       <div class="comments-container" [@fadeInOut]>
            <h3 class="comments-title">Comments ({{ displayedComments.length || 0 }})</h3>
@@ -190,4 +202,5 @@
       </div>
     </div>
   </div>
+</div>
 </div>

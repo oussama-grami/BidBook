@@ -57,6 +57,7 @@ export interface Book {
   ratings?: UserRating[];
   createdAt?: string;
   likes?: number;
+  isBiddingOpen?: boolean;
 }
 export interface AddCommentToBookResponse {
   addCommentToBook: {
@@ -199,6 +200,7 @@ export class BookService {
                 id
               }
             }
+            isBiddingOpen
           }
         }
       `,
