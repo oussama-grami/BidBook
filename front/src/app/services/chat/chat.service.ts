@@ -84,8 +84,8 @@ export class ChatService {
             unreadCount: unreadCount,
             lastMessage: convo.messages.length
               ? {
-                  text: convo.messages[convo.messages.length - 1].content,
-                  date: convo.messages[convo.messages.length - 1].timestamp,
+                  text: convo.messages[0].content,
+                  date: convo.messages[0].timestamp,
                 }
               : undefined,
           };
