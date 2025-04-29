@@ -22,6 +22,7 @@ export interface Contact {
     text: string;
     date: Date;
   };
+  isActive: boolean;
 }
 
 
@@ -82,6 +83,7 @@ export class ChatService {
             name: this.isBidder ? convo.bid.book.owner.firstName : convo.bid.bidder.firstName,
             avatar: imageUrl,
             unreadCount: unreadCount,
+            isActive: convo.isActive,
             lastMessage: convo.messages.length
               ? {
                   text: convo.messages[0].content,
@@ -271,6 +273,7 @@ refreshContacts(): Promise<void> {
           id: convo.id,
           name: this.isBidder ? convo.bid.book.owner.firstName : convo.bid.bidder.firstName,
           avatar: imageUrl,
+          isActive: convo.isActive,
           unreadCount: convo.messages.filter((msg: any) => 
             !msg.isRead && msg.direction === this.isBidder  // Only count messages from the other person
           ).length,

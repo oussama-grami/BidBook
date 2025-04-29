@@ -87,7 +87,7 @@
     </div>
 
     <!-- Zone de saisie de message -->
-    <div class="message-input-container">
+    <div class="message-input-container" *ngIf="currentContact?.isActive">
       <div class="message-input-wrapper">
         <input
           type="text"
@@ -103,6 +103,9 @@
         >
           <i class="pi pi-send"></i>
         </button>
+      </div>
+      <div class="inactive-notice" *ngIf="currentContact && !currentContact.isActive">
+        <p>This user is currently inactive. You cannot send messages.</p>
       </div>
     </div>
   </div>
