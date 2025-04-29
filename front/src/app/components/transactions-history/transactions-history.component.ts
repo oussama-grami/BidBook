@@ -35,18 +35,18 @@ export class TransactionsHistoryComponent implements OnInit {
 
   transactions: Transaction[] = [];
   filterForm: FormGroup;
-  selectedPeriod: string = 'This week';
+  selectedPeriod: string = 'Today';
   periodOptions: string[] = ['Today', 'This week', 'This month', 'Previous month', 'This year'];
   statusOptions: string[] = ['Bought', 'Sold'];
   selectedStatus: string | null = null;
 
-  startDate: Date = new Date('2025-01-01');
+  startDate: Date = new Date();
   endDate: Date = new Date();
 
 
   constructor(private fb: FormBuilder, private historyService: HistoryService) {
     this.filterForm = this.fb.group({
-      period: ['This week'],
+      period: ['Today'],
       startDate: [this.startDate],
       endDate: [this.endDate],
       status: ['']
@@ -140,8 +140,19 @@ export class TransactionsHistoryComponent implements OnInit {
       },
       status: this.selectedStatus
     });
-
-    // Ici vous pouvez implémenter la logique pour filtrer les transactions
-    // En fonction des critères sélectionnés
+  
+    this.historyService.transactions$.subscribe(transactions => {
+      this.transactions = transactions.filter(transaction => {
+        const transactionDate = new Date(transaction.date); // Assuming transaction.date is a date string
+        const isInDateRange =
+          transactionDate >= this.startDate && transactionDate <= this.endDate;
+  
+        const matchesStatus =
+          !this.selectedStatus || transaction.type === this.selectedStatus;
+  
+        return isInDateRange && matchesStatus;
+      });
+    });
   }
+  
 }
