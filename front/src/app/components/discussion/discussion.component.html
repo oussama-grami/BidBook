@@ -86,6 +86,14 @@
       </div>
     </div>
 
+    <div *ngIf="filteredMessages.length === 0" class="empty-conversation-placeholder">
+      <div class="empty-icon">
+        <i class="pi pi-comments"></i>
+      </div>
+      <h3>No messages yet</h3>
+      <p>Start the conversation by sending a message!</p>
+    </div>
+
     <!-- Zone de saisie de message -->
     <div class="message-input-container" *ngIf="currentContact?.isActive">
       <div class="message-input-wrapper">

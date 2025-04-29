@@ -89,7 +89,10 @@ export class ChatService {
                   text: convo.messages[0].content,
                   date: convo.messages[0].timestamp,
                 }
-              : undefined,
+              : {
+                text: 'no messages yet',
+                date: new Date(), // or null if you want to hide the date
+              },
           };
         });
   
