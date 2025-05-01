@@ -122,7 +122,7 @@ export class BookUpdateComponent implements OnInit {
         if (book.picture) {
           this.imagePreview = book.picture.startsWith('http')
             ? book.picture
-            : `http://localhost:3000/${book.picture.replace(/^\.\//, '')}`;
+            : `http://localhost:3000/${book.picture}`;
         }
 
         this.loading = false;

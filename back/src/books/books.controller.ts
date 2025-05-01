@@ -172,30 +172,29 @@ async createBook(
     },
   },
 })
-@UseInterceptors(
-  FileInterceptor('pictureFile', {
-    storage: diskStorage({
-      destination: './upload/book',
-      filename: (req, file, callback) => {
-        const ext = extname(file.originalname).toLowerCase();
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-        callback(null, `book-${uniqueSuffix}${ext}`);
-      },
-    }),
-    limits: {
-      fileSize: 5 * 1024 * 1024,
-    },
-    fileFilter: (req, file, callback) => {
-      if (file) {
-        const allowedMimeTypes = ['image/png', 'image/jpeg'];
-        if (!allowedMimeTypes.includes(file.mimetype)) {
-          return callback(new Error('Only PNG and JPEG images are allowed.'), false);
-        }
-      }
-      callback(null, true);
-    },
-  }),
-)
+  @UseInterceptors(
+      FileInterceptor('pictureFile', {
+        storage: diskStorage({
+          destination: '.upload/book',
+          filename: (req, file, callback) => {
+            const ext = extname(file.originalname).toLowerCase();
+            const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+            const fileName = `book-${uniqueSuffix}${ext}`;
+            callback(null, fileName);
+          },
+        }),
+        limits: {
+          fileSize: 5 * 1024 * 1024,
+        },
+        fileFilter: (req, file, callback) => {
+          const allowedMimeTypes = ['image/png', 'image/jpeg'];
+          if (!allowedMimeTypes.includes(file.mimetype)) {
+            return callback(new Error('Only PNG and JPEG images are allowed.'), false);
+          }
+          callback(null, true);
+        },
+      }),
+  )
 async updateBook(
   @Param('id', ParseIntPipe) id: number,
   @UploadedFile() file: Express.Multer.File | undefined,
