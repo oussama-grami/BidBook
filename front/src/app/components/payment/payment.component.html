@@ -5,22 +5,19 @@
       <div class="surface-card p-4">
         <h2 class="text-2xl font-bold mb-4">Order Summary</h2>
         <div class="overflow-y-auto">
-          <div
-            *ngFor="let item of cartItems"
-            class="flex align-items-center mb-3 pb-3 border-bottom-1 surface-border"
-          >
+          <div class="flex align-items-center mb-3 pb-3 border-bottom-1 surface-border" *ngIf="transaction">
             <div class="book-image mr-3">
               <p-image
-                [src]="item.imageUrl"
-                [alt]="item.title"
+                [src]="'/images/Book1.png'"
+                [alt]="transaction.title"
                 [preview]="true"
                 imageClass="book-img"
               >
               </p-image>
             </div>
             <div class="flex-1">
-              <span class="block font-medium mb-2">{{ item.title }}</span>
-              <span class="text-primary">${{ item.price.toFixed(2) }}</span>
+              <span class="block font-medium mb-2">{{ transaction.title }}</span>
+              <span class="text-primary">${{ transaction.amount}}</span>
             </div>
           </div>
         </div>

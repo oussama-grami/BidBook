@@ -1,33 +1,20 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany, JoinTable, CreateDateColumn, OneToOne, JoinColumn, ManyToOne } from 'typeorm';
-import { Message } from './message.entity';
-import { Bid } from 'src/bid/entities/bid.entity'
-import { User } from 'src/auth/entities/user.entity';
+import { Entity, Column, OneToOne, JoinColumn, OneToMany } from 'typeorm';
 import { CommonEntity } from 'src/Common/Common.entity';
+import { Bid } from 'src/bids/entities/bid.entity';
+import { Message } from 'src/conversation/entities/message.entity';
 
 @Entity()
 export class Conversation extends CommonEntity {
-
-  @CreateDateColumn({ type: 'timestamp' })
-  startDate: Date;
-  @Column({ type: 'timestamp', nullable: true })
-  endDate: Date | null;
-
   @Column({ default: true })
   isActive: boolean;
 
-  @OneToMany(() => Message, (message) => message.conversation)
-  messages: Message[];
+  @Column()
+  startDate: Date;
 
-  @OneToOne(() => Bid, (bid) => bid.conversation) 
-  @JoinColumn({ name: 'bid_id' })
+  @OneToOne(() => Bid)
+  @JoinColumn()
   bid: Bid;
 
-  @ManyToOne(() => User, { nullable: false })
-  @JoinColumn({ name: 'bidder_id' })
-  bidder: User;
-
-  @ManyToOne(() => User, { nullable: false })
-  @JoinColumn({ name: 'owner_id' })
-  owner: User;
-  
+  @OneToMany(() => Message, message => message.conversation, { cascade: true })
+  messages: Message[];
 }

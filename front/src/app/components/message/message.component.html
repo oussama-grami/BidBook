@@ -127,7 +127,7 @@
             }}</span>
           </div>
           <span class="text" *ngIf="contact.lastMessage">{{
-            contact.lastMessage.text
+            contact.lastMessage.text || 'no messages yet'
           }}</span>
           <span class="text no-messages" *ngIf="!contact.lastMessage"
             >No messages yet</span

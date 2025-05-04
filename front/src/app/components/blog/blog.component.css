@@ -79,3 +79,35 @@
   color: #888;
   font-style: italic;
 }
+.buttons-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px; /* Espace entre les boutons */
+  margin-top: 20px;
+}
+
+.update-button {
+  background-color: #003366; /* Bleu foncé */
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.update-button:hover {
+  background-color: #002244; /* Encore plus foncé au hover */
+}
+
+.delete-button {
+  background-color: #cc3333; /* Rougeâtre */
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.delete-button:hover {
+  background-color: #b22222; /* Rouge foncé au hover */
+}

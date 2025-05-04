@@ -737,3 +737,49 @@
 .stat-item i.pi-comments {
   color: #50719c;
 }
+.delete-rating-btn {
+  background-color: #d9534f;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+  margin-top: 10px;
+  margin-left: 10px;
+}
+
+.delete-rating-btn:hover {
+  background-color: #c9302c;
+}
+
+
+.submit-rating-btn,
+.update-rating-btn {
+  background-color: #9c7350;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 16px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin-top: 10px;
+  box-shadow: 0 2px 5px rgba(156, 115, 80, 0.3);
+}
+
+.submit-rating-btn:hover,
+.update-rating-btn:hover {
+  background-color: #876344;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(156, 115, 80, 0.5);
+}
+
+.submit-rating-btn:active,
+.update-rating-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 5px rgba(156, 115, 80, 0.3);
+}

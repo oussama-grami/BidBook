@@ -1,0 +1,231 @@
+/* Main container styling */
+.signup-page {
+  font-family: 'Poppins', sans-serif;
+  animation: fadeIn 0.8s ease-in-out;
+  width: 100%;
+  min-height: 100vh;
+  height: auto;
+  overflow-y: auto;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromLeft {
+  from {
+    transform: translateX(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    transform: translateX(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromTop {
+  from {
+    transform: translateY(-30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Form input styling */
+.p-inputtext {
+  box-shadow: none !important;
+}
+
+.p-inputtext:focus {
+  box-shadow: none !important;
+  border-color: transparent !important;
+}
+
+.p-inputtext:hover {
+  border-color: transparent !important;
+}
+
+/* Invalid input styling */
+.p-inputtext.ng-invalid.ng-touched {
+  border: 2px solid #ff5757 !important;
+  box-shadow: 0 0 0 1px #ff5757 !important;
+}
+
+/* Button styling */
+.p-button {
+  transition: all 0.3s ease;
+}
+
+.p-button:enabled:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.p-button:enabled:active {
+  transform: translateY(0);
+}
+
+/* Checkbox styling */
+.p-checkbox {
+  display: inline-block !important;
+}
+
+.p-checkbox .p-checkbox-box {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #9c7350;
+  border-radius: 4px;
+}
+
+.p-checkbox .p-checkbox-box.p-highlight {
+  background-color: #9c7350;
+  border-color: #9c7350;
+}
+
+.p-checkbox:not(.p-checkbox-disabled) .p-checkbox-box.p-highlight:hover {
+  background-color: #9c7350;
+  border-color: #9c7350;
+}
+
+.p-checkbox:not(.p-checkbox-disabled) .p-checkbox-box:hover {
+  border-color: #9c7350;
+}
+
+/* Terms checkbox container styling */
+.terms-checkbox-container {
+  display: flex;
+  align-items: center; /* Changed from baseline to center */
+  margin-bottom: 20px;
+  margin-top: 10px;
+}
+
+/* Checkbox alignment improvements */
+:host ::ng-deep .terms-checkbox-container .p-checkbox {
+  margin-right: 0;
+  margin-top: 0;
+  display: flex;
+  align-items: center;
+}
+
+.terms-label {
+  margin-left: 8px;
+  font-size: 14px;
+  color: #000;
+  cursor: pointer;
+}
+
+/* Element animations */
+.signup-container {
+  animation: slideInFromLeft 0.8s ease-in-out;
+}
+
+.signup-title {
+  animation: slideInFromTop 0.6s ease-in-out 0.2s both;
+}
+
+.signup-subtitle {
+  animation: slideInFromTop 0.6s ease-in-out 0.3s both;
+}
+
+form .input-container:nth-child(1) {
+  animation: slideInFromTop 0.6s ease-in-out 0.4s both;
+}
+
+form .input-container:nth-child(2) {
+  animation: slideInFromTop 0.6s ease-in-out 0.5s both;
+}
+
+form .input-container:nth-child(3) {
+  animation: slideInFromTop 0.6s ease-in-out 0.6s both;
+}
+
+form > div:nth-child(4) {
+  animation: slideInFromTop 0.6s ease-in-out 0.7s both;
+  opacity: 1 !important; /* Ensure it's visible */
+}
+
+form p-button {
+  display: block;
+  animation: scaleIn 0.6s ease-in-out 0.8s both;
+}
+
+.social-login {
+  animation: fadeIn 0.8s ease-in-out 0.9s both;
+}
+
+.social-buttons p-button:first-child {
+  animation: slideInFromLeft 0.6s ease-in-out 1s both;
+}
+
+.social-buttons p-button:last-child {
+  animation: slideInFromLeft 0.6s ease-in-out 1.1s both;
+}
+
+.image-container {
+  animation: slideInFromRight 0.8s ease-in-out;
+  width: auto;
+}
+
+.illustration {
+  animation: scaleIn 1.2s ease-in-out 0.3s both;
+}
+
+/* Social login buttons hover effects */
+.facebook-btn:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+}
+
+.google-btn:hover {
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+  border: 1px solid #ddd;
+}
+
+/* Responsive design adjustments */
+@media (max-width: 991px) {
+  .image-container {
+    display: none !important;
+  }
+
+  .signup-container {
+    flex: 1;
+  }
+}
+
+@media (max-width: 576px) {
+  .signup-card {
+    padding: 20px 15px !important;
+  }
+}

@@ -1,36 +1,20 @@
-import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { IconField } from 'primeng/iconfield';
-import { InputIcon } from 'primeng/inputicon';
-import { Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import {
-  trigger,
-  state,
-  style,
-  animate,
-  transition,
-  query,
-  group,
-} from '@angular/animations';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {IconField} from 'primeng/iconfield';
+import {InputIcon} from 'primeng/inputicon';
+import {Subject} from 'rxjs';
+import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
+import {animate, group, query, state, style, transition, trigger,} from '@angular/animations';
+import {CategoryEnum} from '../../enums/category.enum';
 
 export interface Book {
   id: string;
   title: string;
   imageUrl: string;
-  rating: number;
+  ratings: number;
   comments: number;
   daysAgo: number;
 }
-
-export type BookCategory =
-  | 'Fiction'
-  | 'Romance'
-  | 'Thriller'
-  | 'Fantasy'
-  | 'Biography'
-  | 'All';
-
 @Component({
   selector: 'app-category-list',
   standalone: true,
@@ -352,16 +336,17 @@ export type BookCategory =
   ],
 })
 export class CategoryListComponent implements OnInit {
-  @Input() categories: BookCategory[] = [
-    'Fiction',
-    'Romance',
-    'Thriller',
-    'Fantasy',
-    'Biography',
-    'All',
+  @Input() categories: CategoryEnum[] = [
+    CategoryEnum.LIFESTYLE,
+    CategoryEnum.FOOD,
+    CategoryEnum.TECHNOLOGY,
+    CategoryEnum.TRAVEL,
+    CategoryEnum.SCIENCE,
+    CategoryEnum.FICTION,
+    CategoryEnum.All,
   ];
-  @Input() selectedCategory: BookCategory = 'All';
-  @Output() categorySelected = new EventEmitter<BookCategory>();
+  @Input() selectedCategory: CategoryEnum = CategoryEnum.All;
+  @Output() categorySelected = new EventEmitter<CategoryEnum>();
   @Output() searchChanged = new EventEmitter<string>();
 
   searchFocused = false;
@@ -397,7 +382,7 @@ export class CategoryListComponent implements OnInit {
     return direction;
   }
 
-  onCategorySelect(category: BookCategory): void {
+  onCategorySelect(category: CategoryEnum): void {
     this.categorySelected.emit(category);
     this.selectedCategory = category;
   }

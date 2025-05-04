@@ -6,6 +6,8 @@ import {NgForOf} from '@angular/common';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HistoryService, Transaction } from '../../services/history.service';
+import { AuthService } from '../../services/auth.service';
 
 // Angular Material Imports
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -14,13 +16,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 
-interface Transaction {
-  type: 'Bought' | 'Sold';
-  direction: 'To' | 'From';
-  user: string;
-  amount: string;
-  date: string;
-}
+
 @Component({
   selector: 'app-transactions-history',
   imports: [
@@ -36,35 +32,21 @@ interface Transaction {
   styleUrl: './transactions-history.component.css'
 })
 export class TransactionsHistoryComponent implements OnInit {
+
+  transactions: Transaction[] = [];
   filterForm: FormGroup;
-  selectedPeriod: string = 'This week';
+  selectedPeriod: string = 'Today';
   periodOptions: string[] = ['Today', 'This week', 'This month', 'Previous month', 'This year'];
   statusOptions: string[] = ['Bought', 'Sold'];
   selectedStatus: string | null = null;
 
-  startDate: Date = new Date('2024-09-15');
-  endDate: Date = new Date('2024-10-15');
+  startDate: Date = new Date();
+  endDate: Date = new Date();
 
-  transactions: Transaction[] = [
-    {
-      type: 'Bought',
-      direction: 'To',
-      user: 'XXXXXX',
-      amount: '50D',
-      date: '16 Sep 2024'
-    },
-    {
-      type: 'Sold',
-      direction: 'From',
-      user: 'XXXXXX',
-      amount: '50D',
-      date: '16 Sep 2024'
-    }
-  ];
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private historyService: HistoryService) {
     this.filterForm = this.fb.group({
-      period: ['This week'],
+      period: ['Today'],
       startDate: [this.startDate],
       endDate: [this.endDate],
       status: ['']
@@ -72,7 +54,12 @@ export class TransactionsHistoryComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Initialiser les valeurs du formulaire si nécessaire
+    this.historyService.transactions$.subscribe(
+      transactions => {
+        this.transactions = transactions;
+      }
+    );
+    console.log('Transactions:', this.transactions);
   }
 
   setPeriod(period: string): void {
@@ -153,8 +140,19 @@ export class TransactionsHistoryComponent implements OnInit {
       },
       status: this.selectedStatus
     });
-
-    // Ici vous pouvez implémenter la logique pour filtrer les transactions
-    // En fonction des critères sélectionnés
+  
+    this.historyService.transactions$.subscribe(transactions => {
+      this.transactions = transactions.filter(transaction => {
+        const transactionDate = new Date(transaction.date); // Assuming transaction.date is a date string
+        const isInDateRange =
+          transactionDate >= this.startDate && transactionDate <= this.endDate;
+  
+        const matchesStatus =
+          !this.selectedStatus || transaction.type === this.selectedStatus;
+  
+        return isInDateRange && matchesStatus;
+      });
+    });
   }
+  
 }

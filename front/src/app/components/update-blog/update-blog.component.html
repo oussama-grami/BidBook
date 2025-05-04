@@ -1,0 +1,33 @@
+<div class="update-article-container">
+  <h2>Update Article</h2>
+
+  <form [formGroup]="updateForm" (ngSubmit)="onUpdate()">
+    <div class="form-group">
+      <label for="title">Title</label>
+      <input id="title" formControlName="title" type="text" />
+    </div>
+
+    <div class="form-group">
+      <label for="content">Content</label>
+      <textarea id="content" formControlName="content" rows="6"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="picture">Picture</label>
+      <input id="picture" type="file" (change)="onFileSelected($event)" />
+    </div>
+
+
+    <div class="form-group">
+      <label for="category">Category</label>
+      <select id="category" formControlName="category" class="form-control">
+        <option value="" disabled selected>Choose a category...</option>
+        <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+      </select>
+    </div>
+
+
+
+    <button type="submit" [disabled]="updateForm.invalid" class="submit-btn">Update</button>
+  </form>
+</div>

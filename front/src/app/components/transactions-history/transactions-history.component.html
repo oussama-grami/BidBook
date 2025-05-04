@@ -12,7 +12,8 @@
           *ngFor="let option of periodOptions"
           [class.selected]="selectedPeriod === option"
           (click)="setPeriod(option)"
-          class="period-btn">
+          class="period-btn"
+        >
           {{ option }}
         </button>
       </div>
@@ -24,28 +25,34 @@
 
       <div class="date-range">
         <div class="date-input">
-          <i class="calendar-icon">&#128197;</i>
           <input
             [matDatepicker]="startDatepicker"
             [value]="startDate"
             (dateChange)="onStartDateChange($event)"
             placeholder="Start date"
-            readonly>
-          <mat-datepicker-toggle matSuffix [for]="startDatepicker"></mat-datepicker-toggle>
+            readonly
+          />
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="startDatepicker"
+          ></mat-datepicker-toggle>
           <mat-datepicker #startDatepicker></mat-datepicker>
         </div>
 
         <span class="separator">-</span>
 
         <div class="date-input">
-          <i class="calendar-icon">&#128197;</i>
           <input
             [matDatepicker]="endDatepicker"
             [value]="endDate"
             (dateChange)="onEndDateChange($event)"
             placeholder="End date"
-            readonly>
-          <mat-datepicker-toggle matSuffix [for]="endDatepicker"></mat-datepicker-toggle>
+            readonly
+          />
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="endDatepicker"
+          ></mat-datepicker-toggle>
           <mat-datepicker #endDatepicker></mat-datepicker>
         </div>
       </div>
@@ -60,7 +67,8 @@
           *ngFor="let status of statusOptions"
           [class.selected]="selectedStatus === status"
           (click)="setStatus(status)"
-          class="status-btn">
+          class="status-btn"
+        >
           {{ status }}
         </button>
       </div>
@@ -76,12 +84,18 @@
   <div class="transactions-list">
     <div *ngFor="let transaction of transactions" class="transaction-item">
       <div class="transaction-info">
-        <div class="transaction-direction">{{ transaction.direction }} {{ transaction.user }}</div>
+        <div class="transaction-direction">
+          {{ transaction.direction }} {{ transaction.user }}
+        </div>
         <div class="transaction-amount">{{ transaction.amount }}</div>
       </div>
 
       <div class="transaction-meta">
-        <div class="transaction-type" [class.bought]="transaction.type === 'Bought'" [class.sold]="transaction.type === 'Sold'">
+        <div
+          class="transaction-type"
+          [class.bought]="transaction.type === 'Bought'"
+          [class.sold]="transaction.type === 'Sold'"
+        >
           {{ transaction.type }}
         </div>
         <div class="transaction-date">{{ transaction.date }}</div>

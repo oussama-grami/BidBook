@@ -6,11 +6,6 @@
       currentContact.name
     }}</span>
     <span class="detail-title" *ngIf="!currentContact">Select a contact</span>
-    <div class="header-actions" *ngIf="!isSearching && currentContact">
-      <button class="header-btn"><i class="pi pi-phone"></i></button>
-      <button class="header-btn"><i class="pi pi-video"></i></button>
-      <button class="header-btn"><i class="pi pi-ellipsis-v"></i></button>
-    </div>
   </div>
 
   <!-- Ligne séparatrice -->
@@ -91,8 +86,16 @@
       </div>
     </div>
 
+    <div *ngIf="filteredMessages.length === 0" class="empty-conversation-placeholder">
+      <div class="empty-icon">
+        <i class="pi pi-comments"></i>
+      </div>
+      <h3>No messages yet</h3>
+      <p>Start the conversation by sending a message!</p>
+    </div>
+
     <!-- Zone de saisie de message -->
-    <div class="message-input-container">
+    <div class="message-input-container" *ngIf="currentContact?.isActive">
       <div class="message-input-wrapper">
         <input
           type="text"
@@ -108,6 +111,9 @@
         >
           <i class="pi pi-send"></i>
         </button>
+      </div>
+      <div class="inactive-notice" *ngIf="currentContact && !currentContact.isActive">
+        <p>This user is currently inactive. You cannot send messages.</p>
       </div>
     </div>
   </div>

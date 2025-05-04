@@ -1,6 +1,5 @@
 .notification-container {
   position: relative;
-  background: linear-gradient(145deg, #ffffff, #f6f6f6);
   border: 1px solid rgba(220, 220, 220, 0.5);
   box-shadow: 0px 8px 16px rgba(36, 36, 36, 0.08);
   border-radius: 12px;
@@ -126,6 +125,8 @@
   }
 }
 
+
+
 @media (max-width: 480px) {
   .notification-container {
     width: calc(100% - 20px); /* Add some margin to prevent touching screen edges */
@@ -146,4 +147,5 @@
   .notification-body {
     font-size: 13px;
   }
+
 }

@@ -1,15 +1,29 @@
 import {Component, Input} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {RouterLink} from '@angular/router';
+import {ArticleService} from '../../services/article.service';
 
 export interface Article {
   id: string;
-  date: string;
+  createdAt: string;
+  updatedAt: string;
+  version: number;
   title: string;
   category: string;
-  description: string;
-  author: string;
+  content: string;
+  author: Author;
+  pictureUrl: string;
+}
+export interface Author {
+  id:string,
+  createdAt: string;
+  updatedAt: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
   imageUrl: string;
+  isMFAEnabled: boolean
 }
 
 @Component({
@@ -18,17 +32,17 @@ export interface Article {
   imports: [CommonModule, RouterLink],
   template: `
     <article class="article-card">
-      <img [src]="article.imageUrl" [alt]="article.title" class="card-image"/>
+      <img [src]="article.pictureUrl" [alt]="article.title" class="card-image"/>
       <div class="card-content">
-        <time class="article-date">{{ article.date }}</time>
+        <time class="article-date">{{ article.createdAt | date:'dd MMM yyyy'  }}</time>
         <h2 class="article-title">{{ article.title }}</h2>
         <span class="category-tag">{{ article.category }}</span>
-        <p class="article-description">{{ article.description }}</p>
+        <p class="article-description">{{ article.content }}</p>
         <hr class="divider"/>
         <div class="card-footer">
-          <span class="author-name">By {{ article.author }}</span>
+          <span class="author-name">By {{ article.author.firstName + " " + article.author.lastName }}</span>
           <button
-            [routerLink]="[article.id]"
+            [routerLink]="[article.id] "
             class="details-link">
             View details
           </button>
@@ -165,4 +179,10 @@ export interface Article {
 })
 export class ArticleCardComponent {
   @Input() article!: Article;
+  author: Author | undefined
+  constructor(private articleService: ArticleService,) {
+  }
+
+  ngOnInit() {
+  }
 }

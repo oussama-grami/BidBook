@@ -18,6 +18,7 @@ export class ChatComponent implements OnInit {
   constructor(private chatService: ChatService) {}
 
   ngOnInit(): void {
+    this.selectedMessageId = null; // Reset selected message ID on init
     // On init, we just load the contacts list with the lastMessage
     // We don't pre-select any contact on load to avoid loading all messages
     console.log(

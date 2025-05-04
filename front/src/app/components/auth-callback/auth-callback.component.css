@@ -1,0 +1,93 @@
+.auth-callback-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  text-align: center;
+  padding: 0 20px;
+  background-color: #f9f9f9;
+}
+
+.spinner-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  max-width: 500px;
+}
+
+.spinner-container h2 {
+  margin-top: 25px;
+  margin-bottom: 10px;
+  color: #333;
+  font-size: 24px;
+}
+
+.spinner-container p {
+  color: #666;
+  font-size: 16px;
+  margin-bottom: 0;
+}
+
+/* Custom spinner color */
+:host ::ng-deep .custom-spinner .p-progress-spinner-circle {
+  stroke: #9c7350 !important;
+}
+
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  max-width: 500px;
+}
+
+.error-icon {
+  font-size: 48px;
+  color: #e74c3c;
+  margin-bottom: 20px;
+}
+
+.error-container h2 {
+  margin-bottom: 20px;
+  color: #333;
+  font-size: 24px;
+}
+
+.action-buttons {
+  margin-top: 25px;
+}
+
+.retry-button {
+  background-color: #9c7350;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.retry-button:hover {
+  background-color: #876442;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.retry-button i {
+  margin-right: 8px;
+}

@@ -1,21 +1,21 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from 'typeorm';
-import { Conversation } from './conversation.entity';
+import { Entity, Column, ManyToOne } from 'typeorm';
 import { CommonEntity } from 'src/Common/Common.entity';
+import { Conversation } from './conversation.entity';
 
 @Entity()
-export class Message extends CommonEntity{
-  @Column('text')
+export class Message extends CommonEntity {
+  @Column()
   content: string;
 
-  @CreateDateColumn()
+  @Column()
   timestamp: Date;
-
-  @ManyToOne(() => Conversation, conversation => conversation.messages)
-  conversation: Conversation;
-
-  @Column({ default: true })
-  isFromBidder: boolean;
 
   @Column({ default: false })
   isRead: boolean;
+
+  @Column()
+  direction: boolean;
+
+  @ManyToOne(() => Conversation, conversation => conversation.messages, { onDelete: 'CASCADE' })
+  conversation: Conversation;
 }

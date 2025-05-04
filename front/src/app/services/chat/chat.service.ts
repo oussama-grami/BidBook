@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { SocketService } from '../../socket/socket.service';
+import { lastValueFrom } from 'rxjs';
 
 export interface ChatMessage {
   id: number;
@@ -7,6 +10,7 @@ export interface ChatMessage {
   text: string;
   sent: boolean;
   date: Date;
+  isRead: boolean;
 }
 
 export interface Contact {
@@ -18,12 +22,16 @@ export interface Contact {
     text: string;
     date: Date;
   };
+  isActive: boolean;
 }
+
 
 @Injectable({
   providedIn: 'root',
 })
 export class ChatService {
+  private apiUrl = 'http://localhost:3000/chat';
+
   private contacts: Contact[] = [];
   private messagesMap: Map<number, ChatMessage[]> = new Map();
   private loadedContacts: Set<number> = new Set(); // Track which contact messages have been loaded
@@ -36,168 +44,61 @@ export class ChatService {
   public contacts$ = this.contactsSubject.asObservable();
   public currentContact$ = this.currentContactSubject.asObservable();
   public currentMessages$ = this.currentMessagesSubject.asObservable();
+  private isBidder: boolean = false;
 
-  constructor() {
-    this.initializeMockData();
+  constructor(private http: HttpClient, private socketService: SocketService) {
+    this.loadContacts();
+    this.listenForIncomingMessages(); 
   }
 
-  // Initialize mock data for demonstration
-  private initializeMockData(): void {
-    // Create mock contacts
-    const contacts: Contact[] = [
-      {
-        id: 1,
-        name: 'Helga Khatib',
-        avatar: '/images/person.png',
-        unreadCount: 2,
-      },
-      {
-        id: 2,
-        name: 'John Doe',
-        avatar: '/images/person.png',
-        unreadCount: 0,
-      },
-      {
-        id: 3,
-        name: 'Emily Smith',
-        avatar: '/images/person.png',
-        unreadCount: 1,
-      },
-      {
-        id: 4,
-        name: 'Michael Johnson',
-        avatar: '/images/person.png',
-        unreadCount: 0,
-      },
-    ];
+  private loadContacts() {
+    this.http.get<{ userId: number; conversations: any[] }>(`${this.apiUrl}/conversations`)
+      .subscribe((response) => {
+        const currentUserId = response.userId;
+  
+        const contacts = response.conversations.map((convo) => {
+          this.isBidder = convo.bid.bidder.id === currentUserId;
 
-    // Create mock messages for each contact
-    const messagesMap = new Map<number, ChatMessage[]>();
+          const messages = convo.messages.map((msg: any) => ({
+            id: msg.id,
+            contactId: convo.id,
+            text: msg.content,
+            sent: this.isBidder ? msg.direction : !msg.direction,
+            date: new Date(msg.timestamp),
+            isRead: msg.isRead,
+          })).sort((a: any, b: any) => a.date.getTime() - b.date.getTime());
 
-    // Messages for contact 1
-    messagesMap.set(1, [
-      {
-        id: 1,
-        contactId: 1,
-        text: 'Hello! How are you doing today?',
-        sent: false,
-        date: new Date(2025, 3, 10, 9, 30),
-      },
-      {
-        id: 2,
-        contactId: 1,
-        text: "I'm doing great, thanks for asking. How about you?",
-        sent: true,
-        date: new Date(2025, 3, 10, 9, 35),
-      },
-      {
-        id: 3,
-        contactId: 1,
-        text: 'Pretty good! I was wondering if you had time to review that proposal?',
-        sent: false,
-        date: new Date(2025, 3, 10, 9, 40),
-      },
-      {
-        id: 4,
-        contactId: 1,
-        text: "Yes, I've reviewed it. It looks excellent!",
-        sent: true,
-        date: new Date(2025, 3, 10, 9, 45),
-      },
-    ]);
+          this.messagesMap.set(convo.id, messages); // Store messages for this conversation
+  
+          // Calculate unread messages count
+          const unreadCount = messages.filter((msg: ChatMessage) => 
+            !msg.isRead && !msg.sent
+          ).length;
 
-    // Messages for contact 2
-    messagesMap.set(2, [
-      {
-        id: 1,
-        contactId: 2,
-        text: 'Hey, do you have time to meet today?',
-        sent: false,
-        date: new Date(2025, 3, 11, 8, 0),
-      },
-      {
-        id: 2,
-        contactId: 2,
-        text: 'Sure, how about 2pm?',
-        sent: true,
-        date: new Date(2025, 3, 11, 8, 10),
-      },
-      {
-        id: 3,
-        contactId: 2,
-        text: 'That works for me. See you then!',
-        sent: false,
-        date: new Date(2025, 3, 11, 8, 15),
-      },
-    ]);
+          const imageUrl = this.isBidder ? convo.bid.book.owner.imageUrl : convo.bid.bidder.imageUrl;
+          const encodedFilename = encodeURIComponent(imageUrl);
 
-    // Messages for contact 3
-    messagesMap.set(3, [
-      {
-        id: 1,
-        contactId: 3,
-        text: 'When is the next team meeting scheduled?',
-        sent: false,
-        date: new Date(2025, 3, 9, 15, 30),
-      },
-      {
-        id: 2,
-        contactId: 3,
-        text: "It's on Friday at 10am",
-        sent: true,
-        date: new Date(2025, 3, 9, 15, 45),
-      },
-      {
-        id: 3,
-        contactId: 3,
-        text: 'Thanks! I need to prepare my presentation.',
-        sent: false,
-        date: new Date(2025, 3, 10, 10, 5),
-      },
-    ]);
-
-    // Messages for contact 4
-    messagesMap.set(4, [
-      {
-        id: 1,
-        contactId: 4,
-        text: 'Could you send me those project files?',
-        sent: false,
-        date: new Date(2025, 3, 8, 14, 0),
-      },
-      {
-        id: 2,
-        contactId: 4,
-        text: 'Just sent them via email',
-        sent: true,
-        date: new Date(2025, 3, 8, 14, 15),
-      },
-      {
-        id: 3,
-        contactId: 4,
-        text: 'I just sent you the files you requested. Let me know if you need anything else.',
-        sent: false,
-        date: new Date(2025, 3, 9, 14, 22),
-      },
-    ]);
-
-    // Update contacts with last message
-    for (const contact of contacts) {
-      const messages = messagesMap.get(contact.id);
-      if (messages && messages.length > 0) {
-        const lastMsg = messages[messages.length - 1];
-        contact.lastMessage = {
-          text: lastMsg.text,
-          date: lastMsg.date,
-        };
-      }
-    }
-
-    this.contacts = contacts;
-    this.messagesMap = messagesMap;
-    this.contactsSubject.next(this.contacts);
-
-    // Don't set initial contact here anymore - we'll let the component decide when to load
+          return {
+            id: convo.id,
+            name: this.isBidder ? convo.bid.book.owner.firstName : convo.bid.bidder.firstName,
+            avatar: imageUrl,
+            unreadCount: unreadCount,
+            isActive: convo.isActive,
+            lastMessage: convo.messages.length
+              ? {
+                  text: convo.messages[0].content,
+                  date: convo.messages[0].timestamp,
+                }
+              : {
+                text: 'no messages yet',
+                date: new Date(), // or null if you want to hide the date
+              },
+          };
+        });
+  
+        this.contacts = contacts;
+        this.contactsSubject.next(contacts);
+      });
   }
 
   // Get all contacts
@@ -215,13 +116,26 @@ export class ChatService {
     return this.messagesMap.get(contactId) || [];
   }
 
-  // Set current contact and update messages
-  setCurrentContact(contactId: number): void {
-    const contact = this.contacts.find((c) => c.id === contactId);
+
+  setCurrentContact(contactId: number) {
+    const contact = this.contacts.find(c => c.id === contactId);
+    //Join the room for this conversation
+    console.log("Joining room for contact:", contactId);
+    this.socketService.emit('joinRoom', contactId);
     if (contact) {
+      // Mark messages as read via socket
+      this.socketService.emit('markAsRead', { conversationId: contactId });
       // Reset unread count when selecting contact
       contact.unreadCount = 0;
       this.currentContactSubject.next(contact);
+      const messages = this.messagesMap.get(contactId) || [];
+      const updatedMessages = messages.map(msg => {
+        if (!msg.sent) {
+          return { ...msg, isRead: true };
+        }
+        return msg;
+      });
+      
 
       // First clear current messages and show skeleton loading
       this.currentMessagesSubject.next([]);
@@ -237,79 +151,150 @@ export class ChatService {
       }, 1000); // Simulate a 1 second loading delay
     }
   }
-
-  // Add a new message
-  sendMessage(contactId: number, text: string): void {
+  
+  sendMessage(contactId: number, message: string): void {
     const contact = this.contacts.find((c) => c.id === contactId);
     if (!contact) return;
-
+    this.socketService.emit('sendMessage', {
+      conversationId: contactId,
+      content: message,
+    });  
     const messages = this.messagesMap.get(contactId) || [];
-
     // Create new message
     const newMessage: ChatMessage = {
       id: messages.length + 1,
       contactId: contactId,
-      text: text,
+      text: message,
       sent: true,
       date: new Date(),
+      isRead: false,
     };
-
     // Add to messages list
     messages.push(newMessage);
     this.messagesMap.set(contactId, messages);
-
     // Update current messages if this is the selected contact
     const currentContact = this.currentContactSubject.getValue();
     if (currentContact && currentContact.id === contactId) {
       this.currentMessagesSubject.next([...messages]);
     }
-
     // Update last message for contact
     contact.lastMessage = {
-      text: text,
+      text: message,
       date: newMessage.date,
     };
-
     // Update contacts list
     this.contactsSubject.next([...this.contacts]);
+
   }
 
-  // Search contacts by name or message content
-  searchContacts(query: string): Contact[] {
-    if (!query.trim()) return this.contacts;
+  private listenForIncomingMessages() {
 
-    const lowerQuery = query.toLowerCase().trim();
-    return this.contacts.filter(
-      (contact) =>
-        contact.name.toLowerCase().includes(lowerQuery) ||
-        (contact.lastMessage &&
-          contact.lastMessage.text.toLowerCase().includes(lowerQuery))
+    this.socketService.listen<any>('newMessage').subscribe((message) => {
+      const currentMessages = [...(this.messagesMap.get(message.conversation.id) || [])];
+
+      // Check if this message already exists (avoid duplicates)
+      const messageExists = currentMessages.some(msg => 
+      msg.text === message.content && 
+      Math.abs(new Date(msg.date).getTime() - new Date(message.timestamp).getTime()) < 1000
     );
-  }
-
-  // Search messages by content
-  searchMessages(contactId: number, query: string): ChatMessage[] {
-    if (!query.trim()) return this.getMessagesForContact(contactId);
-
-    const messages = this.getMessagesForContact(contactId);
-    const lowerQuery = query.toLowerCase().trim();
-
-    return messages.filter((message) =>
-      message.text.toLowerCase().includes(lowerQuery)
-    );
-  }
-
-  // Refresh contacts - simulates fetching fresh data
-  refreshContacts(): Promise<Contact[]> {
-    // In a real application, you would make an HTTP request here
-    return new Promise((resolve) => {
-      // Simulate network delay
-      setTimeout(() => {
-        // Re-initialize data (in a real app, this would be a network request)
-        this.initializeMockData();
-        // Return fresh contacts
-        resolve(this.contacts);
-      }, 1000);
+    if(!messageExists) {
+      const newMessage = {
+        id: message.id,
+        contactId: message.conversation.id,
+        text: message.content,
+        sent: this.isBidder ? message.direction : !message.direction,
+        date: new Date(message.timestamp),
+        isRead: false,
+      };
+  
+      currentMessages.push(newMessage);
+      currentMessages.sort((a, b) => a.date.getTime() - b.date.getTime());
+  
+      const current = this.currentContactSubject.getValue();
+      if (current && current.id === message.conversation.id) {
+        this.currentMessagesSubject.next(currentMessages);
+      }
+    }
     });
   }
+
+  searchMessages(contactId: number, query: string): ChatMessage[] {
+    if (!query.trim()) {
+      // If the query is empty, return all messages for the contact
+      return this.messagesMap.get(contactId) || [];
+    }
+  
+    // Get all messages for the contact
+    const messages = this.messagesMap.get(contactId) || [];
+  
+    // Filter messages based on the query
+    return messages.filter((message) =>
+      message.text.toLowerCase().includes(query.toLowerCase())
+    );
+  }
+
+  searchContacts(query: string): Contact[] {
+    if (!query.trim()) {
+      return this.contacts;
+    }
+
+    return this.contacts.filter((contact) =>
+      contact.name.toLowerCase().includes(query.toLowerCase())
+    );
+  }
+
+
+
+refreshContacts(): Promise<void> {
+  return lastValueFrom(
+    this.http.get<{ userId: number; conversations: any[] }>(`${this.apiUrl}/conversations`)
+  )
+    .then((response) => {
+      if (!response) {
+        throw new Error('Failed to fetch conversations: response is undefined');
+      }
+
+      const currentUserId = response.userId;
+      this.isBidder = response.conversations[0].bid.bidder.id === currentUserId; // Assuming the first conversation is representative
+
+      const contacts = response.conversations.map((convo) => {
+
+        const messages = convo.messages.map((msg: any) => ({
+          id: msg.id,
+          contactId: convo.id,
+          text: msg.content,
+          sent: this.isBidder ? msg.direction : !msg.direction,
+          date: new Date(msg.timestamp),
+        })).sort((a: any, b: any) => b.date.getTime() - a.date.getTime()); 
+
+        this.messagesMap.set(convo.id, [...messages].reverse()); 
+
+        const imageUrl = this.isBidder ? convo.bid.book.owner.imageUrl : convo.bid.bidder.imageUrl;
+        const encodedFilename = encodeURIComponent(imageUrl);
+
+        return {
+          id: convo.id,
+          name: this.isBidder ? convo.bid.book.owner.firstName : convo.bid.bidder.firstName,
+          avatar: imageUrl,
+          isActive: convo.isActive,
+          unreadCount: convo.messages.filter((msg: any) => 
+            !msg.isRead && msg.direction === this.isBidder  // Only count messages from the other person
+          ).length,
+          lastMessage: convo.messages.length
+            ? {
+                text: convo.messages[0].content,
+                date: convo.messages[0].timestamp,
+              }
+            : undefined,
+        };
+      });
+
+      this.contacts = contacts;
+      this.contactsSubject.next(contacts); // Emit updated contacts
+    })
+    .catch((error) => {
+      console.error('Error refreshing contacts:', error);
+    });
+}
+  
 }

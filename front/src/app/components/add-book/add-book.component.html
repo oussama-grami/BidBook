@@ -1,0 +1,254 @@
+<div class="add-book-container">
+  <div class="content-container">
+    <h1 class="title">ADD A BOOK</h1>
+
+    <div *ngIf="submitError" class="error-message">
+      {{ submitError }}
+    </div>
+
+    <div class="form-and-image">
+      <form [formGroup]="addBookForm" (ngSubmit)="onSubmit()">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="title">Title</label>
+            <input
+              type="text"
+              id="title"
+              formControlName="title"
+              class="form-control"
+              [ngClass]="{'invalid': addBookForm.get('title')?.invalid && addBookForm.get('title')?.touched}"
+            />
+            <div *ngIf="addBookForm.get('title')?.invalid && addBookForm.get('title')?.touched" class="error-hint">
+              Title is required
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="author">Author</label>
+            <input
+              type="text"
+              id="author"
+              formControlName="author"
+              class="form-control"
+              [ngClass]="{'invalid': addBookForm.get('author')?.invalid && addBookForm.get('author')?.touched}"
+            />
+            <div *ngIf="addBookForm.get('author')?.invalid && addBookForm.get('author')?.touched" class="error-hint">
+              Author is required
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="editor">Editor</label>
+            <input
+              type="text"
+              id="editor"
+              formControlName="editor"
+              class="form-control"
+              [ngClass]="{'invalid': addBookForm.get('editor')?.invalid && addBookForm.get('editor')?.touched}"
+            />
+            <div *ngIf="addBookForm.get('editor')?.invalid && addBookForm.get('editor')?.touched" class="error-hint">
+              Editor is required
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="edition">Edition</label>
+            <input
+              type="text"
+              id="edition"
+              formControlName="edition"
+              class="form-control"
+              [ngClass]="{'invalid': addBookForm.get('edition')?.invalid && addBookForm.get('edition')?.touched}"
+            />
+            <div *ngIf="addBookForm.get('edition')?.invalid && addBookForm.get('edition')?.touched" class="error-hint">
+              Edition is required
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="category">Category</label>
+            <div class="select-container">
+              <select
+                id="category"
+                formControlName="category"
+                class="form-control"
+                [ngClass]="{'invalid': addBookForm.get('category')?.invalid && addBookForm.get('category')?.touched}"
+              >
+                <option value="" disabled selected>Select</option>
+                <option value="FICTION">Fiction</option>
+                <option value="NON_FICTION">Non-Fiction</option>
+                <option value="SCIENCE">Science</option>
+                <option value="HISTORY">History</option>
+                <option value="BIOGRAPHY">Biography</option>
+                <option value="ROMANCE">Romance</option>
+                <option value="OTHER">Other</option>
+                <option value="ADVENTURE">Adventure</option>
+                <option value="FANTASY">Fantasy</option>
+                <option value="POETRY">Poetry</option>
+                <option value="ART">Art</option>
+                <option value="NOVEL">Novel</option>
+                <option value="THRILLER">Thriller</option>
+                <option value="PHILOSOPHY">Philosophy</option>
+                <option value="RELIGION">Religion</option>
+                <option value="TECHNOLOGY">Technology</option>
+              </select>
+            </div>
+            <div *ngIf="addBookForm.get('category')?.invalid && addBookForm.get('category')?.touched" class="error-hint">
+              Category is required
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="language">Language</label>
+            <div class="select-container">
+              <select
+                id="language"
+                formControlName="language"
+                class="form-control"
+                [ngClass]="{'invalid': addBookForm.get('language')?.invalid && addBookForm.get('language')?.touched}"
+              >
+                <option value="" disabled selected>Select</option>
+                <option value="ENGLISH">English</option>
+                <option value="FRENCH">French</option>
+                <option value="ITALIAN">Italian</option>
+                <option value="SPANISH">Spanish</option>
+                <option value="OTHER">Other</option>
+              </select>
+            </div>
+            <div *ngIf="addBookForm.get('language')?.invalid && addBookForm.get('language')?.touched" class="error-hint">
+              Language is required
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="numberOfPages">Number of Pages</label>
+            <input
+              type="number"
+              id="numberOfPages"
+              formControlName="numberOfPages"
+              class="form-control"
+              [ngClass]="{'invalid': addBookForm.get('numberOfPages')?.invalid && addBookForm.get('numberOfPages')?.touched}"
+            />
+            <div *ngIf="addBookForm.get('numberOfPages')?.invalid && addBookForm.get('numberOfPages')?.touched" class="error-hint">
+              Valid number of pages is required
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="damagedPages">Damaged Pages</label>
+            <input
+              type="number"
+              id="damagedPages"
+              formControlName="damagedPages"
+              class="form-control"
+              [ngClass]="{'invalid': addBookForm.get('damagedPages')?.invalid && addBookForm.get('damagedPages')?.touched}"
+            />
+            <div *ngIf="addBookForm.get('damagedPages')?.invalid && addBookForm.get('damagedPages')?.touched" class="error-hint">
+              Value cannot be negative
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="age">Age</label>
+            <input
+              type="number"
+              id="age"
+              formControlName="age"
+              class="form-control"
+              [ngClass]="{'invalid': addBookForm.get('age')?.invalid && addBookForm.get('age')?.touched}"
+            />
+            <div *ngIf="addBookForm.get('age')?.invalid && addBookForm.get('age')?.touched" class="error-hint">
+              Age is required
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="picture">Picture</label>
+            <input
+              type="file"
+              id="picture"
+              (change)="onFileSelected($event)"
+              class="form-control file-input"
+              accept="image/*"
+            />
+          </div>
+
+          <div class="preview-container" *ngIf="previewImage || selectedFile">
+            <p-image
+              [src]="previewImage || '/images/AddBook.png'"
+              [alt]="selectedFile?.name || 'Book preview'"
+              [preview]="true"
+            ></p-image>
+          </div>
+
+          <div
+            class="price-prediction-container"
+            *ngIf="isPredicting || showPriceResult"
+          >
+            <div class="loading-indicator" *ngIf="isPredicting">
+              <div class="spinner"></div>
+              <p>Predicting price...</p>
+            </div>
+
+            <div
+              class="prediction-result"
+              *ngIf="showPriceResult && predictedPrice !== null"
+            >
+              <h3>Predicted Price</h3>
+              <p class="predicted-price">{{ predictedPrice }} D</p>
+              <div class="prediction-actions">
+                <button
+                  type="button"
+                  class="accept-btn"
+                  (click)="onAcceptPrice()"
+                >
+                  Accept
+                </button>
+                <button
+                  type="button"
+                  class="refuse-btn"
+                  (click)="onRefusePrice()"
+                >
+                  Refuse
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="form-group price-group"
+            *ngIf="predictedPrice && !showPriceResult"
+          >
+            <label>Price</label>
+            <input
+              type="number"
+              formControlName="price"
+              class="form-control"
+              [readonly]="!priceAccepted"
+            />
+          </div>
+        </div>
+
+        <div class="button-group">
+          <button
+            type="button"
+            pButton
+            [disabled]="isPredicting || priceAccepted"
+            (click)="predictPrice()"
+            class="predict-btn"
+          >
+            {{ isPredicting ? "Predicting..." : "Predict Price" }}
+          </button>
+          <button
+            type="submit"
+            pButton
+            [disabled]="addBookForm.invalid || !priceAccepted || isSubmitting"
+            class="submit-btn"
+          >
+            {{ isSubmitting ? "Submitting..." : "Submit" }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

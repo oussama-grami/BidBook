@@ -62,23 +62,17 @@ export class DiscussionComponent implements OnInit, OnChanges, OnDestroy {
     // Subscribe to messages for current contact
     this.subscriptions.push(
       this.chatService.currentMessages$.subscribe((messages) => {
-        // Only set messages and mark as loaded if we actually have messages
-        // This ensures skeletons remain visible until messages are actually loaded
-        if (messages && messages.length > 0) {
+        if (messages && this.currentContact) {
           this.messages = messages;
           this.applySearchToMessages();
-          this.messagesLoaded = true;
-
-          // Scroll to bottom when messages are loaded or updated
-          setTimeout(() => {
-            this.scrollToBottom();
-          }, 0);
-        } else if (messages && messages.length === 0 && this.currentContact) {
-          // If we get an empty array and have a selected contact,
-          // it means the messages were just cleared for loading
-          this.messagesLoaded = false;
-          this.messages = [];
-          this.filteredMessages = [];
+          this.messagesLoaded = true; // Mark as loaded, regardless of empty or not
+    
+          // Scroll to bottom only if there are messages
+          if (messages.length > 0) {
+            setTimeout(() => {
+              this.scrollToBottom();
+            }, 0);
+          }
         }
       })
     );
