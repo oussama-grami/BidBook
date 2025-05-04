@@ -1,4 +1,4 @@
-<div class="notification-container">
+<div class="notification-container" [ngStyle]="{'backgroundColor': isRealTime? 'lightgrey':'white' }">
   <button class="close-button bg-red-600" (click)="closeNotification()">
     <i class="pi pi-times text-white"></i>
   </button>

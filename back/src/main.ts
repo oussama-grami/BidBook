@@ -67,7 +67,11 @@ async function bootstrap() {
       }
     },
   });
+  app.useStaticAssets(join(__dirname, '..', '.upload', 'book'), {
+    prefix: '/public/uploads/books', 
+  });
 
+  
   // Enable CORS with credentials
   app.enableCors({
     origin: [

@@ -25,8 +25,8 @@ interface MenuItem {
 export class SideMenuComponent implements OnInit, OnDestroy {
   isMenuOpen = false;
   userProfile = {
-    name: 'Hiba Chabbouh',
-    email: 'hibachabbouh@gmail.com',
+    name: '',
+    email: '',
     picture: '',
   };
   private authStateSubscription: Subscription | null = null;
@@ -46,9 +46,14 @@ export class SideMenuComponent implements OnInit, OnDestroy {
           route: '/books',
         },
         {
+          icon: 'pi pi-book',
+          label: 'My Books',
+          route: '/books/my-books'
+        },
+        {
           icon: 'pi pi-money-bill',
           label: 'My Bids',
-          route: '/books/favorite',
+          route: '/my-bids',
         },
         {
           icon: 'pi pi-plus',
@@ -105,7 +110,6 @@ export class SideMenuComponent implements OnInit, OnDestroy {
       icon: 'pi pi-bell',
       label: 'Notifications',
       route: '/notifications',
-      badge: 2,
     },
     {
       icon: 'pi pi-comments',
@@ -220,3 +224,4 @@ export class SideMenuComponent implements OnInit, OnDestroy {
     }
   }
 }
+

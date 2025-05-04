@@ -1,21 +1,30 @@
-import { User } from 'src/auth/entities/user.entity';
-import { CommonEntity } from 'src/Common/Common.entity';
-import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
+import {NotificationType} from "../../Enums/notification-type.enum";
+
+
 @Entity()
-export class Notification extends CommonEntity {
+export class Notification {
+  @PrimaryGeneratedColumn()
+  id: number;
+
   @Column()
-  title: string;
+  userId: number;
+
+  @Column({
+    type: 'enum',
+    enum: NotificationType,
+  })
+  type: NotificationType;
 
   @Column()
   message: string;
 
-  @Column()
-  dateTime: Date;
+  @Column({ type: 'json', nullable: true })
+  data: any;
 
   @Column({ default: false })
-  isRead: boolean;
+  read: boolean;
 
-  @ManyToOne(() => User, (user) => user.notifications, { onDelete: 'CASCADE' })
-  @JoinColumn()
-  recipient: User;
+  @CreateDateColumn()
+  createdAt: Date;
 }

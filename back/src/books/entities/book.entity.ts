@@ -1,4 +1,4 @@
-import { Comment } from './../../comments/entities/comment.entity';
+import { Comment } from '../../comments/entities/comment.entity';
 import { Entity, Column, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
 import { CommonEntity } from '../../Common/Common.entity';
 import { User } from '../../auth/entities/user.entity';
@@ -47,6 +47,10 @@ export class Book extends CommonEntity {
   @OneToMany(() => UserRating, (rating) => rating.book)
   ratings: UserRating[];
 
+  // New attribute for bidding status
+  @Column({ default: true })
+  isBiddingOpen: boolean;
+
   @Column({
     type: 'enum',
     enum: Language,
@@ -55,7 +59,8 @@ export class Book extends CommonEntity {
   language: Language;
 
   
-
+  @Column({ default: false })
+  isSold: boolean;
   
 
   // Un livre appartient à un utilisateur

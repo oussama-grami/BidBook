@@ -71,7 +71,10 @@ type Book {
     language: Language
     editor: String
     category: Category
-    rating: [UserRating!]
+    ratings: [UserRating!]
+    createdAt: DateTime!
+    isSold: Boolean!
+    isBiddingOpen: Boolean! # Added the new field
 }
 type Favorite {
     id: Int!
@@ -88,18 +91,34 @@ type UserRating {
     updatedAt: DateTime!
 }
 
+type Subscription {
+    bookFavoritesUpdated(bookId: Int!): Book!
+    commentAdded(bookId: Int!): Comment!
+    commentRemoved(bookId: Int!): Int!
+    bookRatingUpdated(bookId: Int!): Book!
+}
 type Query {
     viewBooks(limit: Int, offset: Int): [Book!]!
     bookDetails(id: Int!): Book
-    myBids(limit: Int, offset: Int): [Book!]!
+    myBids(limit: Int, offset: Int): [Bid!]!
     highestBidForBook(bookId: Int!): Bid
+    userBookRating(userId: Int!, bookId: Int!): UserRating
+    book(id: Int!): Book
+    myBooks(limit: Int, offset: Int): [Book!]!
+    GetBookCommentsPaginated(bookId: Int!, limit: Int, offset: Int): [Comment!]!
+    CommentCount(bookId: Int!): Int!
+    FavoriteCount(bookId: Int!): Int!
+
 }
 type Mutation {
-    addFavorite(userId: Int!, bookId: Int!): Favorite!
-    removeFavorite(userId: Int!, bookId: Int!): Boolean!
-    addCommentToBook(bookId: Int!, userId: Int!, content: String!): Comment
+    addFavorite( bookId: Int!): Favorite!
+    removeFavorite(bookId: Int!): Boolean!
+    addCommentToBook(bookId: Int!, content: String!): Comment
     removeComment(commentId: Int!): Boolean!
-    createBid( userId: Int!,bookId: Int!, amount: Float!): Bid!
-    updateBid(bookId: Int!, userId: Int!, amount: Float!): Bid!
-
+    createBid(bookId: Int!, amount: Float!): Bid!
+    updateBid(bookId: Int!, amount: Float!): Bid!
+    addRate(bookId: Int!, rate: Float!): UserRating!
+    updateRate(bookId: Int!, rate: Float!): UserRating!
+    deleteRate(bookId: Int!): Boolean!
+    
 }

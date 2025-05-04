@@ -25,6 +25,9 @@ import { BidResolver } from './graphql/bid.resolver';
 import { CommentsResolver } from './graphql/comment.resolver';
 import { UserRatingModule } from './user-rating/user-rating.module';
 import { UserRating } from './user-rating/entities/user-rating.entity';
+import { RatingsResolver } from './graphql/user-rating.resolver';
+
+
 import { ArticleModule } from './article/article.module';
 import { join } from 'path';
 import { BooksModule } from './books/books.module';
@@ -44,6 +47,10 @@ import { ChatService } from './chat/chat.service';
 import { JwtModule } from '@nestjs/jwt'; 
 import { ChatController } from './chat/chat.controller';
 import { StripeModule } from './stripe/stripe.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { NotificationSchedulerModule } from './notification-scheduler/notification-scheduler.module';
+
+
 
 config({ path: `${process.cwd()}/Config/.env.dev` });
 
@@ -57,6 +64,7 @@ config({ path: `${process.cwd()}/Config/.env.dev` });
         `${process.cwd()}/Config/.env.${process.env.NODE_ENV}`,
       ],
     }),
+    ScheduleModule.forRoot(),
     TypeOrmModule.forRootAsync({
       // Configuration de TypeOrmModule
       inject: [ConfigService],
@@ -98,6 +106,14 @@ config({ path: `${process.cwd()}/Config/.env.dev` });
         path: join(process.cwd(), 'src/graphql.ts'),
         outputAs: 'class',
       },
+      subscriptions: {
+        'graphql-ws': {
+           path: '/graphql', 
+        },
+        'subscriptions-transport-ws': { 
+           path: '/graphql',        
+        },
+      },
     }),
     UserRatingModule,
     BooksModule,
@@ -105,6 +121,7 @@ config({ path: `${process.cwd()}/Config/.env.dev` });
     CommentsModule,
     BidsModule,
     NotificationsModule,
+    NotificationSchedulerModule,
     ConversationModule,
     StripeModule,
   ],
@@ -116,8 +133,10 @@ config({ path: `${process.cwd()}/Config/.env.dev` });
     BidResolver,
     CommentsResolver,
     ChatGateway,
+    RatingsResolver,
     ChatService,
     JwtService,
   ],
 })
+
 export class AppModule {}

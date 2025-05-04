@@ -83,7 +83,10 @@ export class Book {
     language?: Nullable<Language>;
     editor?: Nullable<string>;
     category?: Nullable<Category>;
-    rating?: Nullable<UserRating[]>;
+    ratings?: Nullable<UserRating[]>;
+    createdAt: DateTime;
+    isSold: boolean;
+    isBiddingOpen: boolean;
 }
 
 export class Favorite {
@@ -101,28 +104,56 @@ export class UserRating {
     updatedAt: DateTime;
 }
 
+export abstract class ISubscription {
+    abstract bookFavoritesUpdated(bookId: number): Book | Promise<Book>;
+
+    abstract commentAdded(bookId: number): Comment | Promise<Comment>;
+
+    abstract commentRemoved(bookId: number): number | Promise<number>;
+
+    abstract bookRatingUpdated(bookId: number): Book | Promise<Book>;
+}
+
 export abstract class IQuery {
     abstract viewBooks(limit?: Nullable<number>, offset?: Nullable<number>): Book[] | Promise<Book[]>;
 
     abstract bookDetails(id: number): Nullable<Book> | Promise<Nullable<Book>>;
 
-    abstract myBids(limit?: Nullable<number>, offset?: Nullable<number>): Book[] | Promise<Book[]>;
+    abstract myBids(limit?: Nullable<number>, offset?: Nullable<number>): Bid[] | Promise<Bid[]>;
 
     abstract highestBidForBook(bookId: number): Nullable<Bid> | Promise<Nullable<Bid>>;
+
+    abstract userBookRating(userId: number, bookId: number): Nullable<UserRating> | Promise<Nullable<UserRating>>;
+
+    abstract book(id: number): Nullable<Book> | Promise<Nullable<Book>>;
+
+    abstract myBooks(limit?: Nullable<number>, offset?: Nullable<number>): Book[] | Promise<Book[]>;
+
+    abstract GetBookCommentsPaginated(bookId: number, limit?: Nullable<number>, offset?: Nullable<number>): Comment[] | Promise<Comment[]>;
+
+    abstract CommentCount(bookId: number): number | Promise<number>;
+
+    abstract FavoriteCount(bookId: number): number | Promise<number>;
 }
 
 export abstract class IMutation {
-    abstract addFavorite(userId: number, bookId: number): Favorite | Promise<Favorite>;
+    abstract addFavorite(bookId: number): Favorite | Promise<Favorite>;
 
-    abstract removeFavorite(userId: number, bookId: number): boolean | Promise<boolean>;
+    abstract removeFavorite(bookId: number): boolean | Promise<boolean>;
 
-    abstract addCommentToBook(bookId: number, userId: number, content: string): Nullable<Comment> | Promise<Nullable<Comment>>;
+    abstract addCommentToBook(bookId: number, content: string): Nullable<Comment> | Promise<Nullable<Comment>>;
 
     abstract removeComment(commentId: number): boolean | Promise<boolean>;
 
-    abstract createBid(userId: number, bookId: number, amount: number): Bid | Promise<Bid>;
+    abstract createBid(bookId: number, amount: number): Bid | Promise<Bid>;
 
-    abstract updateBid(bookId: number, userId: number, amount: number): Bid | Promise<Bid>;
+    abstract updateBid(bookId: number, amount: number): Bid | Promise<Bid>;
+
+    abstract addRate(bookId: number, rate: number): UserRating | Promise<UserRating>;
+
+    abstract updateRate(bookId: number, rate: number): UserRating | Promise<UserRating>;
+
+    abstract deleteRate(bookId: number): boolean | Promise<boolean>;
 }
 
 export type DateTime = any;
