@@ -197,5 +197,13 @@ export class BooksService {
     return `This action removes a #${id} book`;
   }
 
-  
+  async successfulPayment(id: number): Promise<Book> {
+    const book = await this.bookRepository.findOne({ where: { id } });
+    if (!book) {
+        throw new NotFoundException(`Book with ID ${id} not found`);
+    }
+
+    book.isSold = true;
+    return this.bookRepository.save(book);
+  }
 }

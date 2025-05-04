@@ -120,6 +120,12 @@ export class BookService {
     return this.http.patch<any>(`${this.apiUrl}/update/${id}`, formData);
   }
 
+  markBookAsSold(bookId: number): Observable<any> {
+    if (!bookId) {
+        throw new Error('Book ID is required');
+    }
+    return this.http.patch(`${this.apiUrl}/books/successfulpayment/${bookId}`, {});
+  }
   viewBooks(limit?: number, offset?: number): Observable<Book[]> {
     return this.apollo
     .query<{ viewBooks: Book[] }>({
