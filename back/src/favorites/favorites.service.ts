@@ -22,6 +22,13 @@ async removeFavorite(userId: number, bookId: number): Promise<boolean> {
   const result = await this.favoriteRepository.delete({ user: { id: userId }, book: { id: bookId } });
   return result.affected !== null && result.affected !== undefined && result.affected > 0;
 }
+async getFavoriteCountForBook(bookId: number): Promise<number> {
+  return await this.favoriteRepository.count({
+    where: {
+      book: { id: bookId },
+    },
+  });
+}
 
 
   create(createFavoriteDto: CreateFavoriteDto) {

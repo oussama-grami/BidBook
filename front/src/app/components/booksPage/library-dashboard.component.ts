@@ -1,20 +1,57 @@
-import {Component, Input, signal, WritableSignal,} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {BookCardComponent} from './book-card.component';
-import {CategoryListComponent} from './category-bar.component';
-import {animate, query, stagger, style, transition, trigger,} from '@angular/animations';
-import {ActivatedRoute} from '@angular/router';
-import {CategoryEnum} from '../../enums/category.enum';
+import { Component, Input, signal, WritableSignal, OnInit, OnDestroy } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { BookCardComponent } from './book-card.component';
+import { CategoryListComponent } from './category-bar.component';
+import { animate, query, stagger, style, transition, trigger } from '@angular/animations';
+import { ActivatedRoute } from '@angular/router';
+import { CategoryEnum } from '../../enums/category.enum';
+import { BookService } from '../../services/book.service';
+import { Subscription } from 'rxjs';
+import { Apollo } from 'apollo-angular';
+import { HttpLink } from 'apollo-angular/http';
+export interface UserRating {
+  id: number;
+  user?: {
+    id: number;
+  };
+  book?: number;
+  rate: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
 
 export interface Book {
-  id: string;
+  id: number;
   title: string;
-  imageUrl: string;
-  rating: number;
-  comments: number;
-  likes?: number; // Adding likes property
-  daysAgo: number;
-  category?: CategoryEnum;
+  author?: string;
+  picture: string;
+  owner?: {
+    id: number;
+    firstName: string;
+    lastName: string;
+    imageUrl: string;
+  };
+  comments?: {
+    id: number;
+    content: string;
+    user?: {
+      firstName: string;
+      lastName: string;
+    };
+  }[];
+  favorites?: any[];
+  bids?: any[];
+  price?: number;
+  totalPages?: number;
+  damagedPages?: number;
+  age?: number;
+  edition?: number;
+  language?: string;
+  editor?: string;
+  category?: string;
+  ratings?: UserRating[];
+  createdAt?: string;
+  likes?: number;
 }
 
 @Component({
@@ -33,32 +70,32 @@ export interface Book {
         (searchChanged)="onSearchChange($event)"
       >
       </app-category-list>
-      <section class="recommended-section">
-        @if(! isFavorite()){
-        <h2 class="section-title" [@slideInRight]>Recommended</h2>
-        }
-        <div class="books-grid" [@booksAnimation]>
-          <app-book-card
-            *ngFor="let book of filteredRecommendedBooks"
-            [book]="book"
-            [special]="true"
-            [isFavorite]="isFavorite()"
-          >
-          </app-book-card>
-        </div>
-      </section>
-      @if(! isFavorite()) {
-      <section class="explore-section">
-        <h2 class="section-title" [@slideInRight]>Explore other books</h2>
-        <div class="books-grid" [@booksAnimation]>
-          <app-book-card
-            *ngFor="let book of filteredExploreBooks"
-            [book]="book"
-          >
-          </app-book-card>
-        </div>
-      </section>
-      }
+
+      <div *ngIf="loading">Loading books...</div>
+      <div *ngIf="error">Error loading books: {{ error }}</div>
+
+      <ng-container *ngIf="!loading && !error">
+        <section class="recommended-section">
+          <h2 class="section-title" [@slideInRight]>Recommended</h2>
+          <div class="books-grid" [@booksAnimation]>
+            <app-book-card
+              *ngFor="let book of filteredRecommendedBooks"
+              [book]="book"
+              [special]="true"
+              [isFavorite]="isFavorite()"
+            >
+            </app-book-card>
+          </div>
+        </section>
+
+        <section class="explore-section">
+          <h2 class="section-title" [@slideInRight]>Explore other books</h2>
+          <div class="books-grid" [@booksAnimation]>
+            <app-book-card *ngFor="let book of filteredExploreBooks" [book]="book">
+            </app-book-card>
+          </div>
+        </section>
+      </ng-container>
     </main>
   `,
   animations: [
@@ -311,97 +348,71 @@ export interface Book {
       }
     `,
   ],
+  providers: [Apollo, HttpLink, BookService],
 })
-export class BookCatalogComponent {
-  categories: CategoryEnum[] = []
+export class BookCatalogComponent implements OnInit, OnDestroy {
+  categories: CategoryEnum[] = [
+    CategoryEnum.FICTION,
+    CategoryEnum.NON_FICTION,
+    CategoryEnum.SCIENCE,
+    CategoryEnum.HISTORY,
+    CategoryEnum.BIOGRAPHY,
+    CategoryEnum.ROMANCE,
+    CategoryEnum.OTHER,
+    CategoryEnum.ADVENTURE,
+    CategoryEnum.FANTASY,
+    CategoryEnum.POETRY,
+    CategoryEnum.ART,
+    CategoryEnum.NOVEL,
+    CategoryEnum.THRILLER,
+    CategoryEnum.PHILOSOPHY,
+    CategoryEnum.RELIGION,
+    CategoryEnum.TECHNOLOGY,
+    CategoryEnum.All,
+  ];
   selectedCategory: CategoryEnum = CategoryEnum.All;
   isFavorite: WritableSignal<boolean> = signal(true);
   searchTerm = '';
+  recommendedBooks: Book[] = [];
+  exploreBooks: Book[] = [];
   filteredRecommendedBooks: Book[] = [];
   filteredExploreBooks: Book[] = [];
+  loading = true;
+  error: any;
+  private querySubscription?: Subscription;
 
-  //get data from the resolver
   @Input() data: string = '';
-  recommendedBooks: Book[] = [
-    {
-      id: '1',
-      title: 'Rich People Problems',
-      imageUrl:
-        'https://cdn.builder.io/api/v1/image/assets/TEMP/ecdb6bbc8f17b31efa69a312a172d604f72a9214',
-      rating: 4,
-      comments: 97,
-      likes: 124,
-      category: CategoryEnum.FICTION,
-      daysAgo: 20,
-    },
-    {
-      id: '2',
-      title: 'Rich People Problems',
-      imageUrl:
-        'https://cdn.builder.io/api/v1/image/assets/TEMP/ecdb6bbc8f17b31efa69a312a172d604f72a9214',
-      rating: 4,
-      category:CategoryEnum.SCIENCE,
-      comments: 97,
-      likes: 85,
-      daysAgo: 20,
-    },
-    {
-      id: '3',
-      title: 'Rich People Problems',
-      imageUrl:
-        'https://cdn.builder.io/api/v1/image/assets/TEMP/ecdb6bbc8f17b31efa69a312a172d604f72a9214',
-      rating: 4,
-      category: CategoryEnum.TECHNOLOGY,
-      comments: 97,
-      likes: 210,
-      daysAgo: 20,
-    },
-  ];
 
-  exploreBooks: Book[] = [
-    {
-      id: '4',
-      title: 'Rich People Problems',
-      imageUrl:
-        'https://cdn.builder.io/api/v1/image/assets/TEMP/ecdb6bbc8f17b31efa69a312a172d604f72a9214',
-      rating: 4,
-      comments: 97,
-      likes: 56,
-      category: CategoryEnum.TRAVEL,
-      daysAgo: 20,
-    },
-    {
-      id: '5',
-      title: 'Rich People Problems',
-      imageUrl:
-        'https://cdn.builder.io/api/v1/image/assets/TEMP/ecdb6bbc8f17b31efa69a312a172d604f72a9214',
-      rating: 4,
-      comments: 97,
-      likes: 142,
-      category: CategoryEnum.TECHNOLOGY,
-      daysAgo: 20,
-    },
-    {
-      id: '6',
-      title: 'Rich People Problems',
-      imageUrl:
-        'https://cdn.builder.io/api/v1/image/assets/TEMP/ecdb6bbc8f17b31efa69a312a172d604f72a9214',
-      rating: 4,
-      comments: 97,
-      likes: 78,
-      category: CategoryEnum.LIFESTYLE,
-      daysAgo: 20,
-    },
-  ];
-  constructor(private readonly ActivatedRoute: ActivatedRoute) {
+  constructor(
+    private readonly ActivatedRoute: ActivatedRoute,
+    private readonly bookDataService: BookService
+  ) {
     this.ActivatedRoute.data.subscribe((data: any) => {
       this.isFavorite.set(data?.isFavorite);
     });
   }
 
   ngOnInit() {
-    this.filteredRecommendedBooks = [...this.recommendedBooks];
-    this.filteredExploreBooks = [...this.exploreBooks];
+    this.loading = true;
+    this.querySubscription = this.bookDataService.viewBooks().subscribe({
+      next: (books) => {
+        this.recommendedBooks = [...books]; // Assign fetched books
+        this.exploreBooks = [...books];
+        this.applyFilters();
+        this.loading = false;
+      },
+      error: (err) => {
+        this.error = err;
+        this.loading = false;
+        console.error('Error fetching books:', err);
+      },
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.querySubscription) {
+      this.querySubscription.unsubscribe();
+    }
   }
 
   onCategoryChange(category: CategoryEnum): void {
@@ -415,28 +426,31 @@ export class BookCatalogComponent {
   }
 
   private applyFilters() {
-    // Reset filters
+    console.log('Selected Category in applyFilters:', this.selectedCategory);
     this.filteredRecommendedBooks = [...this.recommendedBooks];
     this.filteredExploreBooks = [...this.exploreBooks];
-
-    // Apply category filter if not "All"
-    if (this.selectedCategory !== 'All') {
+    for (const book of this.filteredRecommendedBooks) {
+      console.log('Book Category:', book.category);
+    }
+    if (this.selectedCategory.toUpperCase() !== 'ALL') {
       this.filteredRecommendedBooks = this.filteredRecommendedBooks.filter(
-        (book) => book.category === this.selectedCategory
+        (book) => book.category === this.selectedCategory.toUpperCase()
       );
       this.filteredExploreBooks = this.filteredExploreBooks.filter(
-        (book) => book.category === this.selectedCategory
+        (book) => book.category === this.selectedCategory.toUpperCase()
       );
+    } else {
+      this.filteredRecommendedBooks = [...this.recommendedBooks];
+      this.filteredExploreBooks = [...this.exploreBooks];
     }
 
-    // Apply search filter
     if (this.searchTerm.trim()) {
       const searchLower = this.searchTerm.toLowerCase();
       this.filteredRecommendedBooks = this.filteredRecommendedBooks.filter(
-        (book) => book.title.toLowerCase().includes(searchLower)
+        (book) => book.title?.toLowerCase().includes(searchLower)
       );
       this.filteredExploreBooks = this.filteredExploreBooks.filter((book) =>
-        book.title.toLowerCase().includes(searchLower)
+        book.title?.toLowerCase().includes(searchLower)
       );
     }
   }
