@@ -17,8 +17,7 @@ import { Article } from './entities/article.entity';
 @ApiTags('Articles')
 @Controller('articles')
 export class ArticleController {
-  constructor(private readonly articleService: ArticleService) {
-  }
+  constructor(private readonly articleService: ArticleService) {}
 
   @Post()
   @ApiOperation({ summary: 'Create a new article' })
@@ -49,7 +48,6 @@ export class ArticleController {
   findOne(@Param('id') id: string): Promise<ArticleDto> {
     return this.articleService.findOne(+id);
   }
-
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update an article by ID' })

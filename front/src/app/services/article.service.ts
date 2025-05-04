@@ -26,4 +26,10 @@ export class ArticleService {
     getArticleById(id: number): Observable<any> {
       return this.http.get(this.apiUrl + '/' + id);
     }
+    deleteArticle(id: number): Observable<any> {
+      return this.http.delete(this.apiUrl + '/' + id);
+    }
+    updateArticle(id: number, articleData: any): Observable<any> {
+      return this.http.patch(this.apiUrl + '/' + id, articleData);
+    }
 }
