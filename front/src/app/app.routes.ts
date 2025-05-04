@@ -49,7 +49,7 @@ export const routes: Routes = [
           import('./update-book/book-update.component').then(
             (c) => c.BookUpdateComponent
           ),
-        canActivate: [RouteLoadingGuard],
+        /*canActivate: [RouteLoadingGuard],*/
         data: { animation: 'slideLeft' },
       },
     ],

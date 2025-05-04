@@ -17,11 +17,33 @@ async function bootstrap() {
 
   // Add Helmet for security headers but allow images to be loaded from the same origin
   app.use(
-    helmet({
-      crossOriginResourcePolicy: {
-        policy: 'cross-origin',
-      },
-    }),
+      helmet({
+        contentSecurityPolicy: {
+          directives: {
+            defaultSrc: ["'self'"],
+            scriptSrc: [
+              "'self'",
+              "'unsafe-inline'", // Needed for inline scripts used by Playground
+              'https://cdn.jsdelivr.net', // Allow GraphQL Playground scripts
+            ],
+            styleSrc: [
+              "'self'",
+              "'unsafe-inline'",
+              'https://cdn.jsdelivr.net',
+            ],
+            imgSrc: [
+              "'self'",
+              'data:',
+              'https://cdn.jsdelivr.net',
+            ],
+            connectSrc: ["'self'", 'https://cdn.jsdelivr.net'],
+            fontSrc: ["'self'", 'https://cdn.jsdelivr.net'],
+          },
+        },
+        crossOriginResourcePolicy: {
+          policy: 'cross-origin',
+        },
+      }),
   );
 
   // Serve static assets with appropriate prefixes

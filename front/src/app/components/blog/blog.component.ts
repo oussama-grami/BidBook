@@ -1,8 +1,8 @@
-import {Component, Input} from '@angular/core';
+import {Component} from '@angular/core';
 import {DatePipe} from '@angular/common';
 import {Article} from '../articlesPage/articleCard.component';
 import {ArticleService} from '../../services/article.service';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-blog',
@@ -13,10 +13,12 @@ import {ActivatedRoute, Router} from '@angular/router';
   styleUrl: './blog.component.css'
 })
 export class BlogComponent {
-  article!: Article;
+  article: Article | undefined;
+
   constructor(private articleService: ArticleService,
-  private route:ActivatedRoute) {
+              private route: ActivatedRoute) {
   }
+
   ngOnInit() {
     const articleId = Number(this.route.snapshot.paramMap.get('id'));
 

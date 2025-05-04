@@ -46,9 +46,10 @@ import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ForgotPasswordResponseDto } from './dto/responses/forgot-password-response.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { ResetPasswordResponseDto } from './dto/responses/reset-password-response.dto';
+import { GenericService } from 'src/Common/generic/generic.service';
 
 @Injectable()
-export class AuthService {
+export class AuthService extends GenericService<User> {
   private readonly logger = new Logger(AuthService.name);
   // Email verification token expiry in seconds (24 hours)
   private readonly EMAIL_VERIFICATION_EXPIRY = 24 * 60 * 60;
@@ -62,7 +63,9 @@ export class AuthService {
     private readonly configService: ConfigService,
     private readonly mailService: MailService,
     private readonly redisCacheService: RedisCacheService,
-  ) {}
+  ) {
+    super(userRepository);
+  }
 
   // Sign up function with automatic email verification
   async signUp(signUpDto: SignUpDto): Promise<SignUpResponseDto> {

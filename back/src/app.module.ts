@@ -1,5 +1,5 @@
 import { GraphQLModule } from '@nestjs/graphql';
-import {Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { config } from 'dotenv';
@@ -27,6 +27,13 @@ import { UserRatingModule } from './user-rating/user-rating.module';
 import { UserRating } from './user-rating/entities/user-rating.entity';
 import { ArticleModule } from './article/article.module';
 import { join } from 'path';
+import { BooksModule } from './books/books.module';
+import { FavoritesModule } from './favorites/favorites.module';
+import { CommentsModule } from './comments/comments.module';
+import { BidsModule } from './bids/bids.module';
+import { NotificationsModule } from './notifications/notifications.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ServeStaticModule } from '@nestjs/serve-static';
 
 config({ path: `${process.cwd()}/Config/.env.dev` });
 
@@ -65,40 +72,31 @@ config({ path: `${process.cwd()}/Config/.env.dev` });
       rootPath: join(__dirname, '..', 'public', 'uploads'),
       serveRoot: '/public/uploads',
     }),
-    TypeOrmModule.forFeature([
-      User,
-      Book,
-      Favorite,
-      Comment,
-      Bid,
-      Notification,
-      UserRating,
-    ]),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       debug: true,
       driver: ApolloDriver,
       playground: true,
       introspection: true,
       typePaths: ['./**/*.graphql'],
+      path: '/graphql',
       definitions: {
         path: join(process.cwd(), 'src/graphql.ts'),
         outputAs: 'class',
       },
     }),
     UserRatingModule,
+    BooksModule,
+    FavoritesModule,
+    CommentsModule,
+    BidsModule,
+    NotificationsModule,
   ],
-  controllers: [AppController, BooksController],
+  controllers: [AppController],
   providers: [
     AppService,
-    BooksService,
     BookResolver,
-    AuthService,
-    CommentsService,
-    BidsService,
-    FavoritesService,
     FavoritesResolver,
     BidResolver,
-    BidsService,
     CommentsResolver,
   ],
 })
