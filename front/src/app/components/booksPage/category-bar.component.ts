@@ -11,7 +11,7 @@ export interface Book {
   id: string;
   title: string;
   imageUrl: string;
-  rating: number;
+  ratings: number;
   comments: number;
   daysAgo: number;
 }

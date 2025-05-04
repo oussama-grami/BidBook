@@ -118,11 +118,11 @@ export class BookUpdateComponent implements OnInit {
           age: book.age,
           ownerId: book.ownerId,
         });
-
+        this.bookForm.get('ownerId')?.disable();
         if (book.picture) {
           this.imagePreview = book.picture.startsWith('http')
             ? book.picture
-            : `http://localhost:3000/${book.picture.replace(/^\.\//, '')}`;
+            : `http://localhost:3000/${book.picture}`;
         }
 
         this.loading = false;

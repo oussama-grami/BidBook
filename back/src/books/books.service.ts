@@ -2,7 +2,7 @@ import {BadRequestException, Injectable, InternalServerErrorException, NotFoundE
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import {In, Repository} from 'typeorm';
 import axios from 'axios';
 import { Book } from './entities/book.entity';
 import * as fs from 'fs/promises';
@@ -36,13 +36,31 @@ export class BooksService {
 
   async findAll(limit?: number, offset?: number): Promise<Book[]> {
     try {
-      console.log(`Finding books with limit: ${limit}, offset: ${offset}`);
+      console.log(`Finding available books with limit: ${limit}, offset: ${offset}`);
       const books = await this.bookRepository.find({
+        where: { isSold: false },
         take: limit,
         skip: offset,
-        relations: ['owner'],
+        relations: ['owner', 'comments', 'bids', 'favorites', 'ratings'],
+        select: [
+          'id',
+          'title',
+          'author',
+          'picture',
+          'editor',
+          'category',
+          'totalPages',
+          'damagedPages',
+          'age',
+          'edition',
+          'price',
+          'language',
+          'createdAt',
+          'isSold',
+          'isBiddingOpen'
+        ],
       });
-      console.log(`Found ${books?.length || 0} books`);
+      console.log(`Found ${books?.length || 0} available books`);
       return books || [];
     } catch (error) {
       console.error('Error in bookService.findAll:', error);
@@ -53,14 +71,74 @@ export class BooksService {
   async findOne(id: number): Promise<Book> {
     const book = await this.bookRepository.findOne({
       where: { id },
-      relations: ['owner', 'comments', 'bids','favorites'],
+      relations: ['owner', 'comments', 'bids','favorites','ratings', 'ratings.user', 'favorites.user'],
     });
 
     if (!book) {
       throw new NotFoundException(`Book with ID ${id} not found`);
     }
+    if(book.bids.length==0)
+    {
+      book.isBiddingOpen=true;
+    }
 
     return book;
+  }
+
+  async findMyBooks(ownerId: number, limit?: number, offset?: number): Promise<Book[]> {
+    try {
+      console.log(`Finding books for owner ID: ${ownerId} with limit: ${limit}, offset: ${offset}`);
+      const books = await this.bookRepository.find({
+        where: { owner: { id: ownerId } },
+        take: limit,
+        skip: offset,
+        relations: ['owner', 'comments', 'bids', 'favorites', 'ratings'],
+        select: [
+          'id',
+          'title',
+          'author',
+          'picture',
+          'editor',
+          'category',
+          'totalPages',
+          'damagedPages',
+          'age',
+          'edition',
+          'price',
+          'language',
+          'createdAt',
+          'isSold',
+        ],
+      });
+      console.log(`Found ${books?.length || 0} books for owner ID: ${ownerId}`);
+      return books || [];
+    } catch (error) {
+      console.error('Error in bookService.findMyBooks:', error);
+      return [];
+    }
+  }
+  async findManyByIds(ids: number[]): Promise<Book[]> {
+    return await this.bookRepository.find({
+      where: {
+        id: In(ids),
+      },
+      relations: ['owner', 'comments', 'bids', 'favorites', 'ratings'],
+      select: [
+        'id',
+        'title',
+        'author',
+        'picture',
+        'editor',
+        'category',
+        'totalPages',
+        'damagedPages',
+        'age',
+        'edition',
+        'price',
+        'language',
+        'createdAt',
+      ],
+    });
   }
 
   async update(

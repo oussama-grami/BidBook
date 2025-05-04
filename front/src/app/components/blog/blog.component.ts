@@ -22,6 +22,7 @@ export class BlogComponent {
               private authService: AuthService,
               private router: Router,) {
   }
+
   ngOnInit() {
     const articleId = Number(this.route.snapshot.paramMap.get('id'));
 

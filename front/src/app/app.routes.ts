@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { DataLoadingResolver } from './shared/resolvers/data-loading.resolver';
 import { tokenValidationGuard } from './shared/guards/token-validation.guard';
+import {OwnerGuard} from './shared/guards/owner.guard';
 
 export const routes: Routes = [
   {
@@ -15,6 +16,16 @@ export const routes: Routes = [
           ),
         resolve: { pageData: DataLoadingResolver },
         data: { animation: 'fade', isFavorite: false },
+      },
+      {
+        path: 'my-books',
+        canActivate: [tokenValidationGuard],
+        loadComponent: () =>
+          import('./components/my-books/my-books-page.component').then(
+            (c) => c.MyBooksPageComponent
+          ),
+        resolve: { pageData: DataLoadingResolver },
+        data: { animation: 'slideLeft' },
       },
       {
         path: 'favorite',
@@ -49,10 +60,20 @@ export const routes: Routes = [
           import('./update-book/book-update.component').then(
             (c) => c.BookUpdateComponent
           ),
-        /*canActivate: [RouteLoadingGuard],*/
+        canActivate: [OwnerGuard],
         data: { animation: 'slideLeft' },
       },
     ],
+  },
+  {
+    path: 'my-bids',
+    canActivate: [tokenValidationGuard],
+    loadComponent: () =>
+      import('./components/bidsPage/bid-dashboard.component').then(
+        (c) => c.ViewBidsPageComponent
+      ),
+    resolve: { pageData: DataLoadingResolver },
+    data: { animation: 'slideLeft' },
   },
   {
     path: 'articles',
@@ -119,7 +140,7 @@ export const routes: Routes = [
     loadComponent: () =>
       import(
         './components/email-verification/email-verification.component'
-      ).then((c) => c.EmailVerificationComponent),
+        ).then((c) => c.EmailVerificationComponent),
     resolve: { pageData: DataLoadingResolver },
     data: { animation: 'fade' },
   },
@@ -203,11 +224,10 @@ export const routes: Routes = [
     loadComponent: () =>
       import(
         './components/transactions-history/transactions-history.component'
-      ).then((c) => c.TransactionsHistoryComponent),
+        ).then((c) => c.TransactionsHistoryComponent),
     resolve: { pageData: DataLoadingResolver },
     data: { animation: 'fade' },
   },
-  // Added error page routes
   {
     path: 'error',
     loadComponent: () =>
