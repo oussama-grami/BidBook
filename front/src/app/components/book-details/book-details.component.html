@@ -52,12 +52,16 @@
            Number of pages: <span class="page-count">{{ pages }}</span>
         </div>
         <div class="last-bid">
-           Current Bid: <span class="bid-value">{{ lastBidPrice }}D</span>
+          <div class="price"> Current Bid: <span class="bid-value">{{ lastBidPrice }}D</span></div>
         </div>
-           <div class="age" *ngIf="age !== undefined">Age: <span class="age-value">{{ age }} years</span></div>
-           <div class="edition" *ngIf="edition">Edition:{{ edition }}</div>
-           <div class="language" *ngIf="language">Langauge:{{ language }}</div>
-           <div class="editor" *ngIf="editor">Editor:{{ editor }}</div>
+           <div class="last-bid" ><div class="price">Age: <span class="bid-value">{{ age }} </span></div>
+          </div>
+           <div class="last-bid" > <div class="price">Edition:<span class="bid-value">{{ edition }}</span> </div>
+          </div>
+           <div class="last-bid" > <div class="price">Langauge:<span class="bid-value">{{ language }}</span> </div>
+          
+          </div>
+           
       </div>
 
 

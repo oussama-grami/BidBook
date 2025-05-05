@@ -52,6 +52,9 @@ import { ImagePreloadDirective } from '../../shared/directives/image-preload.dir
         flex-direction: column;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         transition: all 0.3s ease;
+        width: 600px; 
+        height: 200px; 
+        margin: 10px auto;
       }
 
       .bid-card:hover {
