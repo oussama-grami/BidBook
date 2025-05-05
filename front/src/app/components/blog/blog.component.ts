@@ -12,6 +12,7 @@ import {AuthService} from '../../services/auth.service';
     NgIf
   ],
   templateUrl: './blog.component.html',
+  standalone: true,
   styleUrl: './blog.component.css'
 })
 export class BlogComponent {

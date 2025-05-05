@@ -75,24 +75,10 @@ export interface Book {
       <div *ngIf="error">Error loading books: {{ error }}</div>
 
       <ng-container *ngIf="!loading && !error">
-        <section class="recommended-section">
-          <h2 class="section-title" [@slideInRight]>Recommended</h2>
-          <div class="books-grid" [@booksAnimation]>
-            <app-book-card
-              *ngFor="let book of filteredRecommendedBooks"
-              [book]="book"
-              [special]="true"
-              [isFavorite]="isFavorite()"
-            >
-            </app-book-card>
-          </div>
-        </section>
-
         <section class="explore-section">
-          <h2 class="section-title" [@slideInRight]>Explore other books</h2>
+          <h2 class="section-title" [@slideInRight]>Explore all books</h2>
           <div class="books-grid" [@booksAnimation]>
-            <app-book-card *ngFor="let book of filteredExploreBooks" [book]="book">
-            </app-book-card>
+            <app-book-card *ngFor="let book of filteredExploreBooks" [book]="book"></app-book-card>
           </div>
         </section>
       </ng-container>
@@ -141,68 +127,6 @@ export interface Book {
         min-height: 100vh;
       }
 
-      .recommended-section {
-        background: linear-gradient(
-          135deg,
-          rgba(255, 255, 255, 0.9),
-          rgba(156, 115, 80, 0.1)
-        );
-        border-radius: 25px;
-        padding: 40px;
-        margin-bottom: 50px;
-        box-shadow: 0 8px 32px rgba(156, 115, 80, 0.15);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(156, 115, 80, 0.2);
-        position: relative;
-        overflow: hidden;
-      }
-
-      .recommended-section::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 3px;
-        background: linear-gradient(90deg, #9c7350, #50719c);
-        border-radius: 3px;
-      }
-
-      .recommended-section .section-title {
-        font-size: 44px;
-        background: linear-gradient(45deg, #9c7350, #50719c);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        margin-bottom: 50px;
-        position: relative;
-        display: inline-block;
-      }
-
-      .recommended-section .section-title::after {
-        content: '★';
-        position: absolute;
-        top: -10px;
-        right: -30px;
-        color: #9c7350;
-        font-size: 24px;
-        opacity: 0.8;
-      }
-
-      .recommended-section .books-grid {
-        gap: 40px;
-        padding: 10px;
-      }
-
-      .recommended-section app-book-card {
-        transform-origin: center;
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      }
-
-      .recommended-section app-book-card:hover {
-        transform: translateY(-15px) scale(1.03);
-        z-index: 1;
-      }
-
       .explore-section {
         background: rgba(255, 255, 255, 0.8);
         border-radius: 20px;
@@ -213,7 +137,6 @@ export interface Book {
         transition: transform 0.3s ease;
       }
 
-      .recommended-section:hover,
       .explore-section:hover {
         transform: translateY(-5px);
       }
@@ -250,30 +173,17 @@ export interface Book {
           padding: 20px;
         }
 
-        .recommended-section {
-          padding: 30px;
-        }
-
-        .recommended-section .section-title {
-          font-size: 36px;
-        }
-
-        .recommended-section .books-grid {
-          gap: 30px;
-        }
-
-        .books-grid {
-          grid-template-columns: repeat(2, 1fr);
-          gap: 20px;
+        .explore-section {
+          padding: 20px;
         }
 
         .section-title {
           font-size: 32px;
         }
 
-        .recommended-section,
-        .explore-section {
-          padding: 20px;
+        .books-grid {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 20px;
         }
       }
 
@@ -282,32 +192,18 @@ export interface Book {
           padding: 15px;
         }
 
-        .recommended-section {
-          padding: 20px;
-          margin-bottom: 30px;
-        }
-
-        .recommended-section .section-title {
-          font-size: 32px;
-        }
-
-        .recommended-section .books-grid {
-          gap: 20px;
-        }
-
-        .books-grid {
-          grid-template-columns: 1fr;
-          gap: 15px;
+        .explore-section {
+          padding: 15px;
+          margin-bottom: 20px;
         }
 
         .section-title {
           font-size: 28px;
         }
 
-        .recommended-section,
-        .explore-section {
-          padding: 15px;
-          margin-bottom: 20px;
+        .books-grid {
+          grid-template-columns: 1fr;
+          gap: 15px;
         }
 
         .section-title::after {
@@ -373,9 +269,7 @@ export class BookCatalogComponent implements OnInit, OnDestroy {
   selectedCategory: CategoryEnum = CategoryEnum.All;
   isFavorite: WritableSignal<boolean> = signal(true);
   searchTerm = '';
-  recommendedBooks: Book[] = [];
   exploreBooks: Book[] = [];
-  filteredRecommendedBooks: Book[] = [];
   filteredExploreBooks: Book[] = [];
   loading = true;
   error: any;
@@ -396,7 +290,6 @@ export class BookCatalogComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.querySubscription = this.bookDataService.viewBooks().subscribe({
       next: (books) => {
-        this.recommendedBooks = [...books]; // Assign fetched books
         this.exploreBooks = [...books];
         this.applyFilters();
         this.loading = false;
@@ -426,29 +319,16 @@ export class BookCatalogComponent implements OnInit, OnDestroy {
   }
 
   private applyFilters() {
-    console.log('Selected Category in applyFilters:', this.selectedCategory);
-    this.filteredRecommendedBooks = [...this.recommendedBooks];
     this.filteredExploreBooks = [...this.exploreBooks];
-    for (const book of this.filteredRecommendedBooks) {
-      console.log('Book Category:', book.category);
-    }
+
     if (this.selectedCategory.toUpperCase() !== 'ALL') {
-      this.filteredRecommendedBooks = this.filteredRecommendedBooks.filter(
-        (book) => book.category === this.selectedCategory.toUpperCase()
-      );
       this.filteredExploreBooks = this.filteredExploreBooks.filter(
         (book) => book.category === this.selectedCategory.toUpperCase()
       );
-    } else {
-      this.filteredRecommendedBooks = [...this.recommendedBooks];
-      this.filteredExploreBooks = [...this.exploreBooks];
     }
 
     if (this.searchTerm.trim()) {
       const searchLower = this.searchTerm.toLowerCase();
-      this.filteredRecommendedBooks = this.filteredRecommendedBooks.filter(
-        (book) => book.title?.toLowerCase().includes(searchLower)
-      );
       this.filteredExploreBooks = this.filteredExploreBooks.filter((book) =>
         book.title?.toLowerCase().includes(searchLower)
       );
