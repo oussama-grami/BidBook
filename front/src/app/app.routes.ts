@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { DataLoadingResolver } from './shared/resolvers/data-loading.resolver';
 import { tokenValidationGuard } from './shared/guards/token-validation.guard';
-import {OwnerGuard} from './shared/guards/owner.guard';
+import { OwnerGuard } from './shared/guards/owner.guard';
 
 export const routes: Routes = [
   {
@@ -201,7 +201,7 @@ export const routes: Routes = [
     data: { animation: 'slideLeft' },
   },
   {
-    path: 'payment',
+    path: 'payment/:id', // Add this route
     canActivate: [tokenValidationGuard],
     loadComponent: () =>
       import('./components/payment/payment.component').then(
