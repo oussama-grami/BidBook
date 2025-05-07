@@ -3,7 +3,7 @@ import { CommentsService } from "../comments/comments.service"
 import { Comment } from '../graphql';
 import {UseGuards } from '@nestjs/common';
 import { PubSub } from 'graphql-subscriptions';
-import { AuthService } from '../auth/auth.service'; 
+import { AuthService } from '../auth/auth.service';
 import { GqlAuthGuard } from '../auth/guards/gql.guard';
 
 const pubSub = new PubSub();
@@ -14,21 +14,21 @@ export class CommentsResolver {
       private readonly commentsService: CommentsService,
       private readonly userService: AuthService,
   ) {}
- 
+
 @Query('CommentCount')
 async commentCount(
   @Args('bookId', { type: () => Int }) bookId: number,
 ): Promise<number> {
   if (bookId === null || bookId === undefined) {
-    throw new Error("L'ID du livre est requis pour compter les commentaires.");
+    throw new Error("Book ID is required to count comments.");
   }
 
   try {
     const count = await this.commentsService.countByBookId(bookId);
     return count;
   } catch (error) {
-    console.error(`Erreur lors de la résolution de CommentCount pour bookId ${bookId}:`, error);
-    throw new Error(`Impossible de récupérer le nombre de commentaires pour le livre ID ${bookId}.`);
+    console.error(`Error resolving CommentCount for bookId ${bookId}:`, error);
+    throw new Error(`Unable to retrieve the comment count for book ID ${bookId}.`);
   }
 }
 @Query('GetBookCommentsPaginated')
@@ -52,7 +52,7 @@ async addCommentToBook(
   console.log('addCommentToBook called with:', { bookId, content })
     const user = context.req.user;
     if (!user) {
-        throw new Error('Utilisateur non authentifié');
+        throw new Error('User not authenticated');
     }
 
     const userId = user.id;
@@ -97,13 +97,13 @@ async addCommentToBook(
   }
 
   @ResolveField('user', () => 'User')
-  async user(@Parent() comment: any) { 
+  async user(@Parent() comment: any) {
     try {
-    
-      return await this.userService.findOne({ where: { id: comment.userId } }); 
+
+      return await this.userService.findOne({ where: { id: comment.userId } });
 
     } catch (error) {
-      
+
       console.error('Error fetching user for comment:', error);
       return null;
     }

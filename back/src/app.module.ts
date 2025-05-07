@@ -5,29 +5,15 @@ import { AppService } from './app.service';
 import { config } from 'dotenv';
 import { GlobalModule } from './Common/global.module';
 import { AuthModule } from './auth/auth.module';
-import { Book } from './books/entities/book.entity';
 import { User } from './auth/entities/user.entity';
-import { Favorite } from './favorites/entities/favorite.entity';
-import { Bid } from './bids/entities/bid.entity';
-import { Comment } from './comments/entities/comment.entity';
-import { Notification } from './notifications/entities/notification.entity';
-import { ConfigModule, ConfigService } from '@nestjs/config'; // Ajout de ConfigService
-import { BooksService } from './books/books.service';
-import { BooksController } from './books/books.controller';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { BookResolver } from './graphql/book.resolver';
-import { AuthService } from './auth/auth.service';
-import { CommentsService } from './comments/comments.service';
-import { BidsService } from './bids/bids.service';
-import { FavoritesService } from './favorites/favorites.service';
 import { FavoritesResolver } from './graphql/favorite.resolver';
 import { BidResolver } from './graphql/bid.resolver';
 import { CommentsResolver } from './graphql/comment.resolver';
 import { UserRatingModule } from './user-rating/user-rating.module';
-import { UserRating } from './user-rating/entities/user-rating.entity';
 import { RatingsResolver } from './graphql/user-rating.resolver';
-
-
 import { ArticleModule } from './article/article.module';
 import { join } from 'path';
 import { BooksModule } from './books/books.module';
@@ -85,8 +71,8 @@ config({ path: `${process.cwd()}/Config/.env.dev` });
     }),
     TypeOrmModule.forFeature([User, Conversation, Message]),
     JwtModule.register({
-      secret: process.env.JWT_SECRET, // Make sure this matches your auth configuration
-      signOptions: { expiresIn: '1d' }, // Adjust as needed
+      secret: process.env.JWT_SECRET, 
+      signOptions: { expiresIn: '1d' },
     }),
     GlobalModule,
     AuthModule,

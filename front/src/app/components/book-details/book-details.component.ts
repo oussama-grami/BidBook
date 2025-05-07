@@ -603,7 +603,7 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // Check if the current user is the owner of the book
+ 
     if (this.owner?.id === this.currentUserId) {
       this.bidError = 'You cannot bid on your own book.';
       console.warn('Bid validation failed:', this.bidError);
@@ -664,7 +664,7 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.error('Error creating bid:', error);
-          // Handle GraphQL errors or network errors
+         
           this.bidError = error.message || 'Failed to create bid. Please try again.';
           this.isSubmittingBid = false;
         },
@@ -690,7 +690,7 @@ export class BookDetailsComponent implements OnInit, OnDestroy {
           this.userRating = 0;
           this.hasRated = false;
           this.starStates = Array(5).fill('inactive');
-          this.fetchBookDetails(); // Reload to update average rating
+          this.fetchBookDetails(); 
         } else {
           this.error = 'Failed to delete your rating. Please try again.';
         }

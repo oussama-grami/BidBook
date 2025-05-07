@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Comment } from '../comments/entities/comment.entity'; // Assuming your Comment entity is here
+import { Comment } from '../comments/entities/comment.entity'; 
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -12,7 +12,6 @@ export class CommentsService {
       private readonly commentRepository: Repository<Comment>,
   ) {}
   async addCommentToBook(bookId: number, userId: number, content: string): Promise<Comment> {
-    console.log('Adding comment Hiba:', { bookId, userId, content });
     if (!content || content.trim().length === 0) {
         throw new BadRequestException('Comment content cannot be empty.');
     }

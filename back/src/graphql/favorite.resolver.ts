@@ -1,3 +1,4 @@
+
 import { Resolver, Mutation, Args, Int, Subscription, Context, Query } from '@nestjs/graphql';
 import { PubSub } from 'graphql-subscriptions';
 import { FavoritesService } from "../favorites/favorites.service";
@@ -16,7 +17,7 @@ export class FavoritesResolver {
       private readonly booksService: BooksService,
   ) {}
 
- // Mutation addFavorite
+  // Mutation addFavorite
 @UseGuards(GqlAuthGuard)
 @Mutation('addFavorite')
 async addFavorite(
@@ -27,7 +28,7 @@ async addFavorite(
         const user = context.req.user;
 
         if (!user) {
-            throw new InternalServerErrorException('Informations utilisateur non disponibles après authentification.');
+            throw new InternalServerErrorException('User information not available after authentication.');
         }
 
         const userId = user.id;
@@ -59,15 +60,15 @@ async FavoriteCount(
   @Args('bookId', { type: () => Int }) bookId: number,
 ): Promise<number> {
   if (bookId === null || bookId === undefined) {
-    throw new Error("L'ID du livre est requis pour compter les favoris.");
+    throw new Error("Book ID is required to count favorites.");
   }
 
   try {
     const count = await this.favoritesService.getFavoriteCountForBook(bookId);
     return count;
   } catch (error) {
-    console.error(`Erreur lors de la résolution de FavoriteCount pour bookId ${bookId}:`, error);
-    throw new Error(`Impossible de récupérer le nombre de favoris pour le livre ID ${bookId}.`);
+    console.error(`Error resolving FavoriteCount for bookId ${bookId}:`, error);
+    throw new Error(`Unable to retrieve the number of favorites for book ID ${bookId}.`);
   }
 }
 
@@ -78,12 +79,12 @@ async removeFavorite(
     @Args('bookId', { type: () => Int }) bookId: number,
     @Context() context: any
 ): Promise<boolean> {
-        
+
     try {
         const user = context.req.user;
 
         if (!user) {
-            throw new InternalServerErrorException('Informations utilisateur non disponibles après authentification.');
+            throw new InternalServerErrorException('User information not available after authentication.');
         }
 
         const userId = user.id;

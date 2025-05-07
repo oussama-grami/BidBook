@@ -28,7 +28,7 @@ async addRate(
         const user = context.req.user;
 
         if (!user) {
-            throw new InternalServerErrorException('Informations utilisateur non disponibles après authentification.');
+            throw new InternalServerErrorException('User information not available after authentication.');
         }
 
         const userId = user.id;
@@ -65,8 +65,7 @@ async updateRate(
     try {
         const user = context.req.user;
 
-        if (!user) {
-             throw new InternalServerErrorException('Informations utilisateur non disponibles après authentification.');
+        if (!user) {             throw new InternalServerErrorException('User information not available after authentication.');
         }
 
         const userId = user.id;

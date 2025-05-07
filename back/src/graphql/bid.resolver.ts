@@ -2,29 +2,21 @@ import {
   Resolver,
   Query,
   Args,
-  ID,
-  ResolveField,
-  Parent,
   Int,
   Mutation,
   Float,
   Context,
 } from '@nestjs/graphql';
-import { BooksService } from '../books/books.service';
-import { AuthService } from '../auth/auth.service';
 import { BidsService } from '../bids/bids.service';
 import { Bid } from 'src/graphql';
 import { InternalServerErrorException, UseGuards } from '@nestjs/common';
 import { User } from 'src/Decorator/user.decorator';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { GqlAuthGuard } from 'src/auth/guards/gql.guard';
 
 @Resolver('Bid')
 export class BidResolver {
   constructor(
     private readonly bidService: BidsService,
-    private readonly userService: AuthService,
-    private readonly bookService: BooksService,
   ) {}
 
   @UseGuards(GqlAuthGuard)
@@ -34,7 +26,7 @@ export class BidResolver {
     @Args('limit') limit?: number,
     @Args('offset') offset?: number,
   ) {
-    console.log('User ID:', userId); // Log the user ID for debugging
+   
     try {
       return await this.bidService.findBidsByUser(userId, { limit, offset });
     } catch (error) {
@@ -63,7 +55,7 @@ export class BidResolver {
           const user = context.req.user;
   
           if (!user) {
-              throw new InternalServerErrorException('Informations utilisateur non disponibles après authentification.');
+              throw new InternalServerErrorException('Error: User information not available after authentication.');
           }
   
           const userId = user.id;
@@ -90,7 +82,7 @@ export class BidResolver {
           const user = context.req.user;
   
           if (!user) {
-              throw new InternalServerErrorException('Informations utilisateur non disponibles après authentification.');
+              throw new InternalServerErrorException('Error: User information not available after authentication.');
           }
   
           const userId = user.id;

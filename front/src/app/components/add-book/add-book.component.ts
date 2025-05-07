@@ -1,6 +1,6 @@
 // add-book.component.ts
 import { Component, OnInit } from '@angular/core';
-import { NgIf, CommonModule } from '@angular/common';
+import {  CommonModule } from '@angular/common';
 import {
   FormBuilder,
   FormGroup,
@@ -13,10 +13,7 @@ import { ButtonModule } from 'primeng/button';
 import { HttpClientModule } from '@angular/common/http';
 import { finalize } from 'rxjs/operators';
 import { BookService } from '../../services/book.service';
-import { Apollo } from 'apollo-angular';
-import { HttpLink } from 'apollo-angular/http';
-import { APOLLO_OPTIONS } from 'apollo-angular';
-import { createApollo } from '../../../apollo.config';
+
 import {UserIdService} from '../../services/userid.service';
 
 @Component({
@@ -183,7 +180,7 @@ export class AddBookComponent implements OnInit {
         .subscribe({
           next: (response: any) => {
             console.log('Book added successfully', response);
-            this.router.navigate(['/books']); // Navigate to book list or appropriate page
+            this.router.navigate(['/books']);
           },
           error: (error: any) => {
             console.error('Error adding book:', error);
