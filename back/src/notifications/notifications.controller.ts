@@ -9,11 +9,11 @@ import { JwtService } from "@nestjs/jwt";
 @Controller('notifications')
 @UseGuards(JwtAuthGuard)
 export class NotificationsController implements OnModuleInit, OnModuleDestroy {
-  private readonly heartbeatInterval = 30000; // Send heartbeat every 30 seconds
+  private readonly heartbeatInterval = 30000;
   private heartbeat$: Observable<MessageEvent>;
   private destroy$ = new Subject<void>();
 
-  constructor(private readonly notificationsService: NotificationsService, private jwtService: JwtService) {
+  constructor(private readonly notificationsService: NotificationsService) {
     this.heartbeat$ = interval(this.heartbeatInterval).pipe(
         map(() => new MessageEvent('heartbeat', { data: 'ping' })),
         takeUntil(this.destroy$)
@@ -26,21 +26,18 @@ export class NotificationsController implements OnModuleInit, OnModuleDestroy {
         takeUntil(this.destroy$),
         (notificationStream: Observable<MessageEvent>) => {
           return new Observable<MessageEvent>((subscriber) => {
-            // Subscribe to notifications
             const notificationSubscription = notificationStream.subscribe({
               next: (notification) => subscriber.next(notification),
               error: (error) => subscriber.error(error),
               complete: () => subscriber.complete(),
             });
 
-            // Subscribe to heartbeat
             const heartbeatSubscription = this.heartbeat$.subscribe({
               next: (heartbeat) => subscriber.next(heartbeat),
               error: (error) => subscriber.error(error),
-              complete: () => {}, // Heartbeat should not complete when the main stream completes
+              complete: () => {},
             });
 
-            // Cleanup: Unsubscribe from both streams when the subscriber unsubscribes
             return () => {
               notificationSubscription.unsubscribe();
               heartbeatSubscription.unsubscribe();

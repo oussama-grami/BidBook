@@ -27,7 +27,6 @@ import { ConversationModule } from './conversation/conversation.module';
 import { ChatGateway } from './chat/chat.gateway';
 import { Conversation } from './conversation/entities/conversation.entity';
 import { Message } from './conversation/entities/message.entity';
-import { RedisCacheService } from './Common/cache/redis-cache.service';
 import { JwtService } from '@nestjs/jwt';
 import { ChatService } from './chat/chat.service';
 import { JwtModule } from '@nestjs/jwt'; 
@@ -43,7 +42,6 @@ config({ path: `${process.cwd()}/Config/.env.dev` });
 @Module({
   imports: [
     ConfigModule.forRoot({
-      // Configuration de ConfigModule
       isGlobal: true,
       envFilePath: [
         `${process.cwd()}/Config/.env`,
@@ -52,7 +50,6 @@ config({ path: `${process.cwd()}/Config/.env.dev` });
     }),
     ScheduleModule.forRoot(),
     TypeOrmModule.forRootAsync({
-      // Configuration de TypeOrmModule
       inject: [ConfigService],
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => {

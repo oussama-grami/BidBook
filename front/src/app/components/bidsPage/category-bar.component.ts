@@ -6,19 +6,12 @@ import {Subject} from 'rxjs';
 import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
 import {animate, group, query, state, style, transition, trigger,} from '@angular/animations';
 import {BidStatus} from '../../enums/status.enum';
+import {InputText} from 'primeng/inputtext';
 
-export interface Book {
-  id: string;
-  title: string;
-  imageUrl: string;
-  ratings: number;
-  comments: number;
-  daysAgo: number;
-}
 @Component({
   selector: 'app-bid-status-list',
   standalone: true,
-  imports: [CommonModule, IconField, InputIcon],
+  imports: [CommonModule, IconField, InputIcon, InputText],
   template: `
     <div class="search-and-status">
       <div class="search-container">
@@ -228,11 +221,8 @@ export interface Book {
         box-shadow: 0 6px 20px rgba(80, 113, 156, 0.15);
       }
 
-      .search-icon {
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      }
 
-      .search-input:focus + .search-icon {
+      .search-input:focus {
         color: #50719c;
       }
 

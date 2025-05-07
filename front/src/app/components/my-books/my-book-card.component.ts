@@ -11,7 +11,6 @@ import {
 } from '@angular/animations';
 import { RouterModule } from '@angular/router';
 import { ImagePreloadDirective } from '../../shared/directives/image-preload.directive';
-import { LoadingService } from '../../services/loading.service';
 import { FormsModule } from '@angular/forms';
 import { BookService } from '../../services/book.service';
 import { Subscription } from 'rxjs';
@@ -390,7 +389,6 @@ export class MyBookCardComponent implements OnInit, OnDestroy {
   private commentCountSubscription?: Subscription;
   private favoriteCountSubscription?: Subscription;
   constructor(
-    private loadingService: LoadingService,
     private bookService: BookService,
     private router: Router
   ) {}
@@ -444,7 +442,6 @@ export class MyBookCardComponent implements OnInit, OnDestroy {
       );
   }
 
-  // New method to handle redirection to the edit page
   goToEditPage(bookId: number): void {
     this.router.navigate(['/books/update', bookId]);
   }

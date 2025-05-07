@@ -31,6 +31,19 @@ export class StripeController {
     return this.stripeService.updateTransactionStatus(id, body.status);
   }
 
+  @Post('create-transaction-for-bid/:bidId')  // New route
+  async createTransactionForBid(
+      @Param('bidId') bidId: number,
+  ) {
+    try {
+      const transactionId = await this.stripeService.createTransactionForBid(bidId);
+      return { transaction: { id: transactionId } };
+    } catch (error) {
+      console.error("Error creating transaction", error);
+      throw error;
+    }
+  }
+
 
 
   @Post()

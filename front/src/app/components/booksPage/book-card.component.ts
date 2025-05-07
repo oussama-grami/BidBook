@@ -10,7 +10,6 @@ import {
 } from '@angular/animations';
 import { RouterModule } from '@angular/router';
 import { ImagePreloadDirective } from '../../shared/directives/image-preload.directive';
-import { LoadingService } from '../../services/loading.service';
 import { FormsModule } from '@angular/forms';
 import { BookService } from '../../services/book.service';
 import { Subscription } from 'rxjs';
@@ -445,7 +444,6 @@ export class BookCardComponent implements OnInit {
   private commentCountSubscription?: Subscription;
   private favoriteCountSubscription?: Subscription;
   constructor(
-    private loadingService: LoadingService, // Injected, though not used in this snippet
     private bookService: BookService
   ) {}
 
@@ -456,9 +454,8 @@ export class BookCardComponent implements OnInit {
     this.getFavoriteCount();
   }
 
-  // Lifecycle hook called just before the component is destroyed
+
   ngOnDestroy(): void {
-    // Unsubscribe to prevent memory leaks
     if (this.commentCountSubscription) {
       this.commentCountSubscription.unsubscribe();
     }

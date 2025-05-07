@@ -12,10 +12,8 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const configService = app.get(ConfigService);
 
-  // Enable cookie parser middleware
   app.use(cookieParser());
 
-  // Add Helmet for security headers but allow images to be loaded from the same origin
   app.use(
       helmet({
         contentSecurityPolicy: {
@@ -23,8 +21,8 @@ async function bootstrap() {
             defaultSrc: ["'self'"],
             scriptSrc: [
               "'self'",
-              "'unsafe-inline'", // Needed for inline scripts used by Playground
-              'https://cdn.jsdelivr.net', // Allow GraphQL Playground scripts
+              "'unsafe-inline'",
+              'https://cdn.jsdelivr.net',
             ],
             styleSrc: [
               "'self'",
@@ -46,7 +44,6 @@ async function bootstrap() {
       }),
   );
 
-  // Serve static assets with appropriate prefixes
   app.useStaticAssets(join(__dirname, '..', 'public'), {
     prefix: '/',
     setHeaders: (res, path) => {
@@ -56,11 +53,9 @@ async function bootstrap() {
         path.endsWith('.jpeg') ||
         path.endsWith('.svg')
       ) {
-        // Set proper CORS headers for images
         res.setHeader('Access-Control-Allow-Origin', '*');
         res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
 
-        // Improve caching behavior for profile images
         res.setHeader('Cache-Control', 'no-cache, must-revalidate');
         res.setHeader('Pragma', 'no-cache');
         res.setHeader('Expires', '0');
@@ -71,8 +66,6 @@ async function bootstrap() {
     prefix: '/public/uploads/books', 
   });
 
-  
-  // Enable CORS with credentials
   app.enableCors({
     origin: [
       configService.get<string>('FRONTEND_URL') || 'http://localhost:4200',

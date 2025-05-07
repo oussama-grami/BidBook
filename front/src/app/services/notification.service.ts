@@ -56,14 +56,6 @@ export class NotificationService implements OnDestroy {
     });
   }
 
-  showInfo(message: string, title: string = 'Info') {
-    this.messageService.add({
-      severity: 'info',
-      summary: title,
-      detail: message,
-    });
-  }
-
   showWarning(message: string, title: string = 'Warning') {
     this.messageService.add({
       severity: 'warn',
@@ -72,9 +64,6 @@ export class NotificationService implements OnDestroy {
     });
   }
 
-  clear() {
-    this.messageService.clear();
-  }
   connect(): void {
     const userId = this.userIdService.getUserId();
 

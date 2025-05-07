@@ -1,9 +1,9 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Bid, BookService } from '../../services/book.service';
+import { Bid } from '../../services/book.service';
 import { RouterModule } from '@angular/router';
 import { ImagePreloadDirective } from '../../shared/directives/image-preload.directive';
-import { HttpClient } from '@angular/common/http'; // Import HttpClient
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-bid-card',
@@ -21,9 +21,9 @@ import { HttpClient } from '@angular/common/http'; // Import HttpClient
             fallback="/images/image.png"
           />
           <div class="overlay">
-            <span class="read-more" [routerLink]="['/books', bid.book.id]"
-            >View Book</span
-            >
+                <span class="read-more" [routerLink]="['/books', bid.book.id]"
+                >View Book</span
+                >
           </div>
         </div>
         <h3 class="book-title">{{ bid.book.title }}</h3>
@@ -106,6 +106,18 @@ import { HttpClient } from '@angular/common/http'; // Import HttpClient
         transition: opacity 0.3s ease;
       }
 
+      .status-pending {
+        color: orange;
+      }
+
+      .status-accepted {
+        color: green;
+      }
+
+      .status-rejected {
+        color: red;
+      }
+
       .book-image-container:hover .overlay {
         opacity: 1;
       }
@@ -146,18 +158,6 @@ import { HttpClient } from '@angular/common/http'; // Import HttpClient
       .bid-status {
         font-size: 13px;
         font-weight: bold;
-      }
-
-      .status-pending {
-        color: orange;
-      }
-
-      .status-accepted {
-        color: green;
-      }
-
-      .status-rejected {
-        color: red;
       }
 
       .bid-actions {
@@ -227,13 +227,13 @@ export class BidCardComponent {
       );
       // Call the backend endpoint to create the transaction
       this.http
-        .post<{ transaction: { id: number } }>(  // Change here
+        .post<{ transaction: { id: number } }>(
           `http://localhost:3000/stripe/create-transaction-for-bid/${this.bid.id}`,
           {}
         )
         .subscribe({
           next: (response) => {
-            if (response?.transaction?.id) {  // Change here
+            if (response?.transaction?.id) {
               console.log('Transaction ID received:', response.transaction.id);
               window.location.href = `/payment/${response.transaction.id}`;
             } else {
@@ -251,4 +251,3 @@ export class BidCardComponent {
     }
   }
 }
-

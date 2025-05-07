@@ -6,6 +6,7 @@ import Stripe from 'stripe';
 import { TransactionDetailsDto } from './dto/transaction-details.dto';
 import { Repository } from 'typeorm';
 import { Transaction } from './entities/transaction.entity';
+import {Bid} from "../bids/entities/bid.entity";
 
 @Injectable()
 export class StripeService {
@@ -13,7 +14,10 @@ export class StripeService {
 
   constructor(
       @InjectRepository(Transaction)
-      private transactionRepository: Repository<Transaction>
+      private transactionRepository: Repository<Transaction>,
+      @InjectRepository(Bid)
+      private bidRepository: Repository<Bid>,
+
   ) {
     if (!process.env.STRIPE_SECRET_KEY) {
       throw new Error('STRIPE_SECRET_KEY is not defined in environment variables');
@@ -28,6 +32,24 @@ export class StripeService {
       amount,
       currency,
     });
+  }
+
+  async createTransactionForBid(bidId: number): Promise<number> {
+    const bid = await this.bidRepository.findOne({
+      where: { id: bidId },
+      relations: ['book'],
+    });
+
+    if (!bid) {
+      throw new NotFoundException(`Bid with ID ${bidId} not found`);
+    }
+    const transaction = this.transactionRepository.create({
+      bid: bid,
+      amount: bid.amount,
+      status: 'pending',
+    });
+    const savedTransaction = await this.transactionRepository.save(transaction);
+    return savedTransaction.id;
   }
 
   async getTransactionDetails(transactionId: number): Promise<TransactionDetailsDto> {
