@@ -1,8 +1,9 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {Bid, BookService} from '../../services/book.service';
+import { Bid, BookService } from '../../services/book.service';
 import { RouterModule } from '@angular/router';
 import { ImagePreloadDirective } from '../../shared/directives/image-preload.directive';
+import { HttpClient } from '@angular/common/http'; // Import HttpClient
 
 @Component({
   selector: 'app-bid-card',
@@ -21,7 +22,7 @@ import { ImagePreloadDirective } from '../../shared/directives/image-preload.dir
           />
           <div class="overlay">
             <span class="read-more" [routerLink]="['/books', bid.book.id]"
-              >View Book</span
+            >View Book</span
             >
           </div>
         </div>
@@ -33,10 +34,16 @@ import { ImagePreloadDirective } from '../../shared/directives/image-preload.dir
           <p class="bid-date">
             Bid Date: {{ bid.createdAt | date: 'mediumDate' }}
           </p>
-          <p class="bid-status" [ngClass]="'status-' + bid.bidStatus.toLowerCase()">
+          <p
+            class="bid-status"
+            [ngClass]="'status-' + bid.bidStatus.toLowerCase()"
+          >
             Status: {{ bid.bidStatus }}
           </p>
         </div>
+      </div>
+      <div class="bid-actions" *ngIf="bid.bidStatus === 'ACCEPTED'">
+        <button class="pay-button" (click)="payNow()">Pay Now</button>
       </div>
     </div>
   `,
@@ -46,14 +53,13 @@ import { ImagePreloadDirective } from '../../shared/directives/image-preload.dir
         background: white;
         border-radius: 15px;
         overflow: hidden;
-        cursor: pointer;
         position: relative;
         display: flex;
         flex-direction: column;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         transition: all 0.3s ease;
-        width: 600px; 
-        height: 200px; 
+        width: 600px;
+        height: auto; /* Adjust height to accommodate the button */
         margin: 10px auto;
       }
 
@@ -154,6 +160,27 @@ import { ImagePreloadDirective } from '../../shared/directives/image-preload.dir
         color: red;
       }
 
+      .bid-actions {
+        padding: 10px 15px;
+        display: flex;
+        justify-content: flex-end;
+      }
+
+      .pay-button {
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 8px 16px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .pay-button:hover {
+        background-color: #45a049;
+      }
+
       @media (max-width: 640px) {
         .book-info {
           gap: 10px;
@@ -180,10 +207,48 @@ import { ImagePreloadDirective } from '../../shared/directives/image-preload.dir
           font-size: 12px;
           padding: 6px 12px;
         }
+
+        .pay-button {
+          font-size: 12px;
+          padding: 6px 12px;
+        }
       }
     `,
   ],
 })
 export class BidCardComponent {
   @Input() bid!: Bid;
+  constructor(private http: HttpClient) {} // Inject HttpClient
+
+  payNow() {
+    if (this.bid?.book?.id) {
+      console.log(
+        `Initiating payment for book ID: ${this.bid.book.id} with bid ID: ${this.bid.id} and amount: ${this.bid.amount}`
+      );
+      // Call the backend endpoint to create the transaction
+      this.http
+        .post<{ transaction: { id: number } }>(  // Change here
+          `http://localhost:3000/stripe/create-transaction-for-bid/${this.bid.id}`,
+          {}
+        )
+        .subscribe({
+          next: (response) => {
+            if (response?.transaction?.id) {  // Change here
+              console.log('Transaction ID received:', response.transaction.id);
+              window.location.href = `/payment/${response.transaction.id}`;
+            } else {
+              alert('Could not create transaction.');
+            }
+          },
+          error: (error) => {
+            alert('Failed to initiate payment.');
+            console.error('Payment initiation error:', error);
+          },
+        });
+    } else {
+      alert('Book ID not found for this bid.');
+      console.error('Book ID missing for bid:', this.bid);
+    }
+  }
 }
+

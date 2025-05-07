@@ -1,6 +1,6 @@
-import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, NgZone, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router'; // Import ActivatedRoute
 import {
   FormBuilder,
   FormGroup,
@@ -24,6 +24,8 @@ import {
 
 import { PaymentService, Transaction } from '../../services/payment.service';
 import { BookService } from '../../services/book.service';
+import { Subscription, Observable, of, throwError } from 'rxjs'; // Import Subscription and Observable
+import { catchError, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-payment',
@@ -95,13 +97,12 @@ import { BookService } from '../../services/book.service';
     ]),
   ],
 })
-
-
-export class PaymentComponent implements OnInit {
+export class PaymentComponent implements OnInit, OnDestroy { // Implement OnDestroy
   paymentForm!: FormGroup;
   isProcessing: boolean = false;
   activeCardType: 'visa' | 'mastercard' | null = null;
   transaction: Transaction | null = null;
+  transactionSubscription!: Subscription; // Add Subscription
 
   subtotal: number = 0;
   tax: number = 0;
@@ -113,7 +114,8 @@ export class PaymentComponent implements OnInit {
     private ngZone: NgZone,
     private paymentService: PaymentService,
     private booksService: BookService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute // Inject ActivatedRoute
   ) {
     this.initForm();
   }
@@ -142,28 +144,54 @@ export class PaymentComponent implements OnInit {
     this.paymentForm
       .get('cardNumber')
       ?.valueChanges.subscribe((value: string) => {
-        this.ngZone.run(() => {
-          this.detectCardType(value);
-          this.cdr.detectChanges();
-        });
+      this.ngZone.run(() => {
+        this.detectCardType(value);
+        this.cdr.detectChanges();
       });
+    });
   }
 
   ngOnInit() {
     console.log('Initializing PaymentComponent');
-    this.paymentService.transaction$.subscribe({
-        next: (transaction) => {
-            console.log('Received transaction:', transaction);
+
+    // 1. Extract transactionId from the route
+    const transactionId = this.route.snapshot.paramMap.get('id');
+
+    if (transactionId) {
+      // 2. Fetch transaction details using the ID
+      this.transactionSubscription = this.paymentService.loadTransaction(Number(transactionId))
+        .pipe(
+          catchError(err => {
+            console.error("Error in component", err);
+            this.router.navigate(['/error', 500]);
+            return of(null);
+          })
+        )
+        .subscribe({
+          next: (transaction) => {
             if (transaction) {
-                this.transaction = transaction;
-                this.calculateTotals(transaction);
-                console.log('Updated transaction state:', this.transaction);
+              console.log('Received transaction:', transaction);
+              this.transaction = transaction;
+              this.calculateTotals(transaction);
+              console.log('Updated transaction state:', this.transaction);
             }
-        },
-        error: (error) => {
-            console.error('Error with transaction:', error);
-        }
-    });
+          },
+          error: (error) => {
+            console.error('Error fetching transaction details:', error);
+            this.router.navigate(['/error', 500]);
+          },
+        });
+    } else {
+      console.error('Transaction ID is missing.');
+      this.router.navigate(['/error', 400]);
+    }
+  }
+
+  ngOnDestroy(): void {
+    // Unsubscribe from the subscription to prevent memory leaks
+    if (this.transactionSubscription) {
+      this.transactionSubscription.unsubscribe();
+    }
   }
 
   private calculateTotals(transaction: Transaction): void {
@@ -210,8 +238,8 @@ export class PaymentComponent implements OnInit {
 
   onSubmit(): void {
     if (!this.transaction) {
-    console.error('Transaction or Book not loaded yet.');
-    return;
+      console.error('Transaction or Book not loaded yet.');
+      return;
     }
 
     console.log('Current transaction:', this.transaction);
@@ -222,55 +250,55 @@ export class PaymentComponent implements OnInit {
     }
 
     if (this.paymentForm.invalid) {
-        Object.keys(this.paymentForm.controls).forEach((key) => {
-            const control = this.paymentForm.get(key);
-            if (control?.invalid) {
-                control.markAsTouched();
-            }
-        });
-        return;
+      Object.keys(this.paymentForm.controls).forEach((key) => {
+        const control = this.paymentForm.get(key);
+        if (control?.invalid) {
+          control.markAsTouched();
+        }
+      });
+      return;
     }
 
     this.isProcessing = true;
 
     setTimeout(() => {
-        this.ngZone.run(() => {
-            try {
-                if (this.transaction?.id && this.transaction.bookid) {
-                    // Update transaction status
-                    this.paymentService.updateTransactionStatus(this.transaction.id, 'succeeded')
-                        .subscribe({
-                            next: (updatedTransaction) => {
-                              this.booksService.markBookAsSold(this.transaction!.bookid)
-                                    .subscribe({
-                                        next: () => {
-                                            console.log('Book marked as sold successfully');
-                                            this.router.navigate(['/books']);
-                                        },
-                                        error: (error) => {
-                                            console.error('Error marking book as sold:', error);
-                                        }
-                                    });
-                                this.transaction = updatedTransaction;                                
-                            },
-                            error: (error) => {
-                                console.error('Error updating transaction:', error);
-                                this.paymentService.updateTransactionStatus(this.transaction!.id, 'failed')
-                                    .subscribe();
-                            }
-                        });
+      this.ngZone.run(() => {
+        try {
+          if (this.transaction?.id && this.transaction.bookid) {
+            // Update transaction status
+            this.paymentService.updateTransactionStatus(this.transaction.id, 'succeeded')
+              .subscribe({
+                next: (updatedTransaction) => {
+                  this.booksService.markBookAsSold(this.transaction!.bookid)
+                    .subscribe({
+                      next: () => {
+                        console.log('Book marked as sold successfully');
+                        this.router.navigate(['/books']);
+                      },
+                      error: (error) => {
+                        console.error('Error marking book as sold:', error);
+                      }
+                    });
+                  this.transaction = updatedTransaction;
+                },
+                error: (error) => {
+                  console.error('Error updating transaction:', error);
+                  this.paymentService.updateTransactionStatus(this.transaction!.id, 'failed')
+                    .subscribe();
                 }
-            } catch (error) {
-                if (this.transaction?.id) {
-                    this.paymentService.updateTransactionStatus(this.transaction.id, 'failed')
-                        .subscribe();
-                }
-                console.error('Payment processing error:', error);
-            }
-            
-            this.isProcessing = false;
-            this.cdr.detectChanges();
-        });
+              });
+          }
+        } catch (error) {
+          if (this.transaction?.id) {
+            this.paymentService.updateTransactionStatus(this.transaction.id, 'failed')
+              .subscribe();
+          }
+          console.error('Payment processing error:', error);
+        }
+
+        this.isProcessing = false;
+        this.cdr.detectChanges();
+      });
     }, 1500);
   }
 
@@ -301,3 +329,4 @@ export class PaymentComponent implements OnInit {
     return '';
   }
 }
+

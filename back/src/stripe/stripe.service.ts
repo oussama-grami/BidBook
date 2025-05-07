@@ -12,8 +12,8 @@ export class StripeService {
   private stripe: Stripe;
 
   constructor(
-    @InjectRepository(Transaction)
-    private transactionRepository: Repository<Transaction>
+      @InjectRepository(Transaction)
+      private transactionRepository: Repository<Transaction>
   ) {
     if (!process.env.STRIPE_SECRET_KEY) {
       throw new Error('STRIPE_SECRET_KEY is not defined in environment variables');
@@ -35,13 +35,13 @@ export class StripeService {
       where: { id: transactionId },
       relations: ['bid', 'bid.book'],
     });
-  
+
     if (!transaction) {
       throw new NotFoundException('Transaction not found');
     }
-  
+
     const book = transaction.bid.book;
-  
+
     return {
       transaction: {
         id: transaction.id,
@@ -50,35 +50,35 @@ export class StripeService {
         title: book.title,
         imageUrl: book.picture,
       }
-      
+
     };
   }
 
   async updateTransactionStatus(
-    transactionId: number,
-    status: 'succeeded' | 'failed'
-): Promise<Transaction> {
+      transactionId: number,
+      status: 'succeeded' | 'failed'
+  ): Promise<Transaction> {
     const transaction = await this.transactionRepository.findOne({
-        where: { id: transactionId },
-        relations: ['bid', 'bid.book'],
+      where: { id: transactionId },
+      relations: ['bid', 'bid.book'],
     });
 
     if (!transaction) {
-        throw new NotFoundException('Transaction not found');
+      throw new NotFoundException('Transaction not found');
     }
 
     transaction.status = status;
     if (status === 'succeeded') {
-        transaction.completionDate = new Date();
+      transaction.completionDate = new Date();
     }
 
     return this.transactionRepository.save(transaction);
   }
-  
+
 
   create(createStripeDto: CreateStripeDto) {
     return 'This action adds a new stripe';
-  }  
+  }
 
   async findAll(userId: number): Promise<{ transactions: any[] }> {
     const transactions = await this.transactionRepository.find({
@@ -104,13 +104,13 @@ export class StripeService {
       ],
       relations: ['bid', 'bid.book', 'bid.bidder', 'bid.book.owner']
     });
-  
+
     if (!transactions || transactions.length === 0) {
       console.log("no transactions found for this user!");
     } else {
       console.log(transactions.length, "transactions found for this user!");
     }
-  
+
     return {
       transactions: transactions.map(transaction => ({
         transaction: {
@@ -124,7 +124,7 @@ export class StripeService {
       }))
     };
   }
-  
+
 
   findOne(id: number) {
     return `This action returns a #${id} stripe`;

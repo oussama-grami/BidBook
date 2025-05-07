@@ -9,11 +9,11 @@ export class StripeController {
 
   @Post('create-payment-intent')
   async createPaymentIntent(
-    @Body() body: { amount: number; currency: string }
+      @Body() body: { amount: number; currency: string }
   ) {
     const paymentIntent = await this.stripeService.createPaymentIntent(
-      body.amount,
-      body.currency,
+        body.amount,
+        body.currency,
     );
     return { clientSecret: paymentIntent.client_secret };
   }
@@ -24,13 +24,13 @@ export class StripeController {
   }
 
   @Patch('transaction/:id/status')
-    async updateTransactionStatus(
-        @Param('id') id: number,
-        @Body() body: { status: 'succeeded' | 'failed' }
-    ) {
-        return this.stripeService.updateTransactionStatus(id, body.status);
-    }
-  
+  async updateTransactionStatus(
+      @Param('id') id: number,
+      @Body() body: { status: 'succeeded' | 'failed' }
+  ) {
+    return this.stripeService.updateTransactionStatus(id, body.status);
+  }
+
 
 
   @Post()
