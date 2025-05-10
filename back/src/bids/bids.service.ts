@@ -125,7 +125,7 @@ export class BidsService {
     this.notificationsService.notify({
       userId: book.owner.id,
       type: NotificationType.BID_PLACED_ON_YOUR_BOOK,
-      message: `A new bid of $${amount} was placed on your book "${book.title}" by user ${userId}.`,
+      message: `A new bid of $${amount} was placed on your book "${book.title}".`,
       data: { bookId: book.id, bidAmount: amount, bidderId: userId },
     });
 
@@ -184,7 +184,7 @@ export class BidsService {
       this.notificationsService.notify({
         userId: book.owner.id,
         type: NotificationType.BID_PLACED_ON_YOUR_BOOK, // You might want a different type for updates
-        message: `A bid on your book "${book.title}" was updated to $${amount} by user ${userId}.`,
+        message: `A bid on your book "${book.title}" was updated to $${amount}.`,
         data: { bookId: book.id, bidAmount: amount, bidderId: userId },
       });
     }

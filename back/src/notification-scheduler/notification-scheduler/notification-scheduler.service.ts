@@ -51,7 +51,7 @@ export class NotificationSchedulerService {
         await this.bookRepository.save(book);
         this.logger.log(`Bidding closed for book "${book.title}".`);
         const message = `Congratulations! You have won the auction for the book "${book.title}"`;
-        const messageToOwner = `The auction for your book "${book.title}" has ended. The winning bid was $${highestBid.amount} by user ${highestBid.bidder.id}.`;
+        const messageToOwner = `The auction for your book "${book.title}" has ended. The winning bid was $${highestBid.amount} by user ${highestBid.bidder.firstName} ${highestBid.bidder.lastName}.`;
         const userId = highestBid.bidder.id;
         const ownerId = book.owner.id;
         await this.notificationsService.notify({
