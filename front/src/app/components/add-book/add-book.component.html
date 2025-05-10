@@ -61,7 +61,12 @@
               [ngClass]="{'invalid': addBookForm.get('edition')?.invalid && addBookForm.get('edition')?.touched}"
             />
             <div *ngIf="addBookForm.get('edition')?.invalid && addBookForm.get('edition')?.touched" class="error-hint">
-              Edition is required
+              <div *ngIf="addBookForm.get('edition')?.errors?.['required']">
+                Edition is required
+              </div>
+              <div *ngIf="addBookForm.get('edition')?.errors?.['invalidYear']">
+                Please enter a valid 4-digit year
+              </div>
             </div>
           </div>
 
@@ -141,10 +146,15 @@
               id="damagedPages"
               formControlName="damagedPages"
               class="form-control"
-              [ngClass]="{'invalid': addBookForm.get('damagedPages')?.invalid && addBookForm.get('damagedPages')?.touched}"
+              [ngClass]="{'invalid': addBookForm.get('damagedPages')?.invalid && addBookForm.get('damagedPages')?.touched || addBookForm.errors?.['damagedPagesTooHigh']}"
             />
-            <div *ngIf="addBookForm.get('damagedPages')?.invalid && addBookForm.get('damagedPages')?.touched" class="error-hint">
-              Value cannot be negative
+            <div *ngIf="(addBookForm.get('damagedPages')?.invalid && addBookForm.get('damagedPages')?.touched) || addBookForm.errors?.['damagedPagesTooHigh']" class="error-hint">
+              <div *ngIf="addBookForm.get('damagedPages')?.errors?.['min']">
+                Value cannot be negative
+              </div>
+              <div *ngIf="addBookForm.errors?.['damagedPagesTooHigh']">
+                Damaged pages cannot be greater than total pages
+              </div>
             </div>
           </div>
 

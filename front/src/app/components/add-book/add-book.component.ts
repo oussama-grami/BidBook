@@ -1,11 +1,13 @@
 // add-book.component.ts
 import { Component, OnInit } from '@angular/core';
-import {  CommonModule } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
   Validators,
+  AbstractControl,
+  ValidationErrors,
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ImageModule } from 'primeng/image';
@@ -13,8 +15,28 @@ import { ButtonModule } from 'primeng/button';
 import { HttpClientModule } from '@angular/common/http';
 import { finalize } from 'rxjs/operators';
 import { BookService } from '../../services/book.service';
+import { UserIdService } from '../../services/userid.service';
 
-import {UserIdService} from '../../services/userid.service';
+// Custom validator function for year format (4-digit integer)
+function yearValidator(control: AbstractControl): ValidationErrors | null {
+  if (!control.value) {
+    return null; // Allow empty values if not required
+  }
+  const yearRegex = /^\d{4}$/;
+  return yearRegex.test(control.value) ? null : { invalidYear: true };
+}
+
+// Custom validator function to compare damagedPages and numberOfPages
+function damagedPagesValidator(formGroup: FormGroup): ValidationErrors | null {
+  const numberOfPages = formGroup.get('numberOfPages')?.value;
+  const damagedPages = formGroup.get('damagedPages')?.value;
+
+  if (numberOfPages != null && damagedPages != null && damagedPages > numberOfPages) {
+    return { damagedPagesTooHigh: true };
+  }
+
+  return null;
+}
 
 @Component({
   selector: 'app-add-book',
@@ -27,7 +49,7 @@ import {UserIdService} from '../../services/userid.service';
     HttpClientModule,
   ],
   styleUrls: ['./add-book.component.css'],
-  standalone: true
+  standalone: true,
 })
 export class AddBookComponent implements OnInit {
   addBookForm!: FormGroup;
@@ -52,21 +74,24 @@ export class AddBookComponent implements OnInit {
   }
 
   initForm() {
-    this.addBookForm = this.fb.group({
-      title: ['', Validators.required],
-      author: ['', Validators.required],
-      editor: ['', Validators.required],
-      edition: ['', Validators.required],
-      category: ['', Validators.required],
-      language: ['', Validators.required],
-      numberOfPages: ['', [Validators.required, Validators.min(1)]],
-      damagedPages: ['', [Validators.min(0)]],
-      age: ['', Validators.required],
-      price: [
-        { value: '', disabled: true },
-        [Validators.required, Validators.min(0)],
-      ],
-    });
+    this.addBookForm = this.fb.group(
+      {
+        title: ['', Validators.required],
+        author: ['', Validators.required],
+        editor: ['', Validators.required],
+        edition: ['', [Validators.required, yearValidator]], // Apply the custom validator
+        category: ['', Validators.required],
+        language: ['', Validators.required],
+        numberOfPages: ['', [Validators.required, Validators.min(1)]],
+        damagedPages: ['', [Validators.min(0)]],
+        age: ['', Validators.required],
+        price: [
+          { value: '', disabled: true },
+          [Validators.required, Validators.min(0)],
+        ],
+      },
+      { validators: damagedPagesValidator } // Apply the custom validator to the form group
+    );
   }
 
   onFileSelected(event: any) {
