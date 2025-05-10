@@ -48,17 +48,53 @@
 
         <div class="form-group">
           <label for="edition">Edition</label>
-          <input type="text" id="edition" formControlName="edition">
+          <input
+            type="text"
+            id="edition"
+            formControlName="edition"
+            [ngClass]="{'ng-invalid': bookForm.get('edition')?.invalid && bookForm.get('edition')?.touched}"
+          >
+          <div *ngIf="bookForm.get('edition')?.invalid && bookForm.get('edition')?.touched" class="error-hint">
+            <div *ngIf="bookForm.get('edition')?.errors?.['invalidYear']">
+              Please enter a valid 4-digit year
+            </div>
+          </div>
         </div>
 
         <div class="form-group">
           <label for="totalPages">Total Pages</label>
-          <input type="number" id="totalPages" formControlName="totalPages">
+          <input
+            type="number"
+            id="totalPages"
+            formControlName="totalPages"
+            [ngClass]="{'ng-invalid': bookForm.get('totalPages')?.invalid && bookForm.get('totalPages')?.touched || bookForm.errors?.['damagedPagesTooHigh']}"
+          >
+          <div *ngIf="(bookForm.get('totalPages')?.invalid && bookForm.get('totalPages')?.touched)">
+            <div *ngIf="bookForm.get('totalPages')?.errors?.['min']">
+              Total pages must be at least 1
+            </div>
+          </div>
+          <div *ngIf="bookForm.errors?.['damagedPagesTooHigh']">
+            Damaged pages cannot be greater than total pages
+          </div>
         </div>
 
         <div class="form-group">
           <label for="damagedPages">Damaged Pages</label>
-          <input type="number" id="damagedPages" formControlName="damagedPages">
+          <input
+            type="number"
+            id="damagedPages"
+            formControlName="damagedPages"
+            [ngClass]="{'ng-invalid': bookForm.get('damagedPages')?.invalid && bookForm.get('damagedPages')?.touched || bookForm.errors?.['damagedPagesTooHigh']}"
+          >
+          <div *ngIf="(bookForm.get('damagedPages')?.invalid && bookForm.get('damagedPages')?.touched)">
+            <div *ngIf="bookForm.get('damagedPages')?.errors?.['min']">
+              Damaged pages cannot be negative
+            </div>
+          </div>
+          <div *ngIf="bookForm.errors?.['damagedPagesTooHigh']">
+            Damaged pages cannot be greater than total pages
+          </div>
         </div>
 
         <div class="form-group">
@@ -83,7 +119,7 @@
 
       <div class="button-group">
         <button type="button" class="cancel-btn" routerLink="/books">Cancel</button>
-        <button type="button" class="update-btn" [disabled]="loading || predictingPrice" (click)="onSubmit()">
+        <button type="button" class="update-btn" [disabled]="loading || predictingPrice || bookForm.invalid" (click)="onSubmit()">
           {{ predictingPrice ? 'Predicting Price...' : 'Update Book' }}
         </button>
       </div>
