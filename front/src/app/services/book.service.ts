@@ -18,6 +18,7 @@ export interface Bid {
     id: number;
     title: string;
     picture: string;
+    isSold: boolean;
   };
   bidder: {
     id: number;
@@ -58,6 +59,7 @@ export interface Book {
   createdAt?: string;
   likes?: number;
   isBiddingOpen?: boolean;
+  isSold?: boolean;
 }
 export interface AddCommentToBookResponse {
   addCommentToBook: {
@@ -144,7 +146,7 @@ export class BookService {
             bids {
               id
             }
-            
+
             category
             createdAt
           }
@@ -359,6 +361,7 @@ export class BookService {
               id
               title
               picture
+              isSold
             }
           }
         }
@@ -547,7 +550,7 @@ getFavoriteCount(bookId: number): Observable<number> {
           throw new Error('Données de FavoriteCount invalides.');
         }
       })
-      
+
     );
 }
 

@@ -43,7 +43,14 @@ import { HttpClient } from '@angular/common/http';
         </div>
       </div>
       <div class="bid-actions" *ngIf="bid.bidStatus === 'ACCEPTED'">
-        <button class="pay-button" (click)="payNow()">Pay Now</button>
+        <button
+          class="pay-button"
+          (click)="payNow()"
+          [disabled]="bid.book.isSold"
+          [ngClass]="{'disabled-button': bid.book.isSold}"
+        >
+          Pay Now
+        </button>
       </div>
     </div>
   `,
@@ -59,7 +66,7 @@ import { HttpClient } from '@angular/common/http';
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         transition: all 0.3s ease;
         width: 600px;
-        height: auto; /* Adjust height to accommodate the button */
+        height: auto;
         margin: 10px auto;
       }
 
@@ -180,6 +187,16 @@ import { HttpClient } from '@angular/common/http';
       .pay-button:hover {
         background-color: #45a049;
       }
+      .pay-button:disabled {
+        background-color: #cccccc;
+        cursor: not-allowed;
+      }
+
+      .pay-button.disabled-button {
+        background-color: #cccccc;
+        cursor: not-allowed;
+      }
+
 
       @media (max-width: 640px) {
         .book-info {
@@ -218,14 +235,18 @@ import { HttpClient } from '@angular/common/http';
 })
 export class BidCardComponent {
   @Input() bid!: Bid;
-  constructor(private http: HttpClient) {} // Inject HttpClient
+  constructor(private http: HttpClient) {}
 
   payNow() {
+    if (this.bid?.book?.isSold) {
+      alert("This book has already been sold.");
+      return;
+    }
+
     if (this.bid?.book?.id) {
       console.log(
         `Initiating payment for book ID: ${this.bid.book.id} with bid ID: ${this.bid.id} and amount: ${this.bid.amount}`
       );
-      // Call the backend endpoint to create the transaction
       this.http
         .post<{ transaction: { id: number } }>(
           `http://localhost:3000/stripe/create-transaction-for-bid/${this.bid.id}`,
