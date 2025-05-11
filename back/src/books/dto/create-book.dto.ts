@@ -38,26 +38,26 @@ export class CreateBookDto {
 
 
   @IsNumber({}, { message: 'Edition must be a number' })
-  @Min(0, { message: 'Edition must be at least one' })
+  @Min(1, { message: 'Edition must be at least one' })
   @ApiProperty()
   @Type(() => Number)
   edition: number;
 
 
   @IsNumber({}, { message: 'Total pages must be a number' })
-  @Min(0, { message: 'Total pages cannot be negative' })
+  @Min(1, { message: 'Total pages cannot be negative' })
   @Type(() => Number)
   @ApiProperty()
   totalPages: number;
 
   @IsNumber({}, { message: 'Damaged pages must be a number' })
-  @Min(0, { message: 'Damaged pages cannot be negative' })
+  @Min(1, { message: 'Damaged pages cannot be negative' })
   @Type(() => Number)
   @ApiProperty()
   damagedPages: number;
 
   @IsNumber({}, { message: 'Age must be a number' })
-  @Min(0, { message: 'Age cannot be negative' })
+  @Min(1, { message: 'Age cannot be negative' })
   @Type(() => Number)
   @ApiProperty()
   age: number;

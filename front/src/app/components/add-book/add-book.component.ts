@@ -82,7 +82,7 @@ export class AddBookComponent implements OnInit {
         category: ['', Validators.required],
         language: ['', Validators.required],
         numberOfPages: ['', [Validators.required, Validators.min(1)]],
-        damagedPages: ['', [Validators.min(0)]],
+        damagedPages: ['', [Validators.required,Validators.min(0)]],
         age: ['', Validators.required],
         price: [
           { value: '', disabled: true },

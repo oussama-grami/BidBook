@@ -149,6 +149,9 @@
               [ngClass]="{'invalid': addBookForm.get('damagedPages')?.invalid && addBookForm.get('damagedPages')?.touched || addBookForm.errors?.['damagedPagesTooHigh']}"
             />
             <div *ngIf="(addBookForm.get('damagedPages')?.invalid && addBookForm.get('damagedPages')?.touched) || addBookForm.errors?.['damagedPagesTooHigh']" class="error-hint">
+              <div *ngIf="addBookForm.get('damagedPages')?.errors?.['required']">
+                Damaged pages is required
+              </div>
               <div *ngIf="addBookForm.get('damagedPages')?.errors?.['min']">
                 Value cannot be negative
               </div>

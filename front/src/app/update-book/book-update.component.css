@@ -104,21 +104,25 @@ input:focus, select:focus {
   transform: translateY(-5px);
 }
 
-/* Input validation styles */
-input.ng-invalid.ng-touched {
-  border: 1px solid #ff5757 !important;
+input.form-control.invalid,
+select.form-control.invalid {
+  border-color: #ff5757 !important;
 }
 
-input.ng-valid.ng-touched {
-  border: 2px solid #4caf50 !important;
+input.ng-invalid.ng-touched:not(.invalid),
+select.ng-invalid.ng-touched:not(.invalid) {
+   border-color: #ff5757;
 }
 
-input.ng-invalid.ng-touched, select.ng-invalid.ng-touched {
-  border: 1px solid #FF5757;
+input.ng-valid.ng-touched:not(.invalid),
+select.ng-valid.ng-touched:not(.invalid) {
+  border-color: #4caf50;
 }
 
-input.ng-valid.ng-touched, select.ng-valid.ng-touched {
-  border: 1px solid #4CAF50;
+.error-hint {
+  color: #ff5757;
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
 }
 
 .button-group {
@@ -202,7 +206,6 @@ button:disabled {
   100% { transform: rotate(360deg); }
 }
 
-/* Alert styles */
 .alert {
   width: 100%;
   padding: 15px;
