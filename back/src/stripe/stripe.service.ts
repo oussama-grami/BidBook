@@ -7,6 +7,10 @@ import { TransactionDetailsDto } from './dto/transaction-details.dto';
 import { Repository } from 'typeorm';
 import { Transaction } from './entities/transaction.entity';
 import {Bid} from "../bids/entities/bid.entity";
+import { NotificationsService } from '../notifications/notifications.service';
+import { NotificationType } from '../Enums/notification-type.enum';
+import { Conversation } from '../conversation/entities/conversation.entity'; // Import Conversation entity
+
 
 @Injectable()
 export class StripeService {
@@ -17,6 +21,9 @@ export class StripeService {
       private transactionRepository: Repository<Transaction>,
       @InjectRepository(Bid)
       private bidRepository: Repository<Bid>,
+      private readonly notificationsService: NotificationsService,
+      @InjectRepository(Conversation)
+      private conversationRepository: Repository<Conversation>,
 
   ) {
     if (!process.env.STRIPE_SECRET_KEY) {
@@ -77,12 +84,12 @@ export class StripeService {
   }
 
   async updateTransactionStatus(
-      transactionId: number,
-      status: 'succeeded' | 'failed'
+    transactionId: number,
+    status: 'succeeded' | 'failed'
   ): Promise<Transaction> {
     const transaction = await this.transactionRepository.findOne({
       where: { id: transactionId },
-      relations: ['bid', 'bid.book'],
+      relations: ['bid', 'bid.book', 'bid.bidder', 'bid.book.owner'], // Updated relations to match your schema
     });
 
     if (!transaction) {
@@ -92,6 +99,34 @@ export class StripeService {
     transaction.status = status;
     if (status === 'succeeded') {
       transaction.completionDate = new Date();
+
+      // Find and deactivate the conversation related to the bid
+      const conversation = await this.conversationRepository.findOne({
+        where: { bid: { id: transaction.bid.id } },
+      });
+
+      if (conversation) {
+        conversation.isActive = false;
+        await this.conversationRepository.save(conversation);
+      } else {
+        console.warn(`No conversation found for bid ID: ${transaction.bid.id}`);
+      }
+
+      // Notify bidder: Payment succeeded
+      await this.notificationsService.notify({
+        userId: transaction.bid.bidder.id,
+        type: NotificationType.BOOK_SOLD, // Use PAYMENT_SUCCEEDED instead of BOOK_SOLD for bidder
+        message: `Your payment for "${transaction.bid.book.title}" was successful!`,
+        data: { transactionId, bookId: transaction.bid.book.id },
+      });
+
+      // Notify book owner: Book sold
+      await this.notificationsService.notify({
+        userId: transaction.bid.book.owner.id,
+        type: NotificationType.BOOK_SOLD,
+        message: `Your book "${transaction.bid.book.title}" has been sold!`,
+        data: { transactionId, bookId: transaction.bid.book.id },
+      });
     }
 
     return this.transactionRepository.save(transaction);

@@ -51,53 +51,83 @@ export class ChatService {
     this.listenForIncomingMessages(); 
   }
 
-  private loadContacts() {
-    this.http.get<{ userId: number; conversations: any[] }>(`${this.apiUrl}/conversations`)
-      .subscribe((response) => {
-        const currentUserId = response.userId;
-  
-        const contacts = response.conversations.map((convo) => {
-          this.isBidder = convo.bid.bidder.id === currentUserId;
+  private fetchAndProcessContacts(): Promise<Contact[]> {
+    return lastValueFrom(
+      this.http.get<{ userId: number; conversations: any[] }>(`${this.apiUrl}/conversations`)
+    ).then((response) => {
+      if (!response) {
+        throw new Error('Failed to fetch conversations: response is undefined');
+      }
 
-          const messages = convo.messages.map((msg: any) => ({
+      const currentUserId = response.userId;
+      this.isBidder = response.conversations[0]?.bid.bidder.id === currentUserId;
+
+      const contacts = response.conversations.map((convo) => {
+        const messages = convo.messages
+          .map((msg: any) => ({
             id: msg.id,
             contactId: convo.id,
             text: msg.content,
             sent: this.isBidder ? msg.direction : !msg.direction,
             date: new Date(msg.timestamp),
             isRead: msg.isRead,
-          })).sort((a: any, b: any) => a.date.getTime() - b.date.getTime());
+          }))
+          .sort((a: any, b: any) => a.date.getTime() - b.date.getTime());
 
-          this.messagesMap.set(convo.id, messages); // Store messages for this conversation
-  
-          // Calculate unread messages count
-          const unreadCount = messages.filter((msg: ChatMessage) => 
-            !msg.isRead && !msg.sent
-          ).length;
+        this.messagesMap.set(convo.id, messages);
 
-          const imageUrl = this.isBidder ? convo.bid.book.owner.imageUrl : convo.bid.bidder.imageUrl;
-          const encodedFilename = encodeURIComponent(imageUrl);
+        const unreadCount = messages.filter(
+          (msg: ChatMessage) => !msg.isRead && !msg.sent
+        ).length;
 
-          return {
-            id: convo.id,
-            name: this.isBidder ? convo.bid.book.owner.firstName : convo.bid.bidder.firstName,
-            avatar: imageUrl,
-            unreadCount: unreadCount,
-            isActive: convo.isActive,
-            lastMessage: convo.messages.length
-              ? {
-                  text: convo.messages[0].content,
-                  date: convo.messages[0].timestamp,
-                }
-              : {
+        const imageUrl = this.isBidder
+          ? convo.bid.book.owner.imageUrl
+          : convo.bid.bidder.imageUrl;
+        const encodedFilename = encodeURIComponent(imageUrl);
+
+        return {
+          id: convo.id,
+          name: this.isBidder
+            ? convo.bid.book.owner.firstName
+            : convo.bid.bidder.firstName,
+          avatar: imageUrl,
+          unreadCount: unreadCount,
+          isActive: convo.isActive,
+          lastMessage: convo.messages.length
+            ? {
+                text: convo.messages[convo.messages.length - 1].content,
+                date: new Date(convo.messages[convo.messages.length - 1].timestamp),
+              }
+            : {
                 text: 'no messages yet',
-                date: new Date(), // or null if you want to hide the date
+                date: new Date(),
               },
-          };
-        });
-  
+        };
+      });
+
+      return contacts;
+    });
+  }
+
+  private loadContacts() {
+    this.fetchAndProcessContacts()
+      .then((contacts) => {
         this.contacts = contacts;
         this.contactsSubject.next(contacts);
+      })
+      .catch((error) => {
+        console.error('Error loading contacts:', error);
+      });
+  }
+
+  refreshContacts(): Promise<void> {
+    return this.fetchAndProcessContacts()
+      .then((contacts) => {
+        this.contacts = contacts;
+        this.contactsSubject.next(contacts);
+      })
+      .catch((error) => {
+        console.error('Error refreshing contacts:', error);
       });
   }
 
@@ -118,105 +148,159 @@ export class ChatService {
 
 
   setCurrentContact(contactId: number) {
-    const contact = this.contacts.find(c => c.id === contactId);
-    //Join the room for this conversation
-    console.log("Joining room for contact:", contactId);
+    const contact = this.contacts.find((c) => c.id === contactId);
+    if (!contact) return;
+
+    console.log('Joining room for contact:', contactId);
     this.socketService.emit('joinRoom', contactId);
-    if (contact) {
-      // Mark messages as read via socket
-      this.socketService.emit('markAsRead', { conversationId: contactId });
-      // Reset unread count when selecting contact
-      contact.unreadCount = 0;
-      this.currentContactSubject.next(contact);
-      const messages = this.messagesMap.get(contactId) || [];
-      const updatedMessages = messages.map(msg => {
-        if (!msg.sent) {
-          return { ...msg, isRead: true };
-        }
-        return msg;
-      });
-      
 
-      // First clear current messages and show skeleton loading
-      this.currentMessagesSubject.next([]);
+    // Mark all messages as read for this contact
+    this.socketService.emit('markAsRead', { conversationId: contactId });
 
-      // Simulate network delay for loading messages (remove in production)
-      setTimeout(() => {
-        // Get messages for this contact - only now do we load the messages
-        const messages = this.getMessagesForContact(contactId);
-        this.currentMessagesSubject.next(messages);
+    // Update messages in messagesMap to mark as read
+    const messages = this.messagesMap.get(contactId) || [];
+    const updatedMessages = messages.map((msg) => ({
+      ...msg,
+      isRead: true, // Mark all messages as read
+    }));
+    this.messagesMap.set(contactId, [...updatedMessages]);
 
-        // Update contacts list to reflect the read status
-        this.contactsSubject.next([...this.contacts]);
-      }, 1000); // Simulate a 1 second loading delay
+    // Reset unread count
+    const updatedContacts = this.contacts.map((c) =>
+      c.id === contactId ? { ...c, unreadCount: 0 } : c
+    );
+    this.contacts = updatedContacts;
+    this.contactsSubject.next([...updatedContacts]);
+
+    // Set current contact and update messages immediately
+    this.currentContactSubject.next(contact);
+    this.currentMessagesSubject.next([...updatedMessages]);
+
+    // Mark contact as loaded
+    if (!this.loadedContacts.has(contactId)) {
+      this.loadedContacts.add(contactId);
+      console.log(`Lazy loading messages for contact ${contactId}`);
     }
   }
   
   sendMessage(contactId: number, message: string): void {
     const contact = this.contacts.find((c) => c.id === contactId);
     if (!contact) return;
-    this.socketService.emit('sendMessage', {
-      conversationId: contactId,
-      content: message,
-    });  
-    const messages = this.messagesMap.get(contactId) || [];
-    // Create new message
+
+    // Optimistic update: Add the message locally for instant UI feedback
+    const messages = [...(this.messagesMap.get(contactId) || [])]; // Create a copy to avoid mutating directly
+    const tempMessageId = -Date.now(); // Temporary negative ID to avoid conflicts with real IDs
     const newMessage: ChatMessage = {
-      id: messages.length + 1,
+      id: tempMessageId, // Temporary ID until backend confirms
       contactId: contactId,
       text: message,
       sent: true,
       date: new Date(),
       isRead: false,
     };
-    // Add to messages list
     messages.push(newMessage);
     this.messagesMap.set(contactId, messages);
-    // Update current messages if this is the selected contact
+
+    // Update UI immediately for the current contact
     const currentContact = this.currentContactSubject.getValue();
     if (currentContact && currentContact.id === contactId) {
       this.currentMessagesSubject.next([...messages]);
     }
+
     // Update last message for contact
     contact.lastMessage = {
       text: message,
       date: newMessage.date,
     };
-    // Update contacts list
     this.contactsSubject.next([...this.contacts]);
 
+    // Send message to backend via socket
+    this.socketService.emit('sendMessage', {
+      conversationId: contactId,
+      content: message,
+    });
+
+    // Listen for backend confirmation
+    this.socketService.listen<any>('messageSentConfirmation').subscribe({
+      next: (confirmedMessage) => {
+        if (confirmedMessage.conversationId === contactId && confirmedMessage.content === message) {
+          // Replace temporary message with confirmed message
+          const updatedMessages = this.messagesMap.get(contactId)!.map((msg) =>
+            msg.id === tempMessageId
+              ? {
+                  id: confirmedMessage.id, // Use real ID from backend
+                  contactId: contactId,
+                  text: confirmedMessage.content,
+                  sent: true,
+                  date: new Date(confirmedMessage.timestamp),
+                  isRead: confirmedMessage.isRead || false,
+                }
+              : msg
+          );
+          this.messagesMap.set(contactId, updatedMessages);
+          if (currentContact && currentContact.id === contactId) {
+            this.currentMessagesSubject.next([...updatedMessages]);
+          }
+        }
+      },
+      error: (error) => {
+        console.error('Failed to send message:', error);
+        // Roll back optimistic update
+        const rolledBackMessages = this.messagesMap.get(contactId)!.filter((msg) => msg.id !== tempMessageId);
+        this.messagesMap.set(contactId, rolledBackMessages);
+        if (currentContact && currentContact.id === contactId) {
+          this.currentMessagesSubject.next([...rolledBackMessages]);
+        }
+      },
+    });
   }
 
   private listenForIncomingMessages() {
+    this.socketService.listen<any>('newMessage').subscribe({
+      next: (message) => {
+        console.log('Received newMessage event:', message); // Debug: Log incoming message
 
-    this.socketService.listen<any>('newMessage').subscribe((message) => {
-      const currentMessages = [...(this.messagesMap.get(message.conversation.id) || [])];
+        const contactId = message.conversation?.id;
+        if (!contactId) {
+          console.error('Invalid message: missing conversation.id', message);
+          return;
+        }
 
-      // Check if this message already exists (avoid duplicates)
-      const messageExists = currentMessages.some(msg => 
-      msg.text === message.content && 
-      Math.abs(new Date(msg.date).getTime() - new Date(message.timestamp).getTime()) < 1000
-    );
-    if(!messageExists) {
-      const newMessage = {
-        id: message.id,
-        contactId: message.conversation.id,
-        text: message.content,
-        sent: this.isBidder ? message.direction : !message.direction,
-        date: new Date(message.timestamp),
-        isRead: false,
-      };
-  
-      currentMessages.push(newMessage);
-      currentMessages.sort((a, b) => a.date.getTime() - b.date.getTime());
-  
-      const current = this.currentContactSubject.getValue();
-      if (current && current.id === message.conversation.id) {
-        this.currentMessagesSubject.next(currentMessages);
-      }
-    }
+        // Trigger refreshContacts to fetch latest state from backend
+        this.refreshContacts().then(() => {
+          console.log(`Contacts refreshed after new message for contact ${contactId}`); // Debug
+
+          const currentContact = this.currentContactSubject.getValue();
+          const isConversationOpen = currentContact && currentContact.id === contactId;
+
+          // If the conversation is open, mark the message as read
+          if (isConversationOpen) {
+            console.log(`Marking message as read for open conversation ${contactId}`); // Debug
+            this.socketService.emit('markAsRead', { conversationId: contactId, messageId: message.id });
+
+            // Ensure messages in messagesMap are marked as read
+            const messages = this.messagesMap.get(contactId) || [];
+            const updatedMessages = messages.map((msg) => ({
+              ...msg,
+              isRead: true,
+            }));
+            this.messagesMap.set(contactId, [...updatedMessages]);
+            this.currentMessagesSubject.next([...updatedMessages]);
+          }
+
+          // Log current state for debugging
+          console.log('Current contacts:', this.contacts); // Debug
+          console.log(`Messages for contact ${contactId}:`, this.messagesMap.get(contactId)); // Debug
+        }).catch((error) => {
+          console.error('Failed to refresh contacts:', error); // Debug
+        });
+      },
+      error: (error) => {
+        console.error('Socket error in newMessage:', error);
+      },
     });
   }
+
 
   searchMessages(contactId: number, query: string): ChatMessage[] {
     if (!query.trim()) {
@@ -242,59 +326,5 @@ export class ChatService {
       contact.name.toLowerCase().includes(query.toLowerCase())
     );
   }
-
-
-
-refreshContacts(): Promise<void> {
-  return lastValueFrom(
-    this.http.get<{ userId: number; conversations: any[] }>(`${this.apiUrl}/conversations`)
-  )
-    .then((response) => {
-      if (!response) {
-        throw new Error('Failed to fetch conversations: response is undefined');
-      }
-
-      const currentUserId = response.userId;
-      this.isBidder = response.conversations[0].bid.bidder.id === currentUserId; // Assuming the first conversation is representative
-
-      const contacts = response.conversations.map((convo) => {
-
-        const messages = convo.messages.map((msg: any) => ({
-          id: msg.id,
-          contactId: convo.id,
-          text: msg.content,
-          sent: this.isBidder ? msg.direction : !msg.direction,
-          date: new Date(msg.timestamp),
-        })).sort((a: any, b: any) => b.date.getTime() - a.date.getTime()); 
-
-        this.messagesMap.set(convo.id, [...messages].reverse()); 
-
-        const imageUrl = this.isBidder ? convo.bid.book.owner.imageUrl : convo.bid.bidder.imageUrl;
-        const encodedFilename = encodeURIComponent(imageUrl);
-
-        return {
-          id: convo.id,
-          name: this.isBidder ? convo.bid.book.owner.firstName : convo.bid.bidder.firstName,
-          avatar: imageUrl,
-          isActive: convo.isActive,
-          unreadCount: convo.messages.filter((msg: any) => 
-            !msg.isRead && msg.direction === this.isBidder  // Only count messages from the other person
-          ).length,
-          lastMessage: convo.messages.length
-            ? {
-                text: convo.messages[0].content,
-                date: convo.messages[0].timestamp,
-              }
-            : undefined,
-        };
-      });
-
-      this.contacts = contacts;
-      this.contactsSubject.next(contacts); // Emit updated contacts
-    })
-    .catch((error) => {
-      console.error('Error refreshing contacts:', error);
-    });
-}
   
 }

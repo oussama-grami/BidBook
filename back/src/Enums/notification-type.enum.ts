@@ -3,4 +3,5 @@ export enum NotificationType {
     AUCTION_WON = 'AUCTION_WON',
     AUCTION_LOST = 'AUCTION_LOST',
     AUCTION_ENDED_OWNER = 'AUCTION_ENDED_OWNER',
+    BOOK_SOLD = 'BOOK_SOLD'
 }
