@@ -2,7 +2,7 @@
   <div class="content-container">
     <h1 class="title">Update Book</h1>
 
-    <div *ngIf="loading" class="loading-indicator">
+    <div *ngIf="loading && !bookForm.value" class="loading-indicator">
       <div class="spinner"></div>
       <p>Loading book details...</p>
     </div>
@@ -15,35 +15,90 @@
       {{ successMessage }}
     </div>
 
-    <form [formGroup]="bookForm" *ngIf="!loading || bookForm.value">
+    <form [formGroup]="bookForm" *ngIf="bookForm">
       <div class="form-grid">
         <div class="form-group">
           <label for="title">Title</label>
-          <input type="text" id="title" formControlName="title">
+          <input
+            type="text"
+            id="title"
+            formControlName="title"
+            class="form-control"
+            [ngClass]="{'invalid': bookForm.get('title')?.invalid && bookForm.get('title')?.touched}"
+          >
+           <div *ngIf="bookForm.get('title')?.invalid && bookForm.get('title')?.touched" class="error-hint">
+              <div *ngIf="bookForm.get('title')?.errors?.['required']">
+                Title is required
+              </div>
+           </div>
         </div>
 
         <div class="form-group">
           <label for="author">Author</label>
-          <input type="text" id="author" formControlName="author">
+          <input
+            type="text"
+            id="author"
+            formControlName="author"
+            class="form-control"
+             [ngClass]="{'invalid': bookForm.get('author')?.invalid && bookForm.get('author')?.touched}"
+          >
+           <div *ngIf="bookForm.get('author')?.invalid && bookForm.get('author')?.touched" class="error-hint">
+              <div *ngIf="bookForm.get('author')?.errors?.['required']">
+                Author is required
+              </div>
+           </div>
         </div>
 
         <div class="form-group">
           <label for="category">Category</label>
-          <select id="category" formControlName="category">
+          <select
+            id="category"
+            formControlName="category"
+            class="form-control"
+             [ngClass]="{'invalid': bookForm.get('category')?.invalid && bookForm.get('category')?.touched}"
+          >
+             <option value="" disabled selected>Select</option>
             <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
           </select>
+           <div *ngIf="bookForm.get('category')?.invalid && bookForm.get('category')?.touched" class="error-hint">
+              <div *ngIf="bookForm.get('category')?.errors?.['required']">
+                Category is required
+              </div>
+           </div>
         </div>
 
         <div class="form-group">
           <label for="language">Language</label>
-          <select id="language" formControlName="language">
+          <select
+            id="language"
+            formControlName="language"
+            class="form-control"
+             [ngClass]="{'invalid': bookForm.get('language')?.invalid && bookForm.get('language')?.touched}"
+          >
+             <option value="" disabled selected>Select</option>
             <option *ngFor="let lang of languages" [value]="lang">{{ lang }}</option>
           </select>
+           <div *ngIf="bookForm.get('language')?.invalid && bookForm.get('language')?.touched" class="error-hint">
+              <div *ngIf="bookForm.get('language')?.errors?.['required']">
+                Language is required
+              </div>
+           </div>
         </div>
 
         <div class="form-group">
           <label for="editor">Editor</label>
-          <input type="text" id="editor" formControlName="editor">
+          <input
+            type="text"
+            id="editor"
+            formControlName="editor"
+            class="form-control"
+             [ngClass]="{'invalid': bookForm.get('editor')?.invalid && bookForm.get('editor')?.touched}"
+          >
+           <div *ngIf="bookForm.get('editor')?.invalid && bookForm.get('editor')?.touched" class="error-hint">
+              <div *ngIf="bookForm.get('editor')?.errors?.['required']">
+                Editor is required
+              </div>
+           </div>
         </div>
 
         <div class="form-group">
@@ -52,9 +107,13 @@
             type="text"
             id="edition"
             formControlName="edition"
-            [ngClass]="{'ng-invalid': bookForm.get('edition')?.invalid && bookForm.get('edition')?.touched}"
+            class="form-control"
+            [ngClass]="{'invalid': bookForm.get('edition')?.invalid && bookForm.get('edition')?.touched}"
           >
           <div *ngIf="bookForm.get('edition')?.invalid && bookForm.get('edition')?.touched" class="error-hint">
+            <div *ngIf="bookForm.get('edition')?.errors?.['required']">
+              Edition is required
+            </div>
             <div *ngIf="bookForm.get('edition')?.errors?.['maxTwoDigits']">
               Edition should be a maximum of two digits
             </div>
@@ -67,16 +126,17 @@
             type="number"
             id="totalPages"
             formControlName="totalPages"
-            [ngClass]="{'ng-invalid': bookForm.get('totalPages')?.invalid && bookForm.get('totalPages')?.touched || bookForm.errors?.['damagedPagesTooHigh']}"
+            class="form-control"
+            [ngClass]="{'invalid': (bookForm.get('totalPages')?.invalid && bookForm.get('totalPages')?.touched) || bookForm.errors?.['damagedPagesTooHigh']}"
           >
-          <div *ngIf="(bookForm.get('totalPages')?.invalid && bookForm.get('totalPages')?.touched)">
+          <div *ngIf="(bookForm.get('totalPages')?.invalid && bookForm.get('totalPages')?.touched)" class="error-hint">
+             <div *ngIf="bookForm.get('totalPages')?.errors?.['required']">
+               Total pages is required
+             </div>
             <div *ngIf="bookForm.get('totalPages')?.errors?.['min']">
               Total pages must be at least 1
             </div>
-          </div>
-          <div *ngIf="bookForm.errors?.['damagedPagesTooHigh']">
-            Damaged pages cannot be greater than total pages
-          </div>
+             </div>
         </div>
 
         <div class="form-group">
@@ -85,32 +145,50 @@
             type="number"
             id="damagedPages"
             formControlName="damagedPages"
-            [ngClass]="{'ng-invalid': bookForm.get('damagedPages')?.invalid && bookForm.get('damagedPages')?.touched || bookForm.errors?.['damagedPagesTooHigh']}"
+            class="form-control"
+            [ngClass]="{'invalid': (bookForm.get('damagedPages')?.invalid && bookForm.get('damagedPages')?.touched) || bookForm.errors?.['damagedPagesTooHigh']}"
           >
-          <div *ngIf="(bookForm.get('damagedPages')?.invalid && bookForm.get('damagedPages')?.touched)">
+           <div *ngIf="(bookForm.get('damagedPages')?.invalid && bookForm.get('damagedPages')?.touched) || bookForm.errors?.['damagedPagesTooHigh']" class="error-hint">
+             <div *ngIf="bookForm.get('damagedPages')?.errors?.['required']">
+               Damaged pages is required
+             </div>
             <div *ngIf="bookForm.get('damagedPages')?.errors?.['min']">
               Damaged pages cannot be negative
             </div>
-          </div>
-          <div *ngIf="bookForm.errors?.['damagedPagesTooHigh']">
-            Damaged pages cannot be greater than total pages
+             <div *ngIf="bookForm.errors?.['damagedPagesTooHigh']">
+              Damaged pages cannot be greater than total pages
+            </div>
           </div>
         </div>
 
         <div class="form-group">
           <label for="age">Age</label>
-          <input type="number" id="age" formControlName="age">
+          <input
+            type="number"
+            id="age"
+            formControlName="age"
+            class="form-control"
+             [ngClass]="{'invalid': bookForm.get('age')?.invalid && bookForm.get('age')?.touched}"
+          >
+           <div *ngIf="bookForm.get('age')?.invalid && bookForm.get('age')?.touched" class="error-hint">
+              <div *ngIf="bookForm.get('age')?.errors?.['required']">
+                Age is required
+              </div>
+           </div>
         </div>
 
-        <div class="form-group">
-          <label for="ownerId">Owner ID</label>
-          <input type="number" id="ownerId" formControlName="ownerId">
-        </div>
+        
 
         <div class="form-group">
           <label for="pictureFile">Book Image</label>
-          <input type="file" class="file-input" id="pictureFile" (change)="onFileSelected($event)" accept="image/png, image/jpeg">
-        </div>
+          <input
+            type="file"
+            class="form-control file-input"
+            id="pictureFile"
+            (change)="onFileSelected($event)"
+            accept="image/png, image/jpeg"
+          >
+           </div>
       </div>
 
       <div class="preview-container" *ngIf="imagePreview">
@@ -119,19 +197,11 @@
 
       <div class="button-group">
         <button type="button" class="cancel-btn" routerLink="/books">Cancel</button>
-        <button type="button" class="update-btn" [disabled]="loading || predictingPrice || bookForm.invalid" (click)="onSubmit()">
-          {{ predictingPrice ? 'Predicting Price...' : 'Update Book' }}
+        <button type="submit" class="update-btn" [disabled]="loading">
+           {{ loading ? 'Updating...' : 'Update Book' }}
         </button>
       </div>
     </form>
 
-    <div *ngIf="showPriceConfirmation && predictedPrice !== null" class="price-confirmation">
-      <h3>Predicted Price: {{ predictedPrice | number:'1.2-2' }}</h3>
-      <p>Do you want to confirm the update with this price?</p>
-      <div class="button-group">
-        <button type="button" class="confirm-btn" (click)="confirmUpdate()">Yes, Update</button>
-        <button type="button" class="refuse-btn" (click)="refuseUpdate()">No, Cancel</button>
-      </div>
     </div>
-  </div>
 </div>
