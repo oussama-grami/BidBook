@@ -1,6 +1,13 @@
 // book-update.component.ts
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+  AbstractControl,
+  ValidationErrors,
+} from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
@@ -49,6 +56,31 @@ enum Language {
   OTHER = 'OTHER',
 }
 
+function maxTwoDigitsValidator(control: AbstractControl): ValidationErrors | null {
+  if (!control.value) {
+    return null; // Allow empty values if not strictly required
+  }
+  const twoDigitRegex = /^\d{1,2}$/;
+  return twoDigitRegex.test(control.value) ? null : { 'maxTwoDigits': true };
+}
+
+// Custom validator function to compare damagedPages and totalPages
+function damagedPagesValidator(formGroup: FormGroup): ValidationErrors | null {
+  const totalPagesControl = formGroup.get('totalPages');
+  const damagedPagesControl = formGroup.get('damagedPages');
+
+  if (totalPagesControl && damagedPagesControl) {
+    const totalPages = Number(totalPagesControl.value);
+    const damagedPages = Number(damagedPagesControl.value);
+
+    if (!isNaN(totalPages) && !isNaN(damagedPages) && damagedPages > totalPages) {
+      return { damagedPagesTooHigh: true };
+    }
+  }
+
+  return null;
+}
+
 @Component({
   selector: 'app-book-update',
   templateUrl: './book-update.component.html',
@@ -86,12 +118,12 @@ export class BookUpdateComponent implements OnInit {
       category: [''],
       language: [''],
       editor: [''],
-      edition: [''],
-      totalPages: [''],
-      damagedPages: [''],
+      edition: ['', [maxTwoDigitsValidator]], // Apply year validator
+      totalPages: ['', [Validators.min(1)]],
+      damagedPages: ['', [Validators.min(0)]],
       age: [''],
       ownerId: [''],
-    });
+    }, { validators: damagedPagesValidator }); // Apply damagedPages validator to the form group
   }
 
   ngOnInit(): void {
@@ -148,7 +180,11 @@ export class BookUpdateComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.predictPriceAndConfirm();
+    if (this.bookForm.valid) {
+      this.predictPriceAndConfirm();
+    } else {
+      this.markFormGroupTouched(this.bookForm);
+    }
   }
 
   predictPriceAndConfirm(): void {
@@ -246,5 +282,14 @@ export class BookUpdateComponent implements OnInit {
       this.selectedFile = null;
       this.loadBookDetails();
     }
+  }
+
+  private markFormGroupTouched(formGroup: FormGroup) {
+    Object.values(formGroup.controls).forEach((control) => {
+      control.markAsTouched();
+      if (control instanceof FormGroup) {
+        this.markFormGroupTouched(control);
+      }
+    });
   }
 }
