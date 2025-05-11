@@ -55,8 +55,8 @@
             [ngClass]="{'ng-invalid': bookForm.get('edition')?.invalid && bookForm.get('edition')?.touched}"
           >
           <div *ngIf="bookForm.get('edition')?.invalid && bookForm.get('edition')?.touched" class="error-hint">
-            <div *ngIf="bookForm.get('edition')?.errors?.['invalidYear']">
-              Please enter a valid 4-digit year
+            <div *ngIf="bookForm.get('edition')?.errors?.['maxTwoDigits']">
+              Edition should be a maximum of two digits
             </div>
           </div>
         </div>

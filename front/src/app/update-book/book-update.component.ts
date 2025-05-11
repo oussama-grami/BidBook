@@ -56,13 +56,12 @@ enum Language {
   OTHER = 'OTHER',
 }
 
-// Custom validator function for year format (4-digit integer)
-function yearValidator(control: AbstractControl): ValidationErrors | null {
+function maxTwoDigitsValidator(control: AbstractControl): ValidationErrors | null {
   if (!control.value) {
     return null; // Allow empty values if not strictly required
   }
-  const yearRegex = /^\d{4}$/;
-  return yearRegex.test(control.value) ? null : { invalidYear: true };
+  const twoDigitRegex = /^\d{1,2}$/;
+  return twoDigitRegex.test(control.value) ? null : { 'maxTwoDigits': true };
 }
 
 // Custom validator function to compare damagedPages and totalPages
@@ -119,7 +118,7 @@ export class BookUpdateComponent implements OnInit {
       category: [''],
       language: [''],
       editor: [''],
-      edition: ['', [yearValidator]], // Apply year validator
+      edition: ['', [maxTwoDigitsValidator]], // Apply year validator
       totalPages: ['', [Validators.min(1)]],
       damagedPages: ['', [Validators.min(0)]],
       age: [''],

@@ -64,8 +64,8 @@
               <div *ngIf="addBookForm.get('edition')?.errors?.['required']">
                 Edition is required
               </div>
-              <div *ngIf="addBookForm.get('edition')?.errors?.['invalidYear']">
-                Please enter a valid 4-digit year
+              <div *ngIf="addBookForm.get('edition')?.errors?.['maxTwoDigits']">
+                Edition should be a maximum of two digits
               </div>
             </div>
           </div>

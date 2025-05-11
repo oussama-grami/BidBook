@@ -17,13 +17,12 @@ import { finalize } from 'rxjs/operators';
 import { BookService } from '../../services/book.service';
 import { UserIdService } from '../../services/userid.service';
 
-// Custom validator function for year format (4-digit integer)
-function yearValidator(control: AbstractControl): ValidationErrors | null {
+function maxTwoDigitsValidator(control: AbstractControl): ValidationErrors | null {
   if (!control.value) {
-    return null; // Allow empty values if not required
+    return null; // Allow empty values if not strictly required
   }
-  const yearRegex = /^\d{4}$/;
-  return yearRegex.test(control.value) ? null : { invalidYear: true };
+  const twoDigitRegex = /^\d{1,2}$/;
+  return twoDigitRegex.test(control.value) ? null : { 'maxTwoDigits': true };
 }
 
 // Custom validator function to compare damagedPages and numberOfPages
@@ -79,7 +78,7 @@ export class AddBookComponent implements OnInit {
         title: ['', Validators.required],
         author: ['', Validators.required],
         editor: ['', Validators.required],
-        edition: ['', [Validators.required, yearValidator]], // Apply the custom validator
+        edition: ['', [Validators.required, maxTwoDigitsValidator]],
         category: ['', Validators.required],
         language: ['', Validators.required],
         numberOfPages: ['', [Validators.required, Validators.min(1)]],
@@ -90,7 +89,7 @@ export class AddBookComponent implements OnInit {
           [Validators.required, Validators.min(0)],
         ],
       },
-      { validators: damagedPagesValidator } // Apply the custom validator to the form group
+      { validators: damagedPagesValidator }
     );
   }
 
