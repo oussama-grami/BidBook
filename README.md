@@ -58,13 +58,12 @@ Used for classic CRUD operations like book and blog creation/modification, ensur
 
 ## 👨‍💻 Project Contributors
 
-| Name                 | Contributions                                               |
-|----------------------|-------------------------------------------------------------|
-| **Oussema Guerami**  | Front-end (Angular), Backend (Blog & Articles)              |
-| **Mohammed Aziz Dhouibi** | Backend (Books: creation, display, bidding, comments, ratings) |
-| **Hiba Chabbouh**     | Front-end (Angular), Backend (Authentication)              |
-| **Leith Engazzou**    | Backend (Books: update, notifications, auctions)           |
-| **Maher Wali**        | Backend (Payments and Messaging)                           |
+|----------------------|
+| **Oussema Guerami**  | 
+| **Mohammed Aziz Dhouibi** |
+| **Hiba Chabbouh**     |
+| **Leith Engazzou**    |
+| **Maher Wali**        |
 
 ---
 
